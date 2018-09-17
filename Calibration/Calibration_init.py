@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Use this script for model-based testing of controller software 
-unsing Modelica models. The script makes use of the Dymola-Python interface
+using Modelica models. The script makes use of the Dymola-Python interface
 for automatizing simulations. It uses modelicares for reading and analyzing
 simulation results and also for design of experiment (DOE) functions.
 It further uses numpy for generating signals and a non-linear minimization 
