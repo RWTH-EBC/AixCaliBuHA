@@ -19,6 +19,7 @@ from sklearn.externals.six import StringIO
 from sklearn.tree import export_graphviz
 
 # Download binaries from: http://www.graphviz.org/download/
+# Windows Zip file directly from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
 os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin').replace('\\', '/')
 
 # Define main inputs
