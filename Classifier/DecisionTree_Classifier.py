@@ -23,6 +23,8 @@ from sklearn.tree import export_graphviz
 os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin').replace('\\', '/')
 
 # Define main inputs
+# clases: 0 - Cool down when boiler off; 1 - Operation in hysteresis mode;
+# 2 - Heat up phase (starting phase); 7 - Certain error
 fname_input = (r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx').replace('\\', '/')
 model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')
 StartRange = 0
@@ -34,23 +36,33 @@ X = model_input.drop('class', axis=1)
 X = X.drop('time', axis=1)
 y = model_input['class']
 
+# Split data set randomly with test_size % (if 0.30 --> 70 % are training data)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30)
+
+# Create tree instance. Ordne bekannte Klassen den bekannten Trainingsdaten zu
 dtree = DecisionTreeClassifier()
 dtree.fit(X_train, y_train)
-predictions = dtree.predict(X_test)
 
-print(classification_report(y_test, predictions))
-print('\n')
-print(confusion_matrix(y_test, predictions))
-
-# Visualization
+# Visualization decision tree
 features = list(model_input.columns[start_col:end_col])
 dot_data = StringIO()
 export_graphviz(dtree, out_file=dot_data, feature_names=features, filled=True, rounded=True)
 graph = pydot.graph_from_dot_data(dot_data.getvalue())
 Image(graph[0].create_png())
 plt.show(graph[0])
+graph[0].write_png(r'D:\test.png')
 
+# Read in test data file
+
+# Predict classes for test data set
+predictions = dtree.predict(X_test)
+
+# Compare know classes with predicted classes (only possible wenn vorher manuell zugeordnet)
+print(classification_report(y_test, predictions))
+print('\n')
+print(confusion_matrix(y_test, predictions))
+
+# Visualization pair plot
 sns.pairplot(model_input, hue='class')
 plt.savefig(r'D:\Pairplot_' + str(StartRange) + '_' + str(EndRange) + '.png', transparent=True, bbox_inches='tight',
             dpi=400)
