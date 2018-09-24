@@ -3,6 +3,11 @@
 Created on Thu Sep 13 18:13:41 2018
 
 @author: tst-aes
+revised by:
+* 2018-09-24 Philipp Mehrfeld
+
+This is a script to perform supervised learning and apply this to time series data and characterize classes for
+these time series.
 """
 import os
 import matplotlib as mpl
@@ -25,7 +30,8 @@ os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin'
 # Define main inputs
 # clases: 0 - Cool down when boiler off; 1 - Operation in hysteresis mode;
 # 2 - Heat up phase (starting phase); 7 - Certain error
-fname_input = (r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx').replace('\\', '/')
+fname_input = (r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx').replace('\\', '/') # file
+save_path_plots = (r'D:').replace('\\', '/') # folder
 model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')
 StartRange = 0
 EndRange = 1672
@@ -50,7 +56,7 @@ export_graphviz(dtree, out_file=dot_data, feature_names=features, filled=True, r
 graph = pydot.graph_from_dot_data(dot_data.getvalue())
 Image(graph[0].create_png())
 plt.show(graph[0])
-graph[0].write_png(r'D:\test.png')
+graph[0].write_png(save_path_plots+'/tree_plot.png')
 
 # Read in test data file
 
@@ -64,5 +70,5 @@ print(confusion_matrix(y_test, predictions))
 
 # Visualization pair plot
 sns.pairplot(model_input, hue='class')
-plt.savefig(r'D:\Pairplot_' + str(StartRange) + '_' + str(EndRange) + '.png', transparent=True, bbox_inches='tight',
+plt.savefig(save_path_plots+'/pairplot_' + str(StartRange) + '_' + str(EndRange) + '.png', transparent=True, bbox_inches='tight',
             dpi=400)
