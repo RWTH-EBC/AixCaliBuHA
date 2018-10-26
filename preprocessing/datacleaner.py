@@ -20,6 +20,17 @@ def fromJSONDumpFile (path):
     return df2
 
 
+def number_lines_totally_na(df):
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError('Input must be a pandas data frame')
+    counter = 0
+    row_len = len(df.columns)  # Calculate number of columns such that statement is not executed in evey for execution
+    for row in range(len(df.index)):
+        if df.iloc[row].isnull().sum() >= row_len:
+            counter += 1
+    return counter
+
+
 def zScore(x):
     mean = np.mean(x)
     sd = np.std(x)
@@ -42,18 +53,6 @@ def iqr(x):
     return np.where((x > upper) | (x < lower))[0]
 
 
-def simple_plot(df, title, x, y):
-    plt.scatter(df['timestamp'], df['value'], color='b')
-    # labels = [dt.datetime.fromtimestamp(ele[0]/1000).strftime('%Y-%m-%d %H:%M:%S') for ele in df['timestamp']]
-    # plt.xticks(df['timestamp'], np.arange(len(df)), rotation=45)
-    plt.title(title, fontsize=20)
-    plt.xlabel(x, fontsize=14)
-    plt.ylabel(y, fontsize=14)
-    plt.grid()
-    plt.gcf().autofmt_xdate()
-    plt.show()
-
-
 if __name__=='__main__':
     # The original data
     df = fromJSONDumpFile(r'D:\test\data_diris.csv')
@@ -68,7 +67,6 @@ if __name__=='__main__':
     for i in range(0, len(extra_temp)):
         extra_temp[i] = i*5.0
     df_temp['extra'] = extra_temp
-    df = df_temp.copy()
     # ??? Wie sieht es aus, wenn das ende nicht genau passt zu start + X*desired_freq?
 
     # if reset is desired
@@ -78,13 +76,8 @@ if __name__=='__main__':
 
     print('Number of invalid values in data frame rows: \n' + str(df.isnull().sum()))  # Count invalid values
     # Count rows  where all fields are invalid values
-    counter_temp = 0
-    row_len_temp = len(df.columns)  # Calculate number of columns such that statement is not executed in evey for execution
-    for row in range(len(df.index)):
-        if df.iloc[row].isnull().sum() >= row_len_temp:
-            counter_temp += 1
-    print('Number of rows in data frame where the whole line consists of invalid values: ' + str(counter_temp))
-    del counter_temp, row_len_temp
+    print('Number of rows in data frame where the whole line consists of invalid values: '
+          + str(number_lines_totally_na(df)))
     df.dropna(inplace=True, axis=0)  # Drop all rows where at least one NaN exists
     # TODO Vielleicht optional ergänzen, dass nur die Zeilen gelöscht werden sollen, die komplett NaN sind.
     # TODO Zeilen mit doppelten oder beliebig mehrfachem Indexeintrag müssen zu einem zusammengeführt werden:
@@ -93,15 +86,29 @@ if __name__=='__main__':
     # index = [2017-03-12 23:31:35] und wert = [17,42] (da (13+15.32+23.94) / 3)
     # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
     # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
-    time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)  # Create new equally spaced index
+
+    # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
+    time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
     df_time_temp = pd.DataFrame(index=time_index)  # Create in empty data frame
     df = pd.concat([df, df_time_temp], axis=1)  # Concatenate two data frames. Actually only new index is inserted
     del df_time_temp
     df.interpolate(method='time', axis=0, inplace=True)  # Interpolate linearly according to time index
-    df = df.resample(rule=desired_freq).mean()  # Resample to equally spaced index.
+    # Determine Timedelta between current first index entry in df and the first index entry that would be created
+    # when applying df.resample() without loffset
+    delta_time = df.index[0] - df.resample(rule=desired_freq).mean().first(desired_freq).index[0]
+    df = df.resample(rule=desired_freq, loffset=delta_time).mean()  # Resample to equally spaced index.
                                                 # All fields should already have a value. Thus NaNs and maybe +/- infs
                                                 # should have been filtered beforehand.
-
+    del delta_time
 
     print(df)
-    simple_plot(df, "Measurement", "Time", "Value(Watt)")
+
+    my_fig, my_ax = plt.subplots(nrows=1, ncols=1)
+    my_ax.scatter(df.index, df['value'], color='b')
+    my_ax.set_title('Measurement', fontsize=20)
+    my_ax.set_xlabel('Date Time', fontsize=14); my_ax.set_ylabel('Value [W]', fontsize=14)
+    time_span = df.index[-1] - df.index[0]
+    my_ax.set_xlim([df.index[0]-0.05*time_span, df.index[-1]+0.05*time_span])  # +/- 5 % of time span
+    del time_span
+    my_ax.grid(); my_fig.autofmt_xdate()
+    my_fig.show()
