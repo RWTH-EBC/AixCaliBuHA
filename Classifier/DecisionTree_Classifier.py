@@ -16,7 +16,7 @@ import pylab as plt
 import pandas as pd
 import pydot
 import seaborn as sns
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from IPython.display import Image
@@ -33,6 +33,12 @@ os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin'
 fname_input = (r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx').replace('\\', '/') # file
 save_path_plots = (r'D:').replace('\\', '/') # folder
 model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')
+
+fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
+model_input = pd.read_hdf(fname_input)
+
+
+
 StartRange = 0
 EndRange = 1672
 start_col = 1  # In example file this is column "C: VDot"
@@ -58,7 +64,7 @@ Image(graph[0].create_png())
 plt.show(graph[0])
 graph[0].write_png(save_path_plots+'/tree_plot.png')
 
-# Read in test data file
+# Read in test data file (if not already splitted in the data set above)
 
 # Predict classes for test data set
 predictions = dtree.predict(X_test)
