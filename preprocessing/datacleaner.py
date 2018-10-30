@@ -31,6 +31,38 @@ def number_lines_totally_na(df):
     return counter
 
 
+def clean_and_space_equally_time_series(df, desired_freq):
+    # TODO doc_strings !!!
+    # TODO nur listeneinträge mit zulässigen Werten zulassen
+    print('Number of invalid values in data frame rows: \n' + str(df.isnull().sum()))  # Count invalid values
+    df.dropna(how='any', inplace=True)  # Drop all rows where at least one NA exists
+    # Count rows  where all fields are invalid values
+    #print('Number of rows in data frame where the whole line consists of invalid values: '
+    #      + str(number_lines_totally_na(df)))
+    #df.dropna(how='all', inplace=True)  # Drop all rows where at all entries in a row are NA.
+    # TODO Zeilen mit doppelten oder beliebig mehrfachem Indexeintrag müssen zu einem zusammengeführt werden:
+    # z. B. index: [2017-03-12 23:31:35, 2017-03-12 23:31:35, 2017-03-12 23:31:35]
+    # value: [13.0, 15.32, 23.94] müssen werden zu:
+    # index = [2017-03-12 23:31:35] und wert = [17,42] (da (13+15.32+23.94) / 3)
+    # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
+    # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
+
+    # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
+    time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
+    df_time_temp = pd.DataFrame(index=time_index)  # Create in empty data frame
+    df = pd.concat([df, df_time_temp], axis=1)  # Concatenate two data frames. Actually only new index is inserted
+    del df_time_temp
+    df.interpolate(method='time', axis=0, inplace=True)  # Interpolate linearly according to time index
+    # Determine Timedelta between current first index entry in df and the first index entry that would be created
+    # when applying df.resample() without loffset
+    delta_time = df.index[0] - df.resample(rule=desired_freq).mean().first(desired_freq).index[0]
+    df = df.resample(rule=desired_freq, loffset=delta_time).mean()  # Resample to equally spaced index.
+                                                # All fields should already have a value. Thus NaNs and maybe +/- infs
+                                                # should have been filtered beforehand.
+    del delta_time
+    return df
+
+
 def zScore(x):
     mean = np.mean(x)
     sd = np.std(x)
@@ -56,59 +88,22 @@ def iqr(x):
 if __name__=='__main__':
     # The original data
     df = fromJSONDumpFile(r'D:\test\data_diris.csv')
-    #TODO nur listeneinträge mit zulässigen Werten zulassen
-    desired_freq = '10Min'
 
-
-    # ZWISCHENTUECK START
-    # Etwas ergaenzen
-    df_temp = df.iloc[0:8]
-    extra_temp = df['value'].copy()
-    for i in range(0, len(extra_temp)):
-        extra_temp[i] = i*5.0
-    df_temp['extra'] = extra_temp
-    # ??? Wie sieht es aus, wenn das ende nicht genau passt zu start + X*desired_freq?
-
-    # if reset is desired
-    df = df_temp.copy()
-    df.drop(columns='timestamp', inplace=True)
-    # ZWISCHENTUECK ENDE
-
-    print('Number of invalid values in data frame rows: \n' + str(df.isnull().sum()))  # Count invalid values
-    # Count rows  where all fields are invalid values
-    print('Number of rows in data frame where the whole line consists of invalid values: '
-          + str(number_lines_totally_na(df)))
-    df.dropna(inplace=True, axis=0)  # Drop all rows where at least one NaN exists
-    # TODO Vielleicht optional ergänzen, dass nur die Zeilen gelöscht werden sollen, die komplett NaN sind.
-    # TODO Zeilen mit doppelten oder beliebig mehrfachem Indexeintrag müssen zu einem zusammengeführt werden:
-    # z. B. index: [2017-03-12 23:31:35, 2017-03-12 23:31:35, 2017-03-12 23:31:35]
-    # value: [13.0, 15.32, 23.94] müssen werden zu:
-    # index = [2017-03-12 23:31:35] und wert = [17,42] (da (13+15.32+23.94) / 3)
-    # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
-    # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
-
-    # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
-    time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
-    df_time_temp = pd.DataFrame(index=time_index)  # Create in empty data frame
-    df = pd.concat([df, df_time_temp], axis=1)  # Concatenate two data frames. Actually only new index is inserted
-    del df_time_temp
-    df.interpolate(method='time', axis=0, inplace=True)  # Interpolate linearly according to time index
-    # Determine Timedelta between current first index entry in df and the first index entry that would be created
-    # when applying df.resample() without loffset
-    delta_time = df.index[0] - df.resample(rule=desired_freq).mean().first(desired_freq).index[0]
-    df = df.resample(rule=desired_freq, loffset=delta_time).mean()  # Resample to equally spaced index.
-                                                # All fields should already have a value. Thus NaNs and maybe +/- infs
-                                                # should have been filtered beforehand.
-    del delta_time
+    clean_df = clean_and_space_equally_time_series(df=df, desired_freq='10Min')  # Or .iloc[0:100]
 
     print(df)
+    print(clean_df)
 
     my_fig, my_ax = plt.subplots(nrows=1, ncols=1)
-    my_ax.scatter(df.index, df['value'], color='b')
+    my_ax.scatter(clean_df.index, clean_df['value'], color='b')
     my_ax.set_title('Measurement', fontsize=20)
     my_ax.set_xlabel('Date Time', fontsize=14); my_ax.set_ylabel('Value [W]', fontsize=14)
-    time_span = df.index[-1] - df.index[0]
-    my_ax.set_xlim([df.index[0]-0.05*time_span, df.index[-1]+0.05*time_span])  # +/- 5 % of time span
+    time_span = clean_df.index[-1] - clean_df.index[0]
+    my_ax.set_xlim([clean_df.index[0]-0.05*time_span, clean_df.index[-1]+0.05*time_span])  # +/- 5 % of time span
     del time_span
     my_ax.grid(); my_fig.autofmt_xdate()
     my_fig.show()
+    print('ENDE')
+
+    Jetzt Filter drüber laufen lassen, der alle Werte <= Threshold identifiziert und rauslöscht.
+    Mal schauen. Ich glaube im Rahmen von nxGREASER habe ich das mal gemacht.
