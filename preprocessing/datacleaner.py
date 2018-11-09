@@ -121,3 +121,5 @@ if __name__=='__main__':
 
     #Jetzt Filter drüber laufen lassen, der alle Werte <= Threshold identifiziert und rauslöscht.
     #Mal schauen. Ich glaube im Rahmen von nxGREASER habe ich das mal gemacht.
+
+    #Tiefpass-filter anbieten
