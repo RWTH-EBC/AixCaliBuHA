@@ -33,9 +33,15 @@ def number_lines_totally_na(df):
 
 def clean_and_space_equally_time_series(df, desired_freq):
     # TODO doc_strings !!!
-    # TODO nur listeneinträge mit zulässigen Werten zulassen
-    print('Number of invalid values in data frame rows: \n' + str(df.isnull().sum()))  # Count invalid values
-    df.dropna(how='any', inplace=True)  # Drop all rows where at least one NA exists
+    # TODO nur listeneinträge mit zulässigen Werten (z. B. alles Zahlenwerte bzw. index korrekter type) zulassen
+
+    # Create a pandas Series with number of invalid values for each column of df
+    series_with_na = df.isnull().sum()
+    for name in series_with_na.index:
+        if series_with_na.loc[name] > 0:
+            print(name + ' has folling number of invalid values\n' + str(series_with_na.loc[name]))  # Print only columns with invalid values
+    # Drop all rows where at least one NA exists
+    df.dropna(how='any', inplace=True)
     # Count rows  where all fields are invalid values
     #print('Number of rows in data frame where the whole line consists of invalid values: '
     #      + str(number_lines_totally_na(df)))
@@ -87,17 +93,25 @@ def iqr(x):
 
 if __name__=='__main__':
     # The original data
-    df = fromJSONDumpFile(r'D:\test\data_diris.csv')
+    #df = fromJSONDumpFile(r'D:\test\data_diris.csv')
+    # Other data
+    import os
+    fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
+    df = pd.read_hdf(fname_input)
 
-    clean_df = clean_and_space_equally_time_series(df=df, desired_freq='10Min')  # Or .iloc[0:100]
+    # Define name of variable to plot which should be the name of the data frame column header
+    plot_var = 'value'
+    plot_var = 'KK.Leistungsmessung_L1_30A.REAL_VAR'
 
-    print(df)
-    print(clean_df)
+    clean_df = clean_and_space_equally_time_series(df=df, desired_freq='1S')  # Or .iloc[0:100]; 10Min for JSON input
+
+    #print(df)
+    #print(clean_df)
 
     my_fig, my_ax = plt.subplots(nrows=1, ncols=1)
-    my_ax.scatter(clean_df.index, clean_df['value'], color='b')
-    my_ax.set_title('Measurement', fontsize=20)
-    my_ax.set_xlabel('Date Time', fontsize=14); my_ax.set_ylabel('Value [W]', fontsize=14)
+    my_ax.scatter(clean_df.index, clean_df[plot_var], color='b')
+    my_ax.set_title('Measurement')
+    my_ax.set_xlabel('Date Time'); my_ax.set_ylabel(plot_var)
     time_span = clean_df.index[-1] - clean_df.index[0]
     my_ax.set_xlim([clean_df.index[0]-0.05*time_span, clean_df.index[-1]+0.05*time_span])  # +/- 5 % of time span
     del time_span
@@ -105,5 +119,5 @@ if __name__=='__main__':
     my_fig.show()
     print('ENDE')
 
-    Jetzt Filter drüber laufen lassen, der alle Werte <= Threshold identifiziert und rauslöscht.
-    Mal schauen. Ich glaube im Rahmen von nxGREASER habe ich das mal gemacht.
+    #Jetzt Filter drüber laufen lassen, der alle Werte <= Threshold identifiziert und rauslöscht.
+    #Mal schauen. Ich glaube im Rahmen von nxGREASER habe ich das mal gemacht.

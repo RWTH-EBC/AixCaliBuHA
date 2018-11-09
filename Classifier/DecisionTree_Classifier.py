@@ -22,59 +22,75 @@ from sklearn.metrics import classification_report, confusion_matrix
 from IPython.display import Image
 from sklearn.externals.six import StringIO
 from sklearn.tree import export_graphviz
-
 # Download binaries from: http://www.graphviz.org/download/
 # Windows Zip file directly from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
 os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin').replace('\\', '/')
 
-# Define main inputs
-# clases: 0 - Cool down when boiler off; 1 - Operation in hysteresis mode;
-# 2 - Heat up phase (starting phase); 7 - Certain error
-fname_input = (r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx').replace('\\', '/') # file
-save_path_plots = (r'D:').replace('\\', '/') # folder
-model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')
 
-fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
-model_input = pd.read_hdf(fname_input)
+def create_and_export_decision_tree(col_name_list, X_train, y_train, save_path):
+    # Create tree instance. Ordne bekannte Klassen den bekannten Trainingsdaten zu
+    dtree = DecisionTreeClassifier()
+    dtree.fit(X_train, y_train)
+
+    # Visualization decision tree
+    dot_data = StringIO()
+    export_graphviz(dtree, out_file=dot_data, feature_names=col_name_list, filled=True, rounded=True)
+    graph = pydot.graph_from_dot_data(dot_data.getvalue())
+    Image(graph[0].create_png())  # Creating the image needs some time
+    plt.show(graph[0])
+    graph[0].write_png(save_path+'/tree_plot.png')
+
+    return dtree
 
 
+def create_and_report_classification_predictions(dtree, X_test, y_test, df, classes_name, save_path):
+    # Here classification report function begins
+    # Read in test data file (if not already splitted in the data set above)
 
-StartRange = 0
-EndRange = 1672
-start_col = 1  # In example file this is column "C: VDot"
-end_col = 8  # In example file this is column "I: TempDiff"
+    # Predict classes for test data set
+    predictions = dtree.predict(X_test)
 
-X = model_input.drop('class', axis=1)
-X = X.drop('time', axis=1)
-y = model_input['class']
+    # Compare know classes with predicted classes (only possible wenn vorher manuell zugeordnet)
+    # TODO Als Export-File!!
+    print(classification_report(y_test, predictions))
+    print('\n')
+    print(confusion_matrix(y_test, predictions))
 
-# Split data set randomly with test_size % (if 0.30 --> 70 % are training data)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30)
+    # Visualization pair plot (df is data frame with whole X values (train and test)
+    sns.pairplot(df, hue=classes_name)  # This function takes a long time to be executed
+    plt.savefig(save_path+'/pairplot.png', bbox_inches='tight', dpi=400)
 
-# Create tree instance. Ordne bekannte Klassen den bekannten Trainingsdaten zu
-dtree = DecisionTreeClassifier()
-dtree.fit(X_train, y_train)
+    return plt.gcf()
 
-# Visualization decision tree
-features = list(model_input.columns[start_col:end_col])
-dot_data = StringIO()
-export_graphviz(dtree, out_file=dot_data, feature_names=features, filled=True, rounded=True)
-graph = pydot.graph_from_dot_data(dot_data.getvalue())
-Image(graph[0].create_png())
-plt.show(graph[0])
-graph[0].write_png(save_path_plots+'/tree_plot.png')
 
-# Read in test data file (if not already splitted in the data set above)
+def main():
+    # Define main inputs
+    fname_input = os.path.normpath(r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx')  # file
+    model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')  # Index of data frame is first column. However, index is not important in this function
+    col_name_list = ['VDot', 'T_RL', 'T_VL', 'T_Amb', 'MassFlow', 'TempDiff']  # List with column names that should be part of the classifier analysis
+    col_name_with_classes = 'class'  # Column name where classes are listed
 
-# Predict classes for test data set
-predictions = dtree.predict(X_test)
+    # fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
+    # model_input = pd.read_hdf(fname_input)
+    # col_name_list = []  # List with column names that should be part of the classifier analysis
+    # col_name_with_classes = ''  # Column name where classes are listed
 
-# Compare know classes with predicted classes (only possible wenn vorher manuell zugeordnet)
-print(classification_report(y_test, predictions))
-print('\n')
-print(confusion_matrix(y_test, predictions))
+    save_path = os.path.normpath(r'D:')  # Result folder
 
-# Visualization pair plot
-sns.pairplot(model_input, hue='class')
-plt.savefig(save_path_plots+'/pairplot_' + str(StartRange) + '_' + str(EndRange) + '.png', transparent=True, bbox_inches='tight',
-            dpi=400)
+    X = model_input[col_name_list].copy()  # Data frame with interesting vaules
+    y = model_input[col_name_with_classes].copy()  # Copy column with class descriptions and distribution to new Series
+
+    # Split data set randomly with test_size % (if 0.30 --> 70 % are training data)
+    # TODO However specifying yourself which data set is for training and which for testing should also be implemented!
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30)
+
+    my_dtree = create_and_export_decision_tree(col_name_list=col_name_list, X_train=X_train,
+                                               y_train=y_train, save_path=save_path)
+    my_fig = create_and_report_classification_predictions(dtree=my_dtree, X_test=X_test, y_test=y_test,
+                                                          df=model_input[col_name_list+[col_name_with_classes]],
+                                                          classes_name=col_name_with_classes, save_path=save_path)
+    my_fig.show()
+
+
+if __name__=='__main__':
+    main()
