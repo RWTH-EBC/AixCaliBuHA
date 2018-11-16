@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import signal
 import pandas as pd
 import json
 import sys
@@ -69,6 +70,40 @@ def clean_and_space_equally_time_series(df, desired_freq):
     return df
 
 
+def create_on_off_acc_to_threshold(df, col_names, threshold, names_new_columns):
+    for i in range(len(col_names)):  # Do on_off signal creation for all desired columns
+        df[names_new_columns[i]] = df[col_names[i]].copy()  # Copy column with values to new one, where only zeros and ones will exist.
+        df.loc[df[names_new_columns[i]] < threshold, names_new_columns[i]] = 0.0
+        df.loc[df[names_new_columns[i]] >= threshold, names_new_columns[i]] = 1.0
+    return df
+
+
+def movingaverage(values, window):
+    '''
+    Creates a pandas Series as moving average of the input series.
+
+    :param values: Series
+    :param window: int (sample rate of input)
+    :return: Series
+    '''
+    weights = np.repeat(1.0, window) / window
+    sma = np.convolve(values, weights, 'valid')
+    return sma
+
+
+def low_pass_filter(input, crit_freq, filter_order):
+    '''
+    :param input: numpy.ndarray,
+        For dataframe e.g. df['a_col_name'].values
+    :param crit_freq: float,
+    :param filter_order: int,
+    :return: numpy.ndarray,
+    '''
+    b, a = signal.butter(N=filter_order, Wn=crit_freq, btype='low', analog=False, output='ba')
+    output = signal.filtfilt(b, a, input)
+    return output
+
+
 def zScore(x):
     mean = np.mean(x)
     sd = np.std(x)
@@ -117,6 +152,27 @@ if __name__=='__main__':
     del time_span
     my_ax.grid(); my_fig.autofmt_xdate()
     my_fig.show()
+
+
+    # Some data filters
+    ## Low pass filter. Be careful! Strong negative slopes from e.g. 1000 down to 0 will result in negative values of the filtered output.
+    filtered_output = low_pass_filter(input=clean_df[plot_var].values, crit_freq=1/5, filter_order=5)
+    ## Moving average. window depends on sample rate of index.
+    ## output has less sample points than orig data (len(av_output) = len(orig) - window + 1
+    av_output = movingaverage(values=clean_df[plot_var], window=20)
+    ## Plot for visualization
+    fig, ax = plt.subplots(1,1)
+    ax.plot(clean_df[plot_var].values, label='original')
+    ax.plot(filtered_output, label='Low Pass')
+    ax.plot(av_output, label='Moving Average')
+    ax.legend()
+    fig.show()
+
+    # Create on off signal according to compressor P_el and a threshold.
+    df_with_on_signal = create_on_off_acc_to_threshold(df=clean_df, col_names=['KK.Leistungsmessung_L1_30A.REAL_VAR'], threshold=60, names_new_columns=['HP_on_off'])
+    # Save new df
+    df_with_on_signal.to_hdf(path_or_buf=os.path.normpath(fname_input)[:-4] + '_with_on_off' + os.path.normpath(fname_input)[-4:], key='df')
+
     print('ENDE')
 
     #Jetzt Filter drüber laufen lassen, der alle Werte <= Threshold identifiziert und rauslöscht.
