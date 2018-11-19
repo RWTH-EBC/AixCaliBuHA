@@ -28,9 +28,9 @@ import multiprocessing
 def objective_op(s,no,ts):  
     
     #Define the local path 
-    dir_res_stor_loc = r'D:\Calibration_2\amc' + str(no)
+    dir_res_stor_loc = os.path.normpath(r'D:\Calibration_2\amc' + str(no))
 
-    #DEfine the variables for the simulation and measurements
+    #Define the variables for the simulation and measurements
     variables_sim = {'results.Pel':'results.Pel','results.TF[1]':'results.TF[1]'}
     variables_sim_orig_1 = 'results.Pel / W:#(filter=_Results)'
     variables_meas_1 = 'mess.P'
@@ -41,12 +41,12 @@ def objective_op(s,no,ts):
     # as decision variables
     
     # Read the measurements from csv file and export it to pandas data frame
-    meas = pandas.read_csv(dir_res_stor_loc + r"\meas.csv",";",index_col=0)
+    meas = pandas.read_csv(os.path.normpath(dir_res_stor_loc + r"\meas.csv"),";",index_col=0)
     
     #Write the result from the initialisation calibration to the dsin
     s4 = s4 = 273 + ts/100*18
-    modelicares.exps.write_params({'cabinet.tStartCompartments[1]' : s4,}, 
-                                   dir_res_stor_loc + '\dsin.txt')
+    modelicares.exps.write_params({'cabinet.tStartCompartments[1]' : s4,},
+                                  os.path.normpath(dir_res_stor_loc + r'\dsin.txt'))
     
     
     #Change to working directory
@@ -57,8 +57,8 @@ def objective_op(s,no,ts):
     
     #Write the dictionary of parameters to calibrate to dsin file
     modelicares.exps.write_params({'controller.tCompOn': s1, 
-                                   'controller.tCompOff': s2,}, 
-                                   dir_res_stor_loc + '\dsin.txt')
+                                   'controller.tCompOff': s2,},
+                                  os.path.normpath(dir_res_stor_loc + r'\dsin.txt'))
 
     #Start a subprocess that simualtes the dymosim.exe
     cmd = dir_res_stor_loc + r'\dymosim.exe'
@@ -141,7 +141,7 @@ def multiFun(no,ts):
 if __name__ == '__main__':
     
     global dir_res_str
-    dir_res_stor = r'D:\Calibration\amc'
+    dir_res_stor = os.path.normpath(r'D:\01_Dymola_WorkDir\00_Testzone')
     
     ts = range(30,50,2)
     
