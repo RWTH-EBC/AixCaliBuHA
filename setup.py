@@ -6,30 +6,27 @@ setup(name='ebccalibration',
       url='not set yet',
       author='RWTH Aachen University, E.ON Energy Research Center, Institute\
       of Energy Efficient Buildings and Indoor Climate',
+    classifiers=[
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 3',
+    ],
       packages=['calibration',
                 'calibration.examples',
                 'classifier',
                 'preprocessing'],
-      setup_requires=['os',
-					'sys',
-					'numpy',
+      setup_requires=['numpy',
 					'scipy',
-					'subprocess',
-					'multiprocessing',
 					'pandas',
 					'modelicares',
 					'matplotlib',
-					'sklearn'],
+					'scikit-learn'],
 # Addtional packages:
 # ebcpython : https://git.rwth-aachen.de/EBC/EBC_all/Python/EBC_Python_Library/
 # dymola : https://github.com/RWTH-EBC/AixLib/wiki/How-to:-Dymola-Python-Interface
-      install_requires=['os',
-					'sys',
-					'numpy',
+      install_requires=['numpy',
 					'scipy',
-					'subprocess',
-					'multiprocessing',
 					'pandas',
 					'modelicares',
 					'matplotlib',
-					'sklearn'])
+					'scikit-learn'])
