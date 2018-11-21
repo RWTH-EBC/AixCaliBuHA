@@ -50,7 +50,7 @@ def clean_and_space_equally_time_series(df, desired_freq):
     # TODO Zeilen mit doppelten oder beliebig mehrfachem Indexeintrag müssen zu einem zusammengeführt werden:
     # z. B. index: [2017-03-12 23:31:35, 2017-03-12 23:31:35, 2017-03-12 23:31:35]
     # value: [13.0, 15.32, 23.94] müssen werden zu:
-    # index = [2017-03-12 23:31:35] und wert = [17,42] (da (13+15.32+23.94) / 3)
+    # index = [2017-03-12 23:31:35] und wert = [17.42] (da (13+15.32+23.94) / 3)
     # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
     # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
 
