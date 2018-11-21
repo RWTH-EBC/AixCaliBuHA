@@ -1,21 +1,18 @@
 Modelica Calibration
 ======
 
-### Goals
-This repository is used for the development of Python tools to handle Modelica
-models. 
+## How to install?
 
-### Recent tasks
-The recent tasks concern the proof-of-concept regarding the two areas calibration
-and testing. The calibration functions can be used for calibrating compression chillers. 
-The testing functions can be used for testing the controller of the FVU in AixLib and a 
-real Belimo PLC via BACnet.
+For installation use pip. Run `pip install -e "Path/to/this/repository"`
 
-### Relations
-The project is related to the activities in the calibration of Modelica models and the 
-testing of PLCs and control strategies. 
+If environment variables are not set properly, try more explicit command in Windows shell:
+
+`C:\Path\to\pythonDirectory\python.exe -c "import pip" & C:\Path\to\pythonDirectory\python.exe -m pip install -e C:\Path\to\this\repository`
+
+Be aware of forward slashes (for python) and backslashes (for Windows). You might need to encompass paths in inverted commas (") in order to handle spaces.
 
 ### Associates
-- Main contact: Marc Baranski, mbaranski@eonerc.rwth-achen.de
+- Philipp Mehrfeld, pmehrfeld@eonerc.rwth-achen.de
+- Marc Baranski, mbaranski@eonerc.rwth-achen.de
 
 
