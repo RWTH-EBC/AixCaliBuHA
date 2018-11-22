@@ -54,16 +54,21 @@ def clean_and_space_equally_time_series(df, desired_freq):
     # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
     # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
 
+    # Check for duplicates in index. All these parts should be reduced to only one row with mean of values in according columns
+
+
     # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
     time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
     df_time_temp = pd.DataFrame(index=time_index)  # Create in empty data frame
-    df = pd.concat([df, df_time_temp], axis=1)  # Concatenate two data frames. Actually only new index is inserted
+    # concat and radd might be used as alternatives here
+    #df = pd.concat([df, df_time_temp], axis=1)  # Concatenate two data frames. Actually only new index is inserted
+    df = df.radd(df_time_temp, axis='index', fill_value=0)  # Insert temporary time_index into df. fill_value = 0 can only be used, since all NaNs should be eliminated prior.
     del df_time_temp
     df.interpolate(method='time', axis=0, inplace=True)  # Interpolate linearly according to time index
     # Determine Timedelta between current first index entry in df and the first index entry that would be created
     # when applying df.resample() without loffset
-    delta_time = df.index[0] - df.resample(rule=desired_freq).mean().first(desired_freq).index[0]
-    df = df.resample(rule=desired_freq, loffset=delta_time).mean()  # Resample to equally spaced index.
+    delta_time = df.index[0] - df.resample(rule=desired_freq).first().first(desired_freq).index[0]
+    df = df.resample(rule=desired_freq, loffset=delta_time).first()  # Resample to equally spaced index.
                                                 # All fields should already have a value. Thus NaNs and maybe +/- infs
                                                 # should have been filtered beforehand.
     del delta_time
@@ -78,16 +83,24 @@ def create_on_off_acc_to_threshold(df, col_names, threshold, names_new_columns):
     return df
 
 
-def movingaverage(values, window):
+def movingaverage(values, window, shift=True):
     '''
     Creates a pandas Series as moving average of the input series.
 
     :param values: Series
     :param window: int (sample rate of input)
-    :return: Series
+    :param shift: Boolean
+        if True, shift array back by window/2 and fill up values at start and end
+    :return: numpy.array
+        shape has (###,). First and last points of input Series are extroplated as constant
+        values (hold first and last point).
     '''
+    window = int(window)
     weights = np.repeat(1.0, window) / window
     sma = np.convolve(values, weights, 'valid')
+    fill_start = np.full((int(np.floor(window/2)), 1), sma[0])  # Create array with first entries and window/2 elements
+    fill_end = np.full((int(np.ceil(window/2)), 1), sma[-1])  # Same with last value of -values-
+    sma = np.concatenate((fill_start[:,0], sma, fill_end[:,0]), axis=0)  # Stack the arrays
     return sma
 
 
@@ -134,11 +147,21 @@ if __name__=='__main__':
     fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
     df = pd.read_hdf(fname_input)
 
+
+    # Only for testing. Creates smaller sub-dataframe
+    names = ['HYD.Bank[4].Temp_extRL.REAL_VAR','HYD.Bank[4].Temp_extVL.REAL_VAR','KK.Leistungsmessung_L1_30A.REAL_VAR']
+    rng2 = pd.date_range(start=df.index[2], end=df.index[2], periods=3)
+    df = df.head(8)#.copy()
+    df = df[names]#.copy()
+    rng = df.index[0:2].append(rng2).append(df.index[4:-1])
+    df.set_index(rng, drop=True, inplace=True)
+
+
     # Define name of variable to plot which should be the name of the data frame column header
     plot_var = 'value'
     plot_var = 'KK.Leistungsmessung_L1_30A.REAL_VAR'
 
-    clean_df = clean_and_space_equally_time_series(df=df, desired_freq='1S')  # Or .iloc[0:100]; 10Min for JSON input
+    clean_df = clean_and_space_equally_time_series(df=df, desired_freq='9S')  # Or .iloc[0:100]; 10Min for JSON input
 
     #print(df)
     #print(clean_df)
@@ -171,7 +194,7 @@ if __name__=='__main__':
     # Create on off signal according to compressor P_el and a threshold.
     df_with_on_signal = create_on_off_acc_to_threshold(df=clean_df, col_names=['KK.Leistungsmessung_L1_30A.REAL_VAR'], threshold=60, names_new_columns=['HP_on_off'])
     # Save new df
-    df_with_on_signal.to_hdf(path_or_buf=os.path.normpath(fname_input)[:-4] + '_with_on_off' + os.path.normpath(fname_input)[-4:], key='df')
+    df_with_on_signal.to_hdf(path_or_buf=os.path.normpath(fname_input)[:-4] + '_with_on_off' + os.path.normpath(fname_input)[-4:], key='df_with_on_off_signal')
 
     print('ENDE')
 
