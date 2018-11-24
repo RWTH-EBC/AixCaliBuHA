@@ -35,6 +35,7 @@ def number_lines_totally_na(df):
 def clean_and_space_equally_time_series(df, desired_freq):
     # TODO doc_strings !!!
     # TODO nur listeneinträge mit zulässigen Werten (z. B. alles Zahlenwerte bzw. index korrekter type) zulassen
+    # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
 
     # Create a pandas Series with number of invalid values for each column of df
     series_with_na = df.isnull().sum()
@@ -47,15 +48,18 @@ def clean_and_space_equally_time_series(df, desired_freq):
     #print('Number of rows in data frame where the whole line consists of invalid values: '
     #      + str(number_lines_totally_na(df)))
     #df.dropna(how='all', inplace=True)  # Drop all rows where at all entries in a row are NA.
-    # TODO Zeilen mit doppelten oder beliebig mehrfachem Indexeintrag müssen zu einem zusammengeführt werden:
-    # z. B. index: [2017-03-12 23:31:35, 2017-03-12 23:31:35, 2017-03-12 23:31:35]
-    # value: [13.0, 15.32, 23.94] müssen werden zu:
-    # index = [2017-03-12 23:31:35] und wert = [17.42] (da (13+15.32+23.94) / 3)
-    # etwas wie das folgende könnte hilfreich sein danach: df.drop_duplicates(subset='timestamp', keep='last')
-    # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
 
     # Check for duplicates in index. All these parts should be reduced to only one row with mean of values in according columns
-
+    #df.index.duplicated()
+    double_ind = df.index[df.index.duplicated()].unique() # Find entries that are exactly the same timestamp
+    mean_values = []
+    for item in double_ind:
+        #array_temp = df.index.get_loc(item)  # Must be type slice (see examples in doc of pandas get_loc)
+        mean_values.append(df.loc[item].values.mean(axis=0))
+    df = df[~df.index.duplicated(keep='first')]  # Delete duplicate indices
+    # Set mean values in rows that were duplicates before
+    for idx, values in zip(double_ind, mean_values):
+        df.loc[idx] = values
 
     # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
     time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
@@ -151,9 +155,10 @@ if __name__=='__main__':
     # Only for testing. Creates smaller sub-dataframe
     names = ['HYD.Bank[4].Temp_extRL.REAL_VAR','HYD.Bank[4].Temp_extVL.REAL_VAR','KK.Leistungsmessung_L1_30A.REAL_VAR']
     rng2 = pd.date_range(start=df.index[2], end=df.index[2], periods=3)
-    df = df.head(8)#.copy()
+    rng3 = pd.date_range(start=df.index[5], end=df.index[5], periods=2)
+    df = df.head(9)#.copy()
     df = df[names]#.copy()
-    rng = df.index[0:2].append(rng2).append(df.index[4:-1])
+    rng = df.index[0:2].append(rng2).append(rng3).append(df.index[6:-1])
     df.set_index(rng, drop=True, inplace=True)
 
 
