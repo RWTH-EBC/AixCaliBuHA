@@ -56,7 +56,7 @@ def clean_and_space_equally_time_series(df, desired_freq):
     for item in double_ind:
         #array_temp = df.index.get_loc(item)  # Must be type slice (see examples in doc of pandas get_loc)
         mean_values.append(df.loc[item].values.mean(axis=0))
-    df = df[~df.index.duplicated(keep='first')]  # Delete duplicate indices
+    df = df[~df.index.duplicated(keep='first')].copy()  # Delete duplicate indices
     # Set mean values in rows that were duplicates before
     for idx, values in zip(double_ind, mean_values):
         df.loc[idx] = values
