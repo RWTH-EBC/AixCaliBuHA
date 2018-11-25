@@ -37,20 +37,25 @@ def clean_and_space_equally_time_series(df, desired_freq):
     # TODO nur listeneinträge mit zulässigen Werten (z. B. alles Zahlenwerte bzw. index korrekter type) zulassen
     # TODO vorher unbedingt den index vom orig df zum typ pandas.core.indexes.datetimes.DatetimeIndex konvertieren
 
+    # 1 (start): Check dataframe for NANs
     # Create a pandas Series with number of invalid values for each column of df
     series_with_na = df.isnull().sum()
     for name in series_with_na.index:
         if series_with_na.loc[name] > 0:
-            print(name + ' has folling number of invalid values\n' + str(series_with_na.loc[name]))  # Print only columns with invalid values
+            print(name + ' has following number of invalid values\n' + str(series_with_na.loc[name]))  # Print only columns with invalid values
     # Drop all rows where at least one NA exists
     df.dropna(how='any', inplace=True)
-    # Count rows  where all fields are invalid values
-    #print('Number of rows in data frame where the whole line consists of invalid values: '
-    #      + str(number_lines_totally_na(df)))
-    #df.dropna(how='all', inplace=True)  # Drop all rows where at all entries in a row are NA.
+    # 1 (end)
 
-    # Check for duplicates in index. All these parts should be reduced to only one row with mean of values in according columns
-    #df.index.duplicated()
+    # 2 (start): dataframe rows (indices) that exist multiple times will be identified and set to their mean value. e.g.:
+    # 2000-01-01 00:00:02.000   6.200    ...            1.0
+    # 2000-01-01 00:00:02.340   6.500    ...            1.0
+    # 2000-01-01 00:00:02.340   7.000    ...            1.0
+    # 2000-01-01 00:00:03.000   7.500    ...            1.0
+    # wil become:
+    # 2000-01-01 00:00:02.000   6.200    ...            1.0
+    # 2000-01-01 00:00:02.340   6.750    ...            1.0
+    # 2000-01-01 00:00:03.000   7.500    ...            1.0
     double_ind = df.index[df.index.duplicated()].unique() # Find entries that are exactly the same timestamp
     mean_values = []
     for item in double_ind:
@@ -60,7 +65,10 @@ def clean_and_space_equally_time_series(df, desired_freq):
     # Set mean values in rows that were duplicates before
     for idx, values in zip(double_ind, mean_values):
         df.loc[idx] = values
+    # 2 (end)
 
+
+    # 3 (start): resampling to new frequency with linear interpolation
     # Create new equally spaced DatetimeIndex. Last entry is always < df.index[-1]
     time_index = pd.date_range(start=df.index[0], end=df.index[-1], freq=desired_freq)
     df_time_temp = pd.DataFrame(index=time_index)  # Create in empty data frame
@@ -76,6 +84,8 @@ def clean_and_space_equally_time_series(df, desired_freq):
                                                 # All fields should already have a value. Thus NaNs and maybe +/- infs
                                                 # should have been filtered beforehand.
     del delta_time
+    # 3 (end)
+
     return df
 
 
@@ -148,18 +158,18 @@ if __name__=='__main__':
     #df = fromJSONDumpFile(r'D:\test\data_diris.csv')
     # Other data
     import os
-    fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
+    fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData_orig_10s.hdf')
     df = pd.read_hdf(fname_input)
 
 
     # Only for testing. Creates smaller sub-dataframe
-    names = ['HYD.Bank[4].Temp_extRL.REAL_VAR','HYD.Bank[4].Temp_extVL.REAL_VAR','KK.Leistungsmessung_L1_30A.REAL_VAR']
-    rng2 = pd.date_range(start=df.index[2], end=df.index[2], periods=3)
-    rng3 = pd.date_range(start=df.index[5], end=df.index[5], periods=2)
-    df = df.head(9)#.copy()
-    df = df[names]#.copy()
-    rng = df.index[0:2].append(rng2).append(rng3).append(df.index[6:-1])
-    df.set_index(rng, drop=True, inplace=True)
+    #names = ['HYD.Bank[4].Temp_extRL.REAL_VAR','HYD.Bank[4].Temp_extVL.REAL_VAR','KK.Leistungsmessung_L1_30A.REAL_VAR']
+    #rng2 = pd.date_range(start=df.index[2], end=df.index[2], periods=3)
+    #rng3 = pd.date_range(start=df.index[5], end=df.index[5], periods=2)
+    #df = df.head(9)#.copy()
+    #df = df[names]#.copy()
+    #rng = df.index[0:2].append(rng2).append(rng3).append(df.index[6:-1])
+    #df.set_index(rng, drop=True, inplace=True)
 
 
     # Define name of variable to plot which should be the name of the data frame column header
@@ -171,6 +181,7 @@ if __name__=='__main__':
     #print(df)
     #print(clean_df)
 
+    # Plotting Start
     my_fig, my_ax = plt.subplots(nrows=1, ncols=1)
     my_ax.scatter(clean_df.index, clean_df[plot_var], color='b')
     my_ax.set_title('Measurement')
@@ -180,6 +191,7 @@ if __name__=='__main__':
     del time_span
     my_ax.grid(); my_fig.autofmt_xdate()
     my_fig.show()
+    # Plotting End
 
 
     # Some data filters
@@ -195,6 +207,7 @@ if __name__=='__main__':
     ax.plot(av_output, label='Moving Average')
     ax.legend()
     fig.show()
+
 
     # Create on off signal according to compressor P_el and a threshold.
     df_with_on_signal = create_on_off_acc_to_threshold(df=clean_df, col_names=['KK.Leistungsmessung_L1_30A.REAL_VAR'], threshold=60, names_new_columns=['HP_on_off'])
