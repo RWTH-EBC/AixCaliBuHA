@@ -20,8 +20,6 @@ import subprocess
 import pandas
 import multiprocessing
 
-
-
 # Create the objective function that will simulate the model with the respective
 # inputs and return the obejctive function value calculated by the model. 
 # The tuple s contains the current values of the decision variables

@@ -5,19 +5,13 @@ sys.path.insert(0, os.path.join('C:\Program Files (x86)\Dymola 2018',
                     'python_interface',
                     'dymola.egg'))
 
-import seaborn as sns
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import sklearn
-from dymola.dymola_interface import DymolaInterface
-from dymola.dymola_exception import DymolaException
-from modelicares import simres as sr
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as io
-from datetime import datetime
 import scipy.optimize as opt
-import ebcpython.modelica.postprocessing.simres_ebc as sr_ebc
 
 
 class dymCalibrator():
