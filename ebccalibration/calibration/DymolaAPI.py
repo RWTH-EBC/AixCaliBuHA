@@ -33,7 +33,7 @@ class dymolaInterface():
                          'fixedstepsize': 0.0,
                          'resultFile': 'resultFile',
                          'autoLoad': None,
-                         'initialNames':[]
+                         'initialNames':[],
                          'initialValues':[]}
 
     def setupDym(self):
@@ -112,7 +112,7 @@ class dymolaShell():
     def __init__(self, cwdir):
         self.cwdir = cwdir
 
-    def simulate(self, self):
+    def simulate(self):
         """Simulates the model by executing the dymosim.exe"""
         cmd = os.path.join(self.cwdir, 'dymosim.exe')
         subprocess.run(cmd, stdout=subprocess.PIPE)
