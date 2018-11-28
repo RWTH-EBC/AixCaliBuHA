@@ -33,7 +33,7 @@ class dymolaInterface():
                          'fixedstepsize': 0.0,
                          'resultFile': 'resultFile',
                          'autoLoad': None,
-                         'initialNames':[]
+                         'initialNames':[],
                          'initialValues':[]}
 
     def setupDym(self):
