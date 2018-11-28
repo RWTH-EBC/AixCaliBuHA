@@ -105,16 +105,3 @@ class dymolaInterface():
                     raise TypeError("The given type is not valid for the dymola interface")
                 else:
                     self.simSetup[key] = value
-
-class dymolaShell():
-    """Class for setting up and running simulations with manipulation of the dsin.txt and afterwards execution of the dymosim.exe"""
-
-    def __init__(self, cwdir):
-        self.cwdir = cwdir
-
-    def simulate(self, self):
-        """Simulates the model by executing the dymosim.exe"""
-        cmd = os.path.join(self.cwdir, 'dymosim.exe')
-        subprocess.run(cmd, stdout=subprocess.PIPE)
-
-    def manipulate_dsin(self):

@@ -69,7 +69,7 @@ class calibrator():
         --------------------
         res: OptimizeResult
         Result of the optimization. Most important: x and fun"""
-        res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions)
+        res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=callbackF)
         return res
 
     def objective(self, set):
@@ -93,6 +93,8 @@ class calibrator():
             goal_res = self.calc_statValues(df[goal["meas"]],df[goal["sim"]])
             total_res += goal["weighting"] * goal_res[self.qualMeas]
         return total_res
+
+    def callbackF(self, set):
 
     def convSet(self, set):
         """Convert given set to initial values in modelica"""
