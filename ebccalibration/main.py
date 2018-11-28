@@ -5,6 +5,7 @@ from calibration import DymolaAPI
 from calibration import Calibrator
 
 def main():
+    """Main Function for calibration"""
     cwdir = r"D:\testzone"
 
     dymAPI = DymolaAPI.dymolaInterface(cwdir, packages, modelName)
@@ -14,3 +15,4 @@ def main():
 
 
 if __name__=="__main__":
+    main()
