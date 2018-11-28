@@ -5,7 +5,7 @@ Create the object dymola-interface to simulate models.
 """
 
 import os,sys
-sys.path.insert(0, os.path.join('C:\Program Files (x86)\Dymola 2018',
+sys.path.insert(0, os.path.join('C:\Program Files\Dymola 2019',
                     'Modelica',
                     'Library',
                     'python_interface',
@@ -29,13 +29,20 @@ class dymolaInterface():
                          'autoLoad': None,
                          'initialNames':[],
                          'initialValues':[]}
+        self.strucParams = []
+        self._setupDym()
 
-    def simulate(self, saveFiles = True, saveName = ""):
+    def simulate(self, saveFiles = True, saveName = "", getStructurals = False):
         """Simulate the current setup.
         If simulation terminates without an error and the files should be saved, the files are moved to a folder based on the current datetime.
         Returns the filepath of the result-matfile.
         Parameters:
         saveFiles    """
+        if getStructurals:
+            if self.strucParams:
+                print("Warning: Currently, the model is retranslating for each simulation.\n"
+                      "Check for these parameters: %s"%",".join(self.strucParams))
+                self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
         res = self.dymola.simulateExtendedModel(self.modelName,
                                                  startTime=self.simSetup['startTime'],
                                                  stopTime=self.simSetup['stopTime'],
@@ -61,6 +68,8 @@ class dymolaInterface():
                 os.rename(os.path.join(self.cwdir, filename), os.path.join(new_path, filename)) #Move files
         else:
             new_path = self.cwdir
+        if getStructurals:
+            self.strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
         return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
 
     def set_startTime(self, startTime):
@@ -89,6 +98,7 @@ class dymolaInterface():
         :return:
         """
         self.simSetup["initialNames"] = initialNames
+
     def set_initialValues(self, initialValues):
         """
         Overwrite inital values
@@ -124,3 +134,50 @@ class dymolaInterface():
             if not res:
                 print(self.dymola.getLastErrorLog())
         print("Loaded modules")
+
+    def _filterErrorLog(self, errorLog):
+        """
+        Filters the error log to detect reoccuring errors or structural parameters.
+        Each structural parameter will raise this warning:
+        'Warning: Setting n has no effect in model.\n
+        After translation you can only set literal start-values and non-evaluated parameters.'
+        Filtering of this string will extract 'n' in the given case.
+        :param errorLog: str
+        Error log from the dymola_interface.getLastErrorLog() function
+        :return: filtered_log: str
+        """
+        structuralParams = []
+        splitError = errorLog.split("\n")
+        for i in range(1, len(splitError)): #First line will never match the string
+            if "After translation you can only set literal start-values and non-evaluated parameters" in splitError[i]:
+                prev_line = splitError[i-1]
+                param = prev_line.replace("Warning: Setting ", "").replace(" has no effect in model.","") #Obviously not the best way... but it works
+                structuralParams.append(param)
+        return structuralParams
+
+    def _alterModelName(self, simSetup, modelName, strucParams):
+        """
+        Creates a modifier for all structural parameters, based on the modelname and the initalNames and values.
+        :param simSetup: dict
+        Simulation setup dictionary
+        :param modelName: str
+        Name of the model to be modified
+        :param strucParams: list
+        List of strings with structural parameters
+        :return: altered_modelName: str
+        modified model name
+        """
+        iniVals = simSetup["initialValues"]
+        iniNames = simSetup["initialNames"]
+        modelName = modelName.split("(")[0] #Trim old modifier
+        if strucParams == [] or iniNames == []:
+            return
+        all_modifiers = []
+        for strucPara in strucParams:
+            if strucPara in iniNames: #Checks if the structural parameter is inside the initialNames to be altered
+                for k in range(0,len(iniNames)): #Get the location of the parameter for extraction of the corresponding initial value
+                    if iniNames[k]==strucPara:
+                        break
+                all_modifiers.append("%s = %s"%(strucPara, iniVals[k]))
+        alteredModelName = "%s(%s)"%(modelName, ",".join(all_modifiers))
+        return alteredModelName

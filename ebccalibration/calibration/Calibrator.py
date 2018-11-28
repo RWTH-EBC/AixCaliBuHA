@@ -10,9 +10,10 @@ from modelicares import simres as sr
 from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+import matplotlib.pyplot as plt
 
 class calibrator():
-    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None):
+    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None):
         """Class for a calibrator.
         Parameters:
         ---------------------
@@ -36,6 +37,7 @@ class calibrator():
         Used if the boundaries differ from 0 and 1
         """
         self.goals = goals
+        self._checkGoals()
         self.tunerPara = tunerPara
         self.initalSet = [] #Create inital set for first iteration
         self.bounds_scaled = [] #Create a list to denormalize the sets for the simulation
@@ -47,7 +49,7 @@ class calibrator():
             self.bounds = opt.Bounds(np.zeros(len(self.initalSet)),np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
         self.methodOptions = {"disp":False,
                     "ftol":2.220446049250313e-09,
-                    "eps":1e-8
+                    "eps":0.1
                    }
         #Set other values
         self.method = method
@@ -55,9 +57,12 @@ class calibrator():
         #Create bounds based on the dictionary.
         self.dymAPI = dymAPI
         self.aliases = aliases
+        self.dymAPI.set_initialNames(list(self.tunerPara))
         #Set counter for number of iterations of the objective function
         self.counter = 0
         self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.objHis = []
+        self.counterHis = []
 
     def calibrate(self, obj):
         """Optimizes the given inital set of parameters with the objective function.
@@ -72,7 +77,7 @@ class calibrator():
         --------------------
         res: OptimizeResult
         Result of the optimization. Most important: x and fun"""
-        res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=callbackF)
+        res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=self.callbackF)
         return res
 
     def objective(self, set):
@@ -89,30 +94,36 @@ class calibrator():
         Objective value based on the used quality measurement
         """
         self.counter += 1 #Increase counter
-        conv_set = self.convSet(set) #Convert set if multiple goals of different scales are used
+        conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath = self.dymAPI.simulate(saveFiles=True, saveName=saveName) #Simulate
+        success, filepath = self.dymAPI.simulate(saveFiles=False, saveName=saveName, getStructurals=True) #Simulate
         if success:
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
         else:
-            return 1e10 #punish failure of simulation
+            raise Exception("The given bounds resulted in a failure of the simulation. Please alter the boundaries!")
         total_res = 0
         for goal in self.goals:
             goal_res = self.calc_statValues(df[goal["meas"]],df[goal["sim"]])
             total_res += goal["weighting"] * goal_res[self.qualMeas]
+        self.objHis.append(total_res)
+        self.counterHis.append(self.counter)
         return total_res
 
-    def callbackF(self, set):
+    def callbackF(self, xk):
         """
         Default callback function for when the objective function of this class is used.
+        Either plots the current status or prints it to the
         :param set:
         Array with normalized values for the minimizer
         :return:
         None
         """
+        plt.plot(self.counterHis, self.objHis)
+        plt.draw()
+        plt.pause(1e-05)
 
-    def convSet(self, set):
+    def _convSet(self, set):
         """
         Convert given set to initial values in modelica
         :param set:
@@ -122,7 +133,7 @@ class calibrator():
         """
         initialValues = []
         for i in range(0, len(set)):
-            initialValues.append(set[i]*self.bounds_scaled[i]["uppBou"] - self.bounds_scaled[i]["lowBou"])
+            initialValues.append(set[i]*(self.bounds_scaled[i]["uppBou"] - self.bounds_scaled[i]["lowBou"]))
         return initialValues
 
     def get_trimmed_df(self, filepath, aliases):
@@ -183,8 +194,13 @@ class calibrator():
         Result object of the minimization
         :return:
         """
-        print(res.fun)
-        print(res.x)
+        print("Number of iterations: %s"%self.counter)
+        print("Minimal %s: %s"%(self.qualMeas,res.fun))
+        print("Initial Values for this minimum: %s"%(self._convSet(res.x)))
+
+    def _checkGoals(self):
+        """"""
+
 
 
 ###General functions:
@@ -219,6 +235,7 @@ def load_goals_xml(filepath):
                 goal[elem.attrib["name"]] = float(elem.text)
             else:
                 goal[elem.attrib["name"]] = elem.text
+    return goals
 
 def save_tuner_xml(tunerPara, filepath):
     """
