@@ -54,7 +54,7 @@ class calibrator():
         for key, value in tunerPara.items():
             self.bounds_scaled.append({"uppBou": value["uppBou"],
                                        "lowBou": value["lowBou"]})
-            self.initalSet.append(value["start"]/(value["uppBou"]-value["lowBou"]))
+            self.initalSet.append((value["start"]-value["lowBou"])/(value["uppBou"]-value["lowBou"]))
         if not bounds:
             self.bounds = opt.Bounds(np.zeros(len(self.initalSet)),np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
         self.methodOptions = {"disp":False,
@@ -130,7 +130,8 @@ class calibrator():
 
     def _convSet(self, set):
         """
-        Convert given set to initial values in modelica
+        Convert given set to initial values in modelica according to function:
+        iniVal_i = set_i*(max(iniVal_i)-min(iniVal_i)) + min(iniVal_i)
         :param set:
         Array with normalized values for the minimizer
         :return:
@@ -138,8 +139,9 @@ class calibrator():
         """
         initialValues = []
         for i in range(0, len(set)):
-            initialValues.append(set[i]*(self.bounds_scaled[i]["uppBou"] - self.bounds_scaled[i]["lowBou"]))
+            initialValues.append(set[i]*(self.bounds_scaled[i]["uppBou"] - self.bounds_scaled[i]["lowBou"]) + self.bounds_scaled[i]["lowBou"])
         return initialValues
+
 
     def get_trimmed_df(self, filepath, aliases):
         """
