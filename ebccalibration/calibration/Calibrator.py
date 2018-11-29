@@ -242,7 +242,7 @@ class calibrator():
         result_log += "%s\n"%self._getNameInfoString(forLog=True)
         result_log += "%s\n"%self._getValInfoString(res.x, forLog=True)
         result_log += "Number of iterations: %s\n"%self.counter
-        result_log += "\n<Iteration log:\n" + self.log
+        result_log += "\nIteration log:\n" + self.log
         datestring = datetime.now().strftime("%Y%m%d_%H%M%S")
         f = open(os.path.join(savepath, "CalibrationLog_%s.txt"%datestring), "a+")
         f.write(result_log)
