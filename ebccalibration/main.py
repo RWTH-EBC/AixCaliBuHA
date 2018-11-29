@@ -21,7 +21,7 @@ def example():
               "sim": "sim",
               "weighting": 0.2}]
     tunerPara = {"amplitude": {"start": 1, "uppBou": 3, "lowBou": 0.3},
-                 "freqHz":{"start": 0.5, "uppBou": 0.99, "lowBou": 0.001}}
+                 "freqHz":{"start": 0.5, "uppBou": 0.99, "lowBou": 0.0001}}
     # Save the dictionaries to xml--> Just for showing how to workflow will be
     goalXML = os.path.join(cwdir, "goalTest.xml")
     tunerXML = os.path.join(cwdir, "tunerTest.xml")
@@ -37,7 +37,7 @@ def example():
                                        "ExampleCalibration")
     dymAPI.set_simSetup({"stopTime": 100.0})
     # Setup Calibrator
-    methods = {"disp": True,
+    methods = {"disp": False,
                "ftol": 2.220446049250313e-09,
                "eps": 1e-2
                }

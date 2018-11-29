@@ -88,6 +88,12 @@ class calibrator():
         :return: OptimizeResult
         Result of the optimization. Most important: x and fun
         """
+        initialNames = list(self.tunerPara.keys())
+        infoString = "{0:4s}".format("Iter")
+        for i in range(0, len(initialNames)):
+            infoString += "   {0:9s}".format(initialNames[i])
+        infoString += "   {0:9s}".format(self.qualMeas)
+        print(infoString)
         res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=self.callbackF)
         return res
 
@@ -130,6 +136,12 @@ class calibrator():
         :return:
         None
         """
+        iniVals = self._convSet(xk)
+        infoString = '{0:4d}'.format(self.counter)
+        for i in range(0, len(iniVals)):
+            infoString += "   {0:3.6f}".format(iniVals[i])
+        infoString += "   {0:3.6f}".format(self.objHis[-1])
+        print(infoString)
         plt.plot(self.counterHis, self.objHis)
         plt.draw()
         plt.pause(1e-5)
