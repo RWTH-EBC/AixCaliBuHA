@@ -236,7 +236,7 @@ class calibrator():
         :param ftype: str
         svg, pdf or png
         """
-        result_log = "Results for calibration of model: %s"%self.dymAPI.modelName
+        result_log = "Results for calibration of model: %s\n"%self.dymAPI.modelName
         result_log += "Minimal %s: %s\n"%(self.qualMeas,res.fun)
         result_log += "Final parameter values:\n"
         result_log += "%s\n"%self._getNameInfoString(forLog=True)
