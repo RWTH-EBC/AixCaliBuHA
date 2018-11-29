@@ -18,7 +18,13 @@ def conv_hdf_to_mat(fname, columns, save_path_file, set_time_to_zero=True):
     :return mat_file:
          Returns the version 4 matfile
     '''
-    df = pd.read_hdf(fname)
+    df = pd.read_hdf(fname)  # eventually add <, key='df_with_on_off_signal'>
+    # If hdf file has more data sets, the key has to be declared. How to read out groups / keys?:
+    # import h5py
+    # f = h5py.File(fname, 'r')
+    # group_with_keys = list(f.keys())
+    # print(group_with_keys)
+    
     if set_time_to_zero:
         df.index = df.index - df.iloc[0].name.to_datetime64()  # Make index zero based
     df['time_vector'] = df.index.total_seconds()  # Copy values of index as seconds into new column
