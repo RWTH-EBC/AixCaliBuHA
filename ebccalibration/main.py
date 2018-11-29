@@ -43,12 +43,12 @@ def example():
                }
     kwargs = {"methods": methods,
               "tol": 0.95,
-              "plotCallback":True}
+              "plotCallback":False}
     cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **kwargs)
     # Calibrate
     res = cal.calibrate(cal.objective)
     # Right now this only prints the result
-    cal.save_result(res)
+    cal.save_result(res, "D:", ftype = "pdf")
 
 def main():
     """Main Function for calibration. See the example function for how the process works"""

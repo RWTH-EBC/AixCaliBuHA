@@ -11,6 +11,7 @@ from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import matplotlib.pyplot as plt
+import os
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None, **kwargs):
@@ -92,6 +93,7 @@ class calibrator():
         self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.objHis = []
         self.counterHis = []
+        self.log = ""
 
     def calibrate(self, obj):
         """
@@ -101,12 +103,9 @@ class calibrator():
         :return: OptimizeResult
         Result of the optimization. Most important: x and fun
         """
-        initialNames = list(self.tunerPara.keys())
-        infoString = "{0:4s}".format("Iter")
-        for i in range(0, len(initialNames)):
-            infoString += "   {0:9s}".format(initialNames[i])
-        infoString += "   {0:9s}".format(self.qualMeas)
+        infoString = self._getNameInfoString()
         print(infoString)
+        self.log += "\n" + infoString
         res = opt.minimize(obj, np.array(self.initalSet), tol=self.tol, method=self.method, bounds= self.bounds, options=self.methodOptions)
         return res
 
@@ -150,15 +149,15 @@ class calibrator():
         :return:
         None
         """
-        iniVals = self._convSet(xk)
-        infoString = '{0:4d}'.format(self.counter)
-        for i in range(0, len(iniVals)):
-            infoString += "   {0:3.6f}".format(iniVals[i])
-        infoString += "   {0:3.6f}".format(self.objHis[-1])
+        infoString = self._getValInfoString(xk)
         print(infoString)
+        self.log += "\n" + infoString
         if self.plotCallback:
             plt.plot(self.counterHis, self.objHis)
             plt.draw()
+            plt.ylabel(self.qualMeas)
+            plt.xlabel("Number iterations")
+            plt.title(self.dymAPI.modelName)
             plt.pause(1e-5)
 
     def _convSet(self, set):
@@ -227,17 +226,30 @@ class calibrator():
                 statValues["NRMSE"] = 1e10  # Punish the division by zero
         return statValues
 
-    def save_result(self, res):
+    def save_result(self, res, savepath, ftype = "svg"):
         """
         Process the result, re-run the simualation and generate a logFile for the minimal quality measurement
         :param res: minimize.result
         Result object of the minimization
-        :return:
+        :param savepath: str, os.path.normpath
+        Directory where to store the results
+        :param ftype: str
+        svg, pdf or png
         """
-        print("Number of iterations: %s"%self.counter)
-        print("Minimal %s: %s"%(self.qualMeas,res.fun))
-        print("Initial Values for this minimum: %s"%(self._convSet(res.x)))
-        plt.show()
+        result_log = "Results for calibration of model: %s"%self.dymAPI.modelName
+        result_log += "Minimal %s: %s\n"%(self.qualMeas,res.fun)
+        result_log += "Final parameter values:\n"
+        result_log += "%s\n"%self._getNameInfoString(forLog=True)
+        result_log += "%s\n"%self._getValInfoString(res.x, forLog=True)
+        result_log += "Number of iterations: %s\n"%self.counter
+        result_log += "\n<Iteration log:\n" + self.log
+        datestring = datetime.now().strftime("%Y%m%d_%H%M%S")
+        f = open(os.path.join(savepath, "CalibrationLog_%s.txt"%datestring), "a+")
+        f.write(result_log)
+        f.close()
+        if self.plotCallback:
+            plt.savefig(os.path.join(savepath, "iterationPlot.%s"%ftype))
+
     def _checkGoals(self, goals):
         """
         Checks the given goals-list for correct formatting
@@ -273,6 +285,35 @@ class calibrator():
             if para_dict["uppBou"] - para_dict["lowBou"] <= 0:
                 raise ValueError("The given upper boundary is less or equal to the lower boundary.")
         return True #If no error has occured, this check passes
+
+    def _getNameInfoString(self, forLog = False):
+        initialNames = list(self.tunerPara.keys())
+        if not forLog:
+            infoString = "{0:4s}".format("Iter")
+        else:
+            infoString = ""
+        for i in range(0, len(initialNames)):
+            infoString += "   {0:9s}".format(initialNames[i])
+
+        if not forLog:
+            infoString += "   {0:9s}".format(self.qualMeas)
+        else:
+            infoString = infoString[3:]
+        return infoString
+
+    def _getValInfoString(self, set, forLog = False):
+        iniVals = self._convSet(set)
+        if not forLog:
+            infoString = '{0:4d}'.format(self.counter)
+        else:
+            infoString = ""
+        for i in range(0, len(iniVals)):
+            infoString += "   {0:3.6f}".format(iniVals[i])
+        if not forLog:
+            infoString += "   {0:3.6f}".format(self.objHis[-1])
+        else:
+            infoString = infoString[3:]
+        return infoString
 
 ###General functions:
 def load_tuner_xml(filepath):
