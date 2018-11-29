@@ -14,10 +14,9 @@ import matplotlib.pyplot as plt
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None):
-        """Class for a calibrator.
-        Parameters:
-        ---------------------
-        goals: list
+        """
+        Class for a calibrator.
+        :param goals: list
         Dictionary with information about the goal-variables. Each goal has a sub-dictionary.
             meas: str
             Name of measured data in dataframe
@@ -25,20 +24,31 @@ class calibrator():
             Name of simulated data in dataframe
             weighting: float
             Weighting for the resulting objective function
-        tunerPara: dict
-        Dictionary with information about tuner parameters. name, start-value, upper and lower-bound
-        qualMeas: str
+        :param tunerPara: dict
+        Dictionary with information about tuner parameters.
+            key: str
+            initial name of tuner parameter
+            value: dict
+                start: float, int
+                start-value
+                uppBou: float, int
+                upper boundary for calibration
+                lowBou: float, int
+                lower boundary for calibration
+        :param qualMeas: str
         Statistical value for the objective function, e.g. RMSE, MAE etc.
-        method: str
+        :param method: str
         Used method for minimizer. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html for more info
-        dymAPI: dymolaInterface, dymolaShell
+        :param dymAPI: dymolaInterface
         Class for executing a simulation in dymola
-        bounds: optimize.Bounds object, Default: None
+        :param aliases:
+        :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1
         """
-        self.goals = goals
-        self._checkGoals()
-        self.tunerPara = tunerPara
+        if self._checkGoals(goals):
+            self.goals = goals
+        if self._checkTunerParas(tunerPara):
+            self.tunerPara = tunerPara
         self.initalSet = [] #Create inital set for first iteration
         self.bounds_scaled = [] #Create a list to denormalize the sets for the simulation
         for key, value in tunerPara.items():
@@ -65,18 +75,13 @@ class calibrator():
         self.counterHis = []
 
     def calibrate(self, obj):
-        """Optimizes the given inital set of parameters with the objective function.
-        Parameters:
-        --------------------
-        obj: callable
+        """
+        Optimizes the given inital set of parameters with the objective function.
+        :param obj: callable
         Objective function for the minimize function
-        initalSet: list
-        List with initial values for the minimize functions
-
-        Returns:
-        --------------------
-        res: OptimizeResult
-        Result of the optimization. Most important: x and fun"""
+        :return: OptimizeResult
+        Result of the optimization. Most important: x and fun
+        """
         res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=self.callbackF)
         return res
 
@@ -101,7 +106,7 @@ class calibrator():
         if success:
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
         else:
-            raise Exception("The given bounds resulted in a failure of the simulation. Please alter the boundaries!")
+            raise Exception("The given bounds or parameters resulted in a failure of the simulation!")
         total_res = 0
         for goal in self.goals:
             goal_res = self.calc_statValues(df[goal["meas"]],df[goal["sim"]])
@@ -198,10 +203,39 @@ class calibrator():
         print("Minimal %s: %s"%(self.qualMeas,res.fun))
         print("Initial Values for this minimum: %s"%(self._convSet(res.x)))
 
-    def _checkGoals(self):
-        """"""
-
-
+    def _checkGoals(self, goals):
+        """
+        Checks the given goals-list for correct formatting
+        :param goals: list
+        List containing dictionary with goals
+        :return: bool: True if success
+        """
+        if type(goals) != type([]) or len(goals) == 0: #Has to be type list and contain at least one entry
+            raise TypeError("Given goal list is not of type list or is empty")
+        total_weighting = 0
+        for goal in goals:
+            if not ("meas" in goal and "sim" in goal and "weighting" in goal and len(goal.keys())==3):
+                raise Exception("Given goal dict is no well formatted.")
+            else:
+                total_weighting += goal["weighting"]
+        if total_weighting != 1:
+            raise Exception("Given combiation of weightings does not euqal 1")
+        return True #If no error has occured, this check passes
+    def _checkTunerParas(self, tunerPara):
+        """
+        Checks given tuner-para dictionary on correct formatting
+        :param tunerPara:
+        Dictionary with information about tuner parameters. name, start-value, upper and lower-bound
+        :return: bool: True on success
+        """
+        if type(tunerPara) != type({}) or len(tunerPara) == 0: #Has to be type list and contain at least one entry
+            raise TypeError("Given tuner parameters dictionary is not of type dict or is empty")
+        for key, para_dict in tunerPara.items():
+            if type(key) != type(""):
+                raise TypeError("Parameter name %s is not of type string"%str(key))
+            if not ("start" in para_dict and "uppBou" in para_dict and "lowBou" in para_dict and len(para_dict.keys())==3):
+                raise Exception("Given tunerPara dict %s is no well formatted."%para_dict)
+        return True #If no error has occured, this check passes
 
 ###General functions:
 def load_tuner_xml(filepath):
@@ -235,6 +269,7 @@ def load_goals_xml(filepath):
                 goal[elem.attrib["name"]] = float(elem.text)
             else:
                 goal[elem.attrib["name"]] = elem.text
+        goals.append(goal)
     return goals
 
 def save_tuner_xml(tunerPara, filepath):

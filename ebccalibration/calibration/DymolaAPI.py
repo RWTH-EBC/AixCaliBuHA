@@ -15,6 +15,15 @@ from dymola.dymola_interface import DymolaInterface
 
 class dymolaInterface():
     def __init__(self, cwdir, packages, modelName):
+        """
+        Dymola interface class
+        :param cwdir: str, os.path.normpath
+        Dirpath for the current working directory of dymola
+        :param packages: list
+        List with path's to the packages needed to simulate the model
+        :param modelName: str
+        Name of the model to be simulated
+        """
         self.cwdir = cwdir
         self.packages = packages
         self.modelName = modelName
@@ -33,11 +42,18 @@ class dymolaInterface():
         self._setupDym()
 
     def simulate(self, saveFiles = True, saveName = "", getStructurals = False):
-        """Simulate the current setup.
+        """
+        Simulate the current setup.
         If simulation terminates without an error and the files should be saved, the files are moved to a folder based on the current datetime.
         Returns the filepath of the result-matfile.
-        Parameters:
-        saveFiles    """
+        :param saveFiles: bool
+        True if the simulation results should be saved
+        :param saveName: str
+        Name of the folder inside the cwdir where the files will be saved
+        :param getStructurals: bool
+        True if structural parameters should be altered by using modifiers
+        :return:
+        """
         if getStructurals:
             if self.strucParams:
                 print("Warning: Currently, the model is retranslating for each simulation.\n"
