@@ -1,16 +1,21 @@
 """Main file for coordination of all steps of a calibration.
 E.g. Preprocessing, classifier, calibration etc."""
 
-from calibration import DymolaAPI
-from calibration import Calibrator
+from ebccalibration.calibration import DymolaAPI
+from ebccalibration.calibration import Calibrator
 import os
 
 def main():
     """Main Function for calibration"""
-    cwdir = r"D:\01_python_workDir"
-    #Declaring goals and tuners
-    goals = [{"meas": "meas.y / ", "sim": "sim.y / ", "weighting":1}]
-    tunerPara = {"f":{"start": 0.2, "uppBou": 0.5, "lowBou": 0.1}}
+    cwdir = os.path.normpath(r"D:\03_Python_WorkDir\CalibrationTest")
+    # declaring goals and tuners
+    goals = [{"meas":
+                  "meas.y / K",
+              "sim":
+                  "sim.y / K",
+              "weighting":
+                  1}]
+    tunerPara = {"hpToCalibrate.VCon": {"start": 0.008, "uppBou": 0.018, "lowBou": 0.002}}
     #Save the dictionaries to xml--> Just for showing how to workflow will be
     goalXML = os.path.join(cwdir, "goalTest.xml")
     tunerXML = os.path.join(cwdir, "tunerTest.xml")
@@ -20,14 +25,16 @@ def main():
     goals = Calibrator.load_goals_xml(goalXML)
     tunerPara = Calibrator.load_tuner_xml(tunerXML)
     #Setup dymAPI
-    packages = [r"D:\00_dymola_WorkDir\testCalibration.mo"]
-    dymAPI = DymolaAPI.dymolaInterface(cwdir, packages, "Unnamed1")
-    dymAPI.set_simSetup({"stopTime":100.0}) #Change stoptime
+    packages = [
+        os.path.normpath(r"D:\04_Git\AixLib_development\AixLib\AixLib\package.mo"),
+        os.path.normpath(r"D:\04_Git\Calibration_And_Analysis_Of_Hybrid_Heat_Pump_Systems\CalibrationModules\package.mo")]
+    dymAPI = DymolaAPI.dymolaInterface(cwdir, packages, "CalibrationModules.ParametricStudies.HeatPump.HeatPumpAdvanced")
+    dymAPI.set_simSetup({"stopTime": 30.0})  # 346929.84
     #Setup Calibrator
     #Define aliases
-    aliases = {"meas.y":"meas.y",
-               "sim.y":"sim.y"}
-    cal = Calibrator.calibrator(goals,tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases)
+    aliases = {"T_con_out_meas.y": "meas.y",
+               "hpToCalibrate.T_con_out": "sim.y"}
+    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases)
     #Calibrate
     res = cal.calibrate(cal.objective)
     #Right now this only prints the result

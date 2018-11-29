@@ -54,7 +54,7 @@ class calibrator():
         for key, value in tunerPara.items():
             self.bounds_scaled.append({"uppBou": value["uppBou"],
                                        "lowBou": value["lowBou"]})
-            self.initalSet.append(value["start"]/value["uppBou"]-value["lowBou"])
+            self.initalSet.append(value["start"]/(value["uppBou"]-value["lowBou"]))
         if not bounds:
             self.bounds = opt.Bounds(np.zeros(len(self.initalSet)),np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
         self.methodOptions = {"disp":False,
@@ -126,7 +126,7 @@ class calibrator():
         """
         plt.plot(self.counterHis, self.objHis)
         plt.draw()
-        plt.pause(1e-05)
+        plt.pause(1e-5)
 
     def _convSet(self, set):
         """
