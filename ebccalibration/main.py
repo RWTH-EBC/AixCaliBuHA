@@ -20,8 +20,8 @@ def example():
              {"meas": "pulse_meas",
               "sim": "sim",
               "weighting": 0.2}]
-    tunerPara = {"amplitude": {"start": 1, "uppBou": 3, "lowBou": 0.3},
-                 "freqHz":{"start": 0.5, "uppBou": 0.99, "lowBou": 0.001}}
+    tunerPara = {"amplitude": {"start": 0.3, "uppBou": 3, "lowBou": 0.3},
+                 "freqHz":{"start": 0.001, "uppBou": 0.99, "lowBou": 0.001}}
     # Save the dictionaries to xml--> Just for showing how to workflow will be
     goalXML = os.path.join(cwdir, "goalTest.xml")
     tunerXML = os.path.join(cwdir, "tunerTest.xml")
@@ -35,13 +35,16 @@ def example():
     packages = [os.path.normpath(exPath)]
     dymAPI = DymolaAPI.dymolaInterface(cwdir, packages,
                                        "ExampleCalibration")
-    dymAPI.set_simSetup({"stopTime": 100.0})
+    dymAPI.set_simSetup({"stopTime": 10.0})
     # Setup Calibrator
     methods = {"disp": False,
                "ftol": 2.220446049250313e-09,
-               "eps": 1e-2
+               "eps": 0.001
                }
-    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **{"methods": methods})
+    kwargs = {"methods": methods,
+              "tol": 0.95,
+              "plotCallback":True}
+    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **kwargs)
     # Calibrate
     res = cal.calibrate(cal.objective)
     # Right now this only prints the result

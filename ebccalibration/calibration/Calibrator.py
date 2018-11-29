@@ -45,10 +45,15 @@ class calibrator():
         :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1
         :param kwargs: dict
-        Optional class parameters
-            key: methods: str
-            value: dict
-            Dictionary containing optional parameters for the minimizer. See scipy.optimize.minimize documentation for detailed info.
+            'methods': dict
+            Optional class parameters
+                key: methods: str
+                value: dict
+                Dictionary containing optional parameters for the minimizer. See scipy.optimize.minimize documentation for detailed info.
+            'tol': float or None
+            if objective <= tol, the calibration stops
+            'plotCallback': bool
+            Whether to plot the current status or not
         """
         if self._checkGoals(goals):
             self.goals = goals
@@ -74,6 +79,14 @@ class calibrator():
             self.methodOptions = kwargs["methods"]
         else:
             self.methodOptions = {}
+        if "tol" in kwargs:
+            self.tol = kwargs["tol"]
+        else:
+            self.tol = None
+        if "plotCallback" in kwargs:
+            self.plotCallback = kwargs["plotCallback"]
+        else:
+            self.plotCallback = False
         #Set counter for number of iterations of the objective function
         self.counter = 0
         self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -94,7 +107,7 @@ class calibrator():
             infoString += "   {0:9s}".format(initialNames[i])
         infoString += "   {0:9s}".format(self.qualMeas)
         print(infoString)
-        res = opt.minimize(obj, np.array(self.initalSet), method=self.method, bounds= self.bounds, options=self.methodOptions, callback=self.callbackF)
+        res = opt.minimize(obj, np.array(self.initalSet), tol=self.tol, method=self.method, bounds= self.bounds, options=self.methodOptions)
         return res
 
     def objective(self, set):
@@ -125,6 +138,7 @@ class calibrator():
             total_res += goal["weighting"] * goal_res[self.qualMeas]
         self.objHis.append(total_res)
         self.counterHis.append(self.counter)
+        self.callbackF(set)
         return total_res
 
     def callbackF(self, xk):
@@ -142,9 +156,10 @@ class calibrator():
             infoString += "   {0:3.6f}".format(iniVals[i])
         infoString += "   {0:3.6f}".format(self.objHis[-1])
         print(infoString)
-        plt.plot(self.counterHis, self.objHis)
-        plt.draw()
-        plt.pause(1e-5)
+        if self.plotCallback:
+            plt.plot(self.counterHis, self.objHis)
+            plt.draw()
+            plt.pause(1e-5)
 
     def _convSet(self, set):
         """
