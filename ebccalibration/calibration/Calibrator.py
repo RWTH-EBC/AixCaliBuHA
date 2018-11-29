@@ -210,7 +210,7 @@ class calibrator():
         print("Number of iterations: %s"%self.counter)
         print("Minimal %s: %s"%(self.qualMeas,res.fun))
         print("Initial Values for this minimum: %s"%(self._convSet(res.x)))
-
+        plt.show()
     def _checkGoals(self, goals):
         """
         Checks the given goals-list for correct formatting
