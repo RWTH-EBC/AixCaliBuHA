@@ -34,7 +34,11 @@ def main():
     #Define aliases
     aliases = {"T_con_out_meas.y": "meas.y",
                "hpToCalibrate.T_con_out": "sim.y"}
-    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases)
+    methods = {"disp":False,
+                    "ftol":2.220446049250313e-09,
+                    "eps":0.1
+                   }
+    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **{"methods": methods})
     #Calibrate
     res = cal.calibrate(cal.objective)
     #Right now this only prints the result

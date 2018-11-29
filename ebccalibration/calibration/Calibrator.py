@@ -13,7 +13,7 @@ from xml.dom import minidom
 import matplotlib.pyplot as plt
 
 class calibrator():
-    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None):
+    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None, **kwargs):
         """
         Class for a calibrator.
         :param goals: list
@@ -44,6 +44,11 @@ class calibrator():
         :param aliases:
         :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1
+        :param kwargs: dict
+        Optional class parameters
+            key: methods: str
+            value: dict
+            Dictionary containing optional parameters for the minimizer. See scipy.optimize.minimize documentation for detailed info.
         """
         if self._checkGoals(goals):
             self.goals = goals
@@ -57,10 +62,6 @@ class calibrator():
             self.initalSet.append((value["start"]-value["lowBou"])/(value["uppBou"]-value["lowBou"]))
         if not bounds:
             self.bounds = opt.Bounds(np.zeros(len(self.initalSet)),np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
-        self.methodOptions = {"disp":False,
-                    "ftol":2.220446049250313e-09,
-                    "eps":0.1
-                   }
         #Set other values
         self.method = method
         self.qualMeas = qualMeas
@@ -68,6 +69,11 @@ class calibrator():
         self.dymAPI = dymAPI
         self.aliases = aliases
         self.dymAPI.set_initialNames(list(self.tunerPara))
+        #kwargs
+        if "methods" in kwargs:
+            self.methodOptions = kwargs["methods"]
+        else:
+            self.methodOptions = {}
         #Set counter for number of iterations of the objective function
         self.counter = 0
         self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -155,7 +161,7 @@ class calibrator():
         """
         if filepath.endswith(".mat"):
             sim = sr.SimRes(filepath)
-            df = sr_ebc.to_pandas_ebc(sim, names=list(aliases), aliases=aliases)
+            df = sr_ebc.to_pandas_ebc(sim, names=list(aliases), aliases=aliases, useUnit = False)
             return df
         else:
             raise TypeError("Given filename is not of type *.mat")
@@ -237,6 +243,8 @@ class calibrator():
                 raise TypeError("Parameter name %s is not of type string"%str(key))
             if not ("start" in para_dict and "uppBou" in para_dict and "lowBou" in para_dict and len(para_dict.keys())==3):
                 raise Exception("Given tunerPara dict %s is no well formatted."%para_dict)
+            if para_dict["uppBou"] - para_dict["lowBou"] <= 0:
+                raise ValueError("The given upper boundary is less or equal to the lower boundary.")
         return True #If no error has occured, this check passes
 
 ###General functions:
