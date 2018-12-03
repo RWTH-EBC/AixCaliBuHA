@@ -39,12 +39,12 @@ def example():
                                        "ExampleCalibration")
     dymAPI.set_simSetup({"stopTime": 10.0})
     # Setup Calibrator
-    methods = {"maxiter": 100000,       # Maximal iterations. Abort after maxiter even if no minimum has been achieved.
+    method_options = {"maxiter": 100000,       # Maximal iterations. Abort after maxiter even if no minimum has been achieved.
                "disp": False,           # Show additional infos in console
                "ftol": 2.220446049250313e-09,
                "eps": 0.001
                }
-    kwargs = {"methods": methods,
+    kwargs = {"method_options": method_options,
               "tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
               "plotCallback": False}
     cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **kwargs)
