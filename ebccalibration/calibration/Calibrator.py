@@ -46,9 +46,9 @@ class calibrator():
         :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1
         :param kwargs: dict
-            'methods': dict
+            'method_options': dict
             Optional class parameters
-                key: methods: str
+                key: method_options: str
                 value: dict
                 Dictionary containing optional parameters for the minimizer. See scipy.optimize.minimize documentation for detailed info.
             'tol': float or None
@@ -67,7 +67,7 @@ class calibrator():
                                        "lowBou": value["lowBou"]})
             self.initalSet.append((value["start"]-value["lowBou"])/(value["uppBou"]-value["lowBou"]))
         if not bounds:
-            self.bounds = opt.Bounds(np.zeros(len(self.initalSet)),np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
+            self.bounds = opt.Bounds(np.zeros(len(self.initalSet)), np.ones(len(self.initalSet))) #Define boundaries for normalized values, e.g. [0,1]
         #Set other values
         self.method = method
         self.qualMeas = qualMeas
@@ -76,8 +76,8 @@ class calibrator():
         self.aliases = aliases
         self.dymAPI.simSetup["initialNames"] = list(self.tunerPara)
         #kwargs
-        if "methods" in kwargs:
-            self.methodOptions = kwargs["methods"]
+        if "method_options" in kwargs:
+            self.methodOptions = kwargs["method_options"]
         else:
             self.methodOptions = {}
         if "tol" in kwargs:
@@ -107,7 +107,7 @@ class calibrator():
         infoString = self._getNameInfoString()
         print(infoString)
         self.log += "\n" + infoString
-        res = opt.minimize(obj, np.array(self.initalSet), tol=self.tol, method=self.method, bounds= self.bounds, options=self.methodOptions)
+        res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.methodOptions)
         return res
 
     def objective(self, set):
