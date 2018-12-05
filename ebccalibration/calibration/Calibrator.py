@@ -74,7 +74,7 @@ class calibrator():
         #Create bounds based on the dictionary.
         self.dymAPI = dymAPI
         self.aliases = aliases
-        self.dymAPI.set_initialNames(list(self.tunerPara))
+        self.simSetup["initialNames"] = list(self.tunerPara)
         #kwargs
         if "methods" in kwargs:
             self.methodOptions = kwargs["methods"]

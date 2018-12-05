@@ -88,33 +88,6 @@ class dymolaInterface():
             self.strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
         return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
 
-    def set_startTime(self, startTime):
-        """
-        Set's the start-time of the simulation
-        :param startTime:
-        Start-time of experiment
-        :return:
-        """
-        self.simSetup["startTime"] = startTime
-
-    def set_endTime(self, stopTime):
-        """
-        Set's the stop-time of the simulation
-        :param stopTime: float
-        Stop time of experiment
-        :return:
-        """
-        self.simSetup["stopTime"] = stopTime
-
-    def set_initialNames(self, initialNames):
-        """
-        Overwrite inital names
-        :param initialNames: list
-        List containing initial names for the dymola interface
-        :return:
-        """
-        self.simSetup["initialNames"] = initialNames
-
     def set_initialValues(self, initialValues):
         """
         Overwrite inital values
