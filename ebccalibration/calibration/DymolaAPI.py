@@ -41,7 +41,7 @@ class dymolaInterface():
         self.strucParams = []
         self._setupDym()
 
-    def simulate(self, saveFiles = True, saveName = "", getStructurals = False):
+    def simulate(self, saveFiles = True, saveName = "", getStructurals = False, use_dsfinal_for_continuation=True):
         """
         Simulate the current setup.
         If simulation terminates without an error and the files should be saved, the files are moved to a folder based on the current datetime.
@@ -59,6 +59,8 @@ class dymolaInterface():
                 print("Warning: Currently, the model is retranslating for each simulation.\n"
                       "Check for these parameters: %s"%",".join(self.strucParams))
                 self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
+        if use_dsfinal_for_continuation:
+            self.dymola.importInitial(dsName=self.cwdir+'dsfinal.txt')
         res = self.dymola.simulateExtendedModel(self.modelName,
                                                  startTime=self.simSetup['startTime'],
                                                  stopTime=self.simSetup['stopTime'],

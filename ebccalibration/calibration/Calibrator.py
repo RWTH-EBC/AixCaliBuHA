@@ -74,7 +74,7 @@ class calibrator():
         #Create bounds based on the dictionary.
         self.dymAPI = dymAPI
         self.aliases = aliases
-        self.simSetup["initialNames"] = list(self.tunerPara)
+        self.dymAPI.simSetup["initialNames"] = list(self.tunerPara)
         #kwargs
         if "methods" in kwargs:
             self.methodOptions = kwargs["methods"]
@@ -94,6 +94,7 @@ class calibrator():
         self.objHis = []
         self.counterHis = []
         self.log = ""
+        self.use_dsfinal_for_continuation = True
 
     def calibrate(self, obj):
         """
@@ -126,7 +127,7 @@ class calibrator():
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath = self.dymAPI.simulate(saveFiles=False, saveName=saveName, getStructurals=True) #Simulate
+        success, filepath = self.dymAPI.simulate(saveFiles=False, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
         if success:
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
         else:
