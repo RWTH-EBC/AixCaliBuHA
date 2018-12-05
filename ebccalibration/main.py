@@ -27,8 +27,8 @@ def example():
     # Save the dictionaries to xml--> Just for showing how to workflow will be
     goalXML = os.path.join(working_dir, "goalTest.xml")
     tunerXML = os.path.join(working_dir, "tunerTest.xml")
-    Calibrator.save_goals_xml(goals, goalXML)
-    Calibrator.save_tuner_xml(tunerPara, tunerXML)
+    Calibrator.saveXML(goalXML,goals)
+    Calibrator.saveXML(tunerXML,tunerPara)
     # Reload them--> Just for showing how to workflow will be
     goals = Calibrator.load_goals_xml(goalXML)
     tunerPara = Calibrator.load_tuner_xml(tunerXML)
@@ -47,7 +47,7 @@ def example():
     kwargs = {"method_options": method_options,
               #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
               "plotCallback": True}
-    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, **kwargs)
+    cal = Calibrator.calibrator(goals, tunerPara, "NRMSE", "L-BFGS-B", dymAPI, **kwargs)
     # Calibrate
     res = cal.calibrate(cal.objective)
     #Close dymola

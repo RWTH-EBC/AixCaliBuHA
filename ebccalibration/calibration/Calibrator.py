@@ -11,7 +11,7 @@ from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import matplotlib.pyplot as plt
-import os
+import os, dicttoxml, xmltodict
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
@@ -83,25 +83,24 @@ class calibrator():
             self.aliases[goal["meas_full_modelica_name"]] = goal["meas"]
         self.dymAPI.simSetup["initialNames"] = list(self.tunerPara)
         #kwargs
-        if "method_options" in kwargs:
-            self.methodOptions = kwargs["method_options"]
-        else:
-            self.methodOptions = {}
-        if "tol" in kwargs:
-            self.tol = kwargs["tol"]
-        else:
+        for key, value in kwargs.items():
+            if not hasattr(self, key):
+                setattr(self, key, value)
+        if not hasattr(self, "method_options"):
+            self.method_options = {}
+        if not hasattr(self, "tol"):
             self.tol = None
-        if "plotCallback" in kwargs:
-            self.plotCallback = kwargs["plotCallback"]
-        else:
-            self.plotCallback = False
+        booleankwargs = ["plotCallback", "use_dsfinal_for_continuation", "saveFiles"]
+        for bool in booleankwargs:
+            if not hasattr(self, bool):
+                setattr(self, bool, False)
         #Set counter for number of iterations of the objective function
         self.counter = 0
         self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.objHis = []
         self.counterHis = []
         self.log = ""
-        self.use_dsfinal_for_continuation = True
+
 
     def calibrate(self, obj):
         """
@@ -114,7 +113,7 @@ class calibrator():
         infoString = self._getNameInfoString()
         print(infoString)
         self.log += "\n" + infoString
-        res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.methodOptions)
+        res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.method_options)
         return res
 
     def objective(self, set):
@@ -134,7 +133,7 @@ class calibrator():
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath = self.dymAPI.simulate(saveFiles=False, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
+        success, filepath = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
         if success:
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
         else:
@@ -336,9 +335,10 @@ def load_tuner_xml(filepath):
     for initalName in root:
         tempTunerPara = {}
         for elem in initalName:
-            tempTunerPara[elem.attrib["name"]] = float(elem.text) #All values inside the dict are floats
-        tunerPara[initalName.attrib["name"]] = tempTunerPara
+            tempTunerPara[elem.tag] = float(elem.text) #All values inside the dict are floats
+        tunerPara[initalName.tag] = tempTunerPara
     return tunerPara
+
 def load_goals_xml(filepath):
     """
     Load the goals from the given xml-file
@@ -351,51 +351,23 @@ def load_goals_xml(filepath):
     for goalElem in root:
         goal = {}
         for elem in goalElem:
-            if elem.attrib["name"] == "weighting":
-                goal[elem.attrib["name"]] = float(elem.text)
+            if elem.tag == "weighting":
+                goal[elem.tag] = float(elem.text)
             else:
-                goal[elem.attrib["name"]] = elem.text
+                goal[elem.tag] = elem.text
         goals.append(goal)
     return goals
 
-def save_tuner_xml(tunerPara, filepath):
-    """
-    Save a tuner param dictionary into a xml file
-    :param tunerPara: dict
-    Dictionary with information about tuner parameters. name, start-value, upper and lower-bound
-    :param filepath: str, os.path.normpath
-    :return: None
-    """
-    root = ET.Element("tunerParaDict")
-    for initialName, iniNameDict in tunerPara.items():
-        iniNameRoot = ET.SubElement(root, "initalName", name = initialName)
-        for key, value in iniNameDict.items():
-            ET.SubElement(iniNameRoot, key, name = key).text = str(value)
-    _saveXML(filepath,root)
-
-def save_goals_xml(goals, filepath):
-    """
-    Save a goals-list to a xml file
-    :param goals: list
-    List of dictionaries containing the goals
-    :param filepath: str, os.path.normpath
-    :return: None
-    """
-    root = ET.Element("goals")
-    for goal in goals:
-        goalRoot = ET.SubElement(root, "goal")
-        for key, value in goal.items():
-            ET.SubElement(goalRoot, key, name = key).text = str(value)
-    _saveXML(filepath,root)
-
-def _saveXML(filepath, root):
+def saveXML(filepath, object):
     """
     Saves a root in a readable str-xml file
     :param filepath: str, os.path.normpath
-    :param root: xml-root
+    :param object: list, dict
+    Either list of goals or dict of tuner parameters
     :return: None
     """
-    xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+    root = dicttoxml.dicttoxml(object)
+    xmlstr = minidom.parseString(root).toprettyxml(indent="   ")
     f = open(filepath, "w")
     f.write(xmlstr)
     f.close()
