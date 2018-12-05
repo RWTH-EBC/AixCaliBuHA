@@ -10,21 +10,20 @@ def example():
     """Example function for a calibration process"""
     inputPath = input("Please enter the directory to excecute and save the results of this example:")
     working_dir = os.path.normpath(inputPath)
-    # Declaring aliases, goals and tuners:
-    # Aliases are used to convert the names in modelica into the names used to calculate the objective.
-    # The aliases define the names of "meas" and "sim" in each goal-dict.
+    # Declaring goals and tuners:
     # Measurement values must be passed through the Modelica simulation.
-    aliases = {"sine.y": "sim",
-               "trapezoid.y": "trap_meas",
-               "pulse.y": "pulse_meas"}
     goals = [{"meas": "trap_meas",
+              "meas_full_modelica_name" : "trapezoid.y",
               "sim": "sim",
+              "sim_full_modelica_name" : "sine.y",
               "weighting": 0.8},
              {"meas": "pulse_meas",
+              "meas_full_modelica_name" : "pulse.y",
               "sim": "sim",
+              "sim_full_modelica_name" : "sine.y",
               "weighting": 0.2}]
-    tunerPara = {"amplitude": {"start": 0.3, "uppBou": 3, "lowBou": 0.3},
-                 "freqHz": {"start": 0.001, "uppBou": 0.99, "lowBou": 0.001}}
+    tunerPara = {"amplitude": {"start": 2, "uppBou": 3, "lowBou": 0.3},
+                 "freqHz": {"start": 0.5, "uppBou": 0.99, "lowBou": 0.001}}
     # Save the dictionaries to xml--> Just for showing how to workflow will be
     goalXML = os.path.join(working_dir, "goalTest.xml")
     tunerXML = os.path.join(working_dir, "tunerTest.xml")
@@ -43,14 +42,16 @@ def example():
     method_options = {"maxiter": 100000,       # Maximal iterations. Abort after maxiter even if no minimum has been achieved.
                "disp": False,           # Show additional infos in console
                "ftol": 2.220446049250313e-09,
-               "eps": 0.001
+               "eps": 0.1
                }
     kwargs = {"method_options": method_options,
-              "tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
-              "plotCallback": False}
-    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, aliases, **kwargs)
+              #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
+              "plotCallback": True}
+    cal = Calibrator.calibrator(goals, tunerPara, "RMSE", "L-BFGS-B", dymAPI, **kwargs)
     # Calibrate
     res = cal.calibrate(cal.objective)
+    #Close dymola
+    dymAPI.dymola.close()
     # Right now this only prints the result
     cal.save_result(res, working_dir, ftype="pdf")
 

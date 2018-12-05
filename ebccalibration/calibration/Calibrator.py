@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import os
 
 class calibrator():
-    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI,aliases, bounds = None, **kwargs):
+    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
         """
         Class for a calibrator.
         :param goals: list
@@ -23,6 +23,10 @@ class calibrator():
             Name of measured data in dataframe
             sim: str
             Name of simulated data in dataframe
+            meas_full_modelica_name:
+            Name of the measured data in modelica
+            sim_full_modelica_name:
+            Name of the simulated data in modelica
             weighting: float
             Weighting for the resulting objective function
         :param tunerPara: dict
@@ -42,7 +46,6 @@ class calibrator():
         Used method for minimizer. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html for more info
         :param dymAPI: dymolaInterface
         Class for executing a simulation in dymola
-        :param aliases:
         :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1
         :param kwargs: dict
@@ -73,7 +76,11 @@ class calibrator():
         self.qualMeas = qualMeas
         #Create bounds based on the dictionary.
         self.dymAPI = dymAPI
-        self.aliases = aliases
+        #Create aliases dict out of given goals-dict.
+        self.aliases = {}
+        for goal in goals:
+            self.aliases[goal["sim_full_modelica_name"]] = goal["sim"]
+            self.aliases[goal["meas_full_modelica_name"]] = goal["meas"]
         self.dymAPI.simSetup["initialNames"] = list(self.tunerPara)
         #kwargs
         if "method_options" in kwargs:
@@ -154,7 +161,7 @@ class calibrator():
         print(infoString)
         self.log += "\n" + infoString
         if self.plotCallback:
-            plt.plot(self.counterHis, self.objHis)
+            plt.plot(self.counterHis[-1], self.objHis[-1], "ro")
             plt.draw()
             plt.ylabel(self.qualMeas)
             plt.xlabel("Number iterations")
@@ -262,7 +269,7 @@ class calibrator():
             raise TypeError("Given goal list is not of type list or is empty")
         total_weighting = 0
         for goal in goals:
-            if not ("meas" in goal and "sim" in goal and "weighting" in goal and len(goal.keys())==3):
+            if not ("meas" in goal and "sim" in goal and "weighting" in goal and "meas_full_modelica_name" in goal and "sim_full_modelica_name" in goal and len(goal.keys())==5):
                 raise Exception("Given goal dict is no well formatted.")
             else:
                 total_weighting += goal["weighting"]
