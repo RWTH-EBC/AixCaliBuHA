@@ -50,8 +50,6 @@ def example():
     cal = Calibrator.calibrator(goals, tunerPara, "NRMSE", "L-BFGS-B", dymAPI, **kwargs)
     # Calibrate
     res = cal.calibrate(cal.objective)
-    #Close dymola
-    dymAPI.dymola.close()
     # Right now this only prints the result
     cal.save_result(res, working_dir, ftype="pdf")
 

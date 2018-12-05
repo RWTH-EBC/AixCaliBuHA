@@ -113,7 +113,13 @@ class calibrator():
         infoString = self._getNameInfoString()
         print(infoString)
         self.log += "\n" + infoString
-        res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.method_options)
+        try:
+            res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.method_options)
+        except Exception as e:
+            print(e)
+            self.dymAPI.dymola.close()
+        #close dymola
+        self.dymAPI.dymola.close()
         return res
 
     def objective(self, set):
