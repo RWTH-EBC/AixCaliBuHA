@@ -8,7 +8,8 @@ import os
 
 def example():
     """Example function for a calibration process"""
-    working_dir = os.path.normpath(r"D:\03_Python_WorkDir\00_Testzone")
+    inputPath = input("Please enter the directory to excecute and save the results of this example:")
+    working_dir = os.path.normpath(inputPath)
     # Declaring aliases, goals and tuners:
     # Aliases are used to convert the names in modelica into the names used to calculate the objective.
     # The aliases define the names of "meas" and "sim" in each goal-dict.
