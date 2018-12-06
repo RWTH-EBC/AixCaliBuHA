@@ -4,7 +4,7 @@ Script with the dymola-interface class.
 Create the object dymola-interface to simulate models.
 """
 
-import os,sys
+import os,sys, psutil
 sys.path.insert(0, os.path.join('C:\Program Files\Dymola 2019',
                     'Modelica',
                     'Library',
@@ -39,6 +39,7 @@ class dymolaInterface():
                          'initialNames':[],
                          'initialValues':[]}
         self.strucParams = []
+        self.critNumberInstances = 10
         self._setupDym()
 
     def simulate(self, saveFiles = True, saveName = "", getStructurals = False, use_dsfinal_for_continuation=True):
@@ -118,6 +119,7 @@ class dymolaInterface():
     def _setupDym(self):
         """Load all packages and change the current working directory"""
         self.dymola = DymolaInterface()
+        self._checkDymolaInstances()
         self.dymola.cd(self.cwdir)
         for pack in self.packages:
             print("Loading Model %s" % os.path.dirname(pack).split("\\")[-1])
@@ -125,6 +127,18 @@ class dymolaInterface():
             if not res:
                 print(self.dymola.getLastErrorLog())
         print("Loaded modules")
+
+    def _checkDymolaInstances(self):
+        counter = 0
+        for proc in psutil.process_iter():
+            try:
+                if "Dymola" in proc.name():
+                    counter += 1
+            except psutil.AccessDenied:
+                continue
+        if counter >= self.critNumberInstances:
+            print("WARNING: There are currently %s Dymola-Instances running on your machine!!!"%counter)
+        return counter
 
     def _filterErrorLog(self, errorLog):
         """
