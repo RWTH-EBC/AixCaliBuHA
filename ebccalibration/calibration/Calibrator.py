@@ -11,7 +11,7 @@ from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import matplotlib.pyplot as plt
-import os, dicttoxml, xmltodict
+import os, dicttoxml
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
@@ -139,7 +139,7 @@ class calibrator():
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath, strucParams = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
+        success, filepath, strucParams = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True) #Simulate
         if success:
             self.dymAPI.strucParams = strucParams
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
@@ -388,3 +388,48 @@ def _loadXML(filepath):
     """
     tree = ET.parse(filepath)  # Get tree of XML-file
     return tree.getroot()  # The root holds all plot-elements
+
+def join_tunerParas(continouusData):
+    """
+    Join all initialNames used for calibration in the given dataset.
+    :param continouusData: list
+    Contains dictionaries with goals, tunerParas etc.
+    :return: list
+    Joined list
+    """
+    joinedList = []
+    for c in continouusData:
+        for name in c["tunerPara"].keys():
+            if name not in joinedList:
+                joinedList.append(name)
+    return joinedList
+
+def alterTunerParas(newTuner, calHistory):
+    """
+    Based on old calibration results, this function alters the start-values for the new tunerPara-Set
+    :param newTuner: dict
+    Tuner Parameter dict for the next time-interval
+    :param calHistory: list
+    List with all results and data from previous calibrations
+    :return: tunerParaDict: dict
+    Dictionary with the altered tunerParas
+    """
+    #Iterate over calibration historie and create a new dictionary with the start-values for a given initialName#
+    newStartDict = {}
+    totalTime = 0
+    for calHis in calHistory:
+        resIniVals = calHis["cal"]._convSet(calHis["res"].x)
+        timedelta = calHis["continouusData"]["stopTime"] - calHis["continouusData"]["startTime"]
+        totalTime += timedelta
+        tunerPara = calHis["continouusData"]["tunerPara"]
+        for i in range(0,len(tunerPara.keys())):
+            iniName = list(tunerPara.keys())[i]
+            if iniName in newStartDict:
+                newStartDict[iniName] += resIniVals[i] * timedelta
+            else:
+                newStartDict[iniName] = resIniVals[i] * timedelta
+    for key, value in newStartDict.items():
+        newStartDict[key] = value/totalTime #Build average again
+    for key, value in newTuner.items():
+        newTuner[key]["start"] = newStartDict[key]
+    return newTuner
