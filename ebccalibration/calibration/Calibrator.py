@@ -139,8 +139,9 @@ class calibrator():
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
+        success, filepath, strucParams = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
         if success:
+            self.dymAPI.strucParams = strucParams
             df = self.get_trimmed_df(filepath, self.aliases) #Get results
         else:
             raise Exception("The given bounds or parameters resulted in a failure of the simulation!")

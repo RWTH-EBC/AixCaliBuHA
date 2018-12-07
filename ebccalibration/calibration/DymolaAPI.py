@@ -55,11 +55,10 @@ class dymolaInterface():
         True if structural parameters should be altered by using modifiers
         :return:
         """
-        if getStructurals:
-            if self.strucParams:
-                print("Warning: Currently, the model is retranslating for each simulation.\n"
-                      "Check for these parameters: %s"%",".join(self.strucParams))
-                self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
+        if self.strucParams:
+            print("Warning: Currently, the model is retranslating for each simulation.\n"
+                  "Check for these parameters: %s"%",".join(self.strucParams))
+            self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
         if use_dsfinal_for_continuation:
             self.dymola.importInitial(dsName=self.cwdir+'dsfinal.txt')
         res = self.dymola.simulateExtendedModel(self.modelName,
@@ -88,8 +87,10 @@ class dymolaInterface():
         else:
             new_path = self.cwdir
         if getStructurals:
-            self.strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
-        return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
+            strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
+            return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile']), strucParams
+        else:
+            return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
 
     def set_initialValues(self, initialValues):
         """
