@@ -21,7 +21,7 @@ def continouusExample():
               "sim": "sim",
               "sim_full_modelica_name" : "sine.y",
               "weighting": 0.2}]
-    tunerPara = {"amplitude": {"start": 2, "uppBou": 3, "lowBou": 0.3},
+    tunerPara = {"amplitude": {"start": 2, "uppBou": 6, "lowBou": 0.3},
                  "freqHz": {"start": 0.5, "uppBou": 0.99, "lowBou": 0.001}}
     continouusData = [{"startTime":0.0,
                       "stopTime":10.0,
@@ -42,14 +42,17 @@ def continouusExample():
     method_options = {"maxiter": 100000,       # Maximal iterations. Abort after maxiter even if no minimum has been achieved.
                "disp": False,           # Show additional infos in console
                "ftol": 2.220446049250313e-09,
-               "eps": 0.1
+               "eps": 0.5
                }
     kwargs = {"method_options": method_options,
               #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
-              "plotCallback": False}
+              "plotCallback": False,
+              "saveFiles": False,
+              "continouusCalibration": True}
     # Join all initial names:
     totalInitialNames = Calibrator.join_tunerParas(continouusData)
     # Calibrate
+    #manipulate_dsin.eliminate_parameters(r"D:\dsfinal.txt", r"D:\test.txt", [],eliminateAuxiliarParmateres=True)
     calHistory = []
     for c in continouusData:
         #Alter the simulation time
@@ -59,17 +62,20 @@ def continouusExample():
         if len(calHistory)>0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
-            new_dsfinal = os.path.join(working_dir, "dsfinal.txt")
-            manipulate_dsin.eliminate_parameters(os.path.join(dymAPI.cwdir, "dsfinal.txt"), new_dsfinal, totalInitialNames)
+            new_dsfinal = os.path.join("D:\\", "dsfinal.txt")
+            manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
             dymAPI.importInitial(new_dsfinal)
         else:
             tunerPara = c["tunerPara"]
         #Create class with new dymAPI
-        cal = Calibrator.calibrator(c["goals"], tunerPara, "NRMSE", "L-BFGS-B", dymAPI, **kwargs)
+        cal = Calibrator.calibrator(c["goals"], tunerPara, "RMSE", "L-BFGS-B", dymAPI, **kwargs)
         res = cal.calibrate(cal.objective)
+        if hasattr(cal, "trajNames"):
+            totalInitialNames = list(set(totalInitialNames + cal.trajNames))
         calHistory.append({"cal":cal,
                            "res": res,
                            "continouusData": c})
+    dymAPI.dymola.close()
     #cal.save_result(res, working_dir, ftype="pdf")
 
 def example():

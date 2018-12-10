@@ -78,7 +78,7 @@ class dymolaInterface():
             new_path = os.path.join(self.cwdir, saveName) # create a new path based on the current datetime
             if not os.path.exists(new_path):
                 os.mkdir(new_path)
-            for filename in ["%s.mat"%self.simSetup["resultFile"], "dslog.txt"]:
+            for filename in ["%s.mat"%self.simSetup["resultFile"], "dslog.txt", "dsfinal.txt"]:
                 if os.path.isfile(os.path.join(new_path, filename)):
                     os.remove(os.path.join(new_path, filename)) #Delete existing files
                 os.rename(os.path.join(self.cwdir, filename), os.path.join(new_path, filename)) #Move files
@@ -139,7 +139,6 @@ class dymolaInterface():
             res = self.dymola.openModel(pack, changeDirectory=False)
             if not res:
                 print(self.dymola.getLastErrorLog())
-        self.importInitial(r"D:/dsfinal.txt")
         print("Loaded modules")
 
     def _checkDymolaInstances(self):
