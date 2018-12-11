@@ -42,7 +42,7 @@ class dymolaInterface():
         self.critNumberInstances = 10
         self._setupDym()
 
-    def simulate(self, saveFiles = True, saveName = "", getStructurals = False, use_dsfinal_for_continuation=True):
+    def simulate(self, saveFiles = True, saveName = "", getStructurals = False):
         """
         Simulate the current setup.
         If simulation terminates without an error and the files should be saved, the files are moved to a folder based on the current datetime.
@@ -55,13 +55,10 @@ class dymolaInterface():
         True if structural parameters should be altered by using modifiers
         :return:
         """
-        if getStructurals:
-            if self.strucParams:
-                print("Warning: Currently, the model is retranslating for each simulation.\n"
-                      "Check for these parameters: %s"%",".join(self.strucParams))
-                self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
-        if use_dsfinal_for_continuation:
-            self.dymola.importInitial(dsName=self.cwdir+'dsfinal.txt')
+        if self.strucParams:
+            print("Warning: Currently, the model is retranslating for each simulation.\n"
+                  "Check for these parameters: %s"%",".join(self.strucParams))
+            self.modelName = self._alterModelName(self.simSetup, self.modelName, self.strucParams) #Alter the modelName for the next simulation
         res = self.dymola.simulateExtendedModel(self.modelName,
                                                  startTime=self.simSetup['startTime'],
                                                  stopTime=self.simSetup['stopTime'],
@@ -81,15 +78,17 @@ class dymolaInterface():
             new_path = os.path.join(self.cwdir, saveName) # create a new path based on the current datetime
             if not os.path.exists(new_path):
                 os.mkdir(new_path)
-            for filename in ["%s.mat"%self.simSetup["resultFile"], "dslog.txt"]:
+            for filename in ["%s.mat"%self.simSetup["resultFile"], "dslog.txt", "dsfinal.txt"]:
                 if os.path.isfile(os.path.join(new_path, filename)):
                     os.remove(os.path.join(new_path, filename)) #Delete existing files
                 os.rename(os.path.join(self.cwdir, filename), os.path.join(new_path, filename)) #Move files
         else:
             new_path = self.cwdir
         if getStructurals:
-            self.strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
-        return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
+            strucParams = self._filterErrorLog(self.dymola.getLastErrorLog()) #Get the structural parameters based on the error log
+            return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile']), strucParams
+        else:
+            return True, os.path.join(new_path, "%s.mat"%self.simSetup['resultFile'])
 
     def set_initialValues(self, initialValues):
         """
@@ -115,6 +114,20 @@ class dymolaInterface():
                     raise TypeError("The given type is not valid for the dymola interface")
                 else:
                     self.simSetup[key] = value
+
+    def importInitial(self, filepath):
+        """
+        Load given dsfinal.txt into dymola
+        :param filepath: str, os.path.normpath
+        Path to the dsfinal.txt to be loaded
+        """
+        assert os.path.isfile(filepath) , "Given filepath %s does not exist"%filepath
+        assert ".txt" == os.path.splitext(filepath)[1], 'File is not of type .txt'
+        res = self.dymola.importInitial(dsName=filepath)
+        if res:
+            print("Successfully loaded dsfinal.txt")
+        else:
+            raise Exception("Could not load dsfinal into dymola.")
 
     def _setupDym(self):
         """Load all packages and change the current working directory"""

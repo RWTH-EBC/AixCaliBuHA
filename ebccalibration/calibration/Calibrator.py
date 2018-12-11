@@ -11,7 +11,7 @@ from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import matplotlib.pyplot as plt
-import os, dicttoxml, xmltodict
+import os, dicttoxml
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
@@ -90,7 +90,7 @@ class calibrator():
             self.method_options = {}
         if not hasattr(self, "tol"):
             self.tol = None
-        booleankwargs = ["plotCallback", "use_dsfinal_for_continuation", "saveFiles"]
+        booleankwargs = ["plotCallback", "use_dsfinal_for_continuation", "saveFiles", "continouusCalibration"]
         for bool in booleankwargs:
             if not hasattr(self, bool):
                 setattr(self, bool, False)
@@ -100,7 +100,12 @@ class calibrator():
         self.objHis = []
         self.counterHis = []
         self.log = ""
-
+        if self.continouusCalibration:
+            self.totalMin = {"obj": 1e10,
+                             "dsfinal":"",
+                             "dsres":""}
+            self.savepathMinResult = os.path.join(self.dymAPI.cwdir, self.startDateTime+"_totalMin")
+            os.mkdir(self.savepathMinResult)
 
     def calibrate(self, obj):
         """
@@ -115,12 +120,12 @@ class calibrator():
         self.log += "\n" + infoString
         try:
             res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.method_options)
+            if not self.continouusCalibration:
+                self.dymAPI.dymola.close() # Close dymola
+            return res
         except Exception as e:
             print(e)
             self.dymAPI.dymola.close()
-        #close dymola
-        self.dymAPI.dymola.close()
-        return res
 
     def objective(self, set):
         """
@@ -139,9 +144,10 @@ class calibrator():
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
         saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
-        success, filepath = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True, use_dsfinal_for_continuation=self.use_dsfinal_for_continuation) #Simulate
+        success, filepath, strucParams = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True) #Simulate
         if success:
-            df = self.get_trimmed_df(filepath, self.aliases) #Get results
+            self.dymAPI.strucParams = strucParams
+            df = self.get_trimmed_df(filepath, self.aliases, getTrajectorieNames = self.continouusCalibration) #Get results
         else:
             raise Exception("The given bounds or parameters resulted in a failure of the simulation!")
         total_res = 0
@@ -151,6 +157,18 @@ class calibrator():
         self.objHis.append(total_res)
         self.counterHis.append(self.counter)
         self.callbackF(set)
+        if self.continouusCalibration:
+            if self.totalMin["obj"] > total_res:
+                self.totalMin = {"obj":total_res,
+                                 "dsres": filepath,
+                                 "dsfinal":os.path.join(os.path.dirname(filepath), "dsfinal.txt")}
+                #Overwrite old results:
+                if os.path.isfile(os.path.join(self.savepathMinResult, "dsres.mat")):
+                    os.remove(os.path.join(self.savepathMinResult, "dsres.mat"))
+                if os.path.isfile(os.path.join(self.savepathMinResult, "dsfinal.txt")):
+                    os.remove(os.path.join(self.savepathMinResult, "dsfinal.txt"))
+                os.rename(filepath, os.path.join(self.savepathMinResult, "dsres.mat"))
+                os.rename(os.path.join(os.path.dirname(filepath), "dsfinal.txt"), os.path.join(self.savepathMinResult, "dsfinal.txt"))
         return total_res
 
     def callbackF(self, xk):
@@ -166,11 +184,13 @@ class calibrator():
         print(infoString)
         self.log += "\n" + infoString
         if self.plotCallback:
-            plt.plot(self.counterHis[-1], self.objHis[-1], "ro")
+            if not hasattr(self, "fig"):
+                self.fig, self.ax = plt.subplots(1, 1)
+            self.ax.plot(self.counterHis[-1], self.objHis[-1], "ro")
+            self.ax.set_ylabel(self.qualMeas)
+            self.ax.set_xlabel("Number iterations")
+            self.ax.set_title(self.dymAPI.modelName)
             plt.draw()
-            plt.ylabel(self.qualMeas)
-            plt.xlabel("Number iterations")
-            plt.title(self.dymAPI.modelName)
             plt.pause(1e-5)
 
     def _convSet(self, set):
@@ -188,7 +208,7 @@ class calibrator():
         return initialValues
 
 
-    def get_trimmed_df(self, filepath, aliases):
+    def get_trimmed_df(self, filepath, aliases, getTrajectorieNames = False):
         """
         Create a dataFrame based on the given result-file and the aliases with the to_pandas_ebc function.
         :param filepath: str, os.path.normpath
@@ -198,12 +218,15 @@ class calibrator():
         :return: df: pandas.DataFrame
         Data Frame object with relevant data
         """
-        if filepath.endswith(".mat"):
-            sim = sr.SimRes(filepath)
-            df = sr_ebc.to_pandas_ebc(sim, names=list(aliases), aliases=aliases, useUnit = False)
-            return df
-        else:
+        if not filepath.endswith(".mat"):
             raise TypeError("Given filename is not of type *.mat")
+
+        sim = sr.SimRes(filepath)
+        df = sr_ebc.to_pandas_ebc(sim, names=list(aliases), aliases=aliases, useUnit = False)
+        if getTrajectorieNames:
+            self.trajNames = sr_ebc.get_trajectories(sim)
+        return df
+
 
     def calc_statValues(self, meas, sim):
         """
@@ -387,3 +410,60 @@ def _loadXML(filepath):
     """
     tree = ET.parse(filepath)  # Get tree of XML-file
     return tree.getroot()  # The root holds all plot-elements
+
+def join_tunerParas(continouusData):
+    """
+    Join all initialNames used for calibration in the given dataset.
+    :param continouusData: list
+    Contains dictionaries with goals, tunerParas etc.
+    :return: list
+    Joined list
+    """
+    joinedList = []
+    for c in continouusData:
+        for name in c["tunerPara"].keys():
+            if name not in joinedList:
+                joinedList.append(name)
+    return joinedList
+
+def alterTunerParas(newTuner, calHistory):
+    """
+    Based on old calibration results, this function alters the start-values for the new tunerPara-Set
+    :param newTuner: dict
+    Tuner Parameter dict for the next time-interval
+    :param calHistory: list
+    List with all results and data from previous calibrations
+    :return: tunerParaDict: dict
+    Dictionary with the altered tunerParas
+    """
+    newStartDict = _get_continouusAverages(calHistory)
+    for key, value in newTuner.items():
+        if key in newStartDict: #Check if the parameter will be used or not.
+            newTuner[key]["start"] = newStartDict[key]
+    return newTuner
+
+def _get_continouusAverages(calHistory):
+    """
+    Function to get the average value of a tuner parameter based on time- average
+    :param calHistory: list
+    List with all results and data from previous calibrations
+    :return: newStartDict: dict
+    Dictionary with the average start parameters
+    """
+    #Iterate over calibration historie and create a new dictionary with the start-values for a given initialName#
+    newStartDict = {}
+    totalTime = 0
+    for calHis in calHistory:
+        resIniVals = calHis["cal"]._convSet(calHis["res"].x)
+        timedelta = calHis["continouusData"]["stopTime"] - calHis["continouusData"]["startTime"]
+        totalTime += timedelta
+        tunerPara = calHis["continouusData"]["tunerPara"]
+        for i in range(0,len(tunerPara.keys())):
+            iniName = list(tunerPara.keys())[i]
+            if iniName in newStartDict:
+                newStartDict[iniName] += resIniVals[i] * timedelta
+            else:
+                newStartDict[iniName] = resIniVals[i] * timedelta
+    for key, value in newStartDict.items():
+        newStartDict[key] = value/totalTime #Build average again
+    return newStartDict
