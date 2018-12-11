@@ -436,6 +436,20 @@ def alterTunerParas(newTuner, calHistory):
     :return: tunerParaDict: dict
     Dictionary with the altered tunerParas
     """
+    newStartDict = _get_continouusAverages(calHistory)
+    for key, value in newTuner.items():
+        if key in newStartDict: #Check if the parameter will be used or not.
+            newTuner[key]["start"] = newStartDict[key]
+    return newTuner
+
+def _get_continouusAverages(calHistory):
+    """
+    Function to get the average value of a tuner parameter based on time- average
+    :param calHistory: list
+    List with all results and data from previous calibrations
+    :return: newStartDict: dict
+    Dictionary with the average start parameters
+    """
     #Iterate over calibration historie and create a new dictionary with the start-values for a given initialName#
     newStartDict = {}
     totalTime = 0
@@ -452,7 +466,4 @@ def alterTunerParas(newTuner, calHistory):
                 newStartDict[iniName] = resIniVals[i] * timedelta
     for key, value in newStartDict.items():
         newStartDict[key] = value/totalTime #Build average again
-    for key, value in newTuner.items():
-        if key in newStartDict: #Check if the parameter will be used or not.
-            newTuner[key]["start"] = newStartDict[key]
-    return newTuner
+    return newStartDict
