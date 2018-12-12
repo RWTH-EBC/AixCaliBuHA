@@ -6,7 +6,7 @@ from ebccalibration.calibration import Calibrator
 import os
 from ebcpython.modelica.tools import manipulate_dsin
 
-def continouusCalibration(continouusData, dymAPI, cal_kwargs):
+def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs):
     """"""
     # Join all initial names:
     totalInitialNames = Calibrator.join_tunerParas(continouusData)
@@ -21,13 +21,18 @@ def continouusCalibration(continouusData, dymAPI, cal_kwargs):
         if len(calHistory)>0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
-            new_dsfinal = os.path.join("D:\\", "dsfinal.txt")
+            new_dsfinal = os.path.join(work_dir, "temp", "dsfinal.txt")
             manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
             dymAPI.importInitial(new_dsfinal)
         else:
             tunerPara = c["tunerPara"]
         #Create class with new dymAPI
-        cal = Calibrator.calibrator(c["goals"], tunerPara, "RMSE", "L-BFGS-B", dymAPI, **cal_kwargs)
+        cal = Calibrator.calibrator(goals=c["goals"],
+                                    tunerPara=tunerPara,
+                                    qualMeas=qualMeas,
+                                    method=method,
+                                    dymAPI=dymAPI,
+                                    kwargs=cal_kwargs)
         res = cal.calibrate(cal.objective)
         if hasattr(cal, "trajNames"):
             totalInitialNames = list(set(totalInitialNames + cal.trajNames))
@@ -90,12 +95,20 @@ def example(continouus = False):
               "plotCallback": True,
               "saveFiles": False,
               "continouusCalibration": continouus}
+    quality_measure = "NRMSE"
+    optimizer_method = "L-BFGS-B"
+
     if continouus:
-        continouusCalibration(continouusData, dymAPI, cal_kwargs)
+        continouusCalibration(continouusData=continouusData,
+                              dymAPI=dymAPI,
+                              work_dir=working_dir,
+                              qualMeas=quality_measure,
+                              method=optimizer_method,
+                              cal_kwargs=cal_kwargs)
     else:
         dymAPI.set_simSetup({"stopTime": 10.0})
         # Setup Calibrator
-        cal = Calibrator.calibrator(goals, tunerPara, "NRMSE", "L-BFGS-B", dymAPI, **cal_kwargs)
+        cal = Calibrator.calibrator(goals, tunerPara, quality_measure, optimizer_method, dymAPI, **cal_kwargs)
         # Calibrate
         res = cal.calibrate(cal.objective)
         # Right now this only prints the result
