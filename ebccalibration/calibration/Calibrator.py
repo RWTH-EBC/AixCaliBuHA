@@ -47,7 +47,7 @@ class calibrator():
         :param dymAPI: dymolaInterface
         Class for executing a simulation in dymola
         :param bounds: optimize.Bounds object, Default: None
-        Used if the boundaries differ from 0 and 1
+        Used if the boundaries differ from 0 and 1 (already scaled / normalized)
         :param kwargs: dict
             'method_options': dict
             Optional class parameters
@@ -58,6 +58,8 @@ class calibrator():
             if objective <= tol, the calibration stops
             'plotCallback': bool
             Whether to plot the current status or not
+
+            See list 'booleankwargs' for all kwargs of type boolean.
         """
         if self._checkGoals(goals):
             self.goals = goals

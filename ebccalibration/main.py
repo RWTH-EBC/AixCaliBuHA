@@ -1,5 +1,6 @@
 """Main file for coordination of all steps of a calibration.
 E.g. Preprocessing, classifier, calibration etc."""
+from docutils.nodes import contact
 
 from ebccalibration.calibration import DymolaAPI
 from ebccalibration.calibration import Calibrator
@@ -21,6 +22,7 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
         if len(calHistory)>0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
+            os.makedirs(os.path.join(work_dir, "temp"))
             new_dsfinal = os.path.join(work_dir, "temp", "dsfinal.txt")
             manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
             dymAPI.importInitial(new_dsfinal)
@@ -32,7 +34,7 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
                                     qualMeas=qualMeas,
                                     method=method,
                                     dymAPI=dymAPI,
-                                    kwargs=cal_kwargs)
+                                    **cal_kwargs)
         res = cal.calibrate(cal.objective)
         if hasattr(cal, "trajNames"):
             totalInitialNames = list(set(totalInitialNames + cal.trajNames))
@@ -93,6 +95,7 @@ def example(continouus = False):
     cal_kwargs = {"method_options": method_options,
               #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
               "plotCallback": True,
+              "use_dsfinal_for_continuation": continouus,
               "saveFiles": False,
               "continouusCalibration": continouus}
     quality_measure = "NRMSE"
@@ -116,4 +119,4 @@ def example(continouus = False):
 
 
 if __name__ == "__main__":
-    example(continouus=True)
+    example(continouus=False)
