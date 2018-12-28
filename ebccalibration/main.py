@@ -29,6 +29,7 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
         else:
             tunerPara = c["tunerPara"]
         #Create class with new dymAPI
+        print("Starting with time period: start = {} to end = {}".format(c["startTime"], c["stopTime"]))
         cal = Calibrator.calibrator(goals=c["goals"],
                                     tunerPara=tunerPara,
                                     qualMeas=qualMeas,

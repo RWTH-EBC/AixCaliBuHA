@@ -72,8 +72,14 @@ class dymolaInterface():
                                                  initialValues=self.simSetup['initialValues'])
         if not res[0]:
             print("Simulation failed!")
+            print("The last parameters used:")
+            print(self.simSetup['initialNames'])
+            print("With their initial values:")
+            print(self.simSetup['initialValues'])
+            print("The last error log from Dymola:")
             print(self.dymola.getLastErrorLog())
-            return False, None
+            raise Exception("Simulation failed: Look into dslog.txt of working directory.")
+            #return False, None
         if saveFiles:
             new_path = os.path.join(self.cwdir, saveName) # create a new path based on the current datetime
             if not os.path.exists(new_path):
@@ -125,9 +131,9 @@ class dymolaInterface():
         assert ".txt" == os.path.splitext(filepath)[1], 'File is not of type .txt'
         res = self.dymola.importInitial(dsName=filepath)
         if res:
-            print("Successfully loaded dsfinal.txt")
+            print("\nSuccessfully loaded dsfinal.txt")
         else:
-            raise Exception("Could not load dsfinal into dymola.")
+            raise Exception("Could not load dsfinal into Dymola.")
 
     def _setupDym(self):
         """Load all packages and change the current working directory"""
