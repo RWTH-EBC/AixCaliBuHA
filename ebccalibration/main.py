@@ -14,6 +14,7 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
     # Calibrate
     #manipulate_dsin.eliminate_parameters(r"D:\dsfinal.txt", r"D:\test.txt", [],eliminateAuxiliarParmateres=True)
     calHistory = []
+    curr_num = 0
     for c in continouusData:
         #Alter the simulation time
         dymAPI.set_simSetup({"startTime":c["startTime"],
@@ -22,8 +23,9 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
         if len(calHistory)>0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
-            os.makedirs(os.path.join(work_dir, "temp"))
-            new_dsfinal = os.path.join(work_dir, "temp", "dsfinal.txt")
+            curr_num += 1
+            os.makedirs(os.path.join(work_dir, "temp_{}".format(curr_num)))
+            new_dsfinal = os.path.join(work_dir, "temp_{}".format(curr_num), "dsfinal.txt")
             manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
             dymAPI.importInitial(new_dsfinal)
         else:
@@ -96,7 +98,6 @@ def example(continouus = False):
     cal_kwargs = {"method_options": method_options,
               #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
               "plotCallback": True,
-              "use_dsfinal_for_continuation": continouus,
               "saveFiles": False,
               "continouusCalibration": continouus}
     quality_measure = "NRMSE"
