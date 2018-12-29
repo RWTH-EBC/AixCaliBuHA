@@ -192,6 +192,8 @@ class calibrator():
             self.ax.set_ylabel(self.qualMeas)
             self.ax.set_xlabel("Number iterations")
             self.ax.set_title(self.dymAPI.modelName)
+            #If the changes are small, it seems like the plot does not fit the printed values. This boolean assures that no offset is used.
+            self.ax.ticklabel_format(useOffset=False)
             plt.draw()
             plt.pause(1e-5)
 
