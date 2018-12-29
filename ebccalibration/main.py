@@ -96,7 +96,6 @@ def example(continouus = False):
     cal_kwargs = {"method_options": method_options,
               #"tol": 0.95,              # Overall objective function tolerance, e.g. minimize until RMSE < 0.95
               "plotCallback": True,
-              "use_dsfinal_for_continuation": continouus,
               "saveFiles": False,
               "continouusCalibration": continouus}
     quality_measure = "NRMSE"

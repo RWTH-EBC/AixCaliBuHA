@@ -92,7 +92,7 @@ class calibrator():
             self.method_options = {}
         if not hasattr(self, "tol"):
             self.tol = None
-        booleankwargs = ["plotCallback", "use_dsfinal_for_continuation", "saveFiles", "continouusCalibration"]
+        booleankwargs = ["plotCallback", "saveFiles", "continouusCalibration"]
         for bool in booleankwargs:
             if not hasattr(self, bool):
                 setattr(self, bool, False)
