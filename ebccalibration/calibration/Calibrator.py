@@ -186,7 +186,7 @@ class calibrator():
         print(infoString)
         self.log += "\n" + infoString
         if self.plotCallback:
-            if not hasattr(self, "fig"):
+            if not hasattr(self, "fig"): # Instanciate the figure and ax
                 self.fig, self.ax = plt.subplots(1, 1)
             self.ax.plot(self.counterHis[-1], self.objHis[-1], "ro")
             self.ax.set_ylabel(self.qualMeas)
@@ -325,6 +325,13 @@ class calibrator():
         return True #If no error has occured, this check passes
 
     def _getNameInfoString(self, forLog = False):
+        """
+        Returns a string with the names of current tunerParameters
+        :param forLog: Boolean
+        If the string is created for the final log file, the best obj is not of interest
+        :return: str
+        The desired string
+        """
         initialNames = list(self.tunerPara.keys())
         if not forLog:
             infoString = "{0:4s}".format("Iter")
@@ -340,6 +347,15 @@ class calibrator():
         return infoString
 
     def _getValInfoString(self, set, forLog = False):
+        """
+        Returns a string with the values of current tunerParameters
+        :param set: np.array
+        Array with the current values of the calibration
+        :param forLog: Boolean
+        If the string is created for the final log file, the best obj is not of interest
+        :return: str
+        The desired string
+        """
         iniVals = self._convSet(set)
         if not forLog:
             infoString = '{0:4d}'.format(self.counter)
@@ -347,6 +363,7 @@ class calibrator():
             infoString = ""
         for i in range(0, len(iniVals)):
             infoString += "   {0:3.6f}".format(iniVals[i])
+        # Add the last return value of the objective function.
         if not forLog:
             infoString += "   {0:3.6f}".format(self.objHis[-1])
         else:
