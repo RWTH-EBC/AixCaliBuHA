@@ -8,13 +8,28 @@ import os
 from ebcpython.modelica.tools import manipulate_dsin
 
 
-def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs):
+def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs, timedelta = 0):
+    """
+    :param continouusData:
+    List with dictionaries used for continoous calibration
+    :param dymAPI:
+    Dymola API class
+    :param work_dir: os.path.normpath
+    :param qualMeas: str
+    See Calibrator.calibrator
+    :param method: str
+    See Calibrator.calibrator
+    :param cal_kwargs:
+    See Calibrator.calibrator
+    :param timedelta: float or int
+    Used as a offset value for the simulation time
+    :return:
+    """
     # Join all initial names:
     totalInitialNames = Calibrator.join_tunerParas(continouusData)
     # Calibrate
     # manipulate_dsin.eliminate_parameters(r"D:\dsfinal.txt", r"D:\test.txt", [],eliminateAuxiliarParmateres=True)
     calHistory = []
-    timedelta = 0 # Used as a offset value for the simulation time
     curr_num = 0
     for c in continouusData:
         # Alter the simulation time
