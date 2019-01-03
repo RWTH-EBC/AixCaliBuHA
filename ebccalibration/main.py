@@ -33,8 +33,8 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
     curr_num = 0
     for c in continouusData:
         # Alter the simulation time
-        dymAPI.set_simSetup({"startTime": float(timedelta),
-                             "stopTime": float(timedelta + c["stopTime"])})
+        dymAPI.set_simSetup({"startTime": float(c["startTime"]-timedelta),
+                             "stopTime": float(c["stopTime"])})
         # Alter the working directory for the simulations
         cwdir_of_class = os.path.join(work_dir, "%s_%s"%(curr_num, c["class"]))
         dymAPI.set_cwdir(cwdir_of_class)
