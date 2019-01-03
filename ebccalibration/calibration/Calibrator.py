@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import os, dicttoxml, re
 
 class calibrator():
-    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
+    def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, timeInfoTupel = None, **kwargs):
         """
         Class for a calibrator.
         :param goals: list
@@ -48,6 +48,8 @@ class calibrator():
         Class for executing a simulation in dymola
         :param bounds: optimize.Bounds object, Default: None
         Used if the boundaries differ from 0 and 1 (already scaled / normalized)
+        :param timeInfoTupel: tupel
+        Tupel with startTime and entTime info special sections of the resulting array are of interest for the objective function.
         :param kwargs: dict
             'method_options': dict
             Optional class parameters
@@ -84,6 +86,13 @@ class calibrator():
             self.aliases[goal["sim_full_modelica_name"]] = goal["sim"]
             self.aliases[goal["meas_full_modelica_name"]] = goal["meas"]
         self.dymAPI.simSetup["initialNames"] = list(self.tunerPara)
+        #Starttime and endtime
+        assert len(timeInfoTupel) == 2, "The lenght of the timeInfoTupel has to be equal to two. First entry the starttime, second entry the endtime"
+        self.timeInfoTupel = timeInfoTupel
+        if self.timeInfoTupel:
+            self.startTime = self.timeInfoTupel[0]
+            self.endTime = self.timeInfoTupel[1]
+
         #kwargs
         for key, value in kwargs.items():
             if not hasattr(self, key):
@@ -158,6 +167,9 @@ class calibrator():
         if success:
             self.dymAPI.strucParams = strucParams
             df = self.get_trimmed_df(filepath, self.aliases, getTrajectorieNames = self.continouusCalibration) #Get results
+            if self.timeInfoTupel:
+                # Trim results based on start and endtime
+                df = df[self.startTime:self.endTime]
         total_res = 0
         for goal in self.goals:
             goal_res = self.calc_statValues(df[goal["meas"]],df[goal["sim"]])
