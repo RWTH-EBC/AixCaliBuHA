@@ -7,8 +7,65 @@ from ebccalibration.calibration import Calibrator
 import os
 from ebcpython.modelica.tools import manipulate_dsin
 
-def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs):
-    """"""
+
+def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs, timedelta = 0):
+    """
+    :param continouusData:
+    List with dictionaries used for continoous calibration
+    :param dymAPI:
+    Dymola API class
+    :param work_dir: os.path.normpath
+    :param qualMeas: str
+    See Calibrator.calibrator
+    :param method: str
+    See Calibrator.calibrator
+    :param cal_kwargs:
+    See Calibrator.calibrator
+    :param timedelta: float or int
+    Used as a offset value for the simulation time
+    :return:
+    """
+    # Join all initial names:
+    totalInitialNames = Calibrator.join_tunerParas(continouusData)
+    # Calibrate
+    # manipulate_dsin.eliminate_parameters(r"D:\dsfinal.txt", r"D:\test.txt", [],eliminateAuxiliarParmateres=True)
+    calHistory = []
+    curr_num = 0
+    for c in continouusData:
+        # Alter the simulation time
+        dymAPI.set_simSetup({"startTime": float(timedelta),
+                             "stopTime": float(timedelta + c["stopTime"])})
+        # Alter the working directory for the simulations
+        cwdir_of_class = os.path.join(work_dir, "%s_%s"%(curr_num, c["class"]))
+        dymAPI.set_cwdir(cwdir_of_class)
+        # Alter tunerParas based on old results
+        if len(calHistory) > 0:
+            tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
+            # Alter the dsfinal for the new phase
+        else:
+            tunerPara = c["tunerPara"]
+        # Create class with new dymAPI
+        print("Starting with class {} in the time period: start = {} to end = {}".format(c["class"], c["startTime"], c["stopTime"]))
+        cal = Calibrator.calibrator(goals=c["goals"],
+                                    tunerPara=tunerPara,
+                                    qualMeas=qualMeas,
+                                    method=method,
+                                    dymAPI=dymAPI,
+                                    **cal_kwargs)
+        res = cal.calibrate(cal.objective)
+        if hasattr(cal, "trajNames"):
+            totalInitialNames = list(set(totalInitialNames + cal.trajNames))
+        calHistory.append({"cal": cal,
+                           "res": res,
+                           "continouusData": c})
+        curr_num += 1
+
+    dymAPI.dymola.close()
+    print("Final parameter values after calibration:")
+    print(Calibrator._get_continouusAverages(calHistory))
+
+def continouusCalibration_dsfinal(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs):
+    """Use dsfinal for continouus calibration"""
     # Join all initial names:
     totalInitialNames = Calibrator.join_tunerParas(continouusData)
     # Calibrate
@@ -19,13 +76,13 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
         #Alter the simulation time
         dymAPI.set_simSetup({"startTime":c["startTime"],
                              "stopTime":c["stopTime"]})
+        dymAPI.cwdir = os.path.join(work_dir, "%s_%s" % (curr_num, c["class"]))
         #Alter tunerParas based on old results
         if len(calHistory)>0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
             curr_num += 1
-            os.makedirs(os.path.join(work_dir, "temp_{}".format(curr_num)))
-            new_dsfinal = os.path.join(work_dir, "temp_{}".format(curr_num), "dsfinal.txt")
+            new_dsfinal = os.path.join(dymAPI.cwdir, "dsfinal.txt")
             manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
             dymAPI.importInitial(new_dsfinal)
         else:
@@ -121,4 +178,4 @@ def example(continouus = False):
 
 
 if __name__ == "__main__":
-    example(continouus=False)
+    example(continouus=True)

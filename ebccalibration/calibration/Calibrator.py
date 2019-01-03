@@ -11,7 +11,7 @@ from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import matplotlib.pyplot as plt
-import os, dicttoxml
+import os, dicttoxml, re
 
 class calibrator():
     def __init__(self, goals, tunerPara, qualMeas, method, dymAPI, bounds = None, **kwargs):
@@ -98,16 +98,20 @@ class calibrator():
                 setattr(self, bool, False)
         #Set counter for number of iterations of the objective function
         self.counter = 0
-        self.startDateTime = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.objHis = []
         self.counterHis = []
+        self.last_set = np.array([]) # Used if simulation failes
         self.log = ""
         if self.continouusCalibration:
             self.totalMin = {"obj": 1e10,
                              "dsfinal":"",
                              "dsres":""}
-            self.savepathMinResult = os.path.join(self.dymAPI.cwdir, self.startDateTime+"_totalMin")
-            os.mkdir(self.savepathMinResult)
+            self.savepathMinResult = os.path.join(self.dymAPI.cwdir, "totalMin")
+            if not os.path.isdir(self.dymAPI.cwdir):
+                print("Creating working directory {}".format(self.dymAPI.cwdir))
+                os.mkdir(self.dymAPI.cwdir)
+            if not os.path.isdir(self.savepathMinResult):
+                os.mkdir(self.savepathMinResult)
 
     def calibrate(self, obj):
         """
@@ -124,10 +128,13 @@ class calibrator():
             res = opt.minimize(fun=obj, x0=np.array(self.initalSet), method=self.method, bounds=self.bounds, tol=self.tol, options=self.method_options)
             if not self.continouusCalibration:
                 self.dymAPI.dymola.close() # Close dymola
+            self.save_log_as_csv()
             return res
         except Exception as e:
-            print(e)
+            print("Parameter set which caused failed simulation:")
+            print(self._getValInfoString(self.last_set, forLog = True))
             self.dymAPI.dymola.close()
+            raise Exception(e) # Actually raise the error so the script stops.
 
     def objective(self, set):
         """
@@ -142,16 +149,15 @@ class calibrator():
         :return:
         Objective value based on the used quality measurement
         """
+        self.last_set = set
         self.counter += 1 #Increase counter
         conv_set = self._convSet(set) #Convert set if multiple goals of different scales are used
         self.dymAPI.set_initialValues(conv_set) #Set initial values
-        saveName = "%s_%s"%(self.startDateTime,str(self.counter)) #Generate the folder name for the calibration
+        saveName = "%s"%str(self.counter) #Generate the folder name for the calibration
         success, filepath, strucParams = self.dymAPI.simulate(saveFiles=self.saveFiles, saveName=saveName, getStructurals=True) #Simulate
         if success:
             self.dymAPI.strucParams = strucParams
             df = self.get_trimmed_df(filepath, self.aliases, getTrajectorieNames = self.continouusCalibration) #Get results
-        else:
-            raise Exception("The given bounds or parameters resulted in a failure of the simulation!")
         total_res = 0
         for goal in self.goals:
             goal_res = self.calc_statValues(df[goal["meas"]],df[goal["sim"]])
@@ -289,6 +295,22 @@ class calibrator():
         f.close()
         if self.plotCallback:
             plt.savefig(os.path.join(savepath, "iterationPlot.%s"%ftype))
+
+    def save_log_as_csv(self, sep = ";"):
+        """
+        Saves the log-string as a csv-file
+        :param sep: str
+        Seperator used in csv
+        """
+        savepath = os.path.join(self.dymAPI.cwdir, "log.csv")
+        lines = self.log.split("\n")
+        lines_csv = [re.sub("\s+", sep, line.strip()) for line in lines]
+        f = open(savepath, "a+")
+        f.seek(0)
+        f.truncate()
+        f.write("\n".join(lines_csv[1:]))
+        f.close()
+
 
     def _checkGoals(self, goals):
         """
