@@ -306,7 +306,9 @@ class calibrator():
         lines = self.log.split("\n")
         lines_csv = [re.sub("\s+", sep, line.strip()) for line in lines]
         f = open(savepath, "a+")
-        f.write("\n".join(lines_csv))
+        f.seek(0)
+        f.truncate()
+        f.write("\n".join(lines_csv[1:]))
         f.close()
 
 
