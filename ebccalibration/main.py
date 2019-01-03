@@ -51,6 +51,7 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
                                     qualMeas=qualMeas,
                                     method=method,
                                     dymAPI=dymAPI,
+                                    timeInfoTupel = (c["startTime"], c["stopTime"]),
                                     **cal_kwargs)
         res = cal.calibrate(cal.objective)
         if hasattr(cal, "trajNames"):
