@@ -72,14 +72,9 @@ class dymolaInterface():
                                                  initialValues=self.simSetup['initialValues'])
         if not res[0]:
             print("Simulation failed!")
-            print("The last parameters used:")
-            print(self.simSetup['initialNames'])
-            print("With their initial values:")
-            print(self.simSetup['initialValues'])
             print("The last error log from Dymola:")
             print(self.dymola.getLastErrorLog())
             raise Exception("Simulation failed: Look into dslog.txt of working directory.")
-            #return False, None
         if saveFiles:
             new_path = os.path.join(self.cwdir, saveName) # create a new path based on the current datetime
             if not os.path.exists(new_path):
@@ -134,6 +129,32 @@ class dymolaInterface():
             print("\nSuccessfully loaded dsfinal.txt")
         else:
             raise Exception("Could not load dsfinal into Dymola.")
+
+    def set_cwdir(self, cwdir):
+        """Set the working directory to """
+        self.cwdir = cwdir
+        if hasattr(self, "dymola"):
+            dymPath = self._makeDymPath(self.cwdir)
+            res = self.dymola.cd(dymPath)
+            if not res:
+                raise OSError("Could not change working directorie to {}".format(self.cwdir))
+
+    def _makeDymPath(self, path):
+        """
+        Convert given path to a path readable in dymola. If the path does not exist, create it.
+        :param path: os.path.normpath, str
+        :return: str
+        Path readable in dymola
+        """
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        path = path.replace("\\", "/")
+        #Search for e.g. "D:testzone" and replace it with D:/testzone
+        loc = path.find(":")
+        if path[loc+1] != "/" and loc != -1:
+            path = path.replace(":",":/")
+
+        return path
 
     def _setupDym(self):
         """Load all packages and change the current working directory"""
