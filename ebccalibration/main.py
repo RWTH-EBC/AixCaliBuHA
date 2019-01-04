@@ -8,10 +8,13 @@ import os
 from ebcpython.modelica.tools import manipulate_dsin
 
 
-def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs, timedelta = 0):
+def continouusCalibration(continouusData, typeOfContinouusCalibration, dymAPI, work_dir, qualMeas, method, cal_kwargs, referenceTime = 0):
     """
     :param continouusData:
     List with dictionaries used for continoous calibration
+    :param typeOfContinouusCalibration: str
+    Three modes are possible: dsfinal, timedelta, fixStart. See \img\typeOfContinouusCalibration.png for an overview.
+    For the last two options, the parameter referenceTime either gives the timedelta before each simulation OR the fixStart time.
     :param dymAPI:
     Dymola API class
     :param work_dir: os.path.normpath
@@ -21,10 +24,11 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
     See Calibrator.calibrator
     :param cal_kwargs:
     See Calibrator.calibrator
-    :param timedelta: float or int
-    Used as a offset value for the simulation time
+    :param referenceTime: float or int
+    Used as a offset value for the simulation time OR as a fixed startTime.
     :return:
     """
+    assert typeOfContinouusCalibration in ["dsfinal", "timedelta", "fixStart"], "The given type of continouus calibration %s does not match a given choice."%typeOfContinouusCalibration
     # Join all initial names:
     totalInitialNames = Calibrator.join_tunerParas(continouusData)
     # Calibrate
@@ -32,8 +36,14 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
     calHistory = []
     curr_num = 0
     for c in continouusData:
-        # Alter the simulation time
-        dymAPI.set_simSetup({"startTime": float(c["startTime"]-timedelta),
+        # Alter the simulation time. This depends on the mode one is using.
+        if typeOfContinouusCalibration == "timedelta":
+            startTime = float(c["startTime"]-referenceTime)
+        elif typeOfContinouusCalibration == "fixStart"
+            startTime = float(referenceTime)
+        elif typeOfContinouusCalibration == "dsfinal":
+            startTime = float(c["startTime"])
+        dymAPI.set_simSetup({"startTime": startTime,
                              "stopTime": float(c["stopTime"])})
         # Alter the working directory for the simulations
         cwdir_of_class = os.path.join(work_dir, "%s_%s"%(curr_num, c["class"]))
@@ -42,6 +52,12 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
         if len(calHistory) > 0:
             tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
             # Alter the dsfinal for the new phase
+            if typeOfContinouusCalibration == "dsfinal":
+                new_dsfinal = os.path.join(dymAPI.cwdir, "dsfinal.txt")
+                manipulate_dsin.eliminate_parameters(
+                    os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal,
+                    totalInitialNames)
+                dymAPI.importInitial(new_dsfinal)
         else:
             tunerPara = c["tunerPara"]
         # Create class with new dymAPI
@@ -65,46 +81,6 @@ def continouusCalibration(continouusData, dymAPI, work_dir, qualMeas, method, ca
     print("Final parameter values after calibration:")
     print(Calibrator._get_continouusAverages(calHistory))
 
-def continouusCalibration_dsfinal(continouusData, dymAPI, work_dir, qualMeas, method, cal_kwargs):
-    """Use dsfinal for continouus calibration"""
-    # Join all initial names:
-    totalInitialNames = Calibrator.join_tunerParas(continouusData)
-    # Calibrate
-    #manipulate_dsin.eliminate_parameters(r"D:\dsfinal.txt", r"D:\test.txt", [],eliminateAuxiliarParmateres=True)
-    calHistory = []
-    curr_num = 0
-    for c in continouusData:
-        #Alter the simulation time
-        dymAPI.set_simSetup({"startTime":c["startTime"],
-                             "stopTime":c["stopTime"]})
-        dymAPI.cwdir = os.path.join(work_dir, "%s_%s" % (curr_num, c["class"]))
-        #Alter tunerParas based on old results
-        if len(calHistory)>0:
-            tunerPara = Calibrator.alterTunerParas(c["tunerPara"], calHistory)
-            # Alter the dsfinal for the new phase
-            curr_num += 1
-            new_dsfinal = os.path.join(dymAPI.cwdir, "dsfinal.txt")
-            manipulate_dsin.eliminate_parameters(os.path.join(calHistory[-1]["cal"].savepathMinResult, "dsfinal.txt"), new_dsfinal, totalInitialNames)
-            dymAPI.importInitial(new_dsfinal)
-        else:
-            tunerPara = c["tunerPara"]
-        #Create class with new dymAPI
-        print("Starting with time period: start = {} to end = {}".format(c["startTime"], c["stopTime"]))
-        cal = Calibrator.calibrator(goals=c["goals"],
-                                    tunerPara=tunerPara,
-                                    qualMeas=qualMeas,
-                                    method=method,
-                                    dymAPI=dymAPI,
-                                    **cal_kwargs)
-        res = cal.calibrate(cal.objective)
-        if hasattr(cal, "trajNames"):
-            totalInitialNames = list(set(totalInitialNames + cal.trajNames))
-        calHistory.append({"cal":cal,
-                           "res": res,
-                           "continouusData": c})
-    dymAPI.dymola.close()
-    print("Final parameter values after calibration:")
-    print(Calibrator._get_continouusAverages(calHistory))
 
 def example(continouus = False):
     """Example function for a calibration process"""
@@ -163,11 +139,13 @@ def example(continouus = False):
 
     if continouus:
         continouusCalibration(continouusData=continouusData,
+                              typeOfContinouusCalibration = "timedelta",
                               dymAPI=dymAPI,
                               work_dir=working_dir,
                               qualMeas=quality_measure,
                               method=optimizer_method,
-                              cal_kwargs=cal_kwargs)
+                              cal_kwargs=cal_kwargs,
+                              referenceTime=1000)
     else:
         dymAPI.set_simSetup({"stopTime": 10.0})
         # Setup Calibrator
