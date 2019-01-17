@@ -24,6 +24,7 @@ Also use the Dymola flag `Advanced.LogStructuredEvaluation = true` (p. 630 Dymol
 
 ## Associates
 - Philipp Mehrfeld, pmehrfeld@eonerc.rwth-achen.de
-- Marc Baranski, mbaranski@eonerc.rwth-achen.de
+- Thomas Storek, tstorek@eonerc.rwth-achen.de
+- (Marc Baranski, mbaranski@eonerc.rwth-achen.de)
 
 
