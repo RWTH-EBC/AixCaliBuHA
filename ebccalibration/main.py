@@ -39,7 +39,7 @@ def continouusCalibration(continouusData, typeOfContinouusCalibration, dymAPI, w
         # Alter the simulation time. This depends on the mode one is using.
         if typeOfContinouusCalibration == "timedelta":
             startTime = float(c["startTime"]-referenceTime)
-        elif typeOfContinouusCalibration == "fixStart"
+        elif typeOfContinouusCalibration == "fixStart":
             startTime = float(referenceTime)
         elif typeOfContinouusCalibration == "dsfinal":
             startTime = float(c["startTime"])
