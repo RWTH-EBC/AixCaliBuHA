@@ -1,5 +1,13 @@
 # Modelica Calibration
 
+## Work in Progress
+
+### Link dependencies
+
+Currently, this repo represents some kind of "master/overall" repo. Therefore, all related ongoing projects are linked here:
+
+*  URL-of-other-gitlab-rep
+
 ## How to install?
 
 For installation use pip. Run `pip install -e "Path/to/this/repository"`
