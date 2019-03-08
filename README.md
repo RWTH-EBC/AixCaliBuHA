@@ -6,7 +6,9 @@
 
 Currently, this repo represents some kind of "master/overall" repo. Therefore, all related ongoing projects are linked here:
 
-*  URL-of-other-gitlab-rep
+*  [Tool DyOS](http://www.avt.rwth-aachen.de/cms/AVT/Forschung/Software/~iptr/DyOS/) from AVT, RWTH Aachen University
+*  `Design` Library included in Dymola (See also Dymola User Manual Volume 2)
+*  [`Optimization` Library](https://www.modelica.org/libraries) (DLR-SR)
 
 ## How to install?
 
