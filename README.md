@@ -8,7 +8,7 @@ Currently, this repo represents some kind of "master/overall" repo. Therefore, a
 
 *  [Tool DyOS](http://www.avt.rwth-aachen.de/cms/AVT/Forschung/Software/~iptr/DyOS/) from AVT, RWTH Aachen University
 *  `Design` Library included in Dymola (See also Dymola User Manual Volume 2)
-*  [`Optimization` Library](https://www.modelica.org/libraries) (DLR-SR)
+*  [`Optimization` Library](https://www.modelica.org/libraries) (DLR-SR), s. help in [EBC-SharePoint](https://ecampus.rwth-aachen.de/units/eonerc/ebc/Wiki/Optimierung%20mit%20Dymola.aspx)
 
 ## How to install?
 
