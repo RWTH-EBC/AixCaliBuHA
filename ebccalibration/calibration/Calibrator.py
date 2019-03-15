@@ -145,6 +145,10 @@ class calibrator():
             self.dymAPI.dymola.close()
             raise Exception(e) # Actually raise the error so the script stops.
 
+    def cal_dlib(self, obj):
+        import dlib
+        res = dlib.find_min_global()
+
     def objective(self, set):
         """
         Default objective function.
@@ -177,18 +181,17 @@ class calibrator():
         self.objHis.append(total_res)
         self.counterHis.append(self.counter)
         self.callbackF(set)
-        if self.continouusCalibration:
-            if self.totalMin["obj"] > total_res:
-                self.totalMin = {"obj":total_res,
-                                 "dsres": filepath,
-                                 "dsfinal":os.path.join(os.path.dirname(filepath), "dsfinal.txt")}
-                #Overwrite old results:
-                if os.path.isfile(os.path.join(self.savepathMinResult, "dsres.mat")):
-                    os.remove(os.path.join(self.savepathMinResult, "dsres.mat"))
-                if os.path.isfile(os.path.join(self.savepathMinResult, "dsfinal.txt")):
-                    os.remove(os.path.join(self.savepathMinResult, "dsfinal.txt"))
-                os.rename(filepath, os.path.join(self.savepathMinResult, "dsres.mat"))
-                os.rename(os.path.join(os.path.dirname(filepath), "dsfinal.txt"), os.path.join(self.savepathMinResult, "dsfinal.txt"))
+        if self.continouusCalibration and self.totalMin["obj"] > total_res:
+            self.totalMin = {"obj":total_res,
+                             "dsres": filepath,
+                             "dsfinal":os.path.join(os.path.dirname(filepath), "dsfinal.txt")}
+            #Overwrite old results:
+            if os.path.isfile(os.path.join(self.savepathMinResult, "dsres.mat")):
+                os.remove(os.path.join(self.savepathMinResult, "dsres.mat"))
+            if os.path.isfile(os.path.join(self.savepathMinResult, "dsfinal.txt")):
+                os.remove(os.path.join(self.savepathMinResult, "dsfinal.txt"))
+            os.rename(filepath, os.path.join(self.savepathMinResult, "dsres.mat"))
+            os.rename(os.path.join(os.path.dirname(filepath), "dsfinal.txt"), os.path.join(self.savepathMinResult, "dsfinal.txt"))
         return total_res
 
     def callbackF(self, xk):
