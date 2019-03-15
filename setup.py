@@ -21,12 +21,12 @@ setup(name='ebccalibration',
 					'modelicares',
 					'matplotlib',
 					'scikit-learn'],
-# Addtional packages:
-# ebcpython : https://git.rwth-aachen.de/EBC/EBC_all/Python/EBC_Python_Library/
-# dymola : https://github.com/RWTH-EBC/AixLib/wiki/How-to:-Dymola-Python-Interface
       install_requires=['numpy',
 					'scipy',
 					'pandas',
 					'modelicares',
 					'matplotlib',
 					'scikit-learn'])
+# Addtional packages:
+# ebcpython : https://git.rwth-aachen.de/EBC/EBC_all/Python/EBC_Python_Library/
+# dymola : https://github.com/RWTH-EBC/AixLib/wiki/How-to:-Dymola-Python-Interface

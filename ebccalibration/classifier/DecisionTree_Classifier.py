@@ -65,15 +65,15 @@ def create_and_report_classification_predictions(dtree, X_test, y_test, df, clas
 
 def main():
     # Define main inputs
-    fname_input = os.path.normpath(r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx')  # file
-    model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')  # Index of data frame is first column. However, index is not important in this function
-    col_name_list = ['VDot', 'T_RL', 'T_VL', 'T_Amb', 'MassFlow', 'TempDiff']  # List with column names that should be part of the classifier analysis
-    col_name_with_classes = 'class'  # Column name where classes are listed
+    #fname_input = os.path.normpath(r'D:\04_Git\modelica-calibration\Classifier\ClassifierInput.xlsx')  # file
+    #model_input = pd.read_excel(io=fname_input, sheet_name='Sheet1')  # Index of data frame is first column. However, index is not important in this function
+    #col_name_list = ['VDot', 'T_RL', 'T_VL', 'T_Amb', 'MassFlow', 'TempDiff']  # List with column names that should be part of the classifier analysis
+    #col_name_with_classes = 'class'  # Column name where classes are listed
 
-    # fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-26\AllData.hdf')
-    # model_input = pd.read_hdf(fname_input)
-    # col_name_list = []  # List with column names that should be part of the classifier analysis
-    # col_name_with_classes = ''  # Column name where classes are listed
+    fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-30\AllData_RowDiv10_Interp10s.hdf')
+    model_input = pd.read_hdf(fname_input)
+    col_name_list = []  # List with column names that should be part of the classifier analysis
+    col_name_with_classes = ''  # Column name where classes are listed
 
     save_path = os.path.normpath(r'D:')  # Result folder
 
