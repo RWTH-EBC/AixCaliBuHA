@@ -60,7 +60,7 @@ def continouus_calibration(continouus_data, type_of_continouus_calibration, dymo
                 dymola_api.import_initial(new_dsfinal)
         else:
             tuner_para = c["tuner_para"]
-        # Create class with new dymola_api
+        # Create class with new simulationapi
         print("Starting with class {} in the time period: start = {} to end = {}".format(c["class"], c["start_time"], c["stop_time"]))
         cal = Calibrator.Calibrator(goals=c["goals"],
                                     tuner_para=tuner_para,
@@ -119,7 +119,7 @@ def example(continouus = False):
                            "class": "Ausschalten",
                            "goals": goals,
                            "tuner_para": tuner_para}]
-    # Setup dymola_api
+    # Setup simulationapi
     ex_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "calibration", "examples", "ExampleCalibration.mo")
     packages = [os.path.normpath(ex_path)]
     dymola_api = DymolaAPI.DymolaAPI(working_dir, packages,

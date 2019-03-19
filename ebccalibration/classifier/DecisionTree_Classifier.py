@@ -26,6 +26,8 @@ from sklearn.tree import export_graphviz
 # Windows Zip file directly from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
 os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin').replace('\\', '/')
 
+def test_creat_and():
+    pass
 
 def create_and_export_decision_tree(col_name_list, X_train, y_train, save_path):
     # Create tree instance. Ordne bekannte Klassen den bekannten Trainingsdaten zu
