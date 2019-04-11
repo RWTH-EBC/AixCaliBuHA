@@ -1,3 +1,3 @@
-class Preprocesser():
+class Preprocessor:
     def __init__(self):
         raise NotImplementedError

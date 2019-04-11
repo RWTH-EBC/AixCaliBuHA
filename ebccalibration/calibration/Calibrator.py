@@ -13,7 +13,7 @@ from xml.dom import minidom
 import matplotlib.pyplot as plt
 import os, dicttoxml, re
 
-class Calibrator():
+class Calibrator:
     def __init__(self, goals, tuner_para, qual_meas, method, dymola_api, bounds = None, time_info_tupel = None, **kwargs):
         """
         Class for a Calibrator.
