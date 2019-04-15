@@ -47,7 +47,7 @@ class SimTargetData(TimeSeriesData):
 
 
 class TunerPara(object):
-    def __init__(self, name, initial_value, bounds = None):
+    def __init__(self, name, initial_value, bounds=None):
         """
         Class for a tuner parameters.
         :param name: str
@@ -61,6 +61,32 @@ class TunerPara(object):
         self.initial_value = initial_value
         self.bounds = bounds
         self._assert_correct_input()
+        self.scale = self.bounds[1] - self.bounds[0]
+        self.offset = self.bounds[0]
+
+    def scale(self, descaled):
+        """
+        Scales the given value to the bounds of the tuner parameter between 0 and 1
+        :param descaled: float
+        Value to be scaled
+        :return: scaled: float
+        Scaled value between 0 and 1
+        """
+        if not self.bounds:  # If no bounds are given, scaling is not possible--> descaled = scaled
+            return descaled
+        return (descaled - self.offset)/self.scale
+
+    def descale(self, scaled):
+        """
+        Converts the given scaled value to an descaled one.
+        :param scaled: float
+        Scaled input value between 0 and 1
+        :return: descaled: float
+        descaled value based on bounds.
+        """
+        if not self.bounds:  # If no bounds are given, scaling is not possible--> descaled = scaled
+            return scaled
+        return scaled*self.scale + self.offset
 
     def dump_to_dict(self):
         """Function to store the class in a dict to later save it to another format."""
@@ -75,7 +101,7 @@ class TunerPara(object):
         if not isinstance(self.initial_value, (float,int)): raise TypeError("Initial_value as to be of type float")
         if self.bounds:
             if not isinstance(self.bounds, (list, tuple)): raise TypeError("Bounds have to be a list or a tuple")
-            if not len(self.bounds)==2:
+            if not len(self.bounds) == 2:
                 raise ValueError("The bounds object has to be of length 2 but has length %s"%len(self.bounds))
             if not isinstance(self.bounds[0], (float, int)) or not isinstance(self.bounds[1], (float, int)):
                 raise TypeError("Given bounds are not of type float or int")
