@@ -1,4 +1,7 @@
-# Modelica Calibration
+# AixCaliBuHA
+
+**Aix** (from French Aix-la-Chapelle) 
+**Cali**bration for **Bu**ilding and **H**V**A**C Systems
 
 ## Work in Progress
 
