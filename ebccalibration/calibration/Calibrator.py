@@ -5,7 +5,6 @@ calculation of the statistical values and minimizer
 import scipy.optimize as opt
 import sklearn.metrics as skmetrics
 import numpy as np
-import ebcpython.modelica.postprocessing.simres_ebc as sr_ebc
 from modelicares import simres as sr
 from datetime import datetime #Used for saving of relevant files
 import xml.etree.ElementTree as ET
@@ -247,7 +246,7 @@ class Calibrator:
             raise TypeError("Given filename is not of type *.mat")
 
         sim = sr.SimRes(filepath)
-        df = sr_ebc.to_pandas_ebc(sim, names=list(aliases), aliases=aliases, useUnit = False)
+        df = sim.to_pandas(names=list(aliases), aliases=aliases, with_unit=False)
         if getTrajectorieNames:
             self.traj_names = sr_ebc.get_trajectories(sim)
         return df
