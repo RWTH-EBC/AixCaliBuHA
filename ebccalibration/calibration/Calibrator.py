@@ -243,7 +243,7 @@ class Calibrator:
         Data Frame object with relevant data
         """
         if not filepath.endswith(".mat"):
-            raise TypeError("Given filename is not of type *.mat")
+            raise TypeError("Given filepath is not of type *.mat")
 
         sim = sr.SimRes(filepath)
         df = sim.to_pandas(names=list(aliases), aliases=aliases, with_unit=False)
@@ -337,7 +337,7 @@ class Calibrator:
         total_weighting = 0
         for goal in goals:
             if not ("meas" in goal and "sim" in goal and "weighting" in goal and "meas_full_modelica_name" in goal and "sim_full_modelica_name" in goal and len(goal.keys())==5):
-                raise Exception("Given goal dict is no well formatted.")
+                raise Exception("Given goal dict is not well formatted.")
             else:
                 total_weighting += goal["weighting"]
         if total_weighting != 1:
