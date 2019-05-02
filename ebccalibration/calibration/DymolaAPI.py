@@ -79,10 +79,10 @@ class DymolaAPI():
             new_path = os.path.join(self.cwdir, save_name) # create a new path based on the current datetime
             if not os.path.exists(new_path):
                 os.mkdir(new_path)
-            for filename in ["%s.mat"%self.sim_setup["resultFile"], "dslog.txt", "dsfinal.txt"]:
-                if os.path.isfile(os.path.join(new_path, filename)):
-                    os.remove(os.path.join(new_path, filename)) #Delete existing files
-                os.rename(os.path.join(self.cwdir, filename), os.path.join(new_path, filename)) #Move files
+            for filepath in ["%s.mat"%self.sim_setup["resultFile"], "dslog.txt", "dsfinal.txt"]:
+                if os.path.isfile(os.path.join(new_path, filepath)):
+                    os.remove(os.path.join(new_path, filepath)) #Delete existing files
+                os.rename(os.path.join(self.cwdir, filepath), os.path.join(new_path, filepath)) #Move files
         else:
             new_path = self.cwdir
         if get_structurals:

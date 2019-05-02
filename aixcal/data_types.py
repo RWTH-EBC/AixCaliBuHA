@@ -4,13 +4,26 @@ import modelicares.simres as sr
 
 
 class TimeSeriesData(object):
-    def __init__(self, filepath):
+    def __init__(self, filepath, **kwargs):
+        """
+        Base class for time series data in the framework.
+        :param filepath: str, os.path.normpath
+            Filepath ending with either .hdf, .mat or .csv containing
+            time-dependent data to be loaded as a pandas.DataFrame
+        :keyword key: Name of the table in a .hdf-file if the file
+        contains multiple tables.
+        """
         self.data_type = None
         self.df = pd.DataFrame()
         # Check whether the file exists
-        if not os.path.isfile(filepath): raise FileNotFoundError("The given filepath could not be openend")
+        if not os.path.isfile(filepath): raise FileNotFoundError("The given filepath (%s) could "
+                                                                 "not be openend" % filepath)
         self.filepath = filepath
+        # Used for import of .hdf-files, as multiple tables can be stored inside on file.
+        if "key" in kwargs:
+            self.key = kwargs["key"]
         self._load_data()
+
 
     def _load_data(self):
         """
@@ -18,14 +31,27 @@ class TimeSeriesData(object):
         """
         # Open based on file suffix. Currently, hdf, csv, and Modelica result files (mat) are supported.
         if self.filepath.endswith(".hdf"):
-            self.df = pd.read_hdf(self.filepath)
+            self._load_hdf()
         elif self.filepath.endswith(".csv"):
             self.df = pd.read_csv(self.filepath)
         elif self.filepath.endswith(".mat"):
             sim = sr.SimRes(self.filepath)
             self.df = sim.to_pandas()
         else:
-            raise TypeError("Only .hdf and .csv are supported!")
+            raise TypeError("Only .hdf, .csv and .mat are supported!")
+
+    def _load_hdf(self):
+        """
+        Load the current file as a hdf to a dataframe.
+        As specifying the key can be a problem, the user will
+        get all keys of the file if one is necessary but not provided.
+        """
+        try:
+            self.df = pd.read_hdf(self.filepath, key=self.key)
+        except (ValueError, KeyError):
+            keys = ", ".join(get_keys_of_hdf_file(self.filepath))
+            raise KeyError("key must be provided when HDF5 file contains multiple datasets. "
+                           "Here are all keys in the given hdf-file: %s" % keys)
 
 
 class MeasTargetData(TimeSeriesData):
@@ -57,6 +83,8 @@ class TunerPara(object):
         :param bounds: list, tuple
         Tuple or list of float or ints for lower and upper bound to the tuner parameter
         """
+        # TODO Decide on the format of the TunerPara-Class.
+        #  Either on parameter per class, or a class with an array of parameters. Maybe a df is an option
         self.name = name
         self.initial_value = initial_value
         self.bounds = bounds
@@ -95,10 +123,10 @@ class TunerPara(object):
     def _assert_correct_input(self, ):
         """
         Function to check whether the class parameters are correct or not.
-        This check is done to avoid errors at later stages of the optimization
+        This check is done to avoid errors at later stages of the optimization.
         """
         if not isinstance(self.name, str): raise TypeError("Name has to be of type string")
-        if not isinstance(self.initial_value, (float,int)): raise TypeError("Initial_value as to be of type float")
+        if not isinstance(self.initial_value, (float,int)): raise TypeError("Initial_value has to be of type float or int")
         if self.bounds:
             if not isinstance(self.bounds, (list, tuple)): raise TypeError("Bounds have to be a list or a tuple")
             if not len(self.bounds) == 2:
@@ -109,3 +137,70 @@ class TunerPara(object):
             if self.initial_value < self.bounds[0] or self.initial_value > self.bounds[1]:
                 raise ValueError("The initial value lays outside of the given boundaries")
         return True
+
+
+class Goal:
+    def __init__(self, measured_data, simulated_data, weighting=1.0):
+        """
+        Class for one or multiple goals. Used to evaluate the difference between current simulation and
+        :param measured_data: aixcal.data_types.MeasTargetData
+            The dataset to be used as a reference for the simulation output.
+        :param simulated_data: aixcal.data_types.SimTargetData
+        :param weighting: float
+            Value between 0 and 1 to account for multiple Goals to be evaluated.
+        """
+
+        self.measured_data = measured_data
+        self.weighting = weighting
+        self.simulated_data = simulated_data
+
+
+class CalibrationClass:
+    def __init__(self, name, start_time, stop_time, goals=None, tuner_para=None):
+        """
+        Class used for continuous calibration.
+        :param name: str
+        Name of the class, e.g. 'device on'
+        :param start_time: float, int
+        Time at which the class starts
+        :param stop_time:
+        Time at which the class ends
+        :param goals: aixcal.data_types.Goal
+        Goal parameters which are relevant in this class.
+        As this class may be used in the classifier, a Goal-Class
+        may not be available at all times and can be added later.
+        :param tuner_para: aixcal.data_types.TunerPara
+        As this class may be used in the classifier, a Tunerpara-Class
+        may not be available at all times and can be added later.
+
+        """
+        self.name = name
+        self.start_time = start_time
+        self.stop_time = stop_time
+        if goals:
+            self.goals = self.set_goals(goals)
+        if tuner_para:
+            self.tuner_para = self.set_tuner_para(tuner_para)
+
+    def set_goals(self, goals):
+        if not isinstance(goals, type(Goal)):
+            raise TypeError("Provided goals parameter in not of type Goal")
+        self.goals = goals
+
+    def set_tuner_para(self, tuner_para):
+        if not isinstance(tuner_para, type(TunerPara)):
+            raise TypeError("Given tuner_para is not of type TunerPara")
+        self.tuner_para = tuner_para
+
+
+def get_keys_of_hdf_file(filepath):
+    """
+    Find all keys in a given hdf-file.
+    :param filepath: str, os.path.normpath
+        Path to the .hdf-file
+    :return: list
+        List with all keys in the given file.
+    """
+    import h5py
+    f = h5py.File(filepath, 'r')
+    return list(f.keys())

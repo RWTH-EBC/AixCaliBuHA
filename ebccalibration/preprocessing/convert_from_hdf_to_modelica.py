@@ -18,6 +18,7 @@ def conv_hdf_to_mat(fname, columns, save_path_file, set_time_to_zero=True):
     :return mat_file:
          Returns the version 4 matfile
     '''
+
     df = pd.read_hdf(fname)  # eventually add <, key='df_with_on_off_signal'>
     # If hdf file has more data sets, the key has to be declared. How to read out groups / keys?:
     # import h5py
