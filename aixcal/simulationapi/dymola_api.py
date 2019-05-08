@@ -1,4 +1,7 @@
-import os, sys, psutil, warnings
+import os
+import sys
+#import psutil
+import warnings
 DymolaInterface = None  # Create dummy to later be used for global-import
 
 

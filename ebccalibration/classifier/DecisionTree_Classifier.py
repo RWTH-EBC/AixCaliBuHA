@@ -10,8 +10,6 @@ This is a script to perform supervised learning and apply this to time series da
 these time series.
 """
 import os
-import matplotlib as mpl
-mpl.use('Qt5Agg')
 import pylab as plt
 import pandas as pd
 import pydot
@@ -22,6 +20,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 from IPython.display import Image
 from sklearn.externals.six import StringIO
 from sklearn.tree import export_graphviz
+import matplotlib as mpl
+mpl.use('Qt5Agg')
 # Download binaries from: http://www.graphviz.org/download/
 # Windows Zip file directly from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
 os.environ["PATH"] += os.pathsep + (r'D:\06_Programme\graphviz-2.38\release\bin').replace('\\', '/')

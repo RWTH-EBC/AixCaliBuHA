@@ -16,3 +16,8 @@ dist
 # PyCharm #
 #####################
 .idea
+.cache
+
+# Unittest #
+#####################
+.pytest_cache

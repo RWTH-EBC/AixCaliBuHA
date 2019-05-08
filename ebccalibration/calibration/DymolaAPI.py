@@ -4,7 +4,9 @@ Script with the dymola-interface class.
 Create the object dymola-interface to simulate models.
 """
 
-import os,sys, psutil
+import os
+import sys
+#import psutil
 sys.path.insert(0, os.path.join('C:\Program Files\Dymola 2019',
                     'Modelica',
                     'Library',

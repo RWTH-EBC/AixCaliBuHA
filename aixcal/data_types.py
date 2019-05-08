@@ -12,6 +12,7 @@ class TimeSeriesData(object):
             time-dependent data to be loaded as a pandas.DataFrame
         :keyword key: Name of the table in a .hdf-file if the file
         contains multiple tables.
+        :keyword sep: separator for the use of a csv file.
         """
         self.data_type = None
         self.df = pd.DataFrame()
@@ -20,21 +21,22 @@ class TimeSeriesData(object):
                                                                  "not be openend" % filepath)
         self.filepath = filepath
         # Used for import of .hdf-files, as multiple tables can be stored inside on file.
-        if "key" in kwargs:
-            self.key = kwargs["key"]
+        supported_kwargs = ["key", "sep"]
+        for keyword in supported_kwargs:
+            setattr(self, keyword, kwargs.get(keyword))
         self._load_data()
-
 
     def _load_data(self):
         """
         Private function to load the data in the file in filepath and convert it to a dataframe.
         """
         # Open based on file suffix. Currently, hdf, csv, and Modelica result files (mat) are supported.
-        if self.filepath.endswith(".hdf"):
+        file_suffix = self.filepath.split(".")[-1].lower()
+        if file_suffix == "hdf":
             self._load_hdf()
-        elif self.filepath.endswith(".csv"):
+        elif file_suffix == "csv":
             self.df = pd.read_csv(self.filepath)
-        elif self.filepath.endswith(".mat"):
+        elif file_suffix == "mat":
             sim = sr.SimRes(self.filepath)
             self.df = sim.to_pandas()
         else:
@@ -174,6 +176,10 @@ class CalibrationClass:
         may not be available at all times and can be added later.
 
         """
+        if not start_time <= stop_time:
+            raise ValueError("The given start-time is higher than the stop-time.")
+        if not isinstance(name, str):
+            raise TypeError("Name of CalibrationClass is {} but has to be of type str".format(type(name)))
         self.name = name
         self.start_time = start_time
         self.stop_time = stop_time
