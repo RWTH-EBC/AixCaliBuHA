@@ -2,7 +2,7 @@ import numpy as np
 import sklearn.metrics as skmetrics
 
 
-class StatisticsAnalyzer():
+class StatisticsAnalyzer:
     def __init__(self):
         raise NotImplementedError
 
@@ -20,8 +20,8 @@ def calc_stat_values(meas, sim):
     Containing all calculated statistical values
     """
     statistical_measures = {"MAE": skmetrics.mean_absolute_error(meas, sim),
-                   "RMSE": np.sqrt(skmetrics.mean_squared_error(meas, sim)),
-                   "R2": 1 - skmetrics.r2_score(meas, sim)}
+                            "RMSE": np.sqrt(skmetrics.mean_squared_error(meas, sim)),
+                            "R2": 1 - skmetrics.r2_score(meas, sim)}
     # Check if CVRMSE can be calculated
     if np.mean(meas) != 0:
         statistical_measures["CVRMSE"] = statistical_measures["RMSE"] / np.mean(meas)

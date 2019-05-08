@@ -31,9 +31,10 @@ def convert_hdf_to_mat(filepath, save_path_file, columns=None, key=None, set_tim
     >>> example_filepath = os.path.normpath(project_dir + "//examples//example_data.hdf")
     >>> save_path = os.path.normpath(project_dir + "//examples//example_data_converted.mat")
     >>> columns = ["sine.y / "]
-    >>> convert_hdf_to_mat(example_filepath, save_path, columns=columns, key="trajectories")
-    Successfully converted given .hdf-file to .mat-file.
-    >>> os.remove(save_path)
+    >>> success, filepath = convert_hdf_to_mat(example_filepath, save_path, columns=columns, key="trajectories")
+    >>> print(success)
+    True
+    >>> os.remove(filepath)
     """
     data = data_types.TimeSeriesData(filepath, **{"key": key})
     df = data.df
@@ -51,8 +52,8 @@ def convert_hdf_to_mat(filepath, save_path_file, columns=None, key=None, set_tim
     new_mat = {'table': subset.values.tolist()}
     # Save matrix as a MATLAB *.mat file, which is readable by Modelica.
     spio.savemat(save_path_file, new_mat, format="4")
-    print("Successfully converted given .hdf-file to .mat-file.")
-
+    # Provide user feedback whether the conversion was successful.
+    return True, save_path_file
 
 if __name__ == '__main__':
     import doctest

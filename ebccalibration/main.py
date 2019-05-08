@@ -5,7 +5,7 @@ from docutils.nodes import contact
 from ebccalibration.calibration import DymolaAPI
 from ebccalibration.calibration import Calibrator
 import os
-from ebcpython.modelica.tools import manipulate_dsin
+# from ebcpython.modelica.tools import manipulate_dsin  # TODO provide manipulate_dsin in another project.
 
 
 def continouus_calibration(continouus_data, type_of_continouus_calibration, dymola_api, work_dir, qual_meas, method, cal_kwargs, referenceTime = 0):
