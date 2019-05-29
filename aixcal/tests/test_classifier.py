@@ -1,9 +1,13 @@
+"""Test-module for all classes inside
+aixcal.classifier."""
 import unittest
 import os
-from aixcal.classifier import classifier
 
 
-class TestDataTypes(unittest.TestCase):
+class TestClassifier(unittest.TestCase):
+    """
+    Test the classifier class of aixcal
+    """
 
     def setUp(self):
         """Called before every test.

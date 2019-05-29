@@ -75,7 +75,7 @@ def main():
     fname_input = os.path.normpath(r'D:\CalibrationHP\2018-01-30\AllData_RowDiv10_Interp10s.hdf')
     model_input = pd.read_hdf(fname_input)
     col_name_list = []  # List with column names that should be part of the classifier analysis
-    col_name_with_classes = ''  # Column name where classes are listed
+    col_name_with_classes = ''  # Column name where classes are listed test
 
     save_path = os.path.normpath(r'D:')  # Result folder
 
