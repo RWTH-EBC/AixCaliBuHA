@@ -1,12 +1,18 @@
 stages:
-   - test
-   - analysis
+  - compile
+  - log
+  - post
+  - test
+  - analysis
 
 test_py35:
   image: continuumio/anaconda3
   stage: test
 
   before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - rm -rf /var/lib/apt/lists/*
     - conda create -n python35 python=3.5 -y
     - source activate python35
     - python -V
@@ -21,6 +27,9 @@ test_py36:
   stage: test
 
   before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - rm -rf /var/lib/apt/lists/*
     - conda create -n python36 python=3.6 -y
     - source activate python36
     - python -V
@@ -35,6 +44,9 @@ test_py37:
   stage: test
 
   before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - rm -rf /var/lib/apt/lists/*
     - conda create -n python37 python=3.7 -y
     - source activate python37
     - python -V
@@ -69,3 +81,8 @@ test_py37:
 #  script:
 #    - gitlab-sonar-scanner
 #    - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} -Dsonar.gitlab.ref_name=${CI_COMMIT_REF_NAME} -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE  -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.issuesReport.console.enable=true
+
+
+include:
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: '/pylint/pylint.gitlab-ci.yml'

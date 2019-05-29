@@ -1,11 +1,13 @@
+"""Test-module for all classes inside
+aixcal.preprocessing."""
 import unittest
 import os
 import scipy.io as spio
 from aixcal.preprocessing import conversion
-from aixcal.preprocessing import preprocessing
 
 
-class TestDataTypes(unittest.TestCase):
+class TestPreProcessing(unittest.TestCase):
+    """Test-class for preprocessing."""
 
     def setUp(self):
         """Called before every test.

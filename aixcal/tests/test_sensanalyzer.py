@@ -1,10 +1,12 @@
+"""Test-module for all classes inside
+aixcal.sensanalyzer."""
 import unittest
 import os
-from aixcal.sensanalyzer import sensitivity_analyzer
 
 
-class TestDataTypes(unittest.TestCase):
-
+class TestSenAnalyzer(unittest.TestCase):
+    """Test-class for sensitivity analysis
+    """
     def setUp(self):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""

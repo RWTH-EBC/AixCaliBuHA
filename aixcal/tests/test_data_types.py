@@ -1,6 +1,11 @@
-import unittest, os
+"""Test-module for all classes inside
+aixcal.data_types."""
+
+import os
+import unittest
 from aixcal import data_types
 import pandas as pd
+import numpy as np
 
 
 class TestDataTypes(unittest.TestCase):
@@ -63,15 +68,90 @@ class TestDataTypes(unittest.TestCase):
         sim_target_data = data_types.SimTargetData(self.example_data_hdf_path, key="trajectories")
         self.assertEqual(sim_target_data.data_type, "SimTargetData")
 
-    def test_tuner_para(self):
-        """Test the class TunerPara"""
-        # TODO Once a decision is made on the structure of tunerPara-Class, implement the test.
-        pass
+    def test_tuner_paras(self):
+        """Test the class TunerParas"""
+        dim = np.random.randint(1, 100)
+        names = ["test_%s" % i for i in range(dim)]
+        initial_values = np.random.rand(dim) * 10  # Values between 0 and 10.
+        # Values between -100 and 110
+        bounds = [(float(np.random.rand(1))*-100,
+                   float(np.random.rand(1))*100 + 10) for i in range(dim)]
+        # Check for false input
+        with self.assertRaises(ValueError):
+            wrong_bounds = [(0, 100),
+                            (100, 0)]
+            tuner_paras = data_types.TunerParas(names,
+                                                initial_values,
+                                                wrong_bounds)
+        with self.assertRaises(ValueError):
+            wrong_bounds = [(0, 100) for i in range(dim+1)]
+            tuner_paras = data_types.TunerParas(names,
+                                                initial_values,
+                                                wrong_bounds)
+        with self.assertRaises(ValueError):
+            wrong_initial_values = np.random.rand(100)
+            tuner_paras = data_types.TunerParas(names,
+                                                wrong_initial_values)
+        with self.assertRaises(TypeError):
+            wrong_names = ["test_1", 123]
+            tuner_paras = data_types.TunerParas(wrong_names,
+                                                initial_values)
+        # Check return values of functions:
+        tuner_paras = data_types.TunerParas(names,
+                                            initial_values,
+                                            bounds)
+        scaled = np.random.rand(dim)  # between 0 and 1
+        # Descale and scale again to check if the output is the almost (numeric precision) same
+        descaled = tuner_paras.descale(scaled)
+        scaled_return = tuner_paras.scale(descaled)
+        np.testing.assert_almost_equal(scaled, scaled_return)
+        self.assertEqual(names, tuner_paras.get_names())
+        np.testing.assert_equal(tuner_paras.get_initial_values(),
+                                initial_values)
 
-    def test_goal(self):
-        """Test the class Goal"""
-        # TODO Once a decision is made on the structure of goal-Class, implement the test.
-        pass
+    def test_goals(self):
+        """Test the class Goals"""
+        # Define some data.
+        sim_target_data = data_types.SimTargetData(self.example_data_hdf_path, key="parameters")
+        meas_target_data = data_types.MeasTargetData(self.example_data_hdf_path, key="parameters")
+        meas_columns = ["sine.amplitude / ", "sine.phase / rad"]
+        sim_columns = ["sine.freqHz / Hz", "sine.startTime / s"]
+        # Setup the goals class:
+        goals = data_types.Goals(meas_target_data,
+                                 sim_target_data,
+                                 meas_columns=meas_columns,
+                                 sim_columns=sim_columns)
+        # Check different formats of setting up:
+        # First check if no columns are specified
+        with self.assertRaises(TypeError):
+            goals = data_types.Goals(meas_target_data,
+                                     sim_target_data)
+        # Now if passing of strings works:
+        goals = data_types.Goals(meas_target_data,
+                                 sim_target_data,
+                                 sim_columns=sim_columns[0],
+                                 meas_columns=meas_columns[1])
+        self.assertIsInstance(goals, data_types.Goals)
+        # Check the eval_difference function:
+        self.assertIsInstance(goals.eval_difference("RMSE"), float)
+        # Try to alter the sim_target_data object with something wrong
+        with self.assertRaises(TypeError):
+            goals.set_sim_target_data(meas_target_data)
+        # Play around with wrong weightings:
+        with self.assertRaises(ValueError):
+            weightings = [1, 2]
+            goals = data_types.Goals(meas_target_data,
+                                     sim_target_data,
+                                     meas_columns=meas_columns,
+                                     sim_columns=sim_columns,
+                                     weightings=weightings)
+        with self.assertRaises(IndexError):
+            weightings = np.ones(100)/100
+            goals = data_types.Goals(meas_target_data,
+                                     sim_target_data,
+                                     meas_columns=meas_columns,
+                                     sim_columns=sim_columns,
+                                     weightings=weightings)
 
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
@@ -84,11 +164,11 @@ class TestDataTypes(unittest.TestCase):
             data_types.CalibrationClass(not_a_string, 0, 10)
 
         # Test set_functions for goals and tuner parameters
-        dummy_tuner_para = "not TunerPara-Class"
-        dummy_goal = "not Goal-Class"
+        dummy_tuner_para = "not TunerParas-Class"
+        dummy_goal = "not Goals-Class"
         dummy_cal_class = data_types.CalibrationClass("dummy", 0, 10)
         with self.assertRaises(TypeError):
-            dummy_cal_class.set_tuner_para(dummy_tuner_para)
+            dummy_cal_class.set_tuner_paras(dummy_tuner_para)
         with self.assertRaises(TypeError):
             dummy_cal_class.set_goals(dummy_goal)
 

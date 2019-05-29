@@ -1,3 +1,5 @@
+"""Setup.py script for the aixcal-framework"""
+
 import setuptools
 import pip
 from packaging import version
@@ -12,7 +14,8 @@ setup_requires = install_requires.copy()  # Add all open-source packages to setu
 if version.parse(pip.__version__) > version.parse('18.1'):
     install_requires.append('modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_12_2')
 else:
-    raise ImportError("You have to upgrade your pip version to >=18.1 for modelicares to be installed.")
+    raise ImportError("You have to upgrade your pip version "
+                      "to >=18.1 for modelicares to be installed.")
 
 setuptools.setup(name='ebccalibration',
                  version='0.1',
@@ -25,7 +28,9 @@ setuptools.setup(name='ebccalibration',
                  classifiers=['Programming Language :: Python :: 3.5',
                               'Programming Language :: Python :: 3.6',
                               'Programming Language :: Python :: 3.7',],
-                 packages=setuptools.find_packages(exclude=['img', 'ebccalibration.*', 'ebccalibration']),
+                 packages=setuptools.find_packages(exclude=['img',
+                                                            'ebccalibration.*',
+                                                            'ebccalibration']),
                  setup_requires=setup_requires,
                  install_requires=install_requires)
 

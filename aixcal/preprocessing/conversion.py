@@ -28,10 +28,11 @@ def convert_hdf_to_mat(filepath, save_path_file, columns=None, key=None, set_tim
     :Example
     >>> import os
     >>> project_dir = os.path.dirname(os.path.dirname(__file__))
-    >>> example_filepath = os.path.normpath(project_dir + "//examples//example_data.hdf")
+    >>> example_file = os.path.normpath(project_dir + "//examples//example_data.hdf")
     >>> save_path = os.path.normpath(project_dir + "//examples//example_data_converted.mat")
-    >>> columns = ["sine.y / "]
-    >>> success, filepath = convert_hdf_to_mat(example_filepath, save_path, columns=columns, key="trajectories")
+    >>> cols = ["sine.y / "]
+    >>> key = "trajectories"
+    >>> success, filepath = convert_hdf_to_mat(example_file, save_path, columns=cols, key=key)
     >>> print(success)
     True
     >>> os.remove(filepath)
