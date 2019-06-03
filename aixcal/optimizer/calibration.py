@@ -37,6 +37,20 @@ class ModelicaCalibrator(Calibrator):
 
     def __init__(self, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
+        #%% Kwargs
+        # Initialize supported keywords with default value
+        self.save_files = kwargs.pop("save_files", False)
+
+        # Check if types are correct:
+        # Booleans:
+        _bool_kwargs = ["save_files"]
+        for bool_keyword in _bool_kwargs:
+            keyword_value = self.__getattribute__(bool_keyword)
+            if not isinstance(keyword_value, bool):
+                raise TypeError("Given {} is of type {} but should be type "
+                                "bool".format(bool_keyword,
+                                              type(keyword_value).__name__))
+
         #%% Initialize all public parameters
         super().__init__(cd, sim_api, statistical_measure, **kwargs)
         if not isinstance(calibration_class, data_types.CalibrationClass):
@@ -59,24 +73,9 @@ class ModelicaCalibrator(Calibrator):
         #%% Setup the logger
         self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
                                                        self.tuner_paras,
-                                                       self.goals)
+                                                       self.goals,
+                                                       show_plot=self.show_plot)
 
-        #%% Kwargs
-        # Initialize supported keywords with default value
-        self.save_files = False
-
-        # Update all kwargs
-        self.__dict__.update(kwargs)
-
-        # Check if types are correct:
-        # Booleans:
-        _bool_kwargs = ["save_files"]
-        for bool_keyword in _bool_kwargs:
-            keyword_value = self.__getattribute__(bool_keyword)
-            if not isinstance(keyword_value, bool):
-                raise TypeError("Given {} is of type {} but should be type "
-                                "bool".format(bool_keyword,
-                                              type(keyword_value).__name__))
 
     def obj(self, xk, *args):
         """
@@ -120,9 +119,9 @@ class ModelicaCalibrator(Calibrator):
         self.logger.calibration_callback_func(xk, total_res)
         return total_res
 
-    def run(self, method, framework, **kwargs):
+    def run(self, method, framework):
         #%% Setup the method and framework in use
-        super().run(method, framework, **kwargs)
+        super().run(method, framework)
 
         #%% Start Calibration:
         self.logger.log("Start calibration of model: {} with "
@@ -136,7 +135,7 @@ class ModelicaCalibrator(Calibrator):
         # Setup the visualizer for plotting:
         self.logger.calibrate_new_class(self.calibration_class.name, self.tuner_paras, self.goals)
         # Run optimization
-        self._res = self._minimize_func(method, **kwargs)
+        self._res = self._minimize_func(method)
 
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._res,
@@ -163,7 +162,7 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         self.calibration_classes = calibration_classes
         self._cal_history = []
 
-    def run(self, method, framework, **kwargs):
+    def run(self, method, framework):
         curr_num = 0
         for cal_class in self.calibration_classes:
             #%% Simulation-Time:
@@ -204,7 +203,7 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
 
             #%% Execution
             # Run the single ModelicaCalibration
-            super().run(method, framework, **kwargs)
+            super().run(method, framework)
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
@@ -328,8 +327,8 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
     def ref_start_time(self, start_time):
         return start_time
 
-    def process_in_between_classes(self, tuner_para_of_class):
-        super().process_in_between_classes(tuner_para_of_class)
+    def process_in_between_classes(self, tuner_paras_of_class):
+        super().process_in_between_classes(tuner_paras_of_class)
         # Alter the dsfinal for the new phase
         new_dsfinal = os.path.join(self.sim_api.cwdir, "dsfinal.txt")
         self._total_initial_names = list(set(self._total_initial_names + self._traj_names))

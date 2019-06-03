@@ -63,17 +63,23 @@ class Logger:
         with open(self.filepath_log, "a+") as log_file:
             log_file.write("\n{}: {}".format(datestring, text))
 
+    def show_log(self):
+        """Function to open the log-file.
+        May be used at the end of a process.
+        """
+        os.system(self.filepath_log)
 
 class Visualizer(Logger):
     """More advanced class to not only log ongoing function
     evaluations but also show the process of the functions
     by plotting interesting causalities and saving these plots."""
 
-    plt.ioff()  # Turn of interactive mode. Only
-
     def __init__(self, cd, name):
         """Instantiate class parameters"""
         super().__init__(cd, name)
+        plt.ioff()  # Turn of interactive mode. Only
+
+
 class CalibrationLogger(Logger):
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
@@ -227,11 +233,12 @@ class CalibrationVisualizer(CalibrationLogger):
     goals = None
     _num_goals = 0
 
-    def __init__(self, cd, name, tuner_paras, goals=None):
+    def __init__(self, cd, name, tuner_paras, goals=None, show_plot=True):
         """Instantiate class parameters"""
 
         # Instantiate the logger:
         super().__init__(cd, name, tuner_paras)
+        self.show_plot = show_plot
         # Setup the figures:
         self.calibrate_new_class(name, tuner_paras, goals)
 
@@ -306,8 +313,9 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.goals is not None:
             self._plot_goals()
 
-        plt.draw()
-        plt.pause(1e-5)
+        if self.show_plot:
+            plt.draw()
+            plt.pause(1e-5)
 
     def save_calibration_result(self, res, model_name, statistical_measure, file_type="svg"):
         """
@@ -324,7 +332,10 @@ class CalibrationVisualizer(CalibrationLogger):
         :return:
         """
         super().save_calibration_result(res, model_name, statistical_measure)
-        plt.savefig(os.path.join(self.cd, "calibration_callback_plot.%s" % file_type))
+        filepath_tuner = os.path.join(self.cd, "tuner_parameter_plot.%s" % file_type)
+        filepath_obj = os.path.join(self.cd, "objective_plot.%s" % file_type)
+        self.fig_tuner.savefig(filepath_tuner)
+        self.fig_obj.savefig(filepath_obj)
         plt.close("all")
 
     def set_goals(self, goals):
@@ -424,8 +435,12 @@ class ClassifierVisualizer(Visualizer):
                      "please install graphviz on your machine.")
 
     def plot_decision_tree(self, df, class_list):
+        """Visualization pair plot (df is data frame with whole X values (train and test)
+        This function takes a long time to be executed.
+        :param df: pd.DataFrame
+        :param class_list: list
+            List with names for classes.
+        """
 
-        # Visualization pair plot (df is data frame with whole X values (train and test)
-        # This function takes a long time to be executed
         seaborn.pairplot(df, hue=class_list)
         plt.savefig(self.cd + '/pairplot.png', bbox_inches='tight', dpi=400)

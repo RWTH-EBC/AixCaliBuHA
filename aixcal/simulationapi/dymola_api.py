@@ -8,6 +8,7 @@ import psutil
 from aixcal import simulationapi
 from aixcal import data_types
 import modelicares.util as mrutil
+import pandas as pd
 DymolaInterface = None  # Create dummy to later be used for global-import
 DymolaConnectionException = None  # Create dummy to later be used for global-import
 
@@ -213,12 +214,19 @@ class DymolaAPI(simulationapi.SimulationAPI):
         # Convert and return all parameters of dsin as a TunerParas-object.
         df = df[df["5"] == "1"]
         names = df.index
-        initial_values = df["2"].values
+        initial_values = pd.to_numeric(df["2"].values)
         # Get min and max-values
-        bounds = [df["3"].values, df["4"].values]
-        tuner_paras = data_types.TunerParas(list(names),
-                                            initial_values,
-                                            bounds=bounds)
+        bounds = [(float(df["3"][idx]), float(df["4"][idx])) for idx in df.index]
+        try:
+            tuner_paras = data_types.TunerParas(list(names),
+                                                initial_values,
+                                                bounds=bounds)
+        except ValueError:
+            # Sometimes, not all parameters have bounds. In this case, no bounds
+            # are specified.
+            tuner_paras = data_types.TunerParas(list(names),
+                                                initial_values,
+                                                bounds=None)
         return tuner_paras
 
     def _setup_dymola_interface(self, show_window):

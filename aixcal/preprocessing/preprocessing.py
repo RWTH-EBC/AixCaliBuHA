@@ -80,6 +80,7 @@ def convert_index_to_datetime_index(df, unit_of_index="s"):
 
     return df
 
+
 def clean_and_space_equally_time_series(df, desired_freq):
     """
     Function for cleaning of the given dataFrame and interpolating
@@ -93,7 +94,7 @@ def clean_and_space_equally_time_series(df, desired_freq):
         Cleaned and equally spaced data-frame
     """
     # Convert indexes to datetime_index:
-    if isinstance(df.index, pd.DatetimeIndex):
+    if not isinstance(df.index, pd.DatetimeIndex):
         raise TypeError("DataFrame needs a DateTimeIndex for executing this function."
                         "Call convert_index_to_datetime_index() to convert any index to "
                         "a DateTimeIndex")
@@ -209,7 +210,7 @@ def create_on_off_signal(df, col_names, threshold, col_names_new):
     else:
         threshold = [threshold for _ in enumerate(col_names)]
     # Do on_off signal creation for all desired columns
-    for i in range(len(col_names)):
+    for i, _ in enumerate(col_names):
         # Create zero-array
         df[col_names_new[i]] = 0.0
         # Change all values to 1.0 according to threshold

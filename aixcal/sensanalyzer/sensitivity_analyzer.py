@@ -2,6 +2,7 @@
 Module for classes revolving around performing sensitivity analysis.
 """
 
+import copy
 from SALib.sample import morris
 from SALib.sample import saltelli as sobol
 from SALib.analyze import morris as analyze_morris
@@ -148,13 +149,15 @@ class SenAnalyzer:
                                            "stopTime": stop_time})
         for i, initial_values in enumerate(samples):
             # Simulate the current values
-            self.logger.log('Parameter variation ' + str(i))
+            self.logger.log('Parameter variation {} of {}'.format(i+1, len(samples)))
             self.simulation_api.set_initial_values(initial_values)
             filepath = self.simulation_api.simulate()
 
             # Load the result file to the goals object
             sim_target_data = data_types.SimTargetData(filepath)
             self.goals.set_sim_target_data(sim_target_data)
+            self.goals.set_relevant_time_interval(start_time,
+                                                  stop_time)
 
             # Evaluate the current objective
             total_res = self.goals.eval_difference(self.statistical_measure)
@@ -174,6 +177,10 @@ class SenAnalyzer:
         """
         all_results = []
         for cal_class in self.calibration_classes:
+            self.logger.log('Start sensitivity analysis of class: {}, '
+                            'Time-Interval: {}-{} s'.format(cal_class.name,
+                                                            cal_class.start_time,
+                                                            cal_class.stop_time))
             self.tuner_paras = cal_class.tuner_paras
             self.goals = cal_class.goals
             self.problem = SensitivityProblem.create_problem(self.tuner_paras)
@@ -186,7 +193,7 @@ class SenAnalyzer:
         return all_results
 
     @staticmethod
-    def automatic_select(calibration_classes, result, threshold, key="mu"):
+    def automatic_select(calibration_classes, result, threshold, key="mu_star"):
         """
         Automatically select sensitive tuner parameters based on a given threshold
         and a key-word of the result.
@@ -201,23 +208,21 @@ class SenAnalyzer:
         :type threshold: float
         :param key:
             Value that is used to define the sensitivity.
-            Default is mu, "the mean elementary effect"
+            Default is mu_star, "the absolute mean elementary effect"
             Choose between: mu, mu_star, sigma, mu_star_conf
         :type key: str
         :return:
         """
-        selected_cal_classes = []
         for num_class, cal_class in enumerate(calibration_classes):
             class_result = result[num_class]
-            tuner_paras = cal_class.tuner_paras
+            tuner_paras = copy.deepcopy(cal_class.tuner_paras)
             select_names = []
             for i, sen_value in enumerate(class_result[key]):
-                if sen_value > threshold:
+                if sen_value < threshold:
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
             cal_class.set_tuner_paras(tuner_paras)
-            selected_cal_classes.append(cal_class)
-        return selected_cal_classes
+        return calibration_classes
 
 
 class SensitivityProblem:
