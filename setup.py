@@ -10,7 +10,10 @@ install_requires = ['numpy',
                     'matplotlib',
                     'scikit-learn',
                     'h5py',
-                    'SALib']
+                    'SALib',
+                    'pydot',
+                    'cmake',
+                    'dlib']
 setup_requires = install_requires.copy()  # Add all open-source packages to setup-requires
 
 if version.parse(pip.__version__) > version.parse('18.1'):

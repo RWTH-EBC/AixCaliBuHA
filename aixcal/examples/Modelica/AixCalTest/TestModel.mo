@@ -10,62 +10,82 @@ model TestModel
     redeclare package Medium = Medium,
     use_T_in=false,
     m_flow=0.5,
-    T=313.15)
-    annotation (Placement(transformation(extent={{-90,30},{-70,50}})));
+    use_m_flow_in=true,
+    final T=313.15)
+    annotation (Placement(transformation(extent={{-84,30},{-64,50}})));
   Modelica.Fluid.Sources.MassFlowSource_T source_2(
     nPorts=1,
     redeclare final package Medium = Medium,
     m_flow=m_flow_2,
-    T=293.15) annotation (Placement(transformation(
+    use_m_flow_in=true,
+    final T=293.15)
+              annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={74,-38})));
   Modelica.Fluid.Sources.FixedBoundary sink_1(nPorts=1, redeclare package
-      Medium = Medium)                                  annotation (Placement(
+      Medium = Medium,
+    final p=Medium.p_default,
+    final T=Medium.T_default,
+    each final X=Medium.X_default)                      annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={74,40})));
   Modelica.Fluid.Sources.FixedBoundary sink_2(nPorts=1, redeclare final package
-      Medium = Medium)                                  annotation (Placement(
+      Medium = Medium,
+    final p=Medium.p_default,
+    final T=Medium.T_default,
+    each final X=Medium.X_default)                      annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-78,-38})));
   Modelica.Fluid.Pipes.DynamicPipe
                     heater(
-    redeclare package Medium = Medium,
-    use_T_start=true,
-    length=2,
+    redeclare final package Medium = Medium,
+    final use_T_start=true,
     redeclare model HeatTransfer =
         Modelica.Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
-    diameter=0.01,
-    nNodes=1,
-    redeclare model FlowModel =
+    final nNodes=1,
+    final use_HeatTransfer=true,
+    final modelStructure=Modelica.Fluid.Types.ModelStructure.a_v_b,
+    final length=2,
+    final diameter=0.01,
+    redeclare final model FlowModel =
         Modelica.Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
-    use_HeatTransfer=true,
-    modelStructure=Modelica.Fluid.Types.ModelStructure.a_v_b,
-    p_a_start=130000,
-    T_start=313.15)
+    final nParallel=1,
+    final isCircular=true,
+    final roughness=2.5e-5,
+    final height_ab=0,
+    final allowFlowReversal=heater.system.allowFlowReversal,
+    each final X_start=Medium.X_default,
+    final p_a_start=130000,
+    final T_start=313.15)
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},
         rotation=180,
         origin={0,40})));
   Modelica.Fluid.Pipes.DynamicPipe
                     heater1(
-    redeclare package Medium = Medium,
-    use_T_start=true,
+    redeclare final package Medium = Medium,
+    final use_T_start=true,
     redeclare model HeatTransfer =
         Modelica.Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
-    diameter=0.01,
-    nNodes=1,
-    redeclare model FlowModel =
-        Modelica.Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
-    use_HeatTransfer=true,
-    modelStructure=Modelica.Fluid.Types.ModelStructure.a_v_b,
-    final nParallel=1,
+    final nNodes=1,
+    final use_HeatTransfer=true,
+    final modelStructure=Modelica.Fluid.Types.ModelStructure.a_v_b,
     final length=2,
-    p_a_start=130000,
-    T_start=Modelica.SIunits.Conversions.from_degC(20))
+    final diameter=0.01,
+    redeclare final model FlowModel =
+        Modelica.Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
+    final nParallel=1,
+    final isCircular=true,
+    final roughness=2.5e-5,
+    final height_ab=0,
+    final allowFlowReversal=heater.system.allowFlowReversal,
+    each final X_start=Medium.X_default,
+    final T_start=Modelica.SIunits.Conversions.from_degC(20),
+    final p_a_start=130000)
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},
         rotation=0,
         origin={0,-38})));
@@ -85,13 +105,41 @@ model TestModel
   parameter Modelica.SIunits.HeatCapacity C=5432
                                             "Heat capacity of element (= cp*m)"
     annotation (Evaluate=false);
-  inner Modelica.Fluid.System system
+  inner Modelica.Fluid.System system(
+    final g=Modelica.Constants.g_n,
+    use_eps_Re=false,
+    final m_flow_small=1e-2,
+    final p_ambient=101325,
+    final T_ambient=293.15,
+    final dp_small=1)
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   parameter Modelica.Media.Interfaces.PartialMedium.MassFlowRate m_flow_2=0.02
     "Fixed mass flow rate going out of the fluid port" annotation (Evaluate=false);
+  Modelica.Blocks.Sources.Constant m_flow_sink(final k=m_flow_2) annotation (
+      Placement(transformation(
+        extent={{-8,-8},{8,8}},
+        rotation=180,
+        origin={140,-38})));
+  Modelica.Blocks.Logical.Switch switch1 annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={-102,48})));
+  Modelica.Blocks.Logical.Switch switch2 annotation (Placement(transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=180,
+        origin={100,-46})));
+  Modelica.Blocks.Sources.Constant const_zero(final k=0)
+    annotation (Placement(transformation(extent={{-142,-38},{-126,-22}})));
+  Modelica.Blocks.Sources.Constant m_flow_source(final k=0.5)
+    annotation (Placement(transformation(extent={{-140,48},{-124,64}})));
+  Modelica.Blocks.Sources.BooleanPulse booleanStep(
+    width=50,
+    period=200,
+    final startTime=0)
+    annotation (Placement(transformation(extent={{-142,-72},{-126,-56}})));
 equation
   connect(source_1.ports[1], heater.port_a)
-    annotation (Line(points={{-70,40},{-10,40}}, color={0,127,255}));
+    annotation (Line(points={{-64,40},{-10,40}}, color={0,127,255}));
   connect(heater.port_b, sink_1.ports[1])
     annotation (Line(points={{10,40},{64,40}}, color={0,127,255}));
   connect(source_2.ports[1], heater1.port_a) annotation (Line(points={{64,-38},
@@ -106,6 +154,22 @@ equation
           {-28,8.8},{-12,8.8}}, color={0,0,127}));
   connect(Gc_b.y, heatExchanger.Gc_b) annotation (Line(points={{45.2,-4},{30,-4},
           {30,-5},{12,-5}}, color={0,0,127}));
+  connect(switch1.y, source_1.m_flow_in)
+    annotation (Line(points={{-91,48},{-84,48}}, color={0,0,127}));
+  connect(switch2.y, source_2.m_flow_in)
+    annotation (Line(points={{89,-46},{84,-46}}, color={0,0,127}));
+  connect(m_flow_sink.y, switch2.u1)
+    annotation (Line(points={{131.2,-38},{112,-38}}, color={0,0,127}));
+  connect(m_flow_source.y, switch1.u1) annotation (Line(points={{-123.2,56},{
+          -118,56},{-118,56},{-114,56}}, color={0,0,127}));
+  connect(const_zero.y, switch1.u3) annotation (Line(points={{-125.2,-30},{-122,
+          -30},{-122,40},{-114,40}}, color={0,0,127}));
+  connect(const_zero.y, switch2.u3) annotation (Line(points={{-125.2,-30},{-120,
+          -30},{-120,-96},{120,-96},{120,-54},{112,-54}}, color={0,0,127}));
+  connect(booleanStep.y, switch1.u2) annotation (Line(points={{-125.2,-64},{
+          -118,-64},{-118,48},{-114,48}}, color={255,0,255}));
+  connect(booleanStep.y, switch2.u2) annotation (Line(points={{-125.2,-64},{-10,
+          -64},{-10,-78},{130,-78},{130,-46},{112,-46}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     experiment(StopTime=3600, Interval=1));

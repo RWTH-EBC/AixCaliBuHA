@@ -12,3 +12,4 @@ pydot
 psutil
 xlrd
 SALib
+PyQt5

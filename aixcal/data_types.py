@@ -9,11 +9,13 @@ optimization etc.
 
 import os
 import warnings
+from PyQt5 import QtWidgets
 import pandas as pd
 import modelicares.simres as sr
 import numpy as np
 from aixcal.utils import statistics_analyzer
 from aixcal.preprocessing import preprocessing
+from aixcal._io import tuner_paras_gui
 
 
 class TimeSeriesData:
@@ -172,8 +174,8 @@ class TunerParas:
             _bound_max = np.inf
         else:
             if len(bounds) != len(names):
-                raise ValueError("shape mismatch: names has length {} "
-                                 "and initial_values {}.".format(len(bounds), len(names)))
+                raise ValueError("shape mismatch: bounds has length {} "
+                                 "and names {}.".format(len(bounds), len(names)))
             _bound_min, _bound_max = [], []
             for bound in bounds:
                 _bound_min.append(bound[0])
@@ -185,6 +187,11 @@ class TunerParas:
                                  "max": _bound_max})
         self._df = self._df.set_index("names")
         self._set_scale()
+
+    def __str__(self):
+        """Overwrite string method to present the TunerParas-Object more
+        nicely."""
+        return str(self._df)
 
     def scale(self, descaled):
         """
@@ -257,11 +264,28 @@ class TunerParas:
         """
         self._df = self._df.loc[~self._df.index.isin(names)]
 
+    def show(self):
+        """
+        Shows the tuner parameters and stores the altered values to
+        the object if wanted.
+        :return:
+        """
+        import sys
+        app = QtWidgets.QApplication(sys.argv)
+        main_window = QtWidgets.QMainWindow()
+        gui = tuner_paras_gui.TunerParasUI(main_window)
+        gui.set_data(self._df[["initial_value", "min", "max"]])
+        main_window.show()
+        app.exec_()
+        tuner_paras = gui.tuner_paras
+        if tuner_paras is not None:
+            self._df = tuner_paras._df.copy()
+
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]
-        if not self._df[self._df["scale"] < 0].empty:
-            raise ValueError("The given lower bounds are greater than the upper bounds. Resulting"
-                             " in a negative scale: \n{}".format(str(self._df["scale"])))
+        if not self._df[self._df["scale"] <= 0].empty:
+            raise ValueError("The given lower bounds are greater equal than the upper bounds,"
+                             "resulting in a negative scale: \n{}".format(str(self._df["scale"])))
 
 
 class Goals:

@@ -226,4 +226,4 @@ class DecisionTreeClassification(Classifier):
             warnings.warn("Saved dtree is under version {} but you are using {}. "
                           "Different behaviour of the dtree may "
                           "occur.".format(dumped_dict["version"], sk_version))
-        return dumped_dict["dtree"]
+        return dumped_dict["dtree"], dumped_dict["info"]

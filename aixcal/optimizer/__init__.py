@@ -55,11 +55,12 @@ class Optimizer:
     # The maximal number of function evaluations in dlib is 1e9.
     solver_epsilon = 0
     num_function_calls = int(1e9)
+    show_plot = True
 
     # Define the list of supported kwargs:
     _supported_kwargs = ["tol", "options", "constraints", "jac", "hess",
                          "hessp", "is_integer_variable", "solver_epsilon",
-                         "num_function_calls"]
+                         "num_function_calls", "show_plot"]
     _dlib_kwargs = ["solver_epsilon", "num_function_calls"]
 
     def __init__(self, cd, **kwargs):
@@ -137,7 +138,7 @@ class Optimizer:
             self.logger.log(str(self._current_iterate))
             raise error
 
-    def _minimize_dlib(self, method):
+    def _minimize_dlib(self, _):
         try:
             import dlib
         except ImportError:

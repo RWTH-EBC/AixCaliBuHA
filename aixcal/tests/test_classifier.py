@@ -50,7 +50,7 @@ class TestClassifier(unittest.TestCase):
         filepath = dtc.export_decision_tree_to_pickle(dtree=dtree)
         self.assertTrue(os.path.isfile(filepath))
         # Test-load of dtree:
-        dtree_loaded = dtc.load_decision_tree_from_pickle(filepath)
+        dtree_loaded, _ = dtc.load_decision_tree_from_pickle(filepath)
         # Create new classifier-object with loaded tree:
         dtc = classifier.DecisionTreeClassification(self.example_clas_dir,
                                                     dtree=dtree_loaded)
