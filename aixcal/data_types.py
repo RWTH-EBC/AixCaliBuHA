@@ -247,6 +247,16 @@ class TunerParas:
         self._df[col][name] = value
         self._set_scale()
 
+    def remove_names(self, names):
+        """
+        Remove gives list of names from the Tuner-parameters
+        :param names:
+            List with names inside of the TunerParas-dataframe
+        :type names: list
+        :return:
+        """
+        self._df = self._df.loc[~self._df.index.isin(names)]
+
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]
         if not self._df[self._df["scale"] < 0].empty:
