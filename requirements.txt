@@ -11,3 +11,4 @@ IPython
 pydot
 psutil
 xlrd
+SALib

@@ -9,8 +9,10 @@ install_requires = ['numpy',
                     'pandas',
                     'matplotlib',
                     'scikit-learn',
-                    'h5py']
+                    'h5py',
+                    'SALib']
 setup_requires = install_requires.copy()  # Add all open-source packages to setup-requires
+
 if version.parse(pip.__version__) > version.parse('18.1'):
     install_requires.append('modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_12_2')
 else:
