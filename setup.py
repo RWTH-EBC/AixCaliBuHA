@@ -17,9 +17,11 @@ else:
     raise ImportError("You have to upgrade your pip version "
                       "to >=18.1 for modelicares to be installed.")
 
-setuptools.setup(name='ebccalibration',
+setuptools.setup(name='aixcal',
                  version='0.1',
-                 description='Calibration helper',
+                 description='Framework used for classification, sensitivity-analysis'
+                             'and optimization or calibration for models of HVAC '
+                             'components.',
                  url='not set yet',
                  author='RWTH Aachen University, E.ON Energy Research Center, Institute\
                  of Energy Efficient Buildings and Indoor Climate',
@@ -27,10 +29,8 @@ setuptools.setup(name='ebccalibration',
                  # that you indicate whether you support Python 2, Python 3 or both.
                  classifiers=['Programming Language :: Python :: 3.5',
                               'Programming Language :: Python :: 3.6',
-                              'Programming Language :: Python :: 3.7',],
-                 packages=setuptools.find_packages(exclude=['img',
-                                                            'ebccalibration.*',
-                                                            'ebccalibration']),
+                              'Programming Language :: Python :: 3.7', ],
+                 packages=setuptools.find_packages(exclude=['img']),
                  setup_requires=setup_requires,
                  install_requires=install_requires)
 

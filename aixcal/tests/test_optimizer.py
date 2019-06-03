@@ -40,11 +40,11 @@ class TestOptimizer(unittest.TestCase):
             x_goal = np.random.rand(3)
 
             def obj(self, xk, *args):
-                x = np.linspace(-2, 2, 100)
-                a, b, c = xk[0], xk[1], xk[2]
-                _a, _b, _c = self.x_goal[0], self.x_goal[1], self.x_goal[2]
-                quadratic_func_should = _a*x**2 + _b*x + _c
-                quadratic_func_is = a*x**2 + b*x + c
+                x_data = np.linspace(-2, 2, 100)
+                param_1, param_2, param_3 = xk[0], xk[1], xk[2]
+                _param_1, _param_2, _param_3 = self.x_goal[0], self.x_goal[1], self.x_goal[2]
+                quadratic_func_should = _param_1*x_data**2 + _param_2*x_data + _param_3
+                quadratic_func_is = param_1*x_data**2 + param_2*x_data + param_3
                 # Return the MAE of the quadratic function.
                 return np.sum(np.abs(quadratic_func_should - quadratic_func_is))
 

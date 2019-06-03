@@ -1,3 +1,7 @@
+"""Base-module for the whole optimizer pacakge.
+Used to define Base-Classes such as Optimizer and
+Calibrator."""
+
 import os
 from collections import namedtuple
 from abc import abstractmethod
@@ -45,6 +49,9 @@ class Optimizer:
     hessp = None
     # dlib
     is_integer_variable = None
+    # The maximal number of function evaluations in dlib is 1e9.
+    solver_epsilon = 0
+    num_function_calls = int(1e9)
     # The maximal number of function evaluations in dlib is 1e9.
     solver_epsilon = 0
     num_function_calls = int(1e9)

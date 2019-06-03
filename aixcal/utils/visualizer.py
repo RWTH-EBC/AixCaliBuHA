@@ -10,6 +10,11 @@ from datetime import datetime
 from aixcal import data_types
 import matplotlib.pyplot as plt
 import numpy as np
+import pydot
+from IPython.display import Image
+from sklearn.externals.six import StringIO
+import sklearn.tree as sktree
+import seaborn
 
 
 class Logger:
@@ -41,7 +46,6 @@ class Logger:
                 if log_file.read() != "":
                     log_file.write("\n" + _spacer)
 
-
         self.integer_prec = 4  # Number of integer parts
         self.decimal_prec = 6
         self._counter_calibration = 0  # Number of function calls of calibration
@@ -65,12 +69,11 @@ class Visualizer(Logger):
     evaluations but also show the process of the functions
     by plotting interesting causalities and saving these plots."""
 
+    plt.ioff()  # Turn of interactive mode. Only
+
     def __init__(self, cd, name):
         """Instantiate class parameters"""
         super().__init__(cd, name)
-        self.fig, self.ax = plt.subplots(1, 1)
-
-
 class CalibrationLogger(Logger):
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
@@ -330,7 +333,7 @@ class CalibrationVisualizer(CalibrationLogger):
         :param goals: aixcal.data_types.Goals
         """
         if not isinstance(goals, data_types.Goals):
-            raise TypeError("Given tuner_paras is of type {} but type"
+            raise TypeError("Given goals is of type {} but type"
                             "Goals is needed.".format(type(goals).__name__))
         self.goals = goals
 
@@ -384,3 +387,45 @@ class CalibrationVisualizer(CalibrationLogger):
                     cur_ax.legend(loc="upper right")
                     cur_ax.set_xlabel("Time / s")
                 goal_counter += 1
+
+
+class ClassifierVisualizer(Visualizer):
+    """Visualizer class used for all classification processes.
+    More advanced class to not only log ongoing function
+    evaluations but also show the process of the functions
+    by plotting interesting causalities and saving these plots."""
+
+    def __init__(self, cd, name):
+        """Instantiate instance attributes"""
+        super().__init__(cd, name)
+
+    def export_decision_tree_image(self, dtree, variable_list):
+        """
+        Saves the given dtree object by exporting it
+        via graphviz to a png image
+        :param dtree: DecisionTree
+        :param variable_list: list
+            List with names of decision-variables
+        :return:
+        """
+        # Save the created tree as a png.
+        try:
+            # Visualization decision tree
+            dot_data = StringIO()
+            sktree.export_graphviz(dtree,
+                                   out_file=dot_data,
+                                   feature_names=variable_list, filled=True, rounded=True)
+            graph = pydot.graph_from_dot_data(dot_data.getvalue())
+            Image(graph[0].create_png())  # Creating the image needs some time
+            plt.show(graph[0])
+            graph[0].write_png(self.cd+'/tree_plot.png')
+        except OSError:
+            self.log("ERROR: Can not export the decision tree, "
+                     "please install graphviz on your machine.")
+
+    def plot_decision_tree(self, df, class_list):
+
+        # Visualization pair plot (df is data frame with whole X values (train and test)
+        # This function takes a long time to be executed
+        seaborn.pairplot(df, hue=class_list)
+        plt.savefig(self.cd + '/pairplot.png', bbox_inches='tight', dpi=400)

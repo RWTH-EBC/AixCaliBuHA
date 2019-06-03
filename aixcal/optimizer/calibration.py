@@ -8,6 +8,7 @@ from aixcal import data_types
 from aixcal.utils import visualizer
 from aixcal.optimizer import Calibrator
 import modelicares.simres as sr
+import modelicares.util as mrutil
 
 
 class ModelicaCalibrator(Calibrator):
@@ -36,7 +37,7 @@ class ModelicaCalibrator(Calibrator):
 
     def __init__(self, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
-        # Initialize all public parameters
+        #%% Initialize all public parameters
         super().__init__(cd, sim_api, statistical_measure, **kwargs)
         if not isinstance(calibration_class, data_types.CalibrationClass):
             raise TypeError("calibration_classes is of type {} but should be "
@@ -55,14 +56,27 @@ class ModelicaCalibrator(Calibrator):
                                     "startTime": self.calibration_class.start_time,
                                     "stopTime": self.calibration_class.stop_time})
 
-        # Setup the logger
+        #%% Setup the logger
         self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
                                                        self.tuner_paras,
                                                        self.goals)
 
-        # Kwargs
+        #%% Kwargs
         # Initialize supported keywords with default value
-        self.save_files = kwargs.get("save_files", False)
+        self.save_files = False
+
+        # Update all kwargs
+        self.__dict__.update(kwargs)
+
+        # Check if types are correct:
+        # Booleans:
+        _bool_kwargs = ["save_files"]
+        for bool_keyword in _bool_kwargs:
+            keyword_value = self.__getattribute__(bool_keyword)
+            if not isinstance(keyword_value, bool):
+                raise TypeError("Given {} is of type {} but should be type "
+                                "bool".format(bool_keyword,
+                                              type(keyword_value).__name__))
 
     def obj(self, xk, *args):
         """
@@ -77,7 +91,7 @@ class ModelicaCalibrator(Calibrator):
         :return:
         Objective value based on the used quality measurement
         """
-        # Initialize class objects
+        #%% Initialize class objects
         self._current_iterate = xk
         self._counter += 1
         # Convert set if multiple goals of different scales are used
@@ -92,7 +106,7 @@ class ModelicaCalibrator(Calibrator):
             savepath_files = ""
         # Simulate
         self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
-        # Load results and write to goals object
+        #%% Load results and write to goals object
         sim_target_data = data_types.SimTargetData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
         if self._relevant_time_interval:
@@ -100,17 +114,17 @@ class ModelicaCalibrator(Calibrator):
             self.goals.set_relevant_time_interval(self._relevant_time_interval[0],
                                                   self._relevant_time_interval[1])
 
-        # Evaluate the current objective
+        #%% Evaluate the current objective
         total_res = self.goals.eval_difference(self.statistical_measure)
         self._obj_his.append(total_res)
         self.logger.calibration_callback_func(xk, total_res)
         return total_res
 
-    def run(self, method, framework):
-        # Setup the method and framework in use
-        super().run(method, framework)
+    def run(self, method, framework, **kwargs):
+        #%% Setup the method and framework in use
+        super().run(method, framework, **kwargs)
 
-        # Start Calibration:
+        #%% Start Calibration:
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
@@ -122,9 +136,9 @@ class ModelicaCalibrator(Calibrator):
         # Setup the visualizer for plotting:
         self.logger.calibrate_new_class(self.calibration_class.name, self.tuner_paras, self.goals)
         # Run optimization
-        self._res = self._minimize_func(method)
+        self._res = self._minimize_func(method, **kwargs)
 
-        # Save the relevant results.
+        #%% Save the relevant results.
         self.logger.save_calibration_result(self._res,
                                             self.sim_api.model_name,
                                             self.statistical_measure)
@@ -149,29 +163,29 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         self.calibration_classes = calibration_classes
         self._cal_history = []
 
-    def run(self, method, framework):
+    def run(self, method, framework, **kwargs):
         curr_num = 0
         for cal_class in self.calibration_classes:
-            # Simulation-Time:
+            #%% Simulation-Time:
             # Alter the simulation time. This depends on the mode one is using.
             # The method ref_start_time will be overloaded by children of this class.
             start_time = self.ref_start_time(cal_class.start_time)
             self.sim_api.set_sim_setup({"startTime": start_time,
                                         "stopTime": cal_class.stop_time})
 
-            # Working-Directory:
+            #%% Working-Directory:
             # Alter the working directory for the simulations
             cd_of_class = os.path.join(self.cd, "{}_{}".format(curr_num, cal_class.name))
             self.sim_api.set_cd(cd_of_class)
 
-            # Tuner-Parameters
+            #%% Tuner-Parameters
             # Alter tunerParas based on old results
             if self._cal_history:
                 self.process_in_between_classes(cal_class.tuner_paras)
             else:
                 self.tuner_paras = cal_class.tuner_paras
 
-            # Calibration-Setup
+            #%% Calibration-Setup
             # Reset counter for new calibration
             self._counter = 0
             self._relevant_time_interval = (cal_class.start_time, cal_class.stop_time)
@@ -188,11 +202,11 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
             # Used so that the logger prints the correct class.
             self.calibration_class = cal_class
 
-            # Execution
+            #%% Execution
             # Run the single ModelicaCalibration
-            super().run(method, framework)
+            super().run(method, framework, **kwargs)
 
-            # Post-processing
+            #%% Post-processing
             # Append result to list for future perturbation based on older results.
             self._cal_history.append({"tuner_paras": self.tuner_paras,
                                       "res": self._res,
@@ -208,6 +222,12 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
                                   'not defined'.format(self.__class__.__name__))
 
     def process_in_between_classes(self, tuner_paras_of_class):
+        """Method to execute some function between the calibration
+        of two classes. The basic step is to alter the tuner paramters
+        based on past-optimal values.
+        :param tuner_paras_of_class: data_types.TunerParas
+            TunerParas of the next class.
+        """
         self.tuner_paras = self._alter_tuner_paras(tuner_paras_of_class)
 
     def _alter_tuner_paras(self, tuner_paras_of_class):
@@ -294,9 +314,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
         obj_val = super().obj(xk, *args)
         # Get all trajectory names of the dsres-file
         sim = sr.SimRes(self._filepath_dsres)
-
         self._traj_names = sim.get_trajectories()
-
         # Get the current best dsfinal-file for next calibration-interval.
         if obj_val < self._total_min:
             self._total_min = obj_val
@@ -315,10 +333,9 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
         # Alter the dsfinal for the new phase
         new_dsfinal = os.path.join(self.sim_api.cwdir, "dsfinal.txt")
         self._total_initial_names = list(set(self._total_initial_names + self._traj_names))
-        # TODO Move manipulate_dsin function from ebcpython to modelicares or this project.
-        manipulate_dsin.eliminate_parameters(self._total_min_dsfinal_path,
-                                             new_dsfinal,
-                                             self._total_initial_names)
+        mrutil.eliminate_parameters_from_ds_file(self._total_min_dsfinal_path,
+                                                 new_dsfinal,
+                                                 self._total_initial_names)
         self.sim_api.import_initial(new_dsfinal)
 
     def _join_tuner_paras(self):

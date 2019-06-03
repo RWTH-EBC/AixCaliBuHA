@@ -10,3 +10,4 @@ seaborn
 IPython
 pydot
 psutil
+xlrd
