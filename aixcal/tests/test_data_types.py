@@ -9,6 +9,7 @@ import numpy as np
 
 
 class TestDataTypes(unittest.TestCase):
+    """Test-class for the data_types module of aixcal."""
 
     def setUp(self):
         """Called before every test.

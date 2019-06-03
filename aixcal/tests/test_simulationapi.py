@@ -13,22 +13,23 @@ class TestDymolaAPI(unittest.TestCase):
     def setUp(self):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""
-        self.framework_dir = os.path.dirname(os.path.dirname(__file__))
-        self.example_dir = os.path.normpath(self.framework_dir + "//examples")
+        framework_dir = os.path.dirname(os.path.dirname(__file__))
+        self.example_dir = os.path.normpath(framework_dir + "//examples")
         self.example_sim_dir = os.path.join(self.example_dir, "testzone")
         if not os.path.exists(self.example_sim_dir):
             os.mkdir(self.example_sim_dir)
-        self.aixcaltest_package_dir = os.path.normpath(self.example_dir + "//Modelica//AixCalTest//package.mo")
-        self.packages = [self.aixcaltest_package_dir]
-        self.model_name = "AixCalTest.TestModel"
+        aixcal_test_package_dir = os.path.normpath(self.example_dir +
+                                                       "//Modelica//AixCalTest//package.mo")
+        packages = [aixcal_test_package_dir]
+        model_name = "AixCalTest.TestModel"
         self.initial_names = ["C",
                               "heatConv_b",
                               "heatConv_a"]
         self.initial_values = [2000, 5, 5]
         try:
             self.dym_api = dymola_api.DymolaAPI(self.example_sim_dir,
-                                                self.model_name,
-                                                self.packages)
+                                                model_name,
+                                                packages)
         except (FileNotFoundError, ImportError, ConnectionError):
             self.skipTest("Could not load the dymola interface on this machine.")
 

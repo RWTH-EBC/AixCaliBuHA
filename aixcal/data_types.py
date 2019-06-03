@@ -13,6 +13,7 @@ import pandas as pd
 import modelicares.simres as sr
 import numpy as np
 from aixcal.utils import statistics_analyzer
+from aixcal.preprocessing import preprocessing
 
 
 class TimeSeriesData:
@@ -27,7 +28,8 @@ class TimeSeriesData:
     :keyword sep: separator for the use of a csv file.
     """
 
-    key = ""
+    key, sep = "", ","
+    sheet_name = None
 
     def __init__(self, filepath, **kwargs):
         """Initialize class-objects and check correct input."""
@@ -38,7 +40,7 @@ class TimeSeriesData:
             raise FileNotFoundError("The given filepath {} could not be opened".format(filepath))
         self.filepath = filepath
         # Used for import of .hdf-files, as multiple tables can be stored inside on file.
-        supported_kwargs = ["key", "sep"]
+        supported_kwargs = ["key", "sep", "sheet_name"]
         for keyword in supported_kwargs:
             setattr(self, keyword, kwargs.get(keyword))
         self._load_data()
@@ -54,10 +56,12 @@ class TimeSeriesData:
         if file_suffix == "hdf":
             self._load_hdf()
         elif file_suffix == "csv":
-            self.df = pd.read_csv(self.filepath)
+            self.df = pd.read_csv(self.filepath, sep=self.sep)
         elif file_suffix == "mat":
             sim = sr.SimRes(self.filepath)
             self.df = sim.to_pandas(with_unit=False)
+        elif file_suffix == "xlsx":
+            self.df = pd.read_excel(io=self.filepath, sheet_name=self.sheet_name)
         else:
             raise TypeError("Only .hdf, .csv and .mat are supported!")
 
@@ -378,8 +382,8 @@ class Goals:
         for goal_num in range(self._num_goals):
             _meas_data = self._meas_df[self._meas_columns[goal_num]]
             _sim_data = self._sim_df[self._sim_columns[goal_num]]
-            _meas_data = self._drop_duplicate(_meas_data)
-            _sim_data = self._drop_duplicate(_sim_data)
+            _meas_data = preprocessing.build_average_on_duplicate_rows(_meas_data)
+            _sim_data = preprocessing.build_average_on_duplicate_rows(_sim_data)
             _weighting = self._weightings[goal_num]
             self._goals.append(Goal(_meas_data,
                                     _sim_data,
@@ -466,11 +470,6 @@ class Goals:
     @staticmethod
     def _get_difference(list_1, list_2):
         return list(set(list_1).difference(list_2))
-
-    @staticmethod
-    def _drop_duplicate(df):
-        # TODO Once the preprocessing-module is implemented, move this there.
-        return df.loc[~df.index.duplicated()]
 
 
 class CalibrationClass:

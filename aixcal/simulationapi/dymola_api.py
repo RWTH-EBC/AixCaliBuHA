@@ -1,8 +1,13 @@
+"""Module containing the DymolaAPI used for simulation
+of Modelica-Models."""
+
 import sys
 import os
-import psutil
 import warnings
+import psutil
 from aixcal import simulationapi
+from aixcal import data_types
+import modelicares.util as mrutil
 DymolaInterface = None  # Create dummy to later be used for global-import
 DymolaConnectionException = None  # Create dummy to later be used for global-import
 
@@ -43,10 +48,10 @@ class DymolaAPI(simulationapi.SimulationAPI):
         if "dymola_interface_path" in kwargs:
             assert kwargs["dymola_interface_path"].endswith(".egg"), \
                 "Please provide an .egg-file for the dymola-interface."
-            if not os.path.isfile(kwargs["dymola_interface_path"]):
-                raise FileNotFoundError("Given dymola-interface could not be found.")
-            else:
+            if os.path.isfile(kwargs["dymola_interface_path"]):
                 dymola_interface_path = kwargs["dymola_interface_path"]
+            else:
+                raise FileNotFoundError("Given dymola-interface could not be found.")
         else:
             dymola_interface_path = self.get_dymola_interface_path()
             if not dymola_interface_path:
@@ -153,11 +158,11 @@ class DymolaAPI(simulationapi.SimulationAPI):
                 _ref = (float, int)
             else:
                 _ref = type(self.sim_setup[key])
-            if not isinstance(value, _ref):
+            if isinstance(value, _ref):
+                self.sim_setup[key] = value
+            else:
                 raise TypeError("{} is of type {} but should be"
                                 " type {}".format(key, type(value).__name__, _ref))
-            else:
-                self.sim_setup[key] = value
 
     def import_initial(self, filepath):
         """
@@ -166,7 +171,7 @@ class DymolaAPI(simulationapi.SimulationAPI):
         Path to the dsfinal.txt to be loaded
         """
         assert os.path.isfile(filepath), "Given filepath {} does not exist".format(filepath)
-        assert ".txt" == os.path.splitext(filepath)[1], 'File is not of type .txt'
+        assert os.path.splitext(filepath)[1] == ".txt", 'File is not of type .txt'
         res = self.dymola.importInitial(dsName=filepath)
         if res:
             self.logger.log("\nSuccessfully loaded dsfinal.txt")
@@ -190,6 +195,31 @@ class DymolaAPI(simulationapi.SimulationAPI):
         self.dymola.close()
         # Set dymola object to None to avoid further access to it.
         self.dymola = None
+
+    def get_all_tuner_parameters(self):
+        """Get all tuner-parameters of the model by
+        translating it and then processing the dsin
+        using modelicares."""
+        # Translate model
+        res = self.dymola.translateModel(self.model_name)
+        if not res:
+            self.logger.log("Translation failed!")
+            self.logger.log("The last error log from Dymola:")
+            self.logger.log(self.dymola.getLastErrorLog())
+            raise Exception("Translation failed!")
+        # Get path to dsin:
+        dsin_path = os.path.normpath(self.cd + "//dsin.txt")
+        df = mrutil.convert_ds_file_to_dataframe(dsin_path)
+        # Convert and return all parameters of dsin as a TunerParas-object.
+        df = df[df["5"] == "1"]
+        names = df.index
+        initial_values = df["2"].values
+        # Get min and max-values
+        bounds = [df["3"].values, df["4"].values]
+        tuner_paras = data_types.TunerParas(list(names),
+                                            initial_values,
+                                            bounds=bounds)
+        return tuner_paras
 
     def _setup_dymola_interface(self, show_window):
         """Load all packages and change the current working directory"""

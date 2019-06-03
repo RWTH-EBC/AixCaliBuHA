@@ -23,12 +23,15 @@ class TestPreProcessing(unittest.TestCase):
         save_path = os.path.normpath(self.example_dir + "//example_data_converted.mat")
         columns = ["sine.y / "]
         res, filepath_mat = conversion.convert_hdf_to_mat(self.example_data_hdf_path,
-                                      save_path,
-                                      columns=columns,
-                                      key="trajectories")
-        self.assertTrue(res)  # Check if successfully converted
-        self.assertTrue(os.path.isfile(filepath_mat))  # Check if converted file exists
-        self.assertEqual(filepath_mat, save_path)  # Check if converted filepath is provided filepath
+                                                          save_path,
+                                                          columns=columns,
+                                                          key="trajectories")
+        # Check if successfully converted
+        self.assertTrue(res)
+        # Check if converted file exists
+        self.assertTrue(os.path.isfile(filepath_mat))
+        # Check if converted filepath is provided filepath
+        self.assertEqual(filepath_mat, save_path)
         # Now check if the created mat-file can be used.
         self.assertIsInstance(spio.loadmat(save_path), dict)
         # Remove converted file again
