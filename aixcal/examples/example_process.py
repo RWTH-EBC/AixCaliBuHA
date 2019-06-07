@@ -9,28 +9,22 @@ import pandas as pd
 # pylint: disable-all
 
 
-def input_handler_for_presentation(status=""):
-    print(status)
-    #while True:
-    #    user_input = input("Continue? (y / n)")
-    #    if user_input.lower() == "y":
-    #        break
-    #    else:
-    #        print(globals().get(user_input, "not a valid variable"))
-
-
 def example_dym_api_usage(dym_api):
-    input_handler_for_presentation("Present the function get_all_tuner_parameters:")
     tuner_paras = dym_api.get_all_tuner_parameters()
     tuner_paras.show()
     print(tuner_paras)
 
 
 def example_classifier_create_dtree(cd):
-    # Analyze data into classes and return those classes.
-    # e.g. classes = classifier.classify(MeasInputData)
-    # Resulting list should look something like this:
-    input_handler_for_presentation("Present creation of dtree:")
+    """
+    Analyze data into classes and return those classes.
+    e.g. classes = classifier.classify(MeasInputData)
+    Resulting list should look something like this:
+    :param cd: str, os.path.normpath
+        Working Directory of example.
+    :return:
+    """
+
     classifier_input_data = data_types.MeasTargetData(cd + "//data//classifier_input.xlsx",
                                                       sheet_name="classifier_input")
     dtree_classifier = DecisionTreeClassification(cd,
@@ -70,7 +64,6 @@ def example_classifier_classify(cd, meas_target_data):
 
 
 def example_pre_processing(df):
-    input_handler_for_presentation("Pre-processing:")
     print(df)
     df = preprocessing.convert_index_to_datetime_index(df)
     print(df)
@@ -79,7 +72,6 @@ def example_pre_processing(df):
 
 
 def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
-    input_handler_for_presentation("Perform the sensitivity analysis:")
     # Setup the class
     sen_problem = sensitivity_analyzer.SensitivityProblem("morris",
                                                           num_samples=2)
@@ -96,9 +88,7 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
 
     for result in sen_result:
         print(pd.DataFrame(result))
-    input_handler_for_presentation("Wait and show the result")    
 
-    # TODO-User: Select tuner-parameters based on the result for each class.
     cal_classes = sen_analyzer.automatic_select(cal_classes,
                                                 sen_result,
                                                 threshold=1)
@@ -107,7 +97,6 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
 
 
 def example_calibration(sim_api, cal_classes, stat_measure):
-    input_handler_for_presentation("Perform the calibration:")
     continuous_cal = calibration.TimedeltaContModelicaCal(sim_api.cd,
                                                           sim_api,
                                                           stat_measure,
@@ -148,17 +137,15 @@ if __name__ == "__main__":
     
     val_dtree = data_types.MeasTargetData(cd + "//data//validate_dtree_simulation.mat")
     cal_classes_val = example_classifier_classify(cd, val_dtree)
-    input_handler_for_presentation("Present validation with extended simulation:")
     for cal_class in cal_classes_val:
         print("{:10.10}: {:4.0f}-{:4.0f} s".format(cal_class.name, cal_class.start_time, cal_class.stop_time))
     
     calibration_classes = example_classifier_classify(cd, measTargetData)
 
-    # TODO-User: Define goals and tuner-parameters
     tuner_paras = data_types.TunerParas(names=["C", "m_flow_2", "heatConv_a"],
                                         initial_values=[5000, 0.02, 200],
                                         bounds=[(4000, 6000), (0.01, 0.1), (10,300)])
-    # TODO-Dev: This order is not-logical. Change the time to add simTargetData to a later stage.
+
     simTargetData = data_types.SimTargetData(cd + "//data//simTargetData.mat")
     goals = data_types.Goals(measTargetData,
                              simTargetData,
@@ -175,7 +162,3 @@ if __name__ == "__main__":
 
     # %%Calibration:
     example_calibration(dym_api, calibration_classes, statistical_measure)
-
-    # %%Validation:
-    # TODO-Dev: Maybe provide function to split up data for validation:
-    # TODO-Dev: Implement default validate-function into the Calibrator-Object

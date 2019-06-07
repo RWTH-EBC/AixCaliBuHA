@@ -63,11 +63,11 @@ class Logger:
         with open(self.filepath_log, "a+") as log_file:
             log_file.write("\n{}: {}".format(datestring, text))
 
-    def show_log(self):
-        """Function to open the log-file.
+    def get_log_file(self):
+        """Function to get the log-file savepath.
         May be used at the end of a process.
         """
-        os.system(self.filepath_log)
+        return self.filepath_log
 
 class Visualizer(Logger):
     """More advanced class to not only log ongoing function

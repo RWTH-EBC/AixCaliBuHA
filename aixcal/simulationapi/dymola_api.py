@@ -47,8 +47,8 @@ class DymolaAPI(simulationapi.SimulationAPI):
         super().__init__(cd, model_name)
         # First import the dymola-interface
         if "dymola_interface_path" in kwargs:
-            assert kwargs["dymola_interface_path"].endswith(".egg"), \
-                "Please provide an .egg-file for the dymola-interface."
+            if not kwargs["dymola_interface_path"].endswith(".egg"):
+                raise TypeError("Please provide an .egg-file for the dymola-interface.")
             if os.path.isfile(kwargs["dymola_interface_path"]):
                 dymola_interface_path = kwargs["dymola_interface_path"]
             else:
@@ -108,8 +108,8 @@ class DymolaAPI(simulationapi.SimulationAPI):
             self.logger.log("Simulation failed!")
             self.logger.log("The last error log from Dymola:")
             self.logger.log(self.dymola.getLastErrorLog())
-            os.system(os.path.join(self.cd + "dslog.txt"))
-            raise Exception("Simulation failed: Look into dslog.txt of the simulation.")
+            raise Exception("Simulation failed: Look into dslog.txt at {} of the "
+                            "simulation.".format(os.path.join(self.cd + "dslog.txt")))
 
         _save_name_dsres = "{}.mat".format(self.sim_setup["resultFile"])
 
@@ -171,8 +171,10 @@ class DymolaAPI(simulationapi.SimulationAPI):
         :param filepath: str, os.path.normpath
         Path to the dsfinal.txt to be loaded
         """
-        assert os.path.isfile(filepath), "Given filepath {} does not exist".format(filepath)
-        assert os.path.splitext(filepath)[1] == ".txt", 'File is not of type .txt'
+        if not os.path.isfile(filepath):
+            raise FileNotFoundError("Given filepath {} does not exist".format(filepath))
+        if not os.path.splitext(filepath)[1] == ".txt":
+            raise TypeError('File is not of type .txt')
         res = self.dymola.importInitial(dsName=filepath)
         if res:
             self.logger.log("\nSuccessfully loaded dsfinal.txt")
@@ -305,7 +307,6 @@ class DymolaAPI(simulationapi.SimulationAPI):
         Error log from the dymola_interface.getLastErrorLog() function
         :return: filtered_log: str
         """
-        # TODO Check if regex could improve the filtering of the error log
         _trigger_string = "After translation you can only set " \
                           "literal start-values and non-evaluated parameters"
         structural_params = []

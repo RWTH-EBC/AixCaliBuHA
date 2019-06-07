@@ -88,8 +88,9 @@ class SenAnalyzer:
             order as the parameter file. If calc_second_order is True, the dictionary also
             contains keys `S2` and `S2_conf`.)
         """
-        assert 'calc_second_order' in self.sensitivity_problem.sampler_parameters, \
-            'sobol method requires the `calc_second_order` parameter to be set (bool)'
+        if 'calc_second_order' not in self.sensitivity_problem.sampler_parameters:
+            raise KeyError('sobol method requires the `calc_second_order`'
+                           ' parameter to be set (bool)')
         calc_second_order = self.sensitivity_problem.sampler_parameters['calc_second_order']
         return analyze_sobol.analyze(self.problem, y,
                                      calc_second_order=calc_second_order)
@@ -107,8 +108,8 @@ class SenAnalyzer:
             entry is a list of size D (the number of parameters) containing the indices in the
             same order as the parameter file.)
         """
-        assert 'num_levels' in self.sensitivity_problem.sampler_parameters, \
-            'morris method requires the `num_levels` parameter to be set (int)'
+        if 'num_levels' not in self.sensitivity_problem.sampler_parameters:
+            raise KeyError('morris method requires the `num_levels` parameter to be set (int)')
         num_levels = self.sensitivity_problem.sampler_parameters['num_levels']
         return analyze_morris.analyze(self.problem, x, y,
                                       num_levels=num_levels)

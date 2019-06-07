@@ -20,15 +20,22 @@ class StatisticsAnalyzer:
             - NRMSE(Normalized RMSE)
     """
 
-    _supported_methods = ["MAE", "R2", "MSE", "RMSE", "CVRMSE", "NRMSE"]
-
     def __init__(self, method):
         """Instantiate class parameters"""
-        try:
-            exec("self.calc = self.calc_{}".format(method))
-        except AttributeError:
+        _supported_methods = {"mae": self.calc_mae,
+                              "r2": self.calc_r2,
+                              "mse": self.calc_mse,
+                              "rmse": self.calc_rmse,
+                              "cvrmse": self.calc_cvrmse,
+                              "nrmse": self.calc_nrmse}
+
+        # Remove case-sensitive input
+        _method_internal = method.lower()
+
+        if _method_internal not in _supported_methods:
             raise ValueError("The given method {} is not supported.\n Choose one out "
-                             "of: {}".format(method, ", ".join(self._supported_methods)))
+                             "of: {}".format(_method_internal, ", ".join(_supported_methods.keys())))
+        self.calc = _supported_methods[_method_internal]
 
     @staticmethod
     def calc(meas, sim):
@@ -37,7 +44,7 @@ class StatisticsAnalyzer:
                                   'analysis, call calc_METHOD with the method you want to use.')
 
     @staticmethod
-    def calc_MAE(meas, sim):
+    def calc_mae(meas, sim):
         """
         Calculates the MAE (mean absolute error)
         for the given numpy array of measured and simulated data.
@@ -51,7 +58,7 @@ class StatisticsAnalyzer:
         return skmetrics.mean_absolute_error(meas, sim)
 
     @staticmethod
-    def calc_R2(meas, sim):
+    def calc_r2(meas, sim):
         """
         Calculates the MAE (mean absolute error)
         for the given numpy array of measured and simulated data.
@@ -65,7 +72,7 @@ class StatisticsAnalyzer:
         return 1 - skmetrics.r2_score(meas, sim)
 
     @staticmethod
-    def calc_MSE(meas, sim):
+    def calc_mse(meas, sim):
         """
         Calculates the MSE (mean square error)
         for the given numpy array of measured and simulated data.
@@ -79,7 +86,7 @@ class StatisticsAnalyzer:
         return skmetrics.mean_squared_error(meas, sim)
 
     @staticmethod
-    def calc_RMSE(meas, sim):
+    def calc_rmse(meas, sim):
         """
         Calculates the RMSE (root mean square error)
         for the given numpy array of measured and simulated data.
@@ -93,7 +100,7 @@ class StatisticsAnalyzer:
         return np.sqrt(skmetrics.mean_squared_error(meas, sim))
 
     @staticmethod
-    def calc_NRMSE(meas, sim):
+    def calc_nrmse(meas, sim):
         """
         Calculates the NRMSE (normalized root mean square error)
         for the given numpy array of measured and simulated data.
@@ -114,7 +121,7 @@ class StatisticsAnalyzer:
                              "NRMSE impossible. Choose another method.")
 
     @staticmethod
-    def calc_CVRMSE(meas, sim):
+    def calc_cvrmse(meas, sim):
         """
         Calculates the CVRMSE (variance of root mean square error)
         for the given numpy array of measured and simulated data.

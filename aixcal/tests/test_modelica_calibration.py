@@ -62,24 +62,6 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Test run for scipy and L-BFGS-B
         modelica_calibrator.run("L-BFGS-B", "dlib")
 
-    def test_sen_analyzer(self):
-        # TODO: This is a test class used to develop the simulation routine for sensitivity_analyzer. Will change this once #17 is finihed.
-        tuner_paras = self.calibration_class.tuner_paras
-        # Define the problem
-        sen_problem = sensitivity_analyzer.SensitivityProblem("morris",
-                                                              10,
-                                                              tuner_paras
-                                                              )
-        # Setup class
-        sen_ana = sensitivity_analyzer.SenAnalyzer(self.example_cal_dir,
-                                                   self.dym_api,
-                                                   sen_problem,
-                                                   self.calibration_classes,
-                                                   self.statistical_measure)
-        # Run
-        res = sen_ana.run()
-        print(res)
-
     def tearDown(self):
         """Remove all created folders while calibrating."""
         try:

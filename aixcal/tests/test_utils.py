@@ -21,7 +21,7 @@ class TestStatisticsAnalyzer(unittest.TestCase):
 
     def test_calc(self):
         """Test class StatisticsAnalyzer"""
-        sup_methods = statistics_analyzer.StatisticsAnalyzer._supported_methods
+        sup_methods = ["mae", "r2", "mse", "rmse", "cvrmse", "nrmse"]
         for method in sup_methods:
             stat_analyzer = statistics_analyzer.StatisticsAnalyzer(method)
             self.assertIsInstance(stat_analyzer.calc(self.meas_ex, self.sim_ex),
@@ -29,40 +29,40 @@ class TestStatisticsAnalyzer(unittest.TestCase):
         with self.assertRaises(ValueError):
             stat_analyzer = statistics_analyzer.StatisticsAnalyzer("not_supported_method")
 
-    def test_calc_RMSE(self):
-        """Test static function calc_RMSE"""
+    def test_calc_rmse(self):
+        """Test static function calc_rmse"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_RMSE(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_rmse(self.meas_ex, self.sim_ex),
                               float)
 
-    def test_calc_MSE(self):
-        """Test static function calc_MSE"""
+    def test_calc_mse(self):
+        """Test static function calc_mse"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_MSE(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_mse(self.meas_ex, self.sim_ex),
                               float)
 
-    def test_calc_MAE(self):
-        """Test static function calc_MAE"""
+    def test_calc_mae(self):
+        """Test static function calc_mae"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_MAE(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_mae(self.meas_ex, self.sim_ex),
                               float)
 
-    def test_calc_NRMSE(self):
-        """Test static function calc_NRMSE"""
+    def test_calc_nrmse(self):
+        """Test static function calc_nrmse"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_NRMSE(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_nrmse(self.meas_ex, self.sim_ex),
                               float)
 
-    def test_calc_CVRMSE(self):
-        """Test static function calc_CVRMSE"""
+    def test_calc_cvrmse(self):
+        """Test static function calc_cvrmse"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_CVRMSE(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_cvrmse(self.meas_ex, self.sim_ex),
                               float)
 
-    def test_calc_R2(self):
-        """Test static function calc_R2"""
+    def test_calc_r2(self):
+        """Test static function calc_r2"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
-        self.assertIsInstance(stat_analyzer.calc_R2(self.meas_ex, self.sim_ex),
+        self.assertIsInstance(stat_analyzer.calc_r2(self.meas_ex, self.sim_ex),
                               float)
 
 
@@ -83,11 +83,6 @@ class TestVisualizer(unittest.TestCase):
         with open(self.logger.filepath_log, "r") as logfile:
             logfile.seek(0)
             self.assertEqual(logfile.read()[-len(example_str):], example_str)
-
-    @unittest.skip("Not yet implemented.")
-    def test_correct_format(self):
-        """Test if the output format for different string works."""
-        pass  # TODO Implement test
 
     def tearDown(self):
         """Remove created files."""
