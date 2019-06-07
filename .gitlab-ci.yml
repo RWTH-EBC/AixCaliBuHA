@@ -89,5 +89,5 @@ test_py37:
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: '/pylint/pylint.gitlab-ci.yml'
-  template: Dependency-Scanning.gitlab-ci.yml
-  template: SAST.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
