@@ -12,7 +12,14 @@ bin
 *.eggs
 dist
 *.pypirc
+build
 
 # PyCharm #
 #####################
 .idea
+.cache
+venv
+
+# Unittest #
+#####################
+.pytest_cache

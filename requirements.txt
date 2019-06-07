@@ -1,0 +1,15 @@
+numpy
+scipy
+pandas
+matplotlib
+scikit-learn
+modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_12_2
+tables
+h5py
+seaborn
+IPython
+pydot
+psutil
+xlrd
+SALib
+PyQt5
