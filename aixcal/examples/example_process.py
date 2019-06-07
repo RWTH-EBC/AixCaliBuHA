@@ -11,7 +11,7 @@ import pandas as pd
 
 def example_dym_api_usage(dym_api):
     tuner_paras = dym_api.get_all_tuner_parameters()
-    tuner_paras.show()
+    #tuner_paras.show()
     print(tuner_paras)
 
 
