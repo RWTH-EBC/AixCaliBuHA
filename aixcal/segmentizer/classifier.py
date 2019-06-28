@@ -4,7 +4,8 @@ import os
 import pickle
 import warnings
 from aixcal import data_types
-from aixcal.classifier import Classifier
+from aixcal.segmentizer import Classifier
+from aixcal.preprocessing import preprocessing
 from sklearn import model_selection
 from sklearn.metrics import classification_report, confusion_matrix
 import sklearn.tree as sktree
@@ -82,7 +83,7 @@ class DecisionTreeClassification(Classifier):
         # TODO However specifying yourself which data set is for
         # training and which for testing should also be implemented!
         self._X_train, self._X_test, self._y_train, self._y_test \
-            = model_selection.train_test_split(self._X, self._y, test_size=self.test_size)
+            = preprocessing.cross_validation(self._X, self._y, test_size=self.test_size)
 
     def create_decision_tree(self):
         """Creates a decision tree based on the training data
