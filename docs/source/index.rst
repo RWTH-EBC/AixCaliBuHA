@@ -11,21 +11,52 @@ Welcome to AixCaliBuHa's documentation!
    :caption: Contents:
 
 
-AixCal SimulationAPI
+AixCal
 =====================
-.. automodule:: aixcal.simulationapi
+.. automodule:: aixcal.optimizer.__init__
    :members:
 
-Dymola API
-=====================
+.. automodule:: aixcal.optimizer.calibration
+   :members:
+
+.. automodule:: aixcal.optimizer.optimization
+   :members:
+
+.. automodule:: aixcal.preprocessing.__init__
+   :members:
+
+.. automodule:: aixcal.preprocessing.conversion
+   :members:
+
+.. automodule:: aixcal.preprocessing.preprocessing
+   :members:
+
+.. automodule:: aixcal.sensanalyzer.__init__
+   :members:
+
+.. automodule:: aixcal.sensanalyzer.sensitivity_analyzer
+   :members:
+
+.. automodule:: aixcal.simulationapi.__init__
+   :members:
+
 .. automodule:: aixcal.simulationapi.dymola_api
    :members:
 
-Python FMU
-=================
 .. automodule:: aixcal.simulationapi.py_fmi
    :members:
 
+.. automodule:: aixcal.utils.__init__
+   :members:
+
+.. automodule:: aixcal.utils.statistics_analyzer
+   :members:
+
+.. automodule:: aixcal.utils.visualizer
+   :members:
+
+.. automodule:: aixcal.data_types
+   :members:
 
 Indices and tables
 ==================
