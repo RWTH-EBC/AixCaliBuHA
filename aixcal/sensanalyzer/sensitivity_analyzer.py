@@ -16,21 +16,20 @@ import numpy as np
 class SenAnalyzer:
     """
     Class to perform a Sensitivity Analysis.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         The path for the current working directory.
-    :type cd: str
-    :param: simulation_api
+    :param simulationapi.SimulationAPI simulation_api:
         Simulation-API used to simulate the samples
-    :param: sensitivity_problem
+    :param SensitivityProblem sensitivity_problem:
         Parameter class for the sensitivity. it contains the demand of the sampler
         and create the dictionary parameter Problem
-    :param calibration_classes: list, data_types.CalibrationClass
+    :param CalibrationClass,list calibration_classes:
         Either one or multiple classes for calibration
-    :param statistical_measure:
+    :param str statistical_measure:
         Used to evaluate the difference of simulated and measured data.
         Like "RMSE", "MAE" etc. See utils.statistics_analyzer.py for
         further info.
-    :type statistical_measure: str
     """
     simulation_api = simulationapi.SimulationAPI
     tuner_paras = data_types.TunerParas
@@ -77,9 +76,10 @@ class SenAnalyzer:
     def sobol_analyze_function(self, _, y):
         """
         Use the SALib.analyze.sobol method to analyze the simulation results.
+
         :param _: None
             placeholder for the `X` parameter of the morris method not used for sobol
-        :param y: np.array
+        :param np.array y:
             The NumPy array containing the model outputs
         :return:
             returns the result of the SALib.analyze.sobol method (from the documentation:
@@ -98,9 +98,10 @@ class SenAnalyzer:
     def morris_analyze_function(self, x, y):
         """
         Use the SALib.analyze.morris method to analyze the simulation results.
-        :param x: np.array
+
+        :param np.array x:
             the `X` parameter of the morris method (The NumPy matrix containing the model inputs)
-        :param y: np.array
+        :param np.array y:
             The NumPy array containing the model outputs
         :return:
             returns the result of the SALib.analyze.sobol method (from the documentation:
@@ -117,6 +118,7 @@ class SenAnalyzer:
     def generate_samples(self):
         """
         Run the sampler specified by `method` and return the results.
+
         :return:
             The list of samples generated as a NumPy array with one row per sample
             and each row containing one value for each variable name in `problem['names']`.
@@ -136,11 +138,14 @@ class SenAnalyzer:
     def simulate_samples(self, samples, start_time, stop_time):
         """
         Put the parameter in dymola model, run it.
-        :param:
-         Output variables in dymola
-        :param: model_input_SA
-        generated sample data as input to simulation
-        :return: np.array
+
+        :param list samples
+            Output variables in dymola
+        :param float start_time
+            Start time of simulation
+        :param float stop_time
+            Stop time of simulation
+        :return np.array
             An array containing the evaluated differences for each sample
         """
         output = []
@@ -170,6 +175,7 @@ class SenAnalyzer:
         """
         Execute the sensitivity analysis for each class and
         return the result.
+
         :return:
             Returns a list of dictionaries. One dict is the SALib-result for
             one calibration-class. The order is based on the order of the
@@ -198,21 +204,18 @@ class SenAnalyzer:
         """
         Automatically select sensitive tuner parameters based on a given threshold
         and a key-word of the result.
-        :param calibration_classes:
+
+        :param list calibration_classes:
             List of data_types.CalibrationClass objects that you want to
             automatically select sensitive tuner-parameters.
-        :type calibration_classes: list
-        :param result:
+        :param list result:
             List of dicts (Sensitivity results)
-        :type result: list
-        :param threshold: Minimal required value of given key
-        :type threshold: float
-        :param key:
-            Value that is used to define the sensitivity.
+        :param float threshold:
+            Minimal required value of given key
+        :param str key: Value that is used to define the sensitivity.
             Default is mu_star, "the absolute mean elementary effect"
             Choose between: mu, mu_star, sigma, mu_star_conf
-        :type key: str
-        :return:
+        :return: list calibration_classes
         """
         for num_class, cal_class in enumerate(calibration_classes):
             class_result = result[num_class]
@@ -229,9 +232,13 @@ class SenAnalyzer:
 class SensitivityProblem:
     """
     Class for defining relevant
-    :param method: The method to use. Valid values are 'morris' (default) and 'sobol'.
+    # TODO Fill description
+
+    :param method:
+        The method to use. Valid values are 'morris' (default) and 'sobol'.
     :type method: str
-    :param method: The method to use. Valid values: 'morris', 'sobol'
+    :param method:
+        The method to use. Valid values: 'morris', 'sobol'
     :type method: str
     :param num_samples:
         The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the
@@ -255,12 +262,13 @@ class SensitivityProblem:
         """
         Function to create the sampler parameters for each different method of
         sensitivity analysis.
+
         :param calc_second_order:
         :param seed:
         :param num_levels:
         :param optimal_trajectories:
         :param local_optimization:
-        :return:
+        :return: sampler_parameters
         """
         if self.method == 'morris':
             sampler_parameters = {'num_levels': num_levels,

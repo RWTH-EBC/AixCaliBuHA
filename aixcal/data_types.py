@@ -22,12 +22,15 @@ class TimeSeriesData:
     """
     Base class for time series data in the framework. This class
     provides functions for all it's children.
-    :param filepath: str, os.path.normpath
+
+    :param str,os.path.normpath filepath:
         Filepath ending with either .hdf, .mat or .csv containing
         time-dependent data to be loaded as a pandas.DataFrame
-    :keyword key: Name of the table in a .hdf-file if the file
-    contains multiple tables.
-    :keyword sep: separator for the use of a csv file.
+    :keyword str key:
+        Name of the table in a .hdf-file if the file
+        contains multiple tables.
+    :keyword str sep:
+        separator for the use of a csv file.
     """
 
     key, sep = "", ","
@@ -82,14 +85,17 @@ class TimeSeriesData:
 
     def get_df(self):
         """Returns the dataframe constructed in this class
+
         :return pd.DataFrame
             DataFrame of this class"""
         return self.df
 
     def set_df(self, df):
         """Set's the dataframe of this class to the given df
-        :param df: pd.DataFrame
-            DataFrame to be used as TimeSeriesData"""
+
+        :param pd.DataFrame df:
+            DataFrame to be used as TimeSeriesData
+        """
         if not isinstance(df, pd.DataFrame):
             raise TypeError("Given df is of type {} but should be "
                             "of type pd.DataFrame".format(type(df).__name__))
@@ -114,6 +120,7 @@ class MeasInputData(TimeSeriesData):
     """
     Class for measurement input data. Such data is necessary for
     different uses-cases:
+
     1. Classification: Based on data like mass flow, pump signal etc.
         a classification is made
     2. Sensitivity Analysis and Calibration: The data will ensure that
@@ -146,12 +153,13 @@ class SimTargetData(TimeSeriesData):
 class TunerParas:
     """
     Class for tuner parameters.
-    :param names: list
+
+    :param list names:
         List of names of the tuner parameters
-    :param initial_values: float, int
-    Initial values for optimization
-    :param bounds: list, tuple
-    Tuple or list of float or ints for lower and upper bound to the tuner parameter
+    :param float,int initial_values:
+        Initial values for optimization
+    :param list,tuple bounds:
+        Tuple or list of float or ints for lower and upper bound to the tuner parameter
     """
     def __init__(self, names, initial_values, bounds=None):
         """Initialize class-objects and check correct input."""
@@ -196,10 +204,11 @@ class TunerParas:
     def scale(self, descaled):
         """
         Scales the given value to the bounds of the tuner parameter between 0 and 1
-        :param descaled: np.array, list
-        Value to be scaled
-        :return: scaled: np.array
-        Scaled value between 0 and 1
+
+        :param np.array,list descaled:
+            Value to be scaled
+        :return: np.array scaled:
+            Scaled value between 0 and 1
         """
         # If no bounds are given, scaling is not possible--> descaled = scaled
         if self.bounds is None:
@@ -213,10 +222,11 @@ class TunerParas:
     def descale(self, scaled):
         """
         Converts the given scaled value to an descaled one.
-        :param scaled: np.array, list
-        Scaled input value between 0 and 1
-        :return: descaled: np.array
-        descaled value based on bounds.
+
+        :param np.array,list scaled:
+            Scaled input value between 0 and 1
+        :return: np.array descaled:
+            descaled value based on bounds.
         """
         # If no bounds are given, scaling is not possible--> descaled = scaled
         if not self.bounds:
@@ -257,10 +267,9 @@ class TunerParas:
     def remove_names(self, names):
         """
         Remove gives list of names from the Tuner-parameters
-        :param names:
+
+        :param list names:
             List with names inside of the TunerParas-dataframe
-        :type names: list
-        :return:
         """
         self._df = self._df.loc[~self._df.index.isin(names)]
 
@@ -268,7 +277,6 @@ class TunerParas:
         """
         Shows the tuner parameters and stores the altered values to
         the object if wanted.
-        :return:
         """
         import sys
         app = QtWidgets.QApplication(sys.argv)
@@ -291,20 +299,21 @@ class TunerParas:
 class Goals:
     """
     Class for one or multiple goals. Used to evaluate the
-    difference between current simulation and
-    :param meas_target_data: aixcal.data_types.MeasTargetData
+    difference between current simulation and measured data
+
+    :param MeasTargetData meas_target_data:
         The dataset to be used as a reference for the simulation output.
-    :param sim_target_data: aixcal.data_types.SimTargetData
+    :param SimTargetData sim_target_data:
         Class holding the dataframe of the simulated data
-    :param meas_columns: list, str, None
+    :param list,str,None meas_columns:
         List of strings or one string with names to the columns
         inside measured_data. If None, the measured_data's
         dataframe has to hold exactly one column. This will then be used.
-    :param sim_columns: list, str, None
+    :param list,str,None sim_columns:
         List of strings or one string with names to the columns
         inside simulated_data. If None, the simulated_data's dataframe
         has to hold exactly one column. This will then be used.
-    :param weightings: list
+    :param list weightings:
         Values between 0 and 1 to account for multiple Goals to be evaluated.
         If multiple goals are selected, and weightings is None, each
         weighting will be equal to 1/(Number of goals).
@@ -398,11 +407,12 @@ class Goals:
         class Goal:
             """
             Single Goals class.
-            :param meas: np.array
+
+            :param np.array meas:
                 Array with measurement data.
-            :param sim: np.array
+            :param np.array sim:
                 Array with simulated data
-            :param weighting: float
+            :param float weighting:
                 Weighting of the Goal.
             """
 
@@ -427,9 +437,10 @@ class Goals:
         """
         Evaluate the difference of the measurement and simulated data based on the
         given statistical_measure.
-        :param statistical_measure: str
-            Method supported by statistics_analyzer.StatisticsAnalyzer, e.g. RMSE+
-        :return: float
+
+        :param str statistical_measure:
+            Method supported by statistics_analyzer.StatisticsAnalyzer, e.g. RMSE
+        :return: float total_difference
             weighted ouput for all goals.
         """
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer(statistical_measure)
@@ -441,8 +452,10 @@ class Goals:
     def set_sim_target_data(self, sim_target_data):
         """Alter the object self._sim_target_data based on given
         sim_target_data.
-        :param sim_target_data: SimTargetData
-            Object with simulation target data."""
+
+        :param SimTargetData sim_target_data:
+            Object with simulation target data.
+        """
         if not isinstance(sim_target_data, SimTargetData):
             raise TypeError("Given sim_target_data is of type {} but SimTargetData "
                             "is required.".format(type(sim_target_data).__name__))
@@ -460,11 +473,11 @@ class Goals:
         and simulated data are relevant. Set the interval to be used with this function.
         This will change both measured and simulated data. Therefore, the eval_difference
         function can be called at every moment.
-        :param start_time: float
+
+        :param float start_time:
             Start-time of the relevant time interval
-        :param end_time:
+        :param float end_time:
             End-time of the relevant time interval
-        :return:
         """
         self._sim_df = self._sim_target_data.df[start_time:end_time]
         self._meas_df = self._meas_target_data.df[start_time:end_time]
@@ -473,7 +486,8 @@ class Goals:
     def set_meas_target_data(self, meas_target_data):
         """Alter the object self._meas_target_data based on given
         sim_target_data.
-        :param meas_target_data: MeasTargetData
+
+        :param MeasTargetData meas_target_data:
             Object with simulation target data."""
         if not isinstance(meas_target_data, MeasTargetData):
             raise TypeError("Given sim_target_data is of type {} but SimTargetData "
@@ -488,12 +502,14 @@ class Goals:
 
     def get_goal_names(self, index_of_goal):
         """Return a dictionary with all relevant names of
-        the given index of goal..
-        :param index_of_goal: int
+        the given index of goal.
+
+        :param int index_of_goal:
             Index of the goals-list
-        :return dict
+        :returns: dict
             Dict containing name of the simulation data and name
-            of the measurement data."""
+            of the measurement data.
+        """
         return {"sim_name": self._sim_columns[index_of_goal],
                 "meas_name": self._meas_columns[index_of_goal]}
 
@@ -509,19 +525,20 @@ class Goals:
 class CalibrationClass:
     """
     Class used for continuous calibration.
-    :param name: str
-    Name of the class, e.g. 'device on'
-    :param start_time: float, int
-    Time at which the class starts
-    :param stop_time:
-    Time at which the class ends
-    :param goals: aixcal.data_types.Goals
-    Goals parameters which are relevant in this class.
-    As this class may be used in the classifier, a Goals-Class
-    may not be available at all times and can be added later.
-    :param tuner_paras: aixcal.data_types.TunerParas
-    As this class may be used in the classifier, a TunerParas-Class
-    may not be available at all times and can be added later.
+
+    :param str name:
+        Name of the class, e.g. 'device on'
+    :param float,int start_time:
+        Time at which the class starts
+    :param float,int stop_time:
+        Time at which the class ends
+    :param Goals goals:
+        Goals parameters which are relevant in this class.
+        As this class may be used in the classifier, a Goals-Class
+        may not be available at all times and can be added later.
+    :param TunerParas tuner_paras:
+        As this class may be used in the classifier, a TunerParas-Class
+        may not be available at all times and can be added later.
     """
 
     def __init__(self, name, start_time, stop_time, goals=None, tuner_paras=None):
@@ -542,7 +559,8 @@ class CalibrationClass:
     def set_goals(self, goals):
         """
         Set the goals object for the calibration-class.
-        :param goals: aixcal.data_types.Goals
+
+        :param Goals goals:
             Goals-data-type
         """
         if not isinstance(goals, Goals):
@@ -553,7 +571,9 @@ class CalibrationClass:
     def set_tuner_paras(self, tuner_paras):
         """
         Set the tuner parameters for the calibration-class.
-        :param tuner_paras: aixcal.data_types.TunerParas
+
+        :param TunerParas tuner_paras:
+            TunerParas to be set to calibration class
         """
         if not isinstance(tuner_paras, TunerParas):
             raise TypeError("Given tuner_paras is of type {} but should be "
@@ -564,7 +584,8 @@ class CalibrationClass:
 def get_keys_of_hdf_file(filepath):
     """
     Find all keys in a given hdf-file.
-    :param filepath: str, os.path.normpath
+
+    :param str,os.path.normpath filepath:
         Path to the .hdf-file
     :return: list
         List with all keys in the given file.

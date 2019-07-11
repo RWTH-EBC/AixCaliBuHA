@@ -14,9 +14,10 @@ class Optimizer:
     """Base class for optimization in aixcal. All classes
     performing optimization tasks must inherit from this
     class.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Directory for storing all output of optimization.
-    :param kwargs: dict
+    :param dict kwargs:
         Keyword arguments can be passed to this class. All given keywords
         will be an object of this class. The ones used in different optimization
         frameworks will be passed automatically to the functions when calling them.
@@ -92,7 +93,8 @@ class Optimizer:
     def obj(self, xk, *args):
         """
         Base objective function.
-        :param xk: np.array
+
+        :param np.array xk:
             Array with parameters for optimization
         """
         raise NotImplementedError('{}.obj function is not defined'.format(self.__class__.__name__))
@@ -103,9 +105,10 @@ class Optimizer:
         Function to select the functions for optimization
         and for executing said functions. This function has to be
         overloaded, only the selection of said functions takes place here.
-        :param method: str
+
+        :param str method:
             Method for optimization
-        :param framework: enum, str
+        :param (enum,str) framework:
             Enumeration for selection of the relevant function
         """
         if framework.lower() == "scipy":

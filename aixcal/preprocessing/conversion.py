@@ -9,23 +9,25 @@ from aixcal import data_types
 def convert_hdf_to_mat(filepath, save_path_file, columns=None, key=None, set_time_to_zero=True):
     """
     Function to convert a hdf file to a mat-file readable within Dymola.
-    :param filepath: str, os.path.normpath
+
+    :param str,os.path.normpath filepath:
         String or even os.path.normpath.
         Must point to a valid hdf file.
-    :param save_path_file: str, os.path.normpath
+    :param str,os.path.normpath save_path_file:
         File path and name where to store the output *.mat file.
-    :param columns: list,
+    :param list columns:
         A list with names of columns that should be saved to *.mat file.
         If no list is provided, all columns are converted.
-    :param key: str,
+    :param str key:
         The name of the dataframe inside the given hdf-file.
         Only needed if multiple tables are stored within tht given file.
-    :param set_time_to_zero: bool (default True),
+    :param bool set_time_to_zero: (default True),
         If True, the index, which is the time, will start at a zero base.
-    :return mat_file:
-         Returns the version 4 mat-file
+    :returns mat_file:
+        Returns the version 4 mat-file
 
-    :Example
+    Examples:
+
     >>> import os
     >>> project_dir = os.path.dirname(os.path.dirname(__file__))
     >>> example_file = os.path.normpath(project_dir + "//examples//example_data.hdf")

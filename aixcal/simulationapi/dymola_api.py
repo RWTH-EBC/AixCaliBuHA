@@ -16,12 +16,13 @@ DymolaConnectionException = None  # Create dummy to later be used for global-imp
 class DymolaAPI(simulationapi.SimulationAPI):
     """
     Dymola interface class
-    :param cd: str, os.path.normpath
-    Dirpath for the current working directory of dymola
-    :param model_name: str
-    Name of the model to be simulated
-    :param packages: list
-    List with path's to the packages needed to simulate the model
+
+    :param str,os.path.normpath cd:
+        Dirpath for the current working directory of dymola
+    :param str model_name:
+        Name of the model to be simulated
+    :param list packages:
+        List with path's to the packages needed to simulate the model
     """
 
     show_window = False
@@ -81,10 +82,11 @@ class DymolaAPI(simulationapi.SimulationAPI):
         If simulation terminates without an error and the files should be saved,
         the files are moved to a folder based on the current datetime.
         Returns the filepath of the result-matfile.
-        :param savepath_files: str, os.path.normpath
+
+        :param str,os.path.normpath savepath_files:
             If path is provided, the relevant simulation results will be saved
             in the given directory.
-        :return: filepath: os.path.normpath
+        :return: str,os.path.normpath filepath:
             Filepath of the result file.
         """
         if self._structural_params:
@@ -135,18 +137,18 @@ class DymolaAPI(simulationapi.SimulationAPI):
     def set_initial_values(self, initial_values):
         """
         Overwrite inital values
-        :param initial_values: list
-        List containing initial values for the dymola interface
-        :return:
+
+        :param list initial_values:
+            List containing initial values for the dymola interface
         """
         self.sim_setup["initialValues"] = list(initial_values)
 
     def set_sim_setup(self, sim_setup):
         """
         Overwrites multiple entries in the simulation setup dictionary
-        :param sim_setup: dict
-        Dictionary object with the same keys as this class's sim_setup dictionary
-        :return:
+
+        :param dict sim_setup:
+            Dictionary object with the same keys as this class's sim_setup dictionary
         """
         _diff = set(sim_setup.keys()).difference(self.sim_setup.keys())
         if _diff:
@@ -168,8 +170,9 @@ class DymolaAPI(simulationapi.SimulationAPI):
     def import_initial(self, filepath):
         """
         Load given dsfinal.txt into dymola
-        :param filepath: str, os.path.normpath
-        Path to the dsfinal.txt to be loaded
+
+        :param str,os.path.normpath filepath:
+            Path to the dsfinal.txt to be loaded
         """
         if not os.path.isfile(filepath):
             raise FileNotFoundError("Given filepath {} does not exist".format(filepath))
@@ -267,14 +270,15 @@ class DymolaAPI(simulationapi.SimulationAPI):
         """
         Creates a modifier for all structural parameters,
         based on the modelname and the initalNames and values.
-        :param sim_setup: dict
-        Simulation setup dictionary
-        :param model_name: str
-        Name of the model to be modified
-        :param structural_params: list
-        List of strings with structural parameters
-        :return: altered_modelName: str
-        modified model name
+
+        :param dict sim_setup:
+            Simulation setup dictionary
+        :param str model_name:
+            Name of the model to be modified
+        :param list structural_params:
+            List of strings with structural parameters
+        :return: str altered_modelName:
+            modified model name
         """
         initial_values = sim_setup["initialValues"]
         initial_names = sim_setup["initialNames"]
@@ -303,9 +307,10 @@ class DymolaAPI(simulationapi.SimulationAPI):
         After translation you can only set literal start-values\n
         and non-evaluated parameters.'
         Filtering of this string will extract 'n' in the given case.
-        :param error_log: str
-        Error log from the dymola_interface.getLastErrorLog() function
-        :return: filtered_log: str
+
+        :param str error_log:
+            Error log from the dymola_interface.getLastErrorLog() function
+        :return: str filtered_log:
         """
         _trigger_string = "After translation you can only set " \
                           "literal start-values and non-evaluated parameters"
@@ -336,7 +341,8 @@ class DymolaAPI(simulationapi.SimulationAPI):
         """
         Convert given path to a path readable in dymola.
         If the path does not exist, create it.
-        :param path: os.path.normpath, str
+
+        :param str,os.path.normpath path:
         :return: str
         Path readable in dymola
         """
@@ -354,8 +360,9 @@ class DymolaAPI(simulationapi.SimulationAPI):
         """
         Function to get the path of the newest dymola interface
         installment on the used machine
+
         :return: str
-        Path to the dymola.egg-file
+            Path to the dymola.egg-file
         """
         path_to_egg_file = r"\Modelica\Library\python_interface\dymola.egg"
         syspaths = [r"C:\Program Files"]

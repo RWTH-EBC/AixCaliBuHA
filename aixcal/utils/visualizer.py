@@ -21,11 +21,12 @@ class Logger:
     """Base class for showing the process of functions in
     this Framework with print-statements and saving everything
     relevant as a log-file.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Directory where to store the output of the Logger and possible
         child-classes. If the given directory can not be created, an error
         will be raised.
-    :param name: str
+    :param str name:
         Name of the reason of logging, e.g. classification, processing etc.
     """
     def __init__(self, cd, name):
@@ -55,8 +56,9 @@ class Logger:
     def log(self, text):
         """
         Logs the given text to the given log.
-        :param text:
-        :return:
+
+        :param str text:
+            Text to log to the console and file
         """
         print(text)
         datestring = datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
@@ -84,13 +86,14 @@ class CalibrationLogger(Logger):
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
         relevant as a log-file.
-        :param cd: str, os.path.normpath
+
+        :param str,os.path.normpath cd:
             Directory where to store the output of the Logger and possible
             child-classes. If the given directory can not be created, an error
             will be raised.
-        :param name: str
+        :param str name:
             Name of the reason of logging, e.g. classification, processing etc.
-        :param tuner_paras: aixcal.data_types.TunerParas
+        :param aixcal.data_types.TunerParas tuner_paras:
             TunerParas class used in the calibration-process.
     """
 
@@ -117,9 +120,10 @@ class CalibrationLogger(Logger):
     def calibration_callback_func(self, xk, obj):
         """
         Logs the current values of the objective function.
-        :param xk: np.array
+
+        :param np.array xk:
             Array with the current values of the calibration
-        :param obj: float
+        :param float obj:
             Current objective value.
         """
         xk_descaled = self.tuner_paras.descale(xk)
@@ -131,11 +135,12 @@ class CalibrationLogger(Logger):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
-        :param res: scipy.optimize.minimize.result
+
+        :param scipy.optimize.minimize.result res:
             Result object of the minimization
-        :param model_name: str
+        :param str model_name:
             Name of the model being calibrated
-        :param statistical_measure: str
+        :param str statistical_measure:
             Statistical measure used for calibration.
         """
         result_log = "Results for calibration of model: {}\n".format(model_name)
@@ -152,6 +157,7 @@ class CalibrationLogger(Logger):
     def set_tuner_paras(self, tuner_paras):
         """
         Set the currently used TunerParas object to use the information for logging.
+
         :param tuner_paras: aixcal.data_types.TunerParas
         """
         if not isinstance(tuner_paras, data_types.TunerParas):
@@ -169,7 +175,8 @@ class CalibrationLogger(Logger):
     def _get_tuner_para_names_as_string(self, statistical_measure):
         """
         Returns a string with the names of current tunerParameters
-        :return: str
+
+        :return: str info_string
             The desired string
         """
         initial_names = list(self.tuner_paras.get_names())
@@ -195,9 +202,10 @@ class CalibrationLogger(Logger):
         """
         Returns a string with the values of current tuner parameters
         as well as the objective value.
-        :param xk_descaled: np.array
+
+        :param np.array xk_descaled:
             Array with the current values of the calibration, descaled to bounds
-        :param obj: float
+        :param float obj:
             Current objective value.
         :return: str
         The desired string
@@ -220,7 +228,8 @@ class CalibrationVisualizer(CalibrationLogger):
     """More advanced class to not only log ongoing function
     evaluations but also show the process of the functions
     by plotting interesting causalities and saving these plots.
-    :param goals: aixcal.data_types.Goals
+
+    :param aixcal.data_types.Goals goals:
         Goals object with the data for plotting
     """
 
@@ -247,11 +256,12 @@ class CalibrationVisualizer(CalibrationLogger):
         This function is called when instantiating this Class. If you
         uses continuuos calibration classes, call this function before
         starting the next calibration-class.
-        :param name: str
+
+        :param str name:
             Name of the reason of logging, e.g. classification, processing etc.
-        :param tuner_paras: aixcal.data_types.TunerParas
+        :param aixcal.data_types.TunerParas tuner_paras:
             TunerParas class used in the calibration-process.
-        :param goals: aixcal.data_types.Goals
+        :param aixcal.data_types.Goals goals:
             Goals object with the data for plotting
         """
 
@@ -294,11 +304,12 @@ class CalibrationVisualizer(CalibrationLogger):
     def calibration_callback_func(self, xk, obj):
         """
         Logs the current values of the objective function.
-        :param xk: np.array
+
+        :param np.array xk:
             Array with the current values of the calibration
-        :param obj: float
+        :param float obj:
             Current objective value.
-        :param goals: aixcal.data_types.Goals
+        :param aixcal.data_types.Goals goals:
             Goals object with the data for plotting
         """
         # Call the logger function to print and log
@@ -321,15 +332,15 @@ class CalibrationVisualizer(CalibrationLogger):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
-        :param res: scipy.optimize.minimize.result
+
+        :param scipy.optimize.minimize.result res:
             Result object of the minimization
-        :param model_name: str
+        :param str model_name:
             Name of the model being calibrated
-        :param statistical_measure: str
+        :param str statistical_measure:
             Statistical measure used for calibration.
-        :param file_type:
+        :param str file_type:
             svg, pdf or png
-        :return:
         """
         super().save_calibration_result(res, model_name, statistical_measure)
         filepath_tuner = os.path.join(self.cd, "tuner_parameter_plot.%s" % file_type)
@@ -341,7 +352,9 @@ class CalibrationVisualizer(CalibrationLogger):
     def set_goals(self, goals):
         """
         Set the currently used Goals object to use the information for logging.
-        :param goals: aixcal.data_types.Goals
+
+        :param aixcal.data_types.Goals goals:
+            Goals to be set to the object
         """
         if not isinstance(goals, data_types.Goals):
             raise TypeError("Given goals is of type {} but type"
@@ -351,9 +364,10 @@ class CalibrationVisualizer(CalibrationLogger):
     def _plot_tuner_parameters(self, xk=None, for_setup=False):
         """
         Plot the tuner parameter values history for better user interaction
-        :param xk: np.array
+
+        :param np.array xk:
             current iterate, scaled.
-        :param for_setup: bool
+        :param bool for_setup:
             True if the function is called to initialize the calibration
         """
         tuner_counter = 0
@@ -414,10 +428,10 @@ class ClassifierVisualizer(Visualizer):
         """
         Saves the given dtree object by exporting it
         via graphviz to a png image
-        :param dtree: DecisionTree
-        :param variable_list: list
+
+        :param DecisionTree dtree:
+        :param list variable_list:
             List with names of decision-variables
-        :return:
         """
         # Save the created tree as a png.
         try:
@@ -437,8 +451,9 @@ class ClassifierVisualizer(Visualizer):
     def plot_decision_tree(self, df, class_list):
         """Visualization pair plot (df is data frame with whole X values (train and test)
         This function takes a long time to be executed.
-        :param df: pd.DataFrame
-        :param class_list: list
+
+        :param pd.DataFrame df:
+        :param list class_list:
             List with names for classes.
         """
 

@@ -9,9 +9,10 @@ from aixcal.utils import visualizer
 class SimulationAPI:
     """Base-class for simulation apis. Every simulation-api class
     must inherit from this class. It defines the structure of each class.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Working directory path
-    :param model_name: str
+    :param str model_name:
         Name of the model being simulated."""
 
     def __init__(self, cd, model_name):

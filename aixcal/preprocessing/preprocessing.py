@@ -13,6 +13,7 @@ def build_average_on_duplicate_rows(df):
     the first occurrence of this duplicate index. Therefore,
     any dataFrame should be already sorted before calling this
     function.
+
     Example:
     Dataframe e.g.:
     2000-01-01 00:00:02.340   6.500    ...            1.0
@@ -20,7 +21,7 @@ def build_average_on_duplicate_rows(df):
     will become:
     2000-01-01 00:00:02.340   6.750    ...            1.0
 
-    :param df: pd.DataFame
+    :param pd.DataFame df:
         DataFrame with the data to process
     :return: pd.DataFame
     """
@@ -44,12 +45,13 @@ def convert_index_to_datetime_index(df, unit_of_index="s"):
     """
     Converts the index of the given DataFrame to a
     pandas.core.indexes.datetimes.DatetimeIndex.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         dataframe with index not being a DateTime.
         Only numeric indexes are supported. Every integer
         is interpreted with the given unit, standard form
         is in seocnds.
-    :param unit_of_index: str, default 's'
+    :param str unit_of_index: default 's'
         The unit of the given index. Used to convert to
         total_seconds later on.
     :return: df
@@ -86,9 +88,10 @@ def clean_and_space_equally_time_series(df, desired_freq):
     Function for cleaning of the given dataFrame and interpolating
     based on the the given desired frequency. Linear interpolation
     is used.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         Unclean DataFrame. Needs to have a pd.DateTimeIndex
-    :param desired_freq: float
+    :param float desired_freq:
         Frequency to determine number of elements in processed dataframe
     :return: pd.DataFrame
         Cleaned and equally spaced data-frame
@@ -145,10 +148,11 @@ def clean_and_space_equally_time_series(df, desired_freq):
 def low_pass_filter(data, crit_freq, filter_order):
     """
     Create a low pass filter with given order and frequency.
-    :param data: numpy.ndarray,
+
+    :param numpy.ndarray data:
         For dataframe e.g. df['a_col_name'].values
-    :param crit_freq: float,
-    :param filter_order: int,
+    :param float crit_freq:
+    :param int filter_order:
     :return: numpy.ndarray,
     """
     _filter_order = int(filter_order)
@@ -162,11 +166,11 @@ def moving_average(values, window, shift=True):
     """
     Creates a pandas Series as moving average of the input series.
 
-    :param values: Series
+    :param pd.Series values:
         For dataframe e.g. df['a_col_name'].values
-    :param window: int
+    :param int window:
         sample rate of input
-    :param shift: Boolean
+    :param bool shift:
         if True, shift array back by window/2 and fill up values at start and end
     :return: numpy.array
         shape has (###,). First and last points of input Series are extrapolated as constant
@@ -188,14 +192,15 @@ def moving_average(values, window, shift=True):
 def create_on_off_signal(df, col_names, threshold, col_names_new):
     """
     Create on and off signals based on the given threshold for all column names.
-    :param df: pd.DataFame
+
+    :param pd.DataFame df:
         DataFrame with the data to process
-    :param col_names: list
+    :param list col_names:
         Column names to convert to signals
-    :param threshold: float, list of floats
+    :param float,list threshold:
         Threshold for all column-names (single float) or
         a list with specific thresholds for specific columns.
-    :param col_names_new: list
+    :param list col_names_new:
         New name for the signal-column
     :return: pd.DataFrame
         Now with the created signals.
@@ -222,7 +227,8 @@ def number_lines_totally_na(df):
     """
     Returns the number of rows in the given dataframe
     that are filled with NaN-values.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         Given dataframe to process
     :return: int
         Number of NaN-Rows.
@@ -241,11 +247,12 @@ def z_score(x, limit=3):
     """
     Calculate the z-score using the mea
     and standard deviation of the given data.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :param limit: float, default 3
+    :param float limit: default 3
         Lower limit for required z-score
-    :return: iqr: np.array
+    :return: np.array iqr:
         modified z score"""
     mean = np.mean(x)
     standard_deviation = np.std(x)
@@ -257,11 +264,12 @@ def modified_z_score(x, limit=3.5):
     """
     Calculate the modified z-score using the median
     and median average deviation of the given data.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :param limit: float, default 3.5
+    :param float limit: default 3.5
         Lower limit for required z-score
-    :return: iqr: np.array
+    :return: np.array iqr:
         modified z score
     """
     median = np.median(x)
@@ -273,9 +281,10 @@ def modified_z_score(x, limit=3.5):
 def interquartile_range(x):
     """
     Calculate interquartile range of given array.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :return: iqr: np.array
+    :return: np.array iqr:
         Array matching the interquartile-range
     """
     quartile_1, quartile_3 = np.percentile(x, [25, 75])

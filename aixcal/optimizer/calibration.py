@@ -4,6 +4,7 @@ Calibration."""
 
 import os
 from abc import abstractmethod
+from aixcal import simulationapi
 from aixcal import data_types
 from aixcal.utils import visualizer
 from aixcal.optimizer import Calibrator
@@ -17,15 +18,16 @@ class ModelicaCalibrator(Calibrator):
     be used for single time-intervals of calibration. The objective
     should be the standard-objective function for all calibration
     processes of modelica-models.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Working directory
-    :param sim_api: aixcal.simulationapi.SimulationAPI
+    :param aixcal.simulationapi.SimulationAPI sim_api:
         Simulation-API for running the models
-    :param statistical_measure: str
+    :param str statistical_measure:
         Measure to calculate the scalar of the objective,
         e.g. RMSE, MAE, NRMSE
-    :param calibration_class: aixcal.data_types.CalibrationClass
-        Class with information on Goals and t uner-parameters for calibration
+    :param CalibrationClass calibration_class:
+        Class with information on Goals and tuner-parameters for calibration
     """
 
     # Dummy variable for accessing the current simulation result
@@ -85,7 +87,8 @@ class ModelicaCalibrator(Calibrator):
         2. Simulate the converted-set
         3. Get data as a dataFrame
         4. Calculate the objective based on statistical values
-        :param xk: np.array
+
+        :param np.array xk:
         Array with normalized values for the minimizer
         :return:
         Objective value based on the used quality measurement
@@ -224,7 +227,8 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         """Method to execute some function between the calibration
         of two classes. The basic step is to alter the tuner paramters
         based on past-optimal values.
-        :param tuner_paras_of_class: data_types.TunerParas
+
+        :param data_types.TunerParas tuner_paras_of_class:
             TunerParas of the next class.
         """
         self.tuner_paras = self._alter_tuner_paras(tuner_paras_of_class)
@@ -233,9 +237,10 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         """
         Based on old calibration results, this function
         alters the start-values for the new tuner_paras-Set
-        :param tuner_paras_of_class: aixcal.data_types.TunerParas
+
+        :param aixcal.data_types.TunerParas tuner_paras_of_class:
             Tuner Parameters for the next time-interval
-        :return: tunerParaDict: aixcal.data_types.TunerParas
+        :return: aixcal.data_types.TunerParas tunerParaDict:
             TunerParas with the altered values
         """
         total_time = 0
@@ -341,6 +346,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
         """
         Join all initialNames used for calibration in the given dataset. This function
         is used to find all values to be filtered in the dsfinal-file.
+
         :return: list
         Joined list of all names.
         """

@@ -10,7 +10,8 @@ class StatisticsAnalyzer:
     given method. Either instantiate the class and run
     StatisticsAnalyzer.calc(meas, sim), or go for direct calculation with
     StatisticsAnalyzer.calc_METHOD(meas, sim).
-    :param method: str
+
+    :param str method:
         One of the following:
             - MAE(Mean absolute error)
             - R2(coefficient of determination)
@@ -48,11 +49,12 @@ class StatisticsAnalyzer:
         """
         Calculates the MAE (mean absolute error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: MAE: float
+        :return: float MAE:
             MAE os the given data.
         """
         return skmetrics.mean_absolute_error(meas, sim)
@@ -62,11 +64,12 @@ class StatisticsAnalyzer:
         """
         Calculates the MAE (mean absolute error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: MAE: float
+        :return: float MAE:
             R2 of the given data.
         """
         return 1 - skmetrics.r2_score(meas, sim)
@@ -76,11 +79,12 @@ class StatisticsAnalyzer:
         """
         Calculates the MSE (mean square error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: MSE: float
+        :return: float MSE:
             MSE of the given data.
         """
         return skmetrics.mean_squared_error(meas, sim)
@@ -90,11 +94,12 @@ class StatisticsAnalyzer:
         """
         Calculates the RMSE (root mean square error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: RMSE: float
+        :return: float RMSE:
             RMSE of the given data.
         """
         return np.sqrt(skmetrics.mean_squared_error(meas, sim))
@@ -104,11 +109,12 @@ class StatisticsAnalyzer:
         """
         Calculates the NRMSE (normalized root mean square error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: NRMSE: float
+        :return: float NRMSE:
             NRMSE of the given data.
         """
         # Check if NRMSE can be calculated
@@ -125,11 +131,12 @@ class StatisticsAnalyzer:
         """
         Calculates the CVRMSE (variance of root mean square error)
         for the given numpy array of measured and simulated data.
-        :param meas: array
+
+        :param np.array meas:
             Array with measurement data
-        :param sim: array
+        :param np.array sim:
             Array with simulation data
-        :return: CVRMSE: float
+        :return: float CVRMSE:
             CVRMSE of the given data.
         """
         # Check if CVRMSE can be calculated
