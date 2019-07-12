@@ -4,8 +4,8 @@ of Modelica-Models."""
 import sys
 import os
 import warnings
-import psutil
 import atexit
+import psutil
 from aixcal import simulationapi
 from aixcal import data_types
 import modelicares.util as mrutil

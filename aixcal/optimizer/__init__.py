@@ -202,4 +202,5 @@ class Calibrator(Optimizer):
         :param goals: data_types.Goals
             Goals with data to be validated
         """
-        raise NotImplementedError('{}.validate function is not defined'.format(self.__class__.__name__))
+        raise NotImplementedError('{}.validate function is not'
+                                  ' defined'.format(self.__class__.__name__))

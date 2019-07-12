@@ -226,12 +226,6 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
             curr_num += 1
             self._counter = 0  # Reset counter for next optimization
 
-    def validate(self, goals):
-        # Alter the start- and stop-time of the simulation to
-        # validate over all classes.
-        # TODO: How to validate multiple classes? Which parameters to use?
-        super().validate(goals)
-
     @abstractmethod
     def ref_start_time(self, start_time):
         """Method to be calculate the start_time based on the used
