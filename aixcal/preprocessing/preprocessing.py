@@ -2,6 +2,7 @@
 data, maily in the format of datafames or np.arrays."""
 from datetime import datetime
 from scipy import signal
+from sklearn import model_selection
 import numpy as np
 import pandas as pd
 
@@ -292,3 +293,12 @@ def interquartile_range(x):
     lower = quartile_1 - (iqr * 1.5)
     upper = quartile_3 + (iqr * 1.5)
     return np.where((x > upper) | (x < lower))[0]
+
+
+def cross_validation(x, y, test_size=0.3):
+    """Split data set randomly with test_size
+    (if test_size = 0.30 --> 70 % are training data).
+    You can use this function for segmentation tasks.
+    Time-series-data may not be splitted with this function
+    as the results are not coherent (time-wise)."""
+    return model_selection.train_test_split(x, y, test_size=test_size)

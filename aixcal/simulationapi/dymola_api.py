@@ -4,6 +4,7 @@ of Modelica-Models."""
 import sys
 import os
 import warnings
+import atexit
 import psutil
 from aixcal import simulationapi
 from aixcal import data_types
@@ -75,6 +76,8 @@ class DymolaAPI(simulationapi.SimulationAPI):
         # Parameter for raising a warning if to many dymola-instances are running
         self._critical_number_instances = 10
         self._setup_dymola_interface(self.show_window)
+        # Register this class to the atexit module to always close dymola-instances
+
 
     def simulate(self, savepath_files=""):
         """
@@ -240,6 +243,8 @@ class DymolaAPI(simulationapi.SimulationAPI):
             self.dymola = DymolaInterface(showwindow=show_window)
         except DymolaConnectionException as error:
             raise ConnectionError(error)
+        # Register the function now in case of an error.
+        atexit.register(self.close)
         self._check_dymola_instances()
         self.set_cd(self.cd)
         for package in self.packages:

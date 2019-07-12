@@ -1,3 +1,13 @@
+Segmentizer
+=====================
+.. automodule:: aixcal.segmentizer
+   :members:
+
+.. automodule:: aixcal.segmentizer.classifier
+   :members:
+
+
+
 Optimizer
 =====================
 .. automodule:: aixcal.optimizer

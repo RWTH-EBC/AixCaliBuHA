@@ -279,15 +279,17 @@ class TunerParas:
         the object if wanted.
         """
         import sys
-        app = QtWidgets.QApplication(sys.argv)
-        main_window = QtWidgets.QMainWindow()
-        gui = tuner_paras_gui.TunerParasUI(main_window)
-        gui.set_data(self._df[["initial_value", "min", "max"]])
-        main_window.show()
-        app.exec_()
-        tuner_paras = gui.tuner_paras
-        if tuner_paras is not None:
-            self._df = tuner_paras._df.copy()
+        try:
+            app = QtWidgets.QApplication(sys.argv)
+            main_window = QtWidgets.QMainWindow()
+            gui = tuner_paras_gui.TunerParasUI(main_window)
+            gui.set_data(self._df[["initial_value", "min", "max"]])
+            main_window.show()
+            sys.exit(app.exec_())
+        except SystemExit:
+            tuner_paras = gui.tuner_paras
+            if tuner_paras is not None:
+                self._df = tuner_paras._df.copy()
 
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]

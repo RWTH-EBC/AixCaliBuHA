@@ -1,6 +1,6 @@
 import os
 from aixcal import data_types
-from aixcal.classifier.classifier import DecisionTreeClassification
+from aixcal.segmentizer.classifier import DecisionTreeClassification
 from aixcal.optimizer import calibration
 from aixcal.sensanalyzer import sensitivity_analyzer
 from aixcal.simulationapi import dymola_api
@@ -11,14 +11,14 @@ import pandas as pd
 
 def example_dym_api_usage(dym_api):
     tuner_paras = dym_api.get_all_tuner_parameters()
-    #tuner_paras.show()
+    tuner_paras.show()
     print(tuner_paras)
 
 
 def example_classifier_create_dtree(cd):
     """
     Analyze data into classes and return those classes.
-    e.g. classes = classifier.classify(MeasInputData)
+    e.g. classes = segmentizer.classify(MeasInputData)
     Resulting list should look something like this:
     :param cd: str, os.path.normpath
         Working Directory of example.
@@ -122,7 +122,8 @@ if __name__ == "__main__":
     packages = [os.path.normpath(filepath + "//Modelica//AixCalTest//package.mo")]
     dym_api = dymola_api.DymolaAPI(cd, model_name, packages, show_window=True,
                                    get_structural_parameters=False)
-    
+
+
     # Parameters for calibration and sen-analysis:
     statistical_measure = "RMSE"
 
