@@ -1,9 +1,9 @@
 """Test-module for all classes inside
-aixcal.classifier."""
+aixcal.segmentizer."""
 import unittest
 import os
 import shutil
-from aixcal.classifier import classifier
+from aixcal.segmentizer import classifier
 from aixcal import data_types
 import sklearn.tree as sktree
 import numpy as np
@@ -11,7 +11,7 @@ import numpy as np
 
 class TestClassifier(unittest.TestCase):
     """
-    Test the classifier class of aixcal
+    Test the segmentizer class of aixcal
     """
 
     def setUp(self):

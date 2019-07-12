@@ -76,7 +76,6 @@ class ModelicaCalibrator(Calibrator):
                                                        self.goals,
                                                        show_plot=self.show_plot)
 
-
     def obj(self, xk, *args):
         """
         Default objective function.
@@ -141,6 +140,20 @@ class ModelicaCalibrator(Calibrator):
         self.logger.save_calibration_result(self._res,
                                             self.sim_api.model_name,
                                             self.statistical_measure)
+
+    def validate(self, goals):
+        if not isinstance(goals, data_types.Goals):
+            raise TypeError("Given goals is of type {} but type"
+                            "Goals is needed.".format(type(goals).__name__))
+        #%% Start Validation:
+        self.logger.log("Start validation of model: {} with "
+                        "framework-class {}".format(self.sim_api.model_name,
+                                                    self.__class__.__name__))
+        self.goals = goals
+        # Use the results parameter vector to simulate again.
+        xk = self._res.x
+        val_result = self.obj(xk)
+        self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
 
 
 class ContinuousModelicaCalibration(ModelicaCalibrator):

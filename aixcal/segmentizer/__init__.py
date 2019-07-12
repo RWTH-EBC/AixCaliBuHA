@@ -1,4 +1,5 @@
-"""Base-module for the classifier-package."""
+"""Base-module for the segmentizer-package.
+Will """
 
 from abc import abstractmethod
 import os
@@ -7,7 +8,7 @@ from aixcal.utils import visualizer
 
 class Classifier:
     """
-    Base-Class for a classifier. All classifier should
+    Base-Class for a classifier. All classifiers should
     be able to process some MeasTarget-Data and MeasInput-Data
     into aixcal.data_types.CalibrationClass(es).
     :param cd: str, os.path.normpath

@@ -192,3 +192,15 @@ class Calibrator(Optimizer):
     @abstractmethod
     def run(self, method, framework):
         super().run(method, framework)
+
+    @abstractmethod
+    def validate(self, goals):
+        """
+        Function to use different measurement data and run the objective function
+        again to validate the calibration. The final parameter vector of the
+        calibration is used.
+        :param goals: data_types.Goals
+            Goals with data to be validated
+        """
+        raise NotImplementedError('{}.validate function is not'
+                                  ' defined'.format(self.__class__.__name__))

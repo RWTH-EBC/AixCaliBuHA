@@ -227,9 +227,9 @@ class CalibrationVisualizer(CalibrationLogger):
     # Setup dummy parameters so class-functions now the type of those later created objects:
     _n_cols_goals, _n_rows_goals, _n_cols_tuner, _n_rows_tuner = 1, 1, 1, 1
     plt.ioff()  # Turn of interactive mode. Only
-    fig_tuner, ax_tuner = plt.subplots(_n_rows_tuner, _n_cols_tuner, squeeze=False)
-    fig_goal, ax_goal = plt.subplots(_n_rows_goals, _n_cols_goals, squeeze=False)
-    fig_obj, ax_obj = plt.subplots(1, 1, squeeze=False)
+    fig_tuner, ax_tuner = None, None
+    fig_goal, ax_goal = None, None
+    fig_obj, ax_obj = None, None
     goals = None
     _num_goals = 0
 
