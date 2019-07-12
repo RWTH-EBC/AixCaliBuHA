@@ -80,8 +80,6 @@ class DecisionTreeClassification(Classifier):
     def _split_data(self):
         """Split data set randomly with test_size
         (if test_size = 0.30 --> 70 % are training data)"""
-        # TODO However specifying yourself which data set is for
-        # training and which for testing should also be implemented!
         self._X_train, self._X_test, self._y_train, self._y_test \
             = preprocessing.cross_validation(self._X, self._y, test_size=self.test_size)
 
