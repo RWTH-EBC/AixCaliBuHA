@@ -271,15 +271,17 @@ class TunerParas:
         :return:
         """
         import sys
-        app = QtWidgets.QApplication(sys.argv)
-        main_window = QtWidgets.QMainWindow()
-        gui = tuner_paras_gui.TunerParasUI(main_window)
-        gui.set_data(self._df[["initial_value", "min", "max"]])
-        main_window.show()
-        app.exec_()
-        tuner_paras = gui.tuner_paras
-        if tuner_paras is not None:
-            self._df = tuner_paras._df.copy()
+        try:
+            app = QtWidgets.QApplication(sys.argv)
+            main_window = QtWidgets.QMainWindow()
+            gui = tuner_paras_gui.TunerParasUI(main_window)
+            gui.set_data(self._df[["initial_value", "min", "max"]])
+            main_window.show()
+            sys.exit(app.exec_())
+        except SystemExit:
+            tuner_paras = gui.tuner_paras
+            if tuner_paras is not None:
+                self._df = tuner_paras._df.copy()
 
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]
@@ -517,10 +519,10 @@ class CalibrationClass:
     Time at which the class ends
     :param goals: aixcal.data_types.Goals
     Goals parameters which are relevant in this class.
-    As this class may be used in the classifier, a Goals-Class
+    As this class may be used in the segmentizer, a Goals-Class
     may not be available at all times and can be added later.
     :param tuner_paras: aixcal.data_types.TunerParas
-    As this class may be used in the classifier, a TunerParas-Class
+    As this class may be used in the segmentizer, a TunerParas-Class
     may not be available at all times and can be added later.
     """
 
