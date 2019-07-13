@@ -59,6 +59,27 @@ test_py37:
     - pip install -r requirements.txt
     - python -m unittest discover --verbose . "test_*.py"
 
+    
+test_coverage:
+  image: continuumio/anaconda3
+  stage: test
+
+  before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - apt-get -y  install libgl1-mesa-glx
+    - rm -rf /var/lib/apt/lists/*
+    - conda create -n python37 python=3.7 -y
+    - source activate python37
+    - python -V
+
+  script:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install coverage
+    - coverage run -m unittest discover --verbose . "test_*.py"
+    - coverage report --fail-under=50
+
   #tags:
   #  - docker
 
