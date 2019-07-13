@@ -1,0 +1,8 @@
+[run]
+omit =
+    # omit all test directories
+    */test*
+    # omit the gui
+	*_io*
+source = 
+	aixcal
