@@ -86,7 +86,10 @@ test_coverage:
       - public
 
 pages:
+  image: continuumio/anaconda3
 
+  before_script:
+    - pip install sphinx
   script:
     - sphinx-build -b html docs/source docs/_build
     - mv docs/_build/ public/
