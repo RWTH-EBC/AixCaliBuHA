@@ -79,6 +79,21 @@ test_coverage:
     - pip install coverage
     - coverage run -m unittest discover --verbose . "test_*.py"
     - coverage report --fail-under=50
+    - coverage html
+    - mv htmlcov/ public/
+  artifacts:
+    paths:
+      - public
+
+pages:
+
+  script:
+    - sphinx-build -b html docs/source docs/_build
+    - mv docs/_build/ public/
+  artifacts:
+    paths:
+      -public
+
 
   #tags:
   #  - docker
