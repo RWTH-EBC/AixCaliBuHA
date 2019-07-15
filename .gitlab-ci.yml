@@ -78,7 +78,7 @@ test_coverage:
     - pip install -r requirements.txt
     - pip install coverage
     - coverage run -m unittest discover --verbose . "test_*.py"
-    - coverage report --fail-under=50
+    - coverage report
     - coverage html
     - mv htmlcov/ public/
   artifacts:
