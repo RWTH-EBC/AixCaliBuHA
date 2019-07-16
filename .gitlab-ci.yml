@@ -79,11 +79,11 @@ test_coverage:
     - pip install coverage
     - coverage run -m unittest discover --verbose . "test_*.py"
     - coverage report
-    - coverage html
-    - mv htmlcov/ public/
-  artifacts:
-    paths:
-      - public
+#    - coverage html
+#    - mv htmlcov/ public/
+#  artifacts:
+#    paths:
+#      - public
 
 #pages:
 #  image: continuumio/anaconda3
