@@ -99,6 +99,7 @@ sphinxdoc:
     # Move files to the new folder
     - mv docs/_build/ public/$CI_COMMIT_REF_NAME/docs
     - ls public/$CI_COMMIT_REF_NAME/docs/_build
+    - ls public/$CI_COMMIT_REF_NAME
   artifacts:
     paths:
       - public
