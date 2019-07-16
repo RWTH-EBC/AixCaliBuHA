@@ -1,5 +1,5 @@
 stages:
-  - compile_my
+  - compile
   - log
 #  - test
 #  - log_test
@@ -91,50 +91,67 @@ stages:
 #    paths:
 #      - public
 
-sphinxdoc:
-  stage: compile_my
-  image: continuumio/anaconda3
+#sphinxdoc:
+#  stage: compile
+#  image: continuumio/anaconda3
 
-  before_script:
-  script:
-    # Install sphinx and build the docs
-    - pip install sphinx
-    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
-    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-    # Create docs folder for this branch
-    #- mkdir -p public/$CI_COMMIT_REF_NAME/docs
-    # Move files to the new folder
-    #- mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
-  artifacts:
-    paths:
-      - public
+#  script:
+#    - pip install sphinx
+#    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+#    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
+#  artifacts:
+#    paths:
+#      - public
 
+pylint:
+    stage: compile
+    image: python:3.6
+    script:
+        # Make pylint-score
+        - pip install pylint pylint-json2html pylint-exit anybadge --quiet
+        - mkdir -p public/$CI_COMMIT_REF_NAME
+        - shopt -s globstar
+        - pylint --output-format=text --disable=import-error **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.txt || pylint-exit $?
+        - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' public/$CI_COMMIT_REF_NAME/pylint.txt)
+        - echo "Pylint score was $score"
+        - anybadge --value=$score --file=public/$CI_COMMIT_REF_NAME/pylint.svg pylint
+        - pylint --output-format=jsonextended --disable=import-error --load-plugins=pylint_json2html **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.json || pylint-exit $?
+        - pylint-json2html -f jsonextended -o public/$CI_COMMIT_REF_NAME/pylint.html < public/$CI_COMMIT_REF_NAME/pylint.json
+        # Make the doc:
+        - pip install sphinx
+        - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+        - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
+    artifacts:
+        paths:
+        - public
+    only:
+        - branches
 
-#pages:
-#    stage: log
-#    dependencies:
-#        - sphinxdoc
-#    before_script:
-#        - apt-get update -y
-#        - apt-get install zip unzip -y
-#    script:
-#        - set +e
-#        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-#        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-#        - set -e
-#        # Add/update content
-#        - mkdir -p .public/$CI_COMMIT_REF_NAME
-#        - cp -r public/* .public
-#        # Zip the content and publish the zip again
-#        - zip -r "content.zip" "public"
-#        - mv "content.zip" "public/"
-#    artifacts:
-#        paths:
-#        - public
+pages:
+    stage: log
+    dependencies:
+        - pylint
+    before_script:
+        - apt-get update -y
+        - apt-get install zip unzip -y
+    script:
+        - set +e
+        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+        - set -e
+        # Add/update content
+        - mkdir -p .public/$CI_COMMIT_REF_NAME
+        - cp -r public/* .public
+        # Zip the content and publish the zip again
+        - zip -r "content.zip" "public"
+        - mv "content.zip" "public/"
+    artifacts:
+        paths:
+        - public
 
 
 include:
-  - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: '/pylint/pylint.gitlab-ci.yml'
+  #- project: 'EBC/EBC_all/gitlab_ci/templates'
+  #  file: '/pylint/pylint.gitlab-ci.yml'
  # - template: Dependency-Scanning.gitlab-ci.yml
  # - template: SAST.gitlab-ci.yml
