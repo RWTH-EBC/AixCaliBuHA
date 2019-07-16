@@ -82,9 +82,8 @@ test_coverage:
     - pip install coverage
     - coverage run -m unittest discover --verbose . "test_*.py"
     - coverage report
-    - coverage html
     - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
-    - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
+    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
     
   artifacts:
     paths:
