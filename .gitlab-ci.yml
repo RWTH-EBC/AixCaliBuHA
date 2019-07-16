@@ -1,113 +1,113 @@
 stages:
-  - compile
-  - log
-  - post
+  #- compile
+  #- log
+  #- post
   - test
-  - analysis
+  #- analysis
   - documentation
 
-test_py35:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python35 python=3.5 -y
-    - source activate python35
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-test_py36:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python36 python=3.6 -y
-    - source activate python36
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-test_py37:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python37 python=3.7 -y
-    - source activate python37
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-    
-test_coverage:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python37 python=3.7 -y
-    - source activate python37
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install coverage
-    - coverage run -m unittest discover --verbose . "test_*.py"
-    - coverage report
-    - coverage html
-    - mv htmlcov/ public/
-  artifacts:
-    paths:
-      - public
-
-#sphinxdoc:
-#  stage: test
+#test_py35:
 #  image: continuumio/anaconda3
-
+#  stage: test
+#
 #  before_script:
+#    - apt-get update
+#    - apt-get -y install gcc mono-mcs
+#    - apt-get -y install libgl1-mesa-glx
+#    - rm -rf /var/lib/apt/lists/*
+#    - conda create -n python35 python=3.5 -y
+#    - source activate python35
+#    - python -V
+#
 #  script:
- #   # Install sphinx and build the docs
-#    - pip install sphinx
- #   - sphinx-build -b html docs/source docs/build
-#    # Create docs folder for this branch
-#    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
-#    # Move files to the new folder
-#    - mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
+#    - pip install --upgrade pip
+#    - pip install -r requirements.txt
+#    - python -m unittest discover --verbose . "test_*.py"
+#
+#test_py36:
+#  image: continuumio/anaconda3
+#  stage: test
+#
+#  before_script:
+#    - apt-get update
+#    - apt-get -y install gcc mono-mcs
+#    - apt-get -y  install libgl1-mesa-glx
+#    - rm -rf /var/lib/apt/lists/*
+#    - conda create -n python36 python=3.6 -y
+#    - source activate python36
+#    - python -V
+#
+#  script:
+#    - pip install --upgrade pip
+#    - pip install -r requirements.txt
+#    - python -m unittest discover --verbose . "test_*.py"
+#
+#test_py37:
+#  image: continuumio/anaconda3
+#  stage: test
+#
+#  before_script:
+#    - apt-get update
+#    - apt-get -y install gcc mono-mcs
+#    - apt-get -y  install libgl1-mesa-glx
+#    - rm -rf /var/lib/apt/lists/*
+#    - conda create -n python37 python=3.7 -y
+#    - source activate python37
+#    - python -V
+#
+#  script:
+#    - pip install --upgrade pip
+#    - pip install -r requirements.txt
+#    - python -m unittest discover --verbose . "test_*.py"
+#
+#    
+#test_coverage:
+#  image: continuumio/anaconda3
+#  stage: test
+#
+#  before_script:
+#    - apt-get update
+#    - apt-get -y install gcc mono-mcs
+#    - apt-get -y  install libgl1-mesa-glx
+#    - rm -rf /var/lib/apt/lists/*
+#    - conda create -n python37 python=3.7 -y
+#    - source activate python37
+#    - python -V
+#
+#  script:
+#    - pip install --upgrade pip
+#    - pip install -r requirements.txt
+#    - pip install coverage
+#    - coverage run -m unittest discover --verbose . "test_*.py"
+#    - coverage report
+#    - coverage html
+#    - mv htmlcov/ public/
 #  artifacts:
 #    paths:
 #      - public
+#
+sphinxdoc:
+  stage: test
+  image: continuumio/anaconda3
+
+  before_script:
+  script:
+    # Install sphinx and build the docs
+    - pip install sphinx
+    - sphinx-build -b html docs/source docs/build
+    # Create docs folder for this branch
+    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+    # Move files to the new folder
+    - mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
+  artifacts:
+    paths:
+      - public
 
 
 pages_doc:
     stage: documentation
     dependencies:
-        - test_coverage
+        - sphinxdoc
     before_script:
         - apt-get update -y
         - apt-get install zip unzip -y
@@ -154,8 +154,8 @@ pages_doc:
 #    - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} -Dsonar.gitlab.ref_name=${CI_COMMIT_REF_NAME} -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE  -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.issuesReport.console.enable=true
 
 
-include:
-  - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: '/pylint/pylint.gitlab-ci.yml'
-  - template: Dependency-Scanning.gitlab-ci.yml
-  - template: SAST.gitlab-ci.yml
+#include:
+#  - project: 'EBC/EBC_all/gitlab_ci/templates'
+#    file: '/pylint/pylint.gitlab-ci.yml'
+ # - template: Dependency-Scanning.gitlab-ci.yml
+ # - template: SAST.gitlab-ci.yml
