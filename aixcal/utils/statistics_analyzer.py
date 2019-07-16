@@ -141,6 +141,7 @@ class StatisticsAnalyzer:
             CVRMSE of the given data.
         """
         # Check if CVRMSE can be calculated
+        
         if np.mean(meas) != 0:
             return np.sqrt(skmetrics.mean_squared_error(meas, sim)) / np.mean(meas)
         else:
