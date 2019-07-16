@@ -19,6 +19,8 @@
 #
 import os
 import sys
+# pylint: disable-all
+
 sys.path.insert(0, os.path.abspath('../..'))
 sys.setrecursionlimit(1500)
 
