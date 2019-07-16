@@ -136,7 +136,6 @@ pylint:
         - coverage report
         - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
         - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
-        - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
 
         # Make the doc:
         - pip install sphinx
