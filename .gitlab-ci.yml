@@ -4,6 +4,7 @@ stages:
   - post
   - test
   - analysis
+  - documentation
 
 test_py35:
   image: continuumio/anaconda3
@@ -86,23 +87,44 @@ test_coverage:
 #      - public
 
 sphinxdoc:
-  stage: compile
+  stage: test
   image: continuumio/anaconda3
 
   before_script:
   script:
     # Install sphinx and build the docs
     - pip install sphinx
-    - sphinx-build -b html docs/source docs/_build
+    - sphinx-build -b html docs/source docs/build
     # Create docs folder for this branch
     - mkdir -p public/$CI_COMMIT_REF_NAME/docs
     # Move files to the new folder
-    - mv docs/_build/ public/$CI_COMMIT_REF_NAME/docs
-    - ls public/$CI_COMMIT_REF_NAME/docs/_build
-    - ls public/$CI_COMMIT_REF_NAME
+    - mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
   artifacts:
     paths:
       - public
+
+
+pages:
+    stage: documentation
+    dependencies:
+        - sphinxdoc
+    before_script:
+        - apt-get update -y
+        - apt-get install zip unzip -y
+    script:
+        - set +e
+        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+        - set -e
+        # Add/update content
+        - mkdir -p .public/$CI_COMMIT_REF_NAME
+        - cp -r public/* .public
+        # Zip the content and publish the zip again
+        - zip -r "content.zip" "public"
+        - mv "content.zip" "public/"
+    artifacts:
+        paths:
+        - public
 
 
   #tags:
