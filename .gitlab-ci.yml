@@ -68,14 +68,15 @@ test_coverage:
   stage: test
 
   before_script:
-    - apt-get update
+    - apt-get update -y
+    - apt-get install zip unzip -y
     - apt-get -y install gcc mono-mcs
     - apt-get -y  install libgl1-mesa-glx
     - rm -rf /var/lib/apt/lists/*
     - conda create -n python37 python=3.7 -y
     - source activate python37
     - python -V
-    - apt-get install zip unzip -y
+
   script:
     - set +e
     - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
