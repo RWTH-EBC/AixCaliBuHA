@@ -1,10 +1,12 @@
 stages:
-  #- compile
-  #- log
-  #- post
   - compile
-  #- analysis
   - log
+  - test
+  - log_test
+  #- post
+  #- compile
+  #- analysis
+  #- log
 
 #test_py35:
 #  image: continuumio/anaconda3
@@ -61,31 +63,33 @@ stages:
 #    - python -m unittest discover --verbose . "test_*.py"
 #
 #    
-#test_coverage:
-#  image: continuumio/anaconda3
-#  stage: test
-#
-#  before_script:
-#    - apt-get update
-#    - apt-get -y install gcc mono-mcs
-#    - apt-get -y  install libgl1-mesa-glx
-#    - rm -rf /var/lib/apt/lists/*
-#    - conda create -n python37 python=3.7 -y
-#    - source activate python37
-#    - python -V
-#
-#  script:
-#    - pip install --upgrade pip
-#    - pip install -r requirements.txt
-#    - pip install coverage
-#    - coverage run -m unittest discover --verbose . "test_*.py"
-#    - coverage report
-#    - coverage html
-#    - mv htmlcov/ public/
-#  artifacts:
-#    paths:
-#      - public
-#
+test_coverage:
+  image: continuumio/anaconda3
+  stage: test
+
+  before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - apt-get -y  install libgl1-mesa-glx
+    - rm -rf /var/lib/apt/lists/*
+    - conda create -n python37 python=3.7 -y
+    - source activate python37
+    - python -V
+
+  script:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install coverage
+    - coverage run -m unittest discover --verbose . "test_*.py"
+    - coverage report
+    - coverage html
+    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
+    - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
+    
+  artifacts:
+    paths:
+      - public
+
 sphinxdoc:
   stage: compile
   image: continuumio/anaconda3
@@ -94,8 +98,8 @@ sphinxdoc:
   script:
     # Install sphinx and build the docs
     - pip install sphinx
-    - mkdir -p public/$CI_COMMIT_REF_NAME
-    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME
+    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
     # Create docs folder for this branch
     #- mkdir -p public/$CI_COMMIT_REF_NAME/docs
     # Move files to the new folder
@@ -109,6 +113,29 @@ pages:
     stage: log
     dependencies:
         - sphinxdoc
+    before_script:
+        - apt-get update -y
+        - apt-get install zip unzip -y
+    script:
+        - set +e
+        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+        - set -e
+        # Add/update content
+        - mkdir -p .public/$CI_COMMIT_REF_NAME
+        - cp -r public/* .public
+        # Zip the content and publish the zip again
+        - zip -r "content.zip" "public"
+        - mv "content.zip" "public/"
+    artifacts:
+        paths:
+        - public
+        
+
+pages_test:
+    stage: log_test
+    dependencies:
+        - test_coverage
     before_script:
         - apt-get update -y
         - apt-get install zip unzip -y
