@@ -99,6 +99,9 @@ sphinxdoc:
   stage: compile
   image: continuumio/anaconda3
 
+  before_script:
+    - apt-get update -y
+    - apt-get install zip unzip -y
   script:
     - set +e
     - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
