@@ -8,6 +8,7 @@ Welcome to AixCaliBuHa's documentation!
 
 .. toctree::
    :maxdepth: 2
+
    tutorial
    aixcal
 
