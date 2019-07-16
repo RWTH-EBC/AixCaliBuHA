@@ -85,17 +85,22 @@ test_coverage:
 #    paths:
 #      - public
 
-#pages:
-#  image: continuumio/anaconda3
-#
-#  before_script:
-#    - pip install sphinx
-#  script:
-#    - sphinx-build -b html docs/source docs/_build
-#    - mv docs/_build/ public/
-#  artifacts:
-#    paths:
-#      - public
+sphinxdoc:
+  stage: compile
+  image: continuumio/anaconda3
+
+  before_script:
+  script:
+    # Install sphinx and build the docs
+    - pip install sphinx
+    - sphinx-build -b html docs/source docs/_build
+    # Create docs folder for this branch
+    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+    # Move files to the new folder
+    - mv docs/_build/ public/$CI_COMMIT_REF_NAME/docs
+  artifacts:
+    paths:
+      - public
 
 
   #tags:
