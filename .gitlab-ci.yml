@@ -128,11 +128,6 @@ pylint:
         - pylint --output-format=jsonextended --disable=import-error --load-plugins=pylint_json2html **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.json || pylint-exit $?
         - pylint-json2html -f jsonextended -o public/$CI_COMMIT_REF_NAME/pylint.html < public/$CI_COMMIT_REF_NAME/pylint.json
 
-        # Make the doc:
-        - pip install sphinx
-        - mkdir -p public/$CI_COMMIT_REF_NAME/docs
-        - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-
         # Make the coverage report
         - pip install --upgrade pip
         - pip install -r requirements.txt
@@ -143,7 +138,12 @@ pylint:
         - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
         - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
 
-  artifacts:
+        # Make the doc:
+        - pip install sphinx
+        - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+        - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
+
+    artifacts:
         paths:
         - public
     only:
