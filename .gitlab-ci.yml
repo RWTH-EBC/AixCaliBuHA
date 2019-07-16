@@ -104,7 +104,7 @@ sphinxdoc:
       - public
 
 
-pages:
+pages_doc:
     stage: documentation
     dependencies:
         - sphinxdoc
