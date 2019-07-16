@@ -1,9 +1,9 @@
 stages:
-  - compile
+  - compile_my
   - log
 #  - test
 #  - log_test
-  - post
+  #- post
   #- compile
   #- analysis
   #- log
@@ -92,7 +92,7 @@ stages:
 #      - public
 
 sphinxdoc:
-  stage: compile
+  stage: compile_my
   image: continuumio/anaconda3
 
   before_script:
