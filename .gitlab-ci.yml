@@ -75,7 +75,7 @@ test_coverage:
     - conda create -n python37 python=3.7 -y
     - source activate python37
     - python -V
-
+    - apt-get install zip unzip -y
   script:
     - set +e
     - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip

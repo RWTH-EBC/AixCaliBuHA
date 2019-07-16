@@ -130,6 +130,7 @@ class StatisticsAnalyzer:
     def calc_cvrmse(meas, sim):
         """
         Calculates the CVRMSE (variance of root mean square error)
+        THIS IS A TEST
         for the given numpy array of measured and simulated data.
 
         :param np.array meas:
