@@ -1,9 +1,9 @@
 stages:
   - compile
-#  - log
-  - test
+  - log
+#  - test
 #  - log_test
-  #- post
+  - post
   #- compile
   #- analysis
   #- log
@@ -62,59 +62,49 @@ stages:
 #    - pip install -r requirements.txt
 #    - python -m unittest discover --verbose . "test_*.py"
 #
-#    
-test_coverage:
-  image: continuumio/anaconda3
-  stage: test
+#
+#test_coverage:
+#  image: continuumio/anaconda3
+#  stage: test
+#
+#  before_script:
+#    - apt-get update
+#    - apt-get -y install gcc mono-mcs
+#    - apt-get -y  install libgl1-mesa-glx
+#    - rm -rf /var/lib/apt/lists/*
+#    - conda create -n python37 python=3.7 -y
+#    - source activate python37
+#    - python -V
+#
+#  script:
+#    - pip install --upgrade pip
+#    - pip install -r requirements.txt
+#    - pip install coverage
+#    - coverage run -m unittest discover --verbose . "test_*.py"
+#    - coverage report
+#    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
+#    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
+#
+#    - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
 
-  before_script:
-    - apt-get update -y
-    - apt-get install zip unzip -y
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python37 python=3.7 -y
-    - source activate python37
-    - python -V
-
-  script:
-    - set +e
-    - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-    - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-    - set -e
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install coverage
-    - coverage run -m unittest discover --verbose . "test_*.py"
-    - coverage report
-    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
-    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
-    # Zip the content and publish the zip again
-    - zip -r "content.zip" "public"
-    - mv "content.zip" "public/"
-  artifacts:
-    paths:
-      - public
+#  artifacts:
+#    paths:
+#      - public
 
 sphinxdoc:
   stage: compile
   image: continuumio/anaconda3
 
   before_script:
-    - apt-get update -y
-    - apt-get install zip unzip -y
   script:
-    - set +e
-    - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-    - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-    - set -e
     # Install sphinx and build the docs
     - pip install sphinx
     - mkdir -p public/$CI_COMMIT_REF_NAME/docs
     - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-    # Zip the content and publish the zip again
-    - zip -r "content.zip" "public"
-    - mv "content.zip" "public/"
+    # Create docs folder for this branch
+    #- mkdir -p public/$CI_COMMIT_REF_NAME/docs
+    # Move files to the new folder
+    #- mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
   artifacts:
     paths:
       - public
@@ -141,62 +131,10 @@ sphinxdoc:
 #    artifacts:
 #        paths:
 #        - public
-#        
-#
-#pages_test:
-#    stage: log_test
-#    dependencies:
-#        - test_coverage
-#    before_script:
-#        - apt-get update -y
-#        - apt-get install zip unzip -y
-#    script:
-#        - set +e
-#        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-#        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-#        - set -e
-#        # Add/update content
-#        - mkdir -p .public/$CI_COMMIT_REF_NAME
-#        - cp -r public/* .public
-#        # Zip the content and publish the zip again
-#        - zip -r "content.zip" "public"
-#        - mv "content.zip" "public/"
-#    artifacts:
-#        paths:
-#        - public
-#
-#
 
 
-  #tags:
-  #  - docker
-
-#sonarqube:
-#  stage: analysis
-#  image: registry.git.rwth-aachen.de/ebc/ebc_all/gitlab-sonar-scanner:latest
-#  variables:
-#    SONAR_URL: http://137.226.248.164:9000
-#    SONAR_ANALYSIS_MODE: preview
-#  script:
-#  - gitlab-sonar-scanner
-  # -Dsonar.issuesReport.console.enable=true -Dsonar.issuesReport.html.enable=true
-  
-#sonarqube_report:
-#  stage: analysis
-#  image: registry.git.rwth-aachen.de/ebc/ebc_all/gitlab-sonar-scanner:latest
-#  variables:
-#    SONAR_URL: http://137.226.248.164:9000
-#    SONAR_ANALYSIS_MODE: publish
-#    SONAR_PROJECT_KEY: modelica-calibration
-#  only:
-#    - master
-#  script:
-#    - gitlab-sonar-scanner
-#    - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} -Dsonar.gitlab.ref_name=${CI_COMMIT_REF_NAME} -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE  -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.issuesReport.console.enable=true
-
-
-#include:
-#  - project: 'EBC/EBC_all/gitlab_ci/templates'
-#    file: '/pylint/pylint.gitlab-ci.yml'
+include:
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: '/pylint/pylint.gitlab-ci.yml'
  # - template: Dependency-Scanning.gitlab-ci.yml
  # - template: SAST.gitlab-ci.yml
