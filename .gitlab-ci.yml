@@ -1,49 +1,45 @@
 stages:
   - compile
   - log
-#  - test
-#  - log_test
-  #- post
-  #- compile
-  #- analysis
-  #- log
+  - test
 
-#test_py35:
-#  image: continuumio/anaconda3
-#  stage: test
-#
-#  before_script:
-#    - apt-get update
-#    - apt-get -y install gcc mono-mcs
-#    - apt-get -y install libgl1-mesa-glx
-#    - rm -rf /var/lib/apt/lists/*
-#    - conda create -n python35 python=3.5 -y
-#    - source activate python35
-#    - python -V
-#
-#  script:
-#    - pip install --upgrade pip
-#    - pip install -r requirements.txt
-#    - python -m unittest discover --verbose . "test_*.py"
-#
-#test_py36:
-#  image: continuumio/anaconda3
-#  stage: test
-#
-#  before_script:
-#    - apt-get update
-#    - apt-get -y install gcc mono-mcs
-#    - apt-get -y  install libgl1-mesa-glx
-#    - rm -rf /var/lib/apt/lists/*
-#    - conda create -n python36 python=3.6 -y
-#    - source activate python36
-#    - python -V
-#
-#  script:
-#    - pip install --upgrade pip
-#    - pip install -r requirements.txt
-#    - python -m unittest discover --verbose . "test_*.py"
-#
+test_py35:
+  image: continuumio/anaconda3
+  stage: test
+
+  before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - apt-get -y install libgl1-mesa-glx
+    - rm -rf /var/lib/apt/lists/*
+    - conda create -n python35 python=3.5 -y
+    - source activate python35
+    - python -V
+
+  script:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - python -m unittest discover --verbose . "test_*.py"
+
+test_py36:
+  image: continuumio/anaconda3
+  stage: test
+
+  before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - apt-get -y  install libgl1-mesa-glx
+    - rm -rf /var/lib/apt/lists/*
+    - conda create -n python36 python=3.6 -y
+    - source activate python36
+    - python -V
+
+  script:
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - python -m unittest discover --verbose . "test_*.py"
+    
+# Not necessary as coverage.py tests in py37
 #test_py37:
 #  image: continuumio/anaconda3
 #  stage: test
@@ -62,117 +58,78 @@ stages:
 #    - pip install -r requirements.txt
 #    - python -m unittest discover --verbose . "test_*.py"
 #
-#
-#test_coverage:
-#  image: continuumio/anaconda3
-#  stage: test
-#
-#  before_script:
-#    - apt-get update
-#    - apt-get -y install gcc mono-mcs
-#    - apt-get -y  install libgl1-mesa-glx
-#    - rm -rf /var/lib/apt/lists/*
-#    - conda create -n python37 python=3.7 -y
-#    - source activate python37
-#    - python -V
-#
-#  script:
-#    - pip install --upgrade pip
-#    - pip install -r requirements.txt
-#    - pip install coverage
-#    - coverage run -m unittest discover --verbose . "test_*.py"
-#    - coverage report
-#    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
-#    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
-#
-#    - mv htmlcov/ public/$CI_COMMIT_REF_NAME/coverage
 
-#  artifacts:
-#    paths:
-#      - public
 
-#sphinxdoc:
-#  stage: compile
-#  image: continuumio/anaconda3
+pylint_doc_coverage:
+  stage: compile
+  image: continuumio/anaconda3
 
-#  script:
-#    - pip install sphinx
-#    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
-#    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-#  artifacts:
-#    paths:
-#      - public
+  before_script:
+    - apt-get update
+    - apt-get -y install gcc mono-mcs
+    - apt-get -y  install libgl1-mesa-glx
+    - rm -rf /var/lib/apt/lists/*
+    - conda create -n python37 python=3.7 -y
+    - source activate python37
+    - python -V
 
-pylint:
-    stage: compile
-    image: continuumio/anaconda3
+  script:
+    # Make pylint-score
+    - pip install pylint pylint-json2html pylint-exit anybadge --quiet
+    - mkdir -p public/$CI_COMMIT_REF_NAME
+    - shopt -s globstar
+    - pylint --output-format=text --disable=import-error **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.txt || pylint-exit $?
+    - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' public/$CI_COMMIT_REF_NAME/pylint.txt)
+    - echo "Pylint score was $score"
+    - anybadge --value=$score --file=public/$CI_COMMIT_REF_NAME/pylint.svg pylint
+    - pylint --output-format=jsonextended --disable=import-error --load-plugins=pylint_json2html **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.json || pylint-exit $?
+    - pylint-json2html -f jsonextended -o public/$CI_COMMIT_REF_NAME/pylint.html < public/$CI_COMMIT_REF_NAME/pylint.json
 
-    before_script:
-      - apt-get update
-      - apt-get -y install gcc mono-mcs
-      - apt-get -y  install libgl1-mesa-glx
-      - rm -rf /var/lib/apt/lists/*
-      - conda create -n python37 python=3.7 -y
-      - source activate python37
-      - python -V
+    # Make the coverage report
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install coverage
+    - coverage run -m unittest discover --verbose . "test_*.py"
+    - coverage report
+    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
+    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
 
-    script:
-        # Make pylint-score
-        - pip install pylint pylint-json2html pylint-exit anybadge --quiet
-        - mkdir -p public/$CI_COMMIT_REF_NAME
-        - shopt -s globstar
-        - pylint --output-format=text --disable=import-error **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.txt || pylint-exit $?
-        - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' public/$CI_COMMIT_REF_NAME/pylint.txt)
-        - echo "Pylint score was $score"
-        - anybadge --value=$score --file=public/$CI_COMMIT_REF_NAME/pylint.svg pylint
-        - pylint --output-format=jsonextended --disable=import-error --load-plugins=pylint_json2html **/*.py | tee public/$CI_COMMIT_REF_NAME/pylint.json || pylint-exit $?
-        - pylint-json2html -f jsonextended -o public/$CI_COMMIT_REF_NAME/pylint.html < public/$CI_COMMIT_REF_NAME/pylint.json
+    # Make the doc:
+    - pip install sphinx
+    - mkdir -p public/$CI_COMMIT_REF_NAME/docs
+    - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
 
-        # Make the coverage report
-        - pip install --upgrade pip
-        - pip install -r requirements.txt
-        - pip install coverage
-        - coverage run -m unittest discover --verbose . "test_*.py"
-        - coverage report
-        - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
-        - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
-
-        # Make the doc:
-        - pip install sphinx
-        - mkdir -p public/$CI_COMMIT_REF_NAME/docs
-        - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-
-    artifacts:
-        paths:
-        - public
-    only:
-        - branches
+  artifacts:
+      paths:
+      - public
+  only:
+      - branches
 
 pages:
-    stage: log
-    dependencies:
-        - pylint
-    before_script:
-        - apt-get update -y
-        - apt-get install zip unzip -y
-    script:
-        - set +e
-        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-        - set -e
-        # Add/update content
-        - mkdir -p .public/$CI_COMMIT_REF_NAME
-        - cp -r public/* .public
-        # Zip the content and publish the zip again
-        - zip -r "content.zip" "public"
-        - mv "content.zip" "public/"
-    artifacts:
-        paths:
-        - public
+  stage: log
+  dependencies:
+    - pylint_doc_coverage
+  before_script:
+    - apt-get update -y
+    - apt-get install zip unzip -y
+  script:
+    - set +e
+    - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+    - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+    - set -e
+    # Add/update content
+    - mkdir -p .public/$CI_COMMIT_REF_NAME
+    - cp -r public/* .public
+    # Zip the content and publish the zip again
+    - zip -r "content.zip" "public"
+    - mv "content.zip" "public/"
+  artifacts:
+    paths:
+      - public
 
 
 include:
   #- project: 'EBC/EBC_all/gitlab_ci/templates'
   #  file: '/pylint/pylint.gitlab-ci.yml'
- # - template: Dependency-Scanning.gitlab-ci.yml
- # - template: SAST.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
