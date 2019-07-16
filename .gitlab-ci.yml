@@ -1,8 +1,8 @@
 stages:
   - compile
-  - log
+#  - log
   - test
-  - log_test
+#  - log_test
   #- post
   #- compile
   #- analysis
@@ -77,6 +77,10 @@ test_coverage:
     - python -V
 
   script:
+    - set +e
+    - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+    - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+    - set -e
     - pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install coverage
@@ -84,7 +88,9 @@ test_coverage:
     - coverage report
     - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
     - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
-    
+    # Zip the content and publish the zip again
+    - zip -r "content.zip" "public"
+    - mv "content.zip" "public/"
   artifacts:
     paths:
       - public
@@ -93,67 +99,69 @@ sphinxdoc:
   stage: compile
   image: continuumio/anaconda3
 
-  before_script:
   script:
+    - set +e
+    - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+    - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+    - set -e
     # Install sphinx and build the docs
     - pip install sphinx
     - mkdir -p public/$CI_COMMIT_REF_NAME/docs
     - sphinx-build -b html docs/source public/$CI_COMMIT_REF_NAME/docs
-    # Create docs folder for this branch
-    #- mkdir -p public/$CI_COMMIT_REF_NAME/docs
-    # Move files to the new folder
-    #- mv docs/build/ public/$CI_COMMIT_REF_NAME/docs
+    # Zip the content and publish the zip again
+    - zip -r "content.zip" "public"
+    - mv "content.zip" "public/"
   artifacts:
     paths:
       - public
 
 
-pages:
-    stage: log
-    dependencies:
-        - sphinxdoc
-    before_script:
-        - apt-get update -y
-        - apt-get install zip unzip -y
-    script:
-        - set +e
-        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-        - set -e
-        # Add/update content
-        - mkdir -p .public/$CI_COMMIT_REF_NAME
-        - cp -r public/* .public
-        # Zip the content and publish the zip again
-        - zip -r "content.zip" "public"
-        - mv "content.zip" "public/"
-    artifacts:
-        paths:
-        - public
-        
-
-pages_test:
-    stage: log_test
-    dependencies:
-        - test_coverage
-    before_script:
-        - apt-get update -y
-        - apt-get install zip unzip -y
-    script:
-        - set +e
-        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
-        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
-        - set -e
-        # Add/update content
-        - mkdir -p .public/$CI_COMMIT_REF_NAME
-        - cp -r public/* .public
-        # Zip the content and publish the zip again
-        - zip -r "content.zip" "public"
-        - mv "content.zip" "public/"
-    artifacts:
-        paths:
-        - public
-
-
+#pages:
+#    stage: log
+#    dependencies:
+#        - sphinxdoc
+#    before_script:
+#        - apt-get update -y
+#        - apt-get install zip unzip -y
+#    script:
+#        - set +e
+#        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+#        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+#        - set -e
+#        # Add/update content
+#        - mkdir -p .public/$CI_COMMIT_REF_NAME
+#        - cp -r public/* .public
+#        # Zip the content and publish the zip again
+#        - zip -r "content.zip" "public"
+#        - mv "content.zip" "public/"
+#    artifacts:
+#        paths:
+#        - public
+#        
+#
+#pages_test:
+#    stage: log_test
+#    dependencies:
+#        - test_coverage
+#    before_script:
+#        - apt-get update -y
+#        - apt-get install zip unzip -y
+#    script:
+#        - set +e
+#        - curl --fail --header "PRIVATE-TOKEN:$GL_TOKEN" $CI_PAGES_URL/content.zip -o content.zip
+#        - if [ -e "content.zip" ]; then unzip "content.zip"; rm "content.zip"; fi
+#        - set -e
+#        # Add/update content
+#        - mkdir -p .public/$CI_COMMIT_REF_NAME
+#        - cp -r public/* .public
+#        # Zip the content and publish the zip again
+#        - zip -r "content.zip" "public"
+#        - mv "content.zip" "public/"
+#    artifacts:
+#        paths:
+#        - public
+#
+#
 
 
   #tags:
