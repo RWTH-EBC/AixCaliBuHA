@@ -52,12 +52,17 @@ class TestStatisticsAnalyzer(unittest.TestCase):
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
         self.assertIsInstance(stat_analyzer.calc_nrmse(self.meas_ex, self.sim_ex),
                               float)
+        with self.assertRaises(ValueError):
+            stat_analyzer.calc_nrmse(self.meas_ex, self.meas_ex)
 
     def test_calc_cvrmse(self):
         """Test static function calc_cvrmse"""
         stat_analyzer = statistics_analyzer.StatisticsAnalyzer
         self.assertIsInstance(stat_analyzer.calc_cvrmse(self.meas_ex, self.sim_ex),
                               float)
+        with self.assertRaises(ValueError):
+            custom_meas = self.meas_ex - self.meas_ex
+            stat_analyzer.calc_cvrmse(custom_meas, self.sim_ex)
 
     def test_calc_r2(self):
         """Test static function calc_r2"""

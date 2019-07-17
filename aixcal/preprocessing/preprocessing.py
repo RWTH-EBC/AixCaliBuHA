@@ -205,6 +205,18 @@ def create_on_off_signal(df, col_names, threshold, col_names_new):
         New name for the signal-column
     :return: pd.DataFrame
         Now with the created signals.
+
+    Examples:
+
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> df = pd.DataFrame({"P_el": np.sin(np.linspace(-20, 20, 10000))*100})
+    >>> df = create_on_off_signal(df,
+    >>>                      col_names=["P_el"],
+    >>>                      threshold=25,
+    >>>                      col_names_new=["Device On"])
+    >>> plt.plot(df)
+    >>> plt.show()
     """
     if len(col_names) != len(col_names_new):
         raise IndexError("Given lists differ in length. col_names: {}, "
@@ -233,6 +245,18 @@ def number_lines_totally_na(df):
         Given dataframe to process
     :return: int
         Number of NaN-Rows.
+
+    Examples:
+
+    >>> dim = np.random.randint(100)
+    >>> nan_col = [np.NaN for i in range(100)]
+    >>> col = [i for i in range(dim)]
+    >>> df_nan = pd.DataFrame({"col_1":nan_col, "col_2":nan_col})
+    >>> df_normal = pd.DataFrame({"col_1":nan_col, "col_2":col})
+    >>> print(number_lines_totally_na(df_nan)-dim)
+    0
+    >>> print(number_lines_totally_na(df_normal))
+    0
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError('Input must be a pandas data frame')

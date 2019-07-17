@@ -4,6 +4,8 @@ omit =
     */test*
     # omit the gui
 	*_io*
+	# omit examples
+	*/examples*
 source = 
 	aixcal
 [report]
