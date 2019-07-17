@@ -8,20 +8,28 @@ Welcome to AixCaliBuHa's documentation!
 
 **Aix** (from French Aix-la-Chapelle) **Cali**\bration for **Bu**\ ilding and **H**\V\ **A**\C Systems
 
-This framework is used to help one in the calibration of models used in Building
-and HVAC Systems. Different sub-packages help with the underlying tasks of
+This framework attempts to make the process of calibrating models used in Building
+and HVAC Systems easier. Different sub-packages help with the underlying tasks of:
 
-- **Preprocessing** measured or simulated data for the usage in calibration
-- **Segmentizing** the continuous time-series data into *calibration classes*
-- Performing a **Sensitivity Analysis** to discover :meth:`tuner parameters <aixcal.data_types.TunerParas>` for the calibration
-- **Calibration** of given model based on the *tuner parameters*, the *calibration classes* and specified *goals* to evaluate the objective function of the underlying optimization
+- **Preprocessing** measured or simulated data for the cohesive use in this framework
+- **Segmentizing** the continuous time-series data into :ref:`calibration classes <calibration-class>`
+- Performing a **Sensitivity Analysis** to discover :ref:`tuner parameters <tuner-parameter>` for the calibration
+- **Calibration** of given model based on the :ref:`tuner parameters <tuner-parameter>`, the :ref:`calibration classes <calibration-class>` and specified :ref:`goals <goals>` to evaluate the objective function of the underlying optimization
+
+
+Installation
+-------------------
 
 
 .. toctree::
    :maxdepth: 2
 
    tutorial
-   aixcal
+   data_types
+   preprocessor
+   segmentizer
+   senanalyzer
+   optimizer
 
 
 Indices and tables
