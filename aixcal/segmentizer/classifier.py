@@ -6,7 +6,6 @@ import warnings
 from aixcal import data_types
 from aixcal.segmentizer import Classifier
 from aixcal.preprocessing import preprocessing
-from sklearn import model_selection
 from sklearn.metrics import classification_report, confusion_matrix
 import sklearn.tree as sktree
 from sklearn import __version__ as sk_version

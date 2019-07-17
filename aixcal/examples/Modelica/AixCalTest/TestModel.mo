@@ -98,11 +98,11 @@ model TestModel
         extent={{-8,-8},{8,8}},
         rotation=180,
         origin={54,-4})));
-  parameter Real heatConv_b=233
+  parameter Real heatConv_b=500
                             "Constant output value" annotation (Evaluate=false);
-  parameter Real heatConv_a=125
+  parameter Real heatConv_a=300
                             "Constant output value" annotation (Evaluate=false);
-  parameter Modelica.SIunits.HeatCapacity C=5432
+  parameter Modelica.SIunits.HeatCapacity C=8000
                                             "Heat capacity of element (= cp*m)"
     annotation (Evaluate=false);
   inner Modelica.Fluid.System system(
@@ -113,7 +113,7 @@ model TestModel
     final T_ambient=293.15,
     final dp_small=1)
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-  parameter Modelica.Media.Interfaces.PartialMedium.MassFlowRate m_flow_2=0.02
+  parameter Modelica.Media.Interfaces.PartialMedium.MassFlowRate m_flow_2=0.03
     "Fixed mass flow rate going out of the fluid port" annotation (Evaluate=false);
   Modelica.Blocks.Sources.Constant m_flow_sink(final k=m_flow_2) annotation (
       Placement(transformation(
@@ -134,7 +134,7 @@ model TestModel
     annotation (Placement(transformation(extent={{-140,48},{-124,64}})));
   Modelica.Blocks.Sources.BooleanPulse booleanStep(
     width=50,
-    period=200,
+    period=800,
     final startTime=0)
     annotation (Placement(transformation(extent={{-142,-72},{-126,-56}})));
 equation

@@ -108,8 +108,8 @@ class Optimizer:
 
         :param str method:
             Method for optimization
-        :param (enum,str) framework:
-            Enumeration for selection of the relevant function
+        :param str framework:
+            String for selection of the relevant function
         """
         if framework.lower() == "scipy":
             self._minimize_func = self._minimize_scipy

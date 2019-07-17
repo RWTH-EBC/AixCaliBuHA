@@ -30,6 +30,7 @@ Installation
    segmentizer
    senanalyzer
    optimizer
+   simulationapi
 
 
 Indices and tables

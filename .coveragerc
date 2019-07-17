@@ -9,4 +9,5 @@ source =
 [report]
 exclude_lines = 
 	raise NotImplementedError
-	if __name__ == .__main__.:
+	if __name__ == "__main__":
+	if __name__ == '__main__':
