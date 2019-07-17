@@ -104,7 +104,7 @@ class TestDataTypes(unittest.TestCase):
             tuner_paras = data_types.TunerParas(names,
                                                 wrong_initial_values)
         with self.assertRaises(TypeError):
-            wrong_names = ["test_1", 123]
+            wrong_names = ["test_0", 123]
             tuner_paras = data_types.TunerParas(wrong_names,
                                                 initial_values)
         with self.assertRaises(TypeError):
@@ -126,18 +126,18 @@ class TestDataTypes(unittest.TestCase):
                                 initial_values)
 
         tuner_paras.get_bounds()
-        val = tuner_paras.get_value("test_1", "min")
-        tuner_paras.set_value("test_1", "min", val)
+        val = tuner_paras.get_value("test_0", "min")
+        tuner_paras.set_value("test_0", "min", val)
         with self.assertRaises(ValueError):
-            tuner_paras.set_value("test_1", "min", 10000)
+            tuner_paras.set_value("test_0", "min", 10000)
         with self.assertRaises(ValueError):
-            tuner_paras.set_value("test_1", "min", "not_an_int_or_float")
+            tuner_paras.set_value("test_0", "min", "not_an_int_or_float")
         with self.assertRaises(KeyError):
-            tuner_paras.set_value("test_1", "not_a_key", val)
+            tuner_paras.set_value("test_0", "not_a_key", val)
         # Delete a name and check if the name is really gone.
-        tuner_paras.remove_names(["test_1"])
+        tuner_paras.remove_names(["test_0"])
         with self.assertRaises(KeyError):
-            tuner_paras.get_value("test_1", "min")
+            tuner_paras.get_value("test_0", "min")
 
     def test_goals(self):
         """Test the class Goals"""
