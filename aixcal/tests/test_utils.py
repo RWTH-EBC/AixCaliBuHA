@@ -53,7 +53,8 @@ class TestStatisticsAnalyzer(unittest.TestCase):
         self.assertIsInstance(stat_analyzer.calc_nrmse(self.meas_ex, self.sim_ex),
                               float)
         with self.assertRaises(ValueError):
-            stat_analyzer.calc_nrmse(self.meas_ex, self.meas_ex)
+            custom_meas = self.meas_ex/self.meas_ex
+            stat_analyzer.calc_nrmse(custom_meas, self.sim_ex)
 
     def test_calc_cvrmse(self):
         """Test static function calc_cvrmse"""

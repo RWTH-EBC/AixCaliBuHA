@@ -103,7 +103,7 @@ class TestPreProcessing(unittest.TestCase):
         """Test function of preprocessing.number_lines_totally_na().
         For an example, see the doctest in the function."""
         dim = np.random.randint(100)
-        nan_col = [np.NaN for i in range(100)]
+        nan_col = [np.NaN for i in range(dim)]
         col = [i for i in range(dim)]
         df_nan = pd.DataFrame({"col_1": nan_col, "col_2": nan_col})
         df_normal = pd.DataFrame({"col_1": nan_col, "col_2": col})
