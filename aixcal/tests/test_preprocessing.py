@@ -2,6 +2,7 @@
 aixcal.preprocessing."""
 import unittest
 import os
+from datetime import datetime
 import scipy.io as spio
 import numpy as np
 import pandas as pd
@@ -56,12 +57,32 @@ class TestPreProcessing(unittest.TestCase):
     def test_build_average_on_duplicate_rows(self):
         """Test function of preprocessing.build_average_on_duplicate_rows().
         For an example, see the doctest in the function."""
-        pass
+        # Choose random number to check if function works in every dimension
+        dim = np.random.randint(1, 1000)
+        vals = np.random.rand(dim)
+        # instantiate df with index all 1
+        df = pd.DataFrame({"idx": np.ones(dim), "val": vals}).set_index("idx")
+        df = preprocessing.build_average_on_duplicate_rows(df)
+        # Check if the length has been reduced to 1
+        self.assertEqual(len(df), 1)
+        # Check if the average is computed correctly
+        self.assertEqual(df.iloc[0].val, np.average(vals))
 
     def test_convert_index_to_datetime_index(self):
         """Test function of preprocessing.convert_index_to_datetime_index().
         For an example, see the doctest in the function."""
-        pass
+
+        dim = np.random.randint(1, 10000)
+        df = pd.DataFrame(np.random.rand(dim, 4), columns=list('ABCD'))
+        df_temp = preprocessing.convert_index_to_datetime_index(df)
+        # Check if index is correctly created
+        self.assertIsInstance(df_temp.index, pd.DatetimeIndex)
+        # Check different unit-formats:
+        for unit in ["ms", "s", "h", "d", "min"]:
+            df_temp = preprocessing.convert_index_to_datetime_index(df,
+                                                                    unit_of_index=unit)
+        # Test different datetime:
+        df_temp = preprocessing.convert_index_to_datetime_index(df, origin=datetime(2007, 1, 1))
 
     def test_clean_and_space_equally_time_series(self):
         """Test function of preprocessing.clean_and_space_equally_time_series().
