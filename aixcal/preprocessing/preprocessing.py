@@ -95,7 +95,6 @@ def convert_index_to_datetime_index(df, unit_of_index="s", origin=datetime.now()
                                    "d": 1/86400}
     if unit_of_index not in _unit_conversion_to_seconds:
         raise ValueError("Given unit_of_index is not supported.")
-        datetime.now()
     _unit_factor_to_seconds = _unit_conversion_to_seconds.get(unit_of_index)
 
     #Convert

@@ -2,6 +2,7 @@
 aixcal.preprocessing."""
 import unittest
 import os
+import random
 from datetime import datetime
 import scipy.io as spio
 import numpy as np
@@ -83,21 +84,51 @@ class TestPreProcessing(unittest.TestCase):
                                                                     unit_of_index=unit)
         # Test different datetime:
         df_temp = preprocessing.convert_index_to_datetime_index(df, origin=datetime(2007, 1, 1))
+        # Test wrong unit-input:
+        with self.assertRaises(ValueError):
+            df_temp = preprocessing.convert_index_to_datetime_index(df,
+                                                                    unit_of_index="not_a_unit")
 
     def test_clean_and_space_equally_time_series(self):
         """Test function of preprocessing.clean_and_space_equally_time_series().
         For an example, see the doctest in the function."""
-        pass
+        # Generate a random frequency
+        supported_frequencys = ["s", "min", "h", "ms"]
+        freq = "{}{}".format(np.random.randint(1, 60), random.choice(supported_frequencys))
+        dim = np.random.randint(1, 10000)
+        df = pd.DataFrame(np.random.randint(0, 100, size=(dim, 4)),
+                          columns=list('ABCD')).set_index("A").sort_index()
+        # Check if wrong index input raises error:
+        with self.assertRaises(TypeError):
+            preprocessing.clean_and_space_equally_time_series(df, freq)
+        df = preprocessing.convert_index_to_datetime_index(df)
+        df_temp = preprocessing.clean_and_space_equally_time_series(df, freq)
+        self.assertIsInstance(df_temp, pd.DataFrame)
+        # Test non-numeric input
+        df.iloc[0, 0] = "not_a_number"
+        with self.assertRaises(ValueError):
+            df_temp = preprocessing.clean_and_space_equally_time_series(df, freq)
+        # Trigger NaN-input print statement
+        df.iloc[0, 0] = np.NaN
+        df_temp = preprocessing.clean_and_space_equally_time_series(df, freq)
 
     def test_low_pass_filter(self):
         """Test function of preprocessing.low_pass_filter().
         For an example, see the doctest in the function."""
-        pass
+        # Randomly generate all inputs to assure that different
+        # inputs will always work.
+        dim = np.random.randint(1, 10000)
+        vals = np.random.rand(dim)
+        freq = np.random.randint(1, 100)/100
+        order = np.random.randint(1, 5)
+        preprocessing.low_pass_filter(vals, freq, order)
 
     def test_moving_average(self):
         """Test function of preprocessing.moving_average().
         For an example, see the doctest in the function."""
-        pass
+        series = np.sin(np.linspace(-30, 30, 1000))
+        window = np.random.randint(1, len(series))
+        preprocessing.moving_average(series, window)
 
     def test_create_on_off_signal(self):
         """Test function of preprocessing.create_on_off_signal().
@@ -130,6 +161,9 @@ class TestPreProcessing(unittest.TestCase):
         df_normal = pd.DataFrame({"col_1": nan_col, "col_2": col})
         self.assertEqual(preprocessing.number_lines_totally_na(df_nan), dim)
         self.assertEqual(preprocessing.number_lines_totally_na(df_normal), 0)
+        # Test wrong input
+        with self.assertRaises(TypeError):
+            preprocessing.number_lines_totally_na("not_a_df")
 
     def test_z_score(self):
         """Test function of preprocessing.z_score().
@@ -143,11 +177,6 @@ class TestPreProcessing(unittest.TestCase):
 
     def test_interquartile_range(self):
         """Test function of preprocessing.interquartile_range().
-        For an example, see the doctest in the function."""
-        pass
-
-    def test_cross_validation(self):
-        """Test function of preprocessing.cross_validation().
         For an example, see the doctest in the function."""
         pass
 
