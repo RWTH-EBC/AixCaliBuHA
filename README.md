@@ -18,6 +18,12 @@ Currently, this repo represents some kind of "master/overall" repo. Therefore, a
 **Note:** This repository works with a fork of the pypi-project [modelicares](https://github.com/kdavies4/ModelicaRes) ([our fork](https://github.com/RWTH-EBC/ModelicaRes)). To automatically 
 install the newest version of the fork together with this repository, you have to options.
 
+If you don't have modelicares installed, just go ahead and run the line below to install this repository:
+
+`pip install -e "Path/to/this/repository"`
+
+If you have modelicares installed, you have two options:
+
 ### 1. Uninstall modelicares first (fastest method) 
 
 Run
@@ -32,9 +38,9 @@ to install the repository.
 
 ### 2. Force reinstall
 
-`pip install -e "Path/to/this/repository" --force-reinstall`
+`pip install -e "Path/to/this/repository" --force-reinstall modelicares`
 
-However, this method also re-installs numpy, scipy etc. so it will take quite some time.
+However, this method also re-installs all packages required for modelicares, such as numpy, scipy etc. This takes quite some time.
 
 If environment variables are not set properly, try more explicit command in Windows shell:
 
