@@ -320,6 +320,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
                  calibration_classes, **kwargs):
         super().__init__(cd, sim_api, statistical_measure, calibration_classes, **kwargs)
         self._total_min_dsfinal_path = os.path.join(cd, "total_min_dsfinal", "dsfinal.txt")
+        os.mkdir(os.path.dirname(self._total_min_dsfinal_path))
         # For calibration of multiple classes, the dsfinal is of interest.
         self._total_min = 1e308
         self._total_initial_names = self._join_tuner_paras()
@@ -348,7 +349,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
     def process_in_between_classes(self, tuner_paras_of_class):
         super().process_in_between_classes(tuner_paras_of_class)
         # Alter the dsfinal for the new phase
-        new_dsfinal = os.path.join(self.sim_api.cwdir, "dsfinal.txt")
+        new_dsfinal = os.path.join(self.sim_api.cd, "dsfinal.txt")
         self._total_initial_names = list(set(self._total_initial_names + self._traj_names))
         mrutil.eliminate_parameters_from_ds_file(self._total_min_dsfinal_path,
                                                  new_dsfinal,
@@ -365,5 +366,5 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
         """
         joined_list = []
         for cal_class in self.calibration_classes:
-            joined_list.append(cal_class.tuner_paras.get_names())
+            joined_list += cal_class.tuner_paras.get_names()
         return list(set(joined_list))
