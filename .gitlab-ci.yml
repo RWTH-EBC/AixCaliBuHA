@@ -69,8 +69,8 @@ pylint_doc_coverage:
     - apt-get -y install gcc mono-mcs
     - apt-get -y  install libgl1-mesa-glx
     - rm -rf /var/lib/apt/lists/*
-    - conda create -n python37 python=3.7 -y
-    - source activate python37
+    #- conda create -n python37 python=3.7 -y
+    #- source activate python37
     - python -V
 
   script:
@@ -86,13 +86,13 @@ pylint_doc_coverage:
     - pylint-json2html -f jsonextended -o public/$CI_COMMIT_REF_NAME/pylint.html < public/$CI_COMMIT_REF_NAME/pylint.json
 
     # Make the coverage report
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install coverage
-    - coverage run -m unittest discover --verbose . "test_*.py"
-    - coverage report
-    - mkdir -p public/$CI_COMMIT_REF_NAME/coverage
-    - coverage html -d public/$CI_COMMIT_REF_NAME/coverage
+    #- pip install --upgrade pip
+    #- pip install -r requirements.txt
+    #- pip install coverage
+    #- coverage run -m unittest discover --verbose . "test_*.py"
+    #- coverage report
+    #- mkdir -p public/$CI_COMMIT_REF_NAME/coverage
+    #- coverage html -d public/$CI_COMMIT_REF_NAME/coverage
 
     # Make the doc:
     - pip install sphinx
