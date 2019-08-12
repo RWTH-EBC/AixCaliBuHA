@@ -6,6 +6,12 @@
 **Aix** (from French Aix-la-Chapelle) 
 **Cali**bration for **Bu**ilding and **H**V**A**C Systems
 
+# Key features
+* Calibration 
+* Sensitivity Analysis
+* Calibration Visualizer
+
+
 ## Work in Progress
 
 ### Link dependencies
