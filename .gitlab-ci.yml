@@ -1,7 +1,11 @@
 stages:
-  - compile
+  - $SPHINXDOC_STAGE
+  - $PYLINT_STAGE
   - deploy
 
+variables:
+  SPHINXDOC_STAGE: my_custom_stage
+  PYLINT_STAGE: my_custom_stage_2
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
@@ -9,10 +13,9 @@ include:
     file: 'pylint.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     ref: issue1_multipleStages
-    file: 'sphinxdoc.gitlab-ci.yml'
+    file: 'sphinxdoc/sphinxdoc.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     ref: issue1_multipleStages
-    file: 'pages.gitlab-ci.yml'
-
+    file: 'pages/pages.gitlab-ci.yml'
   #- template: Dependency-Scanning.gitlab-ci.yml
   #- template: SAST.gitlab-ci.yml
