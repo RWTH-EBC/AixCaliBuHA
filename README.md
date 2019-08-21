@@ -36,6 +36,8 @@ Be aware of forward slashes (for python) and backslashes (for Windows). You migh
 ## Important hints
 
 ### Framework structure
+(Information still up to date?)
+
 Adhere to the following UML diagram as overall structure!
 
 Open the [*.xml file](https://git.rwth-aachen.de/EBC/EBC_intern/modelica-calibration/blob/master/img/Calibration_Framework_EBC.xml) (download an load from local drive) with the online plattform [draw.io](draw.io).
