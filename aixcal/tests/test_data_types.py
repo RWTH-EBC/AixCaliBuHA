@@ -50,6 +50,16 @@ class TestDataTypes(unittest.TestCase):
         self.assertIsInstance(
             time_series_data.df,
             type(pd.DataFrame()))
+        # Test load and set df functions:
+        df = time_series_data.get_df()
+        self.assertIsInstance(
+            df,
+            type(pd.DataFrame()))
+        with self.assertRaises(TypeError):
+            time_series_data.set_df("not a df")
+        dummy_df = pd.DataFrame()
+        time_series_data.set_df(dummy_df)
+        self.assertTrue(time_series_data.df.empty)
 
     def test_meas_target_data(self):
         """Test the class MeasTargetData.
@@ -94,9 +104,14 @@ class TestDataTypes(unittest.TestCase):
             tuner_paras = data_types.TunerParas(names,
                                                 wrong_initial_values)
         with self.assertRaises(TypeError):
-            wrong_names = ["test_1", 123]
+            wrong_names = ["test_0", 123]
             tuner_paras = data_types.TunerParas(wrong_names,
                                                 initial_values)
+        with self.assertRaises(TypeError):
+            wrong_initial_values = ["not an int", 123, 123]
+            tuner_paras = data_types.TunerParas(names,
+                                                wrong_initial_values)
+
         # Check return values of functions:
         tuner_paras = data_types.TunerParas(names,
                                             initial_values,
@@ -109,6 +124,20 @@ class TestDataTypes(unittest.TestCase):
         self.assertEqual(names, tuner_paras.get_names())
         np.testing.assert_equal(tuner_paras.get_initial_values(),
                                 initial_values)
+
+        tuner_paras.get_bounds()
+        val = tuner_paras.get_value("test_0", "min")
+        tuner_paras.set_value("test_0", "min", val)
+        with self.assertRaises(ValueError):
+            tuner_paras.set_value("test_0", "min", 10000)
+        with self.assertRaises(ValueError):
+            tuner_paras.set_value("test_0", "min", "not_an_int_or_float")
+        with self.assertRaises(KeyError):
+            tuner_paras.set_value("test_0", "not_a_key", val)
+        # Delete a name and check if the name is really gone.
+        tuner_paras.remove_names(["test_0"])
+        with self.assertRaises(KeyError):
+            tuner_paras.get_value("test_0", "min")
 
     def test_goals(self):
         """Test the class Goals"""

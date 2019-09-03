@@ -23,3 +23,5 @@ venv
 # Unittest #
 #####################
 .pytest_cache
+htmlcov
+.coverage

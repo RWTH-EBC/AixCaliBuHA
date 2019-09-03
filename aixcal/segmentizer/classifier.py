@@ -6,7 +6,6 @@ import warnings
 from aixcal import data_types
 from aixcal.segmentizer import Classifier
 from aixcal.preprocessing import preprocessing
-from sklearn import model_selection
 from sklearn.metrics import classification_report, confusion_matrix
 import sklearn.tree as sktree
 from sklearn import __version__ as sk_version
@@ -20,17 +19,19 @@ class DecisionTreeClassification(Classifier):
     Either provide the data and column names to create a dtree,
     or pass a DecisionTreeClassifier-object itself to directly
     classify.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Working Directory
-    :param time_series_data: aixcal.data_types.TimeSeriesData
+    :param aixcal.data_types.TimeSeriesData time_series_data:
         Given object contains all trajectories necessary to train
         the decision tree.
-    :param variable_list: list
+    :param list variable_list:
         List containing keys of dataframe of the trajectories
-    :param class_list:
+    :param list class_list:
         List containing keys of the dataframe relevant for classes.
-    :param dtree: sklearn.tree.DecisionTreeClassifier
-        Decision tree classifier that is already fitted."""
+    :param sklearn.tree.DecisionTreeClassifier dtree:
+        Decision tree classifier that is already fitted.
+    """
 
     # Dummy object for the later calculated decision tree.
     _dtree = sktree.DecisionTreeClassifier()
@@ -87,7 +88,8 @@ class DecisionTreeClassification(Classifier):
         """Creates a decision tree based on the training data
         defined in this class. If wanted, the decision tree can
         be exported as a image.
-        :return dtree: sklearn.tree.DecisionTree
+
+        :return sklearn.tree.DecisionTree dtree:
             May be used for storing of further processing."""
         if not self._class_used_for_fitting:
             raise AttributeError("When instantiating this class, you passed an existing"
@@ -109,7 +111,6 @@ class DecisionTreeClassification(Classifier):
         """
         Validate the created decision tree based on the test-data
         defined when instantiating this class.
-        :return:
         """
         if not self._class_used_for_fitting:
             raise AttributeError("When instantiating this class, you passed an existing"
@@ -129,10 +130,11 @@ class DecisionTreeClassification(Classifier):
         a Decision-tree-classifier of sklearn. If no dtree
         object is given, the current dtree of this class will
         be used.
-        :param df: pd.DataFrame
+
+        :param pd.DataFrame df:
             Given dataframe may be extracted from the TimeSeriesData class. Should
             contain all relevant keys.
-        :keyword dtree: sklearn.tree.DecisionTree
+        :keyword sklearn.tree.DecisionTree dtree:
             If not provided, the current class dtree will be used.
             You can create a dtree and export it using this class's methods.
         :return: list
@@ -178,16 +180,16 @@ class DecisionTreeClassification(Classifier):
         Exports the given decision tree in form of a pickle and
         stores it on your machine. To avoid losses of data in future
         versions, the version number is stored alongside the dtree-object.
-        :param dtree: DecisionTree, optional
+
+        :param DecisionTree dtree: optional
             If no dtree is given, the dtree of this class will be saved.
-        :param savepath: str, optional
+        :param str savepath: optional
             If not savepath is given, the pickle is stored in the
             current working directory.
-        :param info: str
+        :param str info:
             Provide some info string on which columns should be passed when
             using this dtree.
-        :type info: str
-            """
+        """
         if dtree is None:
             _dtree = self._dtree
         else:
@@ -213,7 +215,8 @@ class DecisionTreeClassification(Classifier):
         """
         Loads the given pickle file and checks for the correct
         version of sklearn
-        :param filepath: str, os.path.normpath
+
+        :param str,os.path.normpath filepath:
             Path the the pickle file
         :return: dtree
             Loaded Decision-Tree

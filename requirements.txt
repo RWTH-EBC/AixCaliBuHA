@@ -3,7 +3,7 @@ scipy
 pandas
 matplotlib
 scikit-learn
-modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_12_2
+modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_13_0
 tables
 h5py
 seaborn

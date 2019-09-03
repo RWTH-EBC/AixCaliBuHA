@@ -1,93 +1,17 @@
 stages:
-  - compile
-  - log
-  - post
+  - doc
+  - code_quality
   - test
-  - analysis
-
-test_py35:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python35 python=3.5 -y
-    - source activate python35
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-test_py36:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python36 python=3.6 -y
-    - source activate python36
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-test_py37:
-  image: continuumio/anaconda3
-  stage: test
-
-  before_script:
-    - apt-get update
-    - apt-get -y install gcc mono-mcs
-    - apt-get -y  install libgl1-mesa-glx
-    - rm -rf /var/lib/apt/lists/*
-    - conda create -n python37 python=3.7 -y
-    - source activate python37
-    - python -V
-
-  script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
-    - python -m unittest discover --verbose . "test_*.py"
-
-  #tags:
-  #  - docker
-
-#sonarqube:
-#  stage: analysis
-#  image: registry.git.rwth-aachen.de/ebc/ebc_all/gitlab-sonar-scanner:latest
-#  variables:
-#    SONAR_URL: http://137.226.248.164:9000
-#    SONAR_ANALYSIS_MODE: preview
-#  script:
-#  - gitlab-sonar-scanner
-  # -Dsonar.issuesReport.console.enable=true -Dsonar.issuesReport.html.enable=true
-  
-#sonarqube_report:
-#  stage: analysis
-#  image: registry.git.rwth-aachen.de/ebc/ebc_all/gitlab-sonar-scanner:latest
-#  variables:
-#    SONAR_URL: http://137.226.248.164:9000
-#    SONAR_ANALYSIS_MODE: publish
-#    SONAR_PROJECT_KEY: modelica-calibration
-#  only:
-#    - master
-#  script:
-#    - gitlab-sonar-scanner
-#    - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.gitlab.commit_sha=${CI_COMMIT_SHA} -Dsonar.gitlab.ref_name=${CI_COMMIT_REF_NAME} -Dsonar.analysis.mode=$SONAR_ANALYSIS_MODE  -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.issuesReport.console.enable=true
-
+  - deploy
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: '/pylint/pylint.gitlab-ci.yml'
+    file: 'Code-Quality/pylint.gitlab-ci.yml'
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: 'sphinxdoc/sphinxdoc.gitlab-ci.yml'
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: 'pages/pages.gitlab-ci.yml'
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: 'tests/tests.gitlab-ci.yml'
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml

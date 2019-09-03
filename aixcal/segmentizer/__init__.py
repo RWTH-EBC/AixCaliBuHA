@@ -1,5 +1,5 @@
 """Base-module for the segmentizer-package.
-Will """
+"""
 
 from abc import abstractmethod
 import os
@@ -11,7 +11,8 @@ class Classifier:
     Base-Class for a classifier. All classifiers should
     be able to process some MeasTarget-Data and MeasInput-Data
     into aixcal.data_types.CalibrationClass(es).
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Working directory for storing logs and plots
     """
 
@@ -30,7 +31,8 @@ class Classifier:
     def classify(self, df, **kwargs):
         """
         Base function for executing the classification based on the given data.
-        :param df: pd.DataFrame
+
+        :param pd.DataFrame df:
             Given dataframe may be extracted from the TimeSeriesData class. Should
             contain all relevant keys.
         :return: list

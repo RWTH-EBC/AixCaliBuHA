@@ -13,11 +13,12 @@ install_requires = ['numpy',
                     'SALib',
                     'pydot',
                     'cmake',
-                    'dlib']
+                    ]
 setup_requires = install_requires.copy()  # Add all open-source packages to setup-requires
+install_requires.append('dlib')
 
 if version.parse(pip.__version__) > version.parse('18.1'):
-    install_requires.append('modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_12_2')
+    install_requires.append('modelicares @ git+https://github.com/RWTH-EBC/ModelicaRes@v_0_13_0')
 else:
     raise ImportError("You have to upgrade your pip version "
                       "to >=18.1 for modelicares to be installed.")
@@ -37,7 +38,8 @@ setuptools.setup(name='aixcal',
                               'Programming Language :: Python :: 3.7', ],
                  packages=setuptools.find_packages(exclude=['img']),
                  setup_requires=setup_requires,
-                 install_requires=install_requires)
+                 install_requires=install_requires,
+                 )
 
 # Additional packages:
 # Dymola : https://github.com/RWTH-EBC/AixLib/wiki/How-to:-Dymola-Python-Interface

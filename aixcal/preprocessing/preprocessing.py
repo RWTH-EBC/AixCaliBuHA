@@ -14,14 +14,25 @@ def build_average_on_duplicate_rows(df):
     the first occurrence of this duplicate index. Therefore,
     any dataFrame should be already sorted before calling this
     function.
-    Example:
-    Dataframe e.g.:
-    2000-01-01 00:00:02.340   6.500    ...            1.0
-    2000-01-01 00:00:02.340   7.000    ...            1.0
-    will become:
-    2000-01-01 00:00:02.340   6.750    ...            1.0
 
-    :param df: pd.DataFame
+    Example:
+
+    >>> df = pd.DataFrame({"idx": np.ones(5), "val": np.arange(5)}).set_index("idx")
+    >>> df = convert_index_to_datetime_index(df, origin=datetime(2007, 1, 1))
+    >>> print(df)
+                         val
+    idx
+    2007-01-01 00:00:01    0
+    2007-01-01 00:00:01    1
+    2007-01-01 00:00:01    2
+    2007-01-01 00:00:01    3
+    2007-01-01 00:00:01    4
+    >>> print(build_average_on_duplicate_rows(df))
+                         val
+    idx
+    2007-01-01 00:00:01  2.0
+
+    :param pd.DataFame df:
         DataFrame with the data to process
     :return: pd.DataFame
     """
@@ -41,21 +52,40 @@ def build_average_on_duplicate_rows(df):
     return df_dropped
 
 
-def convert_index_to_datetime_index(df, unit_of_index="s"):
+def convert_index_to_datetime_index(df, unit_of_index="s", origin=datetime.now()):
     """
     Converts the index of the given DataFrame to a
     pandas.core.indexes.datetimes.DatetimeIndex.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         dataframe with index not being a DateTime.
         Only numeric indexes are supported. Every integer
         is interpreted with the given unit, standard form
         is in seocnds.
-    :param unit_of_index: str, default 's'
+    :param str unit_of_index: default 's'
         The unit of the given index. Used to convert to
         total_seconds later on.
+    :param datetime.datetime origin:
+        The reference datetime object for the first index.
+        Default is the current system time.
     :return: df
         DataFrame with correct index for usage in this
         framework.
+
+    Examples:
+    >>> import pandas as pd
+    >>> df = pd.DataFrame(np.ones([3, 4]), columns=list('ABCD'))
+    >>> print(df)
+         A    B    C    D
+    0  1.0  1.0  1.0  1.0
+    1  1.0  1.0  1.0  1.0
+    2  1.0  1.0  1.0  1.0
+    >>> print(convert_index_to_datetime_index(df, origin=datetime(2007, 1, 1)))
+                           A    B    C    D
+    2007-01-01 00:00:00  1.0  1.0  1.0  1.0
+    2007-01-01 00:00:01  1.0  1.0  1.0  1.0
+    2007-01-01 00:00:02  1.0  1.0  1.0  1.0
+
     """
     # Check for unit of given index. Maybe one uses hour-based data.
     _unit_conversion_to_seconds = {"ms": 1e-3,
@@ -77,7 +107,7 @@ def convert_index_to_datetime_index(df, unit_of_index="s"):
     # Convert to seconds.
     old_index *= _unit_factor_to_seconds
     # Alter the index
-    df.index = pd.to_datetime(old_index, unit="s", origin=datetime.now())
+    df.index = pd.to_datetime(old_index, unit="s", origin=origin)
 
     return df
 
@@ -87,12 +117,29 @@ def clean_and_space_equally_time_series(df, desired_freq):
     Function for cleaning of the given dataFrame and interpolating
     based on the the given desired frequency. Linear interpolation
     is used.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         Unclean DataFrame. Needs to have a pd.DateTimeIndex
-    :param desired_freq: float
-        Frequency to determine number of elements in processed dataframe
+    :param str desired_freq:
+        Frequency to determine number of elements in processed dataframe.
+        Options are for example:
+        - s: second-based
+        - 5s: Every 5 seconds
+        - 6min: Every 6 minutes
+        This also works for h, d, m, y, ms etc.
     :return: pd.DataFrame
         Cleaned and equally spaced data-frame
+
+    Examples:
+    **Note:** As this function works best with some random
+    data, we will leave it up to you to see the structure of the
+    dataframe in every step.
+
+    >>> df = pd.DataFrame(np.random.randint(0,100,size=(100, 4)),
+    >>>                   columns=list('ABCD')).set_index("A").sort_index()
+    >>> df = convert_index_to_datetime_index(df, origin=datetime(2007, 1, 1))
+    >>> clean_and_space_equally_time_series(df, "30s")
+
     """
     # Convert indexes to datetime_index:
     if not isinstance(df.index, pd.DatetimeIndex):
@@ -146,11 +193,23 @@ def clean_and_space_equally_time_series(df, desired_freq):
 def low_pass_filter(data, crit_freq, filter_order):
     """
     Create a low pass filter with given order and frequency.
-    :param data: numpy.ndarray,
+
+    :param numpy.ndarray data:
         For dataframe e.g. df['a_col_name'].values
-    :param crit_freq: float,
-    :param filter_order: int,
+    :param float crit_freq:
+    :param int filter_order:
     :return: numpy.ndarray,
+
+    Examples:
+
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> rand_series = np.random.rand(100)
+    >>> plt.plot(rand_series, label="reference")
+    >>> plt.plot(low_pass_filter(rand_series, 0.2, 2), label="filtered")
+    >>> plt.legend()
+    >>> plt.show()
+
     """
     _filter_order = int(filter_order)
     numerator, denominator = signal.butter(N=_filter_order, Wn=crit_freq,
@@ -163,15 +222,28 @@ def moving_average(values, window, shift=True):
     """
     Creates a pandas Series as moving average of the input series.
 
-    :param values: Series
+    :param pd.Series values:
         For dataframe e.g. df['a_col_name'].values
-    :param window: int
+    :param int window:
         sample rate of input
-    :param shift: Boolean
+    :param bool shift:
         if True, shift array back by window/2 and fill up values at start and end
     :return: numpy.array
         shape has (###,). First and last points of input Series are extrapolated as constant
         values (hold first and last point).
+
+    Examples:
+
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> series = np.sin(np.linspace(-30, 30, 1000))
+    >>> plt.plot(series, label="reference")
+    >>> plt.plot(moving_average(series, 10), label="window=10")
+    >>> plt.plot(moving_average(series, 50), label="window=50")
+    >>> plt.plot(moving_average(series, 100), label="window=100")
+    >>> plt.legend()
+    >>> plt.show()
+
     """
     # TODO How to implement the shift parameter
     window = int(window)
@@ -189,17 +261,28 @@ def moving_average(values, window, shift=True):
 def create_on_off_signal(df, col_names, threshold, col_names_new):
     """
     Create on and off signals based on the given threshold for all column names.
-    :param df: pd.DataFame
+
+    :param pd.DataFame df:
         DataFrame with the data to process
-    :param col_names: list
+    :param list col_names:
         Column names to convert to signals
-    :param threshold: float, list of floats
+    :param float,list threshold:
         Threshold for all column-names (single float) or
         a list with specific thresholds for specific columns.
-    :param col_names_new: list
+    :param list col_names_new:
         New name for the signal-column
     :return: pd.DataFrame
         Now with the created signals.
+
+    Examples:
+
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> df = pd.DataFrame({"P_el": np.sin(np.linspace(-20, 20, 10000))*100})
+    >>> df = create_on_off_signal(df, col_names=["P_el"],
+    >>>                           threshold=25, col_names_new=["Device On"])
+    >>> plt.plot(df)
+    >>> plt.show()
     """
     if len(col_names) != len(col_names_new):
         raise IndexError("Given lists differ in length. col_names: {}, "
@@ -223,10 +306,25 @@ def number_lines_totally_na(df):
     """
     Returns the number of rows in the given dataframe
     that are filled with NaN-values.
-    :param df: pd.DataFrame
+
+    :param pd.DataFrame df:
         Given dataframe to process
     :return: int
         Number of NaN-Rows.
+
+    Examples:
+
+    >>> import numpy as np
+    >>> import pandas as pd
+    >>> dim = np.random.randint(100) + 10
+    >>> nan_col = [np.NaN for i in range(dim)]
+    >>> col = [i for i in range(dim)]
+    >>> df_nan = pd.DataFrame({"col_1":nan_col, "col_2":nan_col})
+    >>> df_normal = pd.DataFrame({"col_1":nan_col, "col_2":col})
+    >>> print(number_lines_totally_na(df_nan)-dim)
+    0
+    >>> print(number_lines_totally_na(df_normal))
+    0
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError('Input must be a pandas data frame')
@@ -242,11 +340,12 @@ def z_score(x, limit=3):
     """
     Calculate the z-score using the mea
     and standard deviation of the given data.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :param limit: float, default 3
+    :param float limit: default 3
         Lower limit for required z-score
-    :return: iqr: np.array
+    :return: np.array iqr:
         modified z score"""
     mean = np.mean(x)
     standard_deviation = np.std(x)
@@ -258,11 +357,12 @@ def modified_z_score(x, limit=3.5):
     """
     Calculate the modified z-score using the median
     and median average deviation of the given data.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :param limit: float, default 3.5
+    :param float limit: default 3.5
         Lower limit for required z-score
-    :return: iqr: np.array
+    :return: np.array iqr:
         modified z score
     """
     median = np.median(x)
@@ -274,9 +374,10 @@ def modified_z_score(x, limit=3.5):
 def interquartile_range(x):
     """
     Calculate interquartile range of given array.
-    :param x: np.array
+
+    :param np.array x:
         For dataframe e.g. df['a_col_name'].values
-    :return: iqr: np.array
+    :return: np.array iqr:
         Array matching the interquartile-range
     """
     quartile_1, quartile_3 = np.percentile(x, [25, 75])

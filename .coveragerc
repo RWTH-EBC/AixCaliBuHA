@@ -1,0 +1,18 @@
+[run]
+omit =
+    # omit all test directories
+    */test*
+    # omit the gui
+	*_io*
+	# omit examples
+	*/examples*
+source = 
+	aixcal
+[report]
+exclude_lines = 
+	raise NotImplementedError
+	if __name__ == "__main__":
+	if __name__ == '__main__':
+	raise ImportError
+	except Exception as error:
+	except ImportError

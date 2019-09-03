@@ -43,7 +43,7 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                                 goals=goals,
                                                                 tuner_paras=tuner_paras)]
 
-        self.statistical_measure = "NRMSE"
+        self.statistical_measure = "MAE"
         # %% Instantiate dymola-api
         packages = [os.path.normpath(example_dir + "//Modelica//AixCalTest//package.mo")]
         model_name = "AixCalTest.TestModel"
@@ -60,6 +60,35 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                              self.calibration_class,
                                                              num_function_calls=5)
         # Test run for scipy and L-BFGS-B
+        modelica_calibrator.run("L-BFGS-B", "dlib")
+
+    def test_continuous_calibration_fix(self):
+        """Function for testing of class calibration.FixStartContModelicaCal."""
+        modelica_calibrator = calibration.FixStartContModelicaCal(self.example_cal_dir,
+                                                                  self.dym_api,
+                                                                  self.statistical_measure,
+                                                                  self.calibration_classes,
+                                                                  fix_start_time=0,
+                                                                  num_function_calls=5)
+        modelica_calibrator.run("L-BFGS-B", "dlib")
+
+    def test_continuous_calibration_timedelta(self):
+        """Function for testing of class calibration.TimedeltaContModelicaCal."""
+        modelica_calibrator = calibration.TimedeltaContModelicaCal(self.example_cal_dir,
+                                                                   self.dym_api,
+                                                                   self.statistical_measure,
+                                                                   self.calibration_classes,
+                                                                   timedelta=100,
+                                                                   num_function_calls=5)
+        modelica_calibrator.run("L-BFGS-B", "dlib")
+
+    def test_continuous_calibration_dsfinal(self):
+        """Function for testing of class calibration.TimedeltaContModelicaCal."""
+        modelica_calibrator = calibration.DsFinalContModelicaCal(self.example_cal_dir,
+                                                                 self.dym_api,
+                                                                 self.statistical_measure,
+                                                                 self.calibration_classes,
+                                                                 num_function_calls=5)
         modelica_calibrator.run("L-BFGS-B", "dlib")
 
     def tearDown(self):

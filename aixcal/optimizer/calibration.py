@@ -4,6 +4,7 @@ Calibration."""
 
 import os
 from abc import abstractmethod
+from aixcal import simulationapi
 from aixcal import data_types
 from aixcal.utils import visualizer
 from aixcal.optimizer import Calibrator
@@ -17,15 +18,16 @@ class ModelicaCalibrator(Calibrator):
     be used for single time-intervals of calibration. The objective
     should be the standard-objective function for all calibration
     processes of modelica-models.
-    :param cd: str, os.path.normpath
+
+    :param str,os.path.normpath cd:
         Working directory
-    :param sim_api: aixcal.simulationapi.SimulationAPI
+    :param aixcal.simulationapi.SimulationAPI sim_api:
         Simulation-API for running the models
-    :param statistical_measure: str
+    :param str statistical_measure:
         Measure to calculate the scalar of the objective,
         e.g. RMSE, MAE, NRMSE
-    :param calibration_class: aixcal.data_types.CalibrationClass
-        Class with information on Goals and t uner-parameters for calibration
+    :param CalibrationClass calibration_class:
+        Class with information on Goals and tuner-parameters for calibration
     """
 
     # Dummy variable for accessing the current simulation result
@@ -84,7 +86,8 @@ class ModelicaCalibrator(Calibrator):
         2. Simulate the converted-set
         3. Get data as a dataFrame
         4. Calculate the objective based on statistical values
-        :param xk: np.array
+
+        :param np.array xk:
         Array with normalized values for the minimizer
         :return:
         Objective value based on the used quality measurement
@@ -237,7 +240,8 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         """Method to execute some function between the calibration
         of two classes. The basic step is to alter the tuner paramters
         based on past-optimal values.
-        :param tuner_paras_of_class: data_types.TunerParas
+
+        :param data_types.TunerParas tuner_paras_of_class:
             TunerParas of the next class.
         """
         self.tuner_paras = self._alter_tuner_paras(tuner_paras_of_class)
@@ -246,9 +250,10 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
         """
         Based on old calibration results, this function
         alters the start-values for the new tuner_paras-Set
-        :param tuner_paras_of_class: aixcal.data_types.TunerParas
+
+        :param aixcal.data_types.TunerParas tuner_paras_of_class:
             Tuner Parameters for the next time-interval
-        :return: tunerParaDict: aixcal.data_types.TunerParas
+        :return: aixcal.data_types.TunerParas tunerParaDict:
             TunerParas with the altered values
         """
         total_time = 0
@@ -315,6 +320,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
                  calibration_classes, **kwargs):
         super().__init__(cd, sim_api, statistical_measure, calibration_classes, **kwargs)
         self._total_min_dsfinal_path = os.path.join(cd, "total_min_dsfinal", "dsfinal.txt")
+        os.mkdir(os.path.dirname(self._total_min_dsfinal_path))
         # For calibration of multiple classes, the dsfinal is of interest.
         self._total_min = 1e308
         self._total_initial_names = self._join_tuner_paras()
@@ -343,7 +349,7 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
     def process_in_between_classes(self, tuner_paras_of_class):
         super().process_in_between_classes(tuner_paras_of_class)
         # Alter the dsfinal for the new phase
-        new_dsfinal = os.path.join(self.sim_api.cwdir, "dsfinal.txt")
+        new_dsfinal = os.path.join(self.sim_api.cd, "dsfinal.txt")
         self._total_initial_names = list(set(self._total_initial_names + self._traj_names))
         mrutil.eliminate_parameters_from_ds_file(self._total_min_dsfinal_path,
                                                  new_dsfinal,
@@ -354,10 +360,11 @@ class DsFinalContModelicaCal(ContinuousModelicaCalibration):
         """
         Join all initialNames used for calibration in the given dataset. This function
         is used to find all values to be filtered in the dsfinal-file.
+
         :return: list
         Joined list of all names.
         """
         joined_list = []
         for cal_class in self.calibration_classes:
-            joined_list.append(cal_class.tuner_paras.get_names())
+            joined_list += cal_class.tuner_paras.get_names()
         return list(set(joined_list))
