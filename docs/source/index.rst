@@ -12,9 +12,9 @@ This framework attempts to make the process of calibrating models used in Buildi
 and HVAC Systems easier. Different sub-packages help with the underlying tasks of:
 
 - **Preprocessing** measured or simulated data for the cohesive use in this framework
-- **Segmentizing** the continuous time-series data into :ref:`calibration classes <calibration-class>`
-- Performing a **Sensitivity Analysis** to discover :ref:`tuner parameters <tuner-parameter>` for the calibration
-- **Calibration** of given model based on the :ref:`tuner parameters <tuner-parameter>`, the :ref:`calibration classes <calibration-class>` and specified :ref:`goals <goals>` to evaluate the objective function of the underlying optimization
+- **Segmentizing** the continuous time-series data into calibration classes
+- Performing a **Sensitivity Analysis** to discover tuner parameters for the calibration
+- **Calibration** of given model based on the tuner parameters, the calibration classes and specified goals to evaluate the objective function of the underlying optimization
 
 
 Installation
@@ -36,12 +36,9 @@ run ``pip uninstall modelicares"`` before installing aixcal.
    :maxdepth: 2
 
    tutorial
-   data_types
-   preprocessor
-   segmentizer
    senanalyzer
-   optimizer
-   simulationapi
+   calibration
+
 
 
 Indices and tables
