@@ -7,7 +7,7 @@ omit =
 	# omit examples
 	*/examples*
 source = 
-	aixcal
+	aixcalibuha
 [report]
 exclude_lines = 
 	raise NotImplementedError
