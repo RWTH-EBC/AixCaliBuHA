@@ -301,12 +301,12 @@ class FixStartContModelicaCal(ContinuousModelicaCalibration):
 
 class TimedeltaContModelicaCal(ContinuousModelicaCalibration):
     """Class for continuous calibration using a fixed timedelta.
-    Before each calibration-class starts, a fix timedelta is
-    subtracted from the start-time to ensure the simulation
-    is at a steady-point for the calibration.
+    Before each calibration class starts, a fix timedelta is
+    subtracted from the start time to ensure the simulation
+    is in a steady state condition for the calibration.
 
     :param float timedelta:
-        The timedelta subtracted of each individual start-time
+        The time span (in s) subtracted of each individual start time
         of a calibration class."""
 
     def __init__(self, framework, cd, sim_api, statistical_measure,

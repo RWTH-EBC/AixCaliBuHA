@@ -11,8 +11,8 @@ from ebcpy.examples import data_types_example, dymola_api_example
 
 def run_calibration(sim_api, cal_classes, stat_measure):
     """
-    Run an example for a calibration. Make sure you have dymola installed
-    on your device and a working licence. All output-data will be stored in
+    Run an example for a calibration. Make sure you have Dymola installed
+    on your device and a working licence. All output data will be stored in
     the current working directory of python. Look at the logs and plots
     to better understand what is happening in the calibration. If you want, you
     can switch the methods to other supported methods or change the framework and
