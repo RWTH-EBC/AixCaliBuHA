@@ -12,6 +12,13 @@ Currently, this repo represents some kind of "master/overall" repo. Therefore, a
 *  [Tool DyOS](http://www.avt.rwth-aachen.de/cms/AVT/Forschung/Software/~iptr/DyOS/) from AVT, RWTH Aachen University
 *  `Design` Library included in Dymola (See also Dymola User Manual Volume 2)
 *  [`Optimization` Library](https://www.modelica.org/libraries) (DLR-SR), s. help in [EBC-SharePoint](https://ecampus.rwth-aachen.de/units/eonerc/ebc/Wiki/Optimierung%20mit%20Dymola.aspx)
+*  [GenOpt](https://simulationresearch.lbl.gov/GO/): Quotes:
+   * "minimization of a cost function that is evaluated by an external simulation program"
+   * "developed for optimization problems where the cost function is computationally expensive and its derivatives are not available"
+   * "ocal and global multi-dimensional and one-dimensional optimization algorithms"
+   * "parallel computation is done automatically"
+   * "written in Java so that it is platform independent"
+   * "GenOpt **has not been** designed for linear programming problems, ..."
 
 ## How to install?
 
