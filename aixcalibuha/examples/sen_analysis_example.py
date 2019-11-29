@@ -23,7 +23,7 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
     :param aixcalibuha.simulationapi.SimulationAPI sim_api:
         Simulation api to run the simulation for the sensitivtiy analysis
     :param list cal_classes:
-        List of :meth:`calibration-class<ebcpy.data_types.CalibrationClass>`
+        List of :meth:`calibration-class<aixcalibuha.data_types.CalibrationClass>`
         objects to be analyzed.
     :param str stat_measure:
         The statistical measure, one of the possible of

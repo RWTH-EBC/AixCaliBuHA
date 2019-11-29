@@ -9,6 +9,7 @@ from ebcpy.simulationapi.dymola_api import DymolaAPI
 from ebcpy import data_types
 from aixcalibuha.calibration import modelica
 from aixcalibuha.sensanalyzer import sensitivity_analyzer
+from aixcalibuha import data_types as data_types_cal
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -34,15 +35,15 @@ class TestModelicaCalibrator(unittest.TestCase):
         cols = ["heater.heatPorts[1].T", "heater1.heatPorts[1].T"]
         goals = data_types.Goals(mtd, std, meas_columns=cols,
                                  sim_columns=cols, weightings=[0.7, 0.3])
-        self.calibration_class = data_types.CalibrationClass("Device On", 0, 3600,
-                                                             goals=goals,
-                                                             tuner_paras=tuner_paras)
-        self.calibration_classes = [data_types.CalibrationClass("Device On", 0, 1200,
-                                                                goals=goals,
-                                                                tuner_paras=tuner_paras),
-                                    data_types.CalibrationClass("Device Off", 1200, 3600,
-                                                                goals=goals,
-                                                                tuner_paras=tuner_paras)]
+        self.calibration_class = data_types_cal.CalibrationClass("Device On", 0, 3600,
+                                                                 goals=goals,
+                                                                 tuner_paras=tuner_paras)
+        self.calibration_classes = [data_types_cal.CalibrationClass("Device On", 0, 1200,
+                                                                    goals=goals,
+                                                                    tuner_paras=tuner_paras),
+                                    data_types_cal.CalibrationClass("Device Off", 1200, 3600,
+                                                                    goals=goals,
+                                                                    tuner_paras=tuner_paras)]
 
         self.statistical_measure = "MAE"
         # %% Instantiate dymola-api
@@ -55,7 +56,7 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.ModelicaCalibrator."""
-        modelica_calibrator = modelica.ModelicaCalibrator("dlib",
+        modelica_calibrator = modelica.ModelicaCalibrator("dlib_minimize",
                                                           self.example_cal_dir,
                                                           self.dym_api,
                                                           self.statistical_measure,
@@ -66,7 +67,7 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_continuous_calibration_fix(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        modelica_calibrator = modelica.FixStartContModelicaCal("dlib",
+        modelica_calibrator = modelica.FixStartContModelicaCal("dlib_minimize",
                                                                self.example_cal_dir,
                                                                self.dym_api,
                                                                self.statistical_measure,
@@ -77,7 +78,7 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_continuous_calibration_timedelta(self):
         """Function for testing of class calibration.TimedeltaContModelicaCal."""
-        modelica_calibrator = modelica.TimedeltaContModelicaCal("dlib",
+        modelica_calibrator = modelica.TimedeltaContModelicaCal("dlib_minimize",
                                                                 self.example_cal_dir,
                                                                 self.dym_api,
                                                                 self.statistical_measure,
@@ -88,7 +89,7 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_continuous_calibration_dsfinal(self):
         """Function for testing of class calibration.TimedeltaContModelicaCal."""
-        modelica_calibrator = modelica.DsFinalContModelicaCal("dlib",
+        modelica_calibrator = modelica.DsFinalContModelicaCal("dlib_minimize",
                                                               self.example_cal_dir,
                                                               self.dym_api,
                                                               self.statistical_measure,
@@ -121,7 +122,7 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                sen_result,
                                                threshold=1)
         self.assertIsInstance(cal_classes, list)
-        self.assertIsInstance(cal_classes[0], data_types.CalibrationClass)
+        self.assertIsInstance(cal_classes[0], data_types_cal.CalibrationClass)
 
     def tearDown(self):
         """Remove all created folders while calibrating."""
