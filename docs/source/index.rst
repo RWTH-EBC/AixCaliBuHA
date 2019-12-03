@@ -50,6 +50,14 @@ The **Tuner parameters** and **Goals** are members, as well as the time-interval
 .. autoclass:: aixcalibuha.data_types.CalibrationClass
    :members:
 
+Version History
+---------------
+
+v.0.1:
+- v.0.1.0: Implemented.
+- v.0.1.1: Split into different frameworks and adjust changes from based on new version of ebcpy
+- v.0.1.2: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.
+
 
 Indices and tables
 ==================

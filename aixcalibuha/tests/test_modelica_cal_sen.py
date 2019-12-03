@@ -9,7 +9,7 @@ from ebcpy.simulationapi.dymola_api import DymolaAPI
 from ebcpy import data_types
 from aixcalibuha.calibration import modelica
 from aixcalibuha.sensanalyzer import sensitivity_analyzer
-from aixcalibuha import data_types as data_types_cal
+from aixcalibuha import CalibrationClass
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -33,17 +33,16 @@ class TestModelicaCalibrator(unittest.TestCase):
         mtd = data_types.MeasTargetData(example_mat_file)
         std = data_types.SimTargetData(example_mat_file)
         cols = ["heater.heatPorts[1].T", "heater1.heatPorts[1].T"]
-        goals = data_types.Goals(mtd, std, meas_columns=cols,
-                                 sim_columns=cols, weightings=[0.7, 0.3])
-        self.calibration_class = data_types_cal.CalibrationClass("Device On", 0, 3600,
-                                                                 goals=goals,
-                                                                 tuner_paras=tuner_paras)
-        self.calibration_classes = [data_types_cal.CalibrationClass("Device On", 0, 1200,
-                                                                    goals=goals,
-                                                                    tuner_paras=tuner_paras),
-                                    data_types_cal.CalibrationClass("Device Off", 1200, 3600,
-                                                                    goals=goals,
-                                                                    tuner_paras=tuner_paras)]
+        goals = data_types.Goals(cols, cols, mtd, sim_target_data=std, weightings=[0.7, 0.3])
+        self.calibration_class = CalibrationClass("Device On", 0, 3600,
+                                                  goals=goals,
+                                                  tuner_paras=tuner_paras)
+        self.calibration_classes = [CalibrationClass("Device On", 0, 1200,
+                                                     goals=goals,
+                                                     tuner_paras=tuner_paras),
+                                    CalibrationClass("Device Off", 1200, 3600,
+                                                     goals=goals,
+                                                     tuner_paras=tuner_paras)]
 
         self.statistical_measure = "MAE"
         # %% Instantiate dymola-api
@@ -122,7 +121,7 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                sen_result,
                                                threshold=1)
         self.assertIsInstance(cal_classes, list)
-        self.assertIsInstance(cal_classes[0], data_types_cal.CalibrationClass)
+        self.assertIsInstance(cal_classes[0], CalibrationClass)
 
     def tearDown(self):
         """Remove all created folders while calibrating."""

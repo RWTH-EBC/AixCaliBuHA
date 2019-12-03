@@ -2,7 +2,7 @@
 ebcpy.data_types."""
 
 import unittest
-from aixcalibuha import data_types as data_types_cal
+from aixcalibuha import CalibrationClass
 
 
 class TestDataTypes(unittest.TestCase):
@@ -13,16 +13,16 @@ class TestDataTypes(unittest.TestCase):
         """Test the class CalibrationClass"""
         with self.assertRaises(ValueError):
             # Test if start-time higher than stop-time raises an error.
-            data_types_cal.CalibrationClass("dummy", 100, 50)
+            CalibrationClass("dummy", 100, 50)
         with self.assertRaises(TypeError):
             # Test if a given name not equal to string raises an error.
             not_a_string = 1
-            data_types_cal.CalibrationClass(not_a_string, 0, 10)
+            CalibrationClass(not_a_string, 0, 10)
 
         # Test set_functions for goals and tuner parameters
         dummy_tuner_para = "not TunerParas-Class"
         dummy_goal = "not Goals-Class"
-        dummy_cal_class = data_types_cal.CalibrationClass("dummy", 0, 10)
+        dummy_cal_class = CalibrationClass("dummy", 0, 10)
         with self.assertRaises(TypeError):
             dummy_cal_class.set_tuner_paras(dummy_tuner_para)
         with self.assertRaises(TypeError):

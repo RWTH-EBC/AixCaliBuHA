@@ -3,7 +3,7 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from aixcalibuha import data_types as data_types_cal
+from aixcalibuha import CalibrationClass
 from ebcpy.examples import data_types_example
 
 
@@ -21,9 +21,9 @@ def setup_calibration_classes():
     """
     # Define the basic time-intervals and names for the calibration-classes:
     calibration_classes = [
-        data_types_cal.CalibrationClass(name="Heat up", start_time=0, stop_time=200),
-        data_types_cal.CalibrationClass(name="stationary", start_time=200, stop_time=400),
-        data_types_cal.CalibrationClass(name="cool down", start_time=400, stop_time=600),
+        CalibrationClass(name="Heat up", start_time=0, stop_time=200),
+        CalibrationClass(name="stationary", start_time=200, stop_time=400),
+        CalibrationClass(name="cool down", start_time=400, stop_time=600),
     ]
     # Load the tuner parameters and goals
     tuner_paras = data_types_example.setup_tuner_paras()

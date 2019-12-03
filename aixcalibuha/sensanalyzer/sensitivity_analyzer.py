@@ -11,7 +11,7 @@ from ebcpy.utils import visualizer
 from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
-from aixcalibuha import data_types as data_types_cal
+from aixcalibuha import CalibrationClass
 
 
 class SenAnalyzer:
@@ -57,17 +57,17 @@ class SenAnalyzer:
         # Check correct input of parameters.
         if isinstance(calibration_classes, list):
             for cal_class in calibration_classes:
-                if not isinstance(cal_class, data_types_cal.CalibrationClass):
+                if not isinstance(cal_class, CalibrationClass):
                     raise TypeError("calibration_classes is of type {} but should "
                                     "be {}".format(type(cal_class).__name__,
-                                                   type(data_types_cal.CalibrationClass).__name__))
+                                                   type(CalibrationClass).__name__))
             self.calibration_classes = calibration_classes
-        elif isinstance(calibration_classes, data_types_cal.CalibrationClass):
+        elif isinstance(calibration_classes, CalibrationClass):
             self.calibration_classes = [calibration_classes]
         else:
             raise TypeError("calibration_classes is of type {} but should "
                             "be {} or list".format(type(calibration_classes).__name__,
-                                                   type(data_types_cal.CalibrationClass).__name__))
+                                                   type(CalibrationClass).__name__))
 
         # Choose which analysis function to use and the list of keys in the analysis output to store
         if self.method.lower() == 'morris':

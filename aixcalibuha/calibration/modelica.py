@@ -10,7 +10,7 @@ import ebcpy.modelica.manipulate_ds as man_ds
 import modelicares.simres as sr
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
-from aixcalibuha import data_types as data_types_cal
+from aixcalibuha import CalibrationClass
 
 
 class ModelicaCalibrator(Calibrator):
@@ -56,10 +56,10 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Initialize all public parameters
         super().__init__(framework, cd, sim_api, statistical_measure, **kwargs)
-        if not isinstance(calibration_class, data_types_cal.CalibrationClass):
+        if not isinstance(calibration_class, CalibrationClass):
             raise TypeError("calibration_classes is of type {} but should be "
                             "{}".format(type(calibration_class).__name__,
-                                        type(data_types_cal.CalibrationClass).__name__))
+                                        type(CalibrationClass).__name__))
         self.calibration_class = calibration_class
         self.goals = self.calibration_class.goals
         self.tuner_paras = self.calibration_class.tuner_paras
@@ -168,10 +168,10 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
             raise TypeError("calibration_classes is of type "
                             "%s but should be list" % type(calibration_classes).__name__)
         for cal_class in calibration_classes:
-            if not isinstance(cal_class, data_types_cal.CalibrationClass):
+            if not isinstance(cal_class, CalibrationClass):
                 raise TypeError("calibration_classes is of type {} but should "
                                 "be {}".format(type(cal_class).__name__,
-                                               type(data_types_cal.CalibrationClass).__name__))
+                                               type(CalibrationClass).__name__))
         super().__init__(framework, cd, sim_api, statistical_measure,
                          calibration_classes[0], **kwargs)
         self.calibration_classes = calibration_classes
