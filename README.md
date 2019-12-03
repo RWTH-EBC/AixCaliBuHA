@@ -36,13 +36,13 @@ If you don't have modelicares installed, just go ahead and run the line below to
 `pip install -e "Path/to/this/repository"`
 
 # Documentation
-Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/docs).
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
 
 
 # Code Quality
 
-* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/pylint/pylint.html)
-* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/coverage)
+* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
+* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
 
 
 If environment variables are not set properly, try more explicit command in Windows shell:
