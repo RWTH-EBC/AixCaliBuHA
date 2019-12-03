@@ -3,8 +3,8 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from aixcalibuha import CalibrationClass
 from ebcpy.examples import data_types_example
+from aixcalibuha import CalibrationClass
 
 
 def setup_calibration_classes():
