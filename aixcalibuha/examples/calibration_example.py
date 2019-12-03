@@ -5,8 +5,9 @@ If not, please raise an issue.
 """
 
 import os
+from ebcpy.examples import dymola_api_example
 from aixcalibuha.calibration import modelica
-from ebcpy.examples import data_types_example, dymola_api_example
+from aixcalibuha.examples import cal_classes_example
 
 
 def run_calibration(sim_api, cal_classes, stat_measure):
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     CD = os.path.normpath(os.getcwd())
 
     DYM_API = dymola_api_example.setup_dymola_api()
-    CAL_CLASSES = data_types_example.setup_calibration_classes()
+    CAL_CLASSES = cal_classes_example.setup_calibration_classes()
 
     # %%Calibration:
     run_calibration(DYM_API,

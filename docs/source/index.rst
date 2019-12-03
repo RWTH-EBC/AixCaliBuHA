@@ -39,6 +39,24 @@ run ``pip uninstall modelicares"`` before installing aixcal.
    senanalyzer
    calibration
 
+.. _calibration-class:
+CalibrationClass
+------------------
+
+Last but not least, a calibration class is an object wrapping the most important information for a calibration into one class.
+The **Tuner parameters** and **Goals** are members, as well as the time-interval for the simulation and the name of the class.
+
+
+.. autoclass:: aixcalibuha.data_types.CalibrationClass
+   :members:
+
+Version History
+---------------
+
+v.0.1:
+- v.0.1.0: Implemented.
+- v.0.1.1: Split into different frameworks and adjust changes from based on new version of ebcpy
+- v.0.1.2: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.
 
 
 Indices and tables
