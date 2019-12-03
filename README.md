@@ -1,6 +1,3 @@
-**Pylint:** 
-[![pylint](https://ebc.pages.rwth-aachen.de/EBC_intern/AixCaliBuHA/master/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_intern/AixCaliBuHA/master/pylint.html )
-
 # AixCaliBuHA
 
 **Aix** (from French Aix-la-Chapelle) 
@@ -38,25 +35,15 @@ If you don't have modelicares installed, just go ahead and run the line below to
 
 `pip install -e "Path/to/this/repository"`
 
-If you have modelicares installed, you have two options:
+# Documentation
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/docs).
 
-### 1. Uninstall modelicares first (fastest method) 
 
-Run
+# Code Quality
 
-`pip uninstall modelicares`
+* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/pylint/pylint.html)
+* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Python/ebcpy/master/coverage)
 
-to uninstall modelicares and then run
-
-`pip install -e "Path/to/this/repository"`
-
-to install the repository.
-
-### 2. Force reinstall
-
-`pip install -e "Path/to/this/repository" --force-reinstall modelicares`
-
-However, this method also re-installs all packages required for modelicares, such as numpy, scipy etc. This takes quite some time.
 
 If environment variables are not set properly, try more explicit command in Windows shell:
 
