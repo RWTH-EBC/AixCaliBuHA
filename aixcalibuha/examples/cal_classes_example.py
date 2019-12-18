@@ -21,9 +21,11 @@ def setup_calibration_classes():
     """
     # Define the basic time-intervals and names for the calibration-classes:
     calibration_classes = [
-        CalibrationClass(name="Heat up", start_time=0, stop_time=200),
+        CalibrationClass(name="Heat up", start_time=0, stop_time=90),
+        CalibrationClass(name="Heat up", start_time=110, stop_time=200),
         CalibrationClass(name="stationary", start_time=200, stop_time=400),
-        CalibrationClass(name="cool down", start_time=400, stop_time=600),
+        CalibrationClass(name="cool down", start_time=400, stop_time=500),
+        CalibrationClass(name="stationary", start_time=500, stop_time=600),
     ]
     # Load the tuner parameters and goals
     tuner_paras = data_types_example.setup_tuner_paras()

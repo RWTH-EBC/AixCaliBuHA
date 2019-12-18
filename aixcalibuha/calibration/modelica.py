@@ -29,20 +29,26 @@ class ModelicaCalibrator(Calibrator):
         e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
+    TODO: Add supported kwargs as a description
     """
 
     # Dummy variable for accessing the current simulation result
     _filepath_dsres = ""
     # Tuple with information on what time-intervals are relevant for the objective.
-    _relevant_time_interval = ()
+    _relevant_time_intervals = []
     # Dummy variable for the result of the calibration:
     _res = None
+    # Timedelta before each simulation to initialize the model. Default is zero
+    timedelta = 0
 
     def __init__(self, framework, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
+        # Pop the items so they wont be added when calling the
+        # __init__ of the parent class.
         self.save_files = kwargs.pop("save_files", False)
+        self.timedelta = kwargs.pop("timedelta", 0)
 
         # Check if types are correct:
         # Booleans:
@@ -67,11 +73,15 @@ class ModelicaCalibrator(Calibrator):
         if self.tuner_paras.bounds is None:
             self.bounds = None
         else:
+            # As tuner-parameters are scaled between 0 and 1, the scaled bounds are always 0 and 1
             self.bounds = [(0, 1) for i in range(len(self.x0))]
         # Add the values to the simulation setup.
         self.sim_api.set_sim_setup({"initialNames": self.tuner_paras.get_names(),
-                                    "startTime": self.calibration_class.start_time,
+                                    "startTime": self.calibration_class.start_time - self.timedelta,
                                     "stopTime": self.calibration_class.stop_time})
+        # Set the time-interval for evaluating the objective
+        self._relevant_time_intervals = [(self.calibration_class.start_time,
+                                          self.calibration_class.stop_time)]
 
         #%% Setup the logger
         self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
@@ -111,10 +121,9 @@ class ModelicaCalibrator(Calibrator):
         #%% Load results and write to goals object
         sim_target_data = data_types.SimTargetData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
-        if self._relevant_time_interval:
+        if self._relevant_time_intervals:
             # Trim results based on start and end-time
-            self.goals.set_relevant_time_interval(self._relevant_time_interval[0],
-                                                  self._relevant_time_interval[1])
+            self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
         total_res = self.goals.eval_difference(self.statistical_measure)
@@ -128,9 +137,12 @@ class ModelicaCalibrator(Calibrator):
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
         self.logger.log("Class: {}, "
-                        "Time-Interval: {}-{} s".format(self.calibration_class.name,
-                                                        self.calibration_class.start_time,
-                                                        self.calibration_class.stop_time))
+                        "Start and Stop-Time: {}-{} s\n"
+                        "Time-Intervals used for "
+                        "objective: {}".format(self.calibration_class.name,
+                                               self.calibration_class.start_time,
+                                               self.calibration_class.stop_time,
+                                               self.calibration_class.relevant_intervals))
         self.logger.log_initial_names(self.statistical_measure)
         # Setup the visualizer for plotting:
         self.logger.calibrate_new_class(self.calibration_class.name, self.tuner_paras, self.goals)
@@ -157,52 +169,69 @@ class ModelicaCalibrator(Calibrator):
         self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
 
 
-class ContinuousModelicaCalibration(ModelicaCalibrator):
+class MultipleClassCalibrator(ModelicaCalibrator):
     """
-    Base-Class for continuous calibration of multiple calibration
-    classes.
+    Class for calibration of multiple calibration classes.
+    # TODO Add docstrings
     """
 
-    def __init__(self, framework, cd, sim_api, statistical_measure, calibration_classes, **kwargs):
+    # Default value for the reference time is zero
+    reference_start_time = 0
+
+    def __init__(self, framework, cd, sim_api, statistical_measure, calibration_classes,
+                 start_time_method='fixstart', reference_start_time=0, **kwargs):
+        # Check if input is correct
         if not isinstance(calibration_classes, list):
             raise TypeError("calibration_classes is of type "
                             "%s but should be list" % type(calibration_classes).__name__)
+
         for cal_class in calibration_classes:
             if not isinstance(cal_class, CalibrationClass):
                 raise TypeError("calibration_classes is of type {} but should "
                                 "be {}".format(type(cal_class).__name__,
                                                type(CalibrationClass).__name__))
+
+        # Instantiate parent-class
         super().__init__(framework, cd, sim_api, statistical_measure,
                          calibration_classes[0], **kwargs)
-        self.calibration_classes = calibration_classes
+        # Merge the multiple calibration_classes
+        self.calibration_classes = self._merge_calibration_classes(calibration_classes)
         self._cal_history = []
 
+        # Choose the time-method
+        if start_time_method.lower() not in ["fixstart", "timedelta"]:
+            raise ValueError("Given start_time_method {} is not supported. Please choose between"
+                             "'fixstart' or 'timedelta'".format(start_time_method))
+        else:
+            self.start_time_method = start_time_method
+        # Apply (if given) the reference start time. Check for correct input as-well.
+        if not isinstance(reference_start_time, (int, float)):
+            raise TypeError("Given reference_start_time is of type {} but "
+                            "has to be float or int.".format(type(reference_start_time).__name__))
+        self.reference_start_time = reference_start_time
+
     def calibrate(self, method=None, framework=None):
-        curr_num = 0
+        # Iterate over the different existing classes
         for cal_class in self.calibration_classes:
             #%% Simulation-Time:
-            # Alter the simulation time. This depends on the mode one is using.
-            # The method ref_start_time will be overloaded by children of this class.
-            start_time = self.ref_start_time(cal_class.start_time)
+            # Alter the simulation time.
+            # The fix-start time or timedelta approach is applied,
+            # based on the Boolean in place
+            start_time = self._apply_start_time_method(cal_class.start_time)
             self.sim_api.set_sim_setup({"startTime": start_time,
                                         "stopTime": cal_class.stop_time})
 
             #%% Working-Directory:
-            # Alter the working directory for the simulations
-            cd_of_class = os.path.join(self.cd, "{}_{}".format(curr_num, cal_class.name))
+            # Alter the working directory for saving the simulations-results
+            cd_of_class = os.path.join(self.cd, "{}_{}_{}".format(cal_class.name,
+                                                                  cal_class.start_time,
+                                                                  cal_class.stop_time))
             self.sim_api.set_cd(cd_of_class)
-
-            #%% Tuner-Parameters
-            # Alter tunerParas based on old results
-            if self._cal_history:
-                self.process_in_between_classes(cal_class.tuner_paras)
-            else:
-                self.tuner_paras = cal_class.tuner_paras
 
             #%% Calibration-Setup
             # Reset counter for new calibration
             self._counter = 0
-            self._relevant_time_interval = (cal_class.start_time, cal_class.stop_time)
+            self._relevant_time_intervals = cal_class.relevant_intervals
             self.goals = cal_class.goals
             self.x0 = self.tuner_paras.scale(self.tuner_paras.get_initial_values())
             # Either bounds are present or not.
@@ -222,162 +251,48 @@ class ContinuousModelicaCalibration(ModelicaCalibrator):
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
-            self._cal_history.append({"tuner_paras": self.tuner_paras,
-                                      "res": self._res,
+            self._cal_history.append({"res": self._res,
                                       "cal_class": cal_class})
-            curr_num += 1
-            self._counter = 0  # Reset counter for next optimization
 
-    @abstractmethod
-    def ref_start_time(self, start_time):
+    def _apply_start_time_method(self, start_time):
         """Method to be calculate the start_time based on the used
-        way of continuous calibration."""
-        raise NotImplementedError('{}.ref_start_time function is '
-                                  'not defined'.format(self.__class__.__name__))
+        start-time-method (timedelta or fix-start."""
+        if self.start_time_method == "timedelta":
+            # Using timedelta, _ref_time is subtracted of the given start-time
+            return start_time - self.reference_start_time
+        else:
+            # With fixed start, the _ref_time parameter is always returned
+            return self.reference_start_time
 
-    def process_in_between_classes(self, tuner_paras_of_class):
-        """Method to execute some function between the calibration
-        of two classes. The basic step is to alter the tuner paramters
-        based on past-optimal values.
+    @staticmethod
+    def _merge_calibration_classes(calibration_classes):
+        # Use a dict for easy name-access
+        # TODO: Fetch case were intervals are already in place
+        temp_merged = {}
+        for cal_class in calibration_classes:
+            _name = cal_class.name
+            if _name in temp_merged:
+                temp_merged[_name]["intervals"].append((cal_class.start_time,
+                                                        cal_class.stop_time))
+            else:
+                temp_merged[_name] = {"goals": cal_class.goals,
+                                      "tuner_paras": cal_class.tuner_paras,
+                                      "intervals": [(cal_class.start_time,
+                                                     cal_class.stop_time)]
+                                      }
+        # Convert dict to actual calibration-classes
+        cal_classes_merged = []
+        for _name, values in temp_merged.items():
+            # Flatten the list of tuples and get the start- and stop-values
+            start_time = min(sum(values["intervals"], ()))
+            stop_time = max(sum(values["intervals"], ()))
+            cal_classes_merged.append(CalibrationClass(_name, start_time, stop_time,
+                                                       goals=values["goals"],
+                                                       tuner_paras=values["tuner_paras"],
+                                                       relevant_intervals=values["intervals"]))
 
-        :param data_types.TunerParas tuner_paras_of_class:
-            TunerParas of the next class.
-        """
-        self.tuner_paras = self._alter_tuner_paras(tuner_paras_of_class)
+        return cal_classes_merged
 
-    def _alter_tuner_paras(self, tuner_paras_of_class):
-        """
-        Based on old calibration results, this function
-        alters the start-values for the new tuner_paras-Set
-
-        :param ebcpy.data_types.TunerParas tuner_paras_of_class:
-            Tuner Parameters for the next time-interval
-        :return: ebcpy.data_types.TunerParas tunerParaDict:
-            TunerParas with the altered values
-        """
-        total_time = 0
-        relevant_tuner_paras = tuner_paras_of_class.get_names()
-        average_ini_vals = {}
-        for cal_his in self._cal_history:
-            tuner_paras = cal_his["cal_class"].tuner_paras
-            tuner_paras_opt = tuner_paras.scale(cal_his["res"].x)
-            timedelta = cal_his["cal_class"].stop_time - cal_his["cal_class"].start_time
-            total_time += timedelta
-            for i in range(0, len(tuner_paras.get_names())):
-                name = tuner_paras.get_names()[i]
-                if name in average_ini_vals.keys():
-                    average_ini_vals[name] += tuner_paras_opt[i] * timedelta
-                else:
-                    average_ini_vals[name] = tuner_paras_opt[i] * timedelta
-        for name, ini_val in average_ini_vals.items():
-            average_ini_vals[name] = ini_val / total_time  # Build average again
-        # Alter the values of the tuner_paras
-        for name in list(set(average_ini_vals.keys()).intersection(relevant_tuner_paras)):
-            tuner_paras_of_class.set_value(name, "initial_value", average_ini_vals[name])
-
-        return tuner_paras_of_class
-
-
-class FixStartContModelicaCal(ContinuousModelicaCalibration):
-    """Class for continuous calibration using a fixed start.
-    All simulations will start at that fixed point no matter the
-    actual start-time of the calibration-class. For obj-values, only
-    the relevant interval is taken into account.
-
-    :param float fix_start_time:
-        Value for a fixed start time. All simulations will start at this
-        given value.
-
-    """
-
-    def __init__(self, framework, cd, sim_api, statistical_measure,
-                 calibration_classes, fix_start_time, **kwargs):
-        super().__init__(framework, cd, sim_api, statistical_measure,
-                         calibration_classes, **kwargs)
-        self._fix_start_time = fix_start_time
-
-    def ref_start_time(self, start_time):
-        return self._fix_start_time
-
-
-class TimedeltaContModelicaCal(ContinuousModelicaCalibration):
-    """Class for continuous calibration using a fixed timedelta.
-    Before each calibration class starts, a fix timedelta is
-    subtracted from the start time to ensure the simulation
-    is in a steady state condition for the calibration.
-
-    :param float timedelta:
-        The time span (in s) subtracted of each individual start time
-        of a calibration class."""
-
-    def __init__(self, framework, cd, sim_api, statistical_measure,
-                 calibration_classes, timedelta, **kwargs):
-        super().__init__(framework, cd, sim_api, statistical_measure,
-                         calibration_classes, **kwargs)
-        self._timedelta = timedelta
-
-    def ref_start_time(self, start_time):
-        return start_time - self._timedelta
-
-
-class DsFinalContModelicaCal(ContinuousModelicaCalibration):
-    """
-    Class for continuous calibration using the dsfinal.txt.file
-    after each calibration-class to import the inital values based
-    on the final values of the last class.
-
-    """
-
-    def __init__(self, framework, cd, sim_api, statistical_measure,
-                 calibration_classes, **kwargs):
-        super().__init__(framework, cd, sim_api, statistical_measure,
-                         calibration_classes, **kwargs)
-        self._total_min_dsfinal_path = os.path.join(cd, "total_min_dsfinal", "dsfinal.txt")
-        os.mkdir(os.path.dirname(self._total_min_dsfinal_path))
-        # For calibration of multiple classes, the dsfinal is of interest.
-        self._total_min = 1e308
-        self._total_initial_names = self._join_tuner_paras()
-        self._traj_names = []
-        # Savepath where the mat-file and the dsfinal of the current best iterate is saved.
-
-    def obj(self, xk, *args):
-        # Evaluate the objective
-        obj_val = super().obj(xk, *args)
-        # Get all trajectory names of the dsres-file
-        sim = sr.SimRes(self._filepath_dsres)
-        self._traj_names = sr_ebc.get_trajectories(sim)
-        # Get the current best dsfinal-file for next calibration-interval.
-        if obj_val < self._total_min:
-            self._total_min = obj_val
-            # Overwrite old results:
-            if os.path.isfile(self._total_min_dsfinal_path):
-                os.remove(self._total_min_dsfinal_path)
-            os.rename(os.path.join(os.path.dirname(self._filepath_dsres), "dsfinal.txt"),
-                      self._total_min_dsfinal_path)
-        return obj_val
-
-    def ref_start_time(self, start_time):
-        return start_time
-
-    def process_in_between_classes(self, tuner_paras_of_class):
-        super().process_in_between_classes(tuner_paras_of_class)
-        # Alter the dsfinal for the new phase
-        new_dsfinal = os.path.join(self.sim_api.cd, "dsfinal.txt")
-        self._total_initial_names = list(set(self._total_initial_names + self._traj_names))
-        man_ds.eliminate_parameters_from_ds_file(self._total_min_dsfinal_path,
-                                                 new_dsfinal,
-                                                 self._total_initial_names)
-        self.sim_api.import_initial(new_dsfinal)
-
-    def _join_tuner_paras(self):
-        """
-        Join all initialNames used for calibration in the given dataset. This function
-        is used to find all values to be filtered in the dsfinal-file.
-
-        :return: list
-        Joined list of all names.
-        """
-        joined_list = []
-        for cal_class in self.calibration_classes:
-            joined_list += cal_class.tuner_paras.get_names()
-        return list(set(joined_list))
+# TODO: Create function to process cal_classes input#
+# TODO: Adress plotting and layout issues
+# TODO: Create function to create violin plot for intersection of tuner parameters

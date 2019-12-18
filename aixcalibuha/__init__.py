@@ -10,7 +10,7 @@ __version__ = "0.1.2"
 
 class CalibrationClass:
     """
-    Class used for continuous calibration.
+    Class used for calibration of time-series data.
 
     :param str name:
         Name of the class, e.g. 'device on'
@@ -25,12 +25,25 @@ class CalibrationClass:
     :param TunerParas tuner_paras:
         As this class may be used in the classifier, a TunerParas-Class
         may not be available at all times and can be added later.
+    :param list relevant_intervals:
+        List with time-intervals relevant for the calibration.
+        Each list element has to be a tuple with the first element being
+        the start-time as float/int and the second item being the end-time
+        of the interval as float/int.
+        E.g:
+        For a class with start_time=0 and stop_time=1000, given following intervals
+        [(0, 100), [150, 200), (500, 600)]
+        will only evaluate the data between 0-100, 150-200 and 500-600.
+        The given intervals may overlap. Furthermore the intervals do not need
+        to be in an ascending order or be limited to the start_time and end_time parameters.
     """
 
     goals = data_types.Goals
     tuner_paras = data_types.TunerParas
+    relevant_intervals = []
 
-    def __init__(self, name, start_time, stop_time, goals=None, tuner_paras=None):
+    def __init__(self, name, start_time, stop_time, goals=None,
+                 tuner_paras=None, relevant_intervals=None):
         """Initialize class-objects and check correct input."""
         if not start_time <= stop_time:
             raise ValueError("The given start-time is higher than the stop-time.")
@@ -44,6 +57,11 @@ class CalibrationClass:
             self.set_goals(goals)
         if tuner_paras:
             self.set_tuner_paras(tuner_paras)
+        if relevant_intervals:
+            self.relevant_intervals = relevant_intervals
+        else:
+            # Then all is relevant
+            self.relevant_intervals = [(start_time, stop_time)]
 
     def set_goals(self, goals):
         """

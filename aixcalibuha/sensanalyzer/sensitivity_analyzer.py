@@ -170,8 +170,7 @@ class SenAnalyzer:
             # Load the result file to the goals object
             sim_target_data = data_types.SimTargetData(filepath)
             self.goals.set_sim_target_data(sim_target_data)
-            self.goals.set_relevant_time_interval(start_time,
-                                                  stop_time)
+            self.goals.set_relevant_time_intervals([(start_time, stop_time)])
 
             # Evaluate the current objective
             total_res = self.goals.eval_difference(self.statistical_measure)

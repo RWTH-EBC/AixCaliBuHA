@@ -64,36 +64,15 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Test run for scipy and L-BFGS-B
         modelica_calibrator.calibrate(method=None)
 
-    def test_continuous_calibration_fix(self):
+    def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        modelica_calibrator = modelica.FixStartContModelicaCal("dlib_minimize",
+        modelica_calibrator = modelica.MultipleClassCalibrator("dlib_minimize",
                                                                self.example_cal_dir,
                                                                self.dym_api,
                                                                self.statistical_measure,
                                                                self.calibration_classes,
                                                                fix_start_time=0,
                                                                num_function_calls=5)
-        modelica_calibrator.calibrate(method=None)
-
-    def test_continuous_calibration_timedelta(self):
-        """Function for testing of class calibration.TimedeltaContModelicaCal."""
-        modelica_calibrator = modelica.TimedeltaContModelicaCal("dlib_minimize",
-                                                                self.example_cal_dir,
-                                                                self.dym_api,
-                                                                self.statistical_measure,
-                                                                self.calibration_classes,
-                                                                timedelta=100,
-                                                                num_function_calls=5)
-        modelica_calibrator.calibrate(method=None)
-
-    def test_continuous_calibration_dsfinal(self):
-        """Function for testing of class calibration.TimedeltaContModelicaCal."""
-        modelica_calibrator = modelica.DsFinalContModelicaCal("dlib_minimize",
-                                                              self.example_cal_dir,
-                                                              self.dym_api,
-                                                              self.statistical_measure,
-                                                              self.calibration_classes,
-                                                              num_function_calls=5)
         modelica_calibrator.calibrate(method=None)
 
     def test_sen_ana_run(self):

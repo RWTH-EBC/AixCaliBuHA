@@ -28,16 +28,16 @@ def run_calibration(sim_api, cal_classes, stat_measure):
         Statistical measurement to evaluate the difference between simulated
         and real data.
     """
-    continuous_cal = modelica.TimedeltaContModelicaCal("scipy",
-                                                       sim_api.cd,
-                                                       sim_api,
-                                                       stat_measure,
-                                                       cal_classes,
-                                                       timedelta=0,
-                                                       num_function_calls=20,
-                                                       show_plot=True,
-                                                       save_files=True)
-    continuous_cal.calibrate(method="COBYLA")
+    multiple_class_cal = modelica.MultipleClassCalibrator("dlib_minimize",
+                                                          sim_api.cd,
+                                                          sim_api,
+                                                          stat_measure,
+                                                          cal_classes,
+                                                          reference_start_time=0,
+                                                          num_function_calls=20,
+                                                          show_plot=True,
+                                                          save_files=True)
+    multiple_class_cal.calibrate(method="best1bin")
 
 
 if __name__ == "__main__":
