@@ -3,6 +3,7 @@ use-cases of calibration, mainly for Modelica
 Calibration."""
 
 import os
+import time
 from abc import abstractmethod
 from ebcpy import data_types
 import ebcpy.modelica.simres as sr_ebc
@@ -40,6 +41,7 @@ class ModelicaCalibrator(Calibrator):
     _res = None
     # Timedelta before each simulation to initialize the model. Default is zero
     timedelta = 0
+    total_sim_time = 0
 
     def __init__(self, framework, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
@@ -85,8 +87,7 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Setup the logger
         self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
-                                                       self.tuner_paras,
-                                                       goals=self.goals,
+                                                       self.calibration_class,
                                                        show_plot=self.show_plot)
 
     def obj(self, xk, *args):
@@ -117,7 +118,9 @@ class ModelicaCalibrator(Calibrator):
         else:
             savepath_files = ""
         # Simulate
+        t_sim = time.time()
         self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
+        self.total_sim_time += time.time()-t_sim
         #%% Load results and write to goals object
         sim_target_data = data_types.SimTargetData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
@@ -126,9 +129,10 @@ class ModelicaCalibrator(Calibrator):
             self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
-        total_res = self.goals.eval_difference(self.statistical_measure)
+        total_res, verbose_information = self.goals.eval_difference(self.statistical_measure,
+                                                                    verbose=True)
         self._obj_his.append(total_res)
-        self.logger.calibration_callback_func(xk, total_res)
+        self.logger.calibration_callback_func(xk, total_res, verbose_information)
         return total_res
 
     def calibrate(self, method=None, framework=None):
@@ -137,19 +141,24 @@ class ModelicaCalibrator(Calibrator):
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
         self.logger.log("Class: {}, "
-                        "Start and Stop-Time: {}-{} s\n"
+                        "Start and Stop-Time of simulation: {}-{} s\n"
                         "Time-Intervals used for "
                         "objective: {}".format(self.calibration_class.name,
                                                self.calibration_class.start_time,
                                                self.calibration_class.stop_time,
                                                self.calibration_class.relevant_intervals))
+        # Setup the visualizer for plotting and logging:
+        self.logger.calibrate_new_class(self.calibration_class)
         self.logger.log_initial_names(self.statistical_measure)
-        # Setup the visualizer for plotting:
-        self.logger.calibrate_new_class(self.calibration_class.name, self.tuner_paras, self.goals)
+
         # Run optimization
+        t1 = time.time()
         self._res = self.optimize(method, framework)
+        print("total time {}".format((time.time()-t1)))
+        print("total sim time {}".format(self.total_sim_time))
 
         #%% Save the relevant results.
+        # TODO Make on last simulation to save the result even better!
         self.logger.save_calibration_result(self._res,
                                             self.sim_api.model_name,
                                             self.statistical_measure)
@@ -233,6 +242,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             self._counter = 0
             self._relevant_time_intervals = cal_class.relevant_intervals
             self.goals = cal_class.goals
+            self.tuner_paras = cal_class.tuner_paras
             self.x0 = self.tuner_paras.scale(self.tuner_paras.get_initial_values())
             # Either bounds are present or not.
             # If present, the obj will scale the values to 0 and 1. If not,
@@ -293,6 +303,5 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         return cal_classes_merged
 
-# TODO: Create function to process cal_classes input#
-# TODO: Adress plotting and layout issues
+# TODO: Address plotting and layout issues
 # TODO: Create function to create violin plot for intersection of tuner parameters
