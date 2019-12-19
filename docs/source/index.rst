@@ -11,8 +11,6 @@ Welcome to AixCaliBuHa's documentation!
 This framework attempts to make the process of calibrating models used in Building
 and HVAC Systems easier. Different sub-packages help with the underlying tasks of:
 
-- **Preprocessing** measured or simulated data for the cohesive use in this framework
-- **Segmentizing** the continuous time-series data into calibration classes
 - Performing a **Sensitivity Analysis** to discover tuner parameters for the calibration
 - **Calibration** of given model based on the tuner parameters, the calibration classes and specified goals to evaluate the objective function of the underlying optimization
 
@@ -53,10 +51,17 @@ The **Tuner parameters** and **Goals** are members, as well as the time-interval
 Version History
 ---------------
 
-v.0.1:
-- v.0.1.0: Implemented.
-- v.0.1.1: Split into different frameworks and adjust changes from based on new version of ebcpy
-- v.0.1.2: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.
+**v.0.1**:
+
+- **v0.1.0**: Implemented.
+- **v0.1.1**: Split into different frameworks and adjust changes from based on new version of ebcpy
+- **v0.1.2**: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.
+- **v0.1.3**: Remove Continuous Calibration methods and introduce new, better methods for calibration of multiple classes.
+
+   - Issue 43: Same class now optimizes to one optimum instead of multiple
+   - Issue 42: Visualizer is adjusted to better print the results more readable
+   - Issue 39: Several kwargs are added for better user-interaction and plotting of multiple classes
+   - Issue 46: Current best iterate is stored to ensure an interruption of a calibration won't yield in a lost optimized value. Keyboard interrupt is now possible.
 
 
 Indices and tables

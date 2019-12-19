@@ -37,15 +37,26 @@ class ModelicaCalibrator(Calibrator):
     _res = None
     # Timedelta before each simulation to initialize the model. Default is zero
     timedelta = 0
+    # Verbose Logging (True: with plots)
+    verbose_logging = True
+    # Working directory for class
+    cd_of_class = None
 
     def __init__(self, framework, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
         # Pop the items so they wont be added when calling the
-        # __init__ of the parent class.
+        # __init__ of the parent class. Always pop with a default value in case
+        # the keyword is not passed.
+        self.verbose_logging = kwargs.pop("verbose_logging", True)
         self.save_files = kwargs.pop("save_files", False)
         self.timedelta = kwargs.pop("timedelta", 0)
+        # Extract kwargs for the visualizer
+        visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
+                             "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
+                             "show_plot": kwargs.pop("show_plot", None),
+                             }
 
         # Check if types are correct:
         # Booleans:
@@ -81,9 +92,17 @@ class ModelicaCalibrator(Calibrator):
                                           self.calibration_class.stop_time)]
 
         #%% Setup the logger
-        self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
+        if self.verbose_logging:
+            self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
+                                                           self.calibration_class,
+                                                           statistical_measure,
+                                                           **visualizer_kwargs)
+        else:
+            self.logger = visualizer.CalibrationLogger(cd, "modelica_calibration",
                                                        self.calibration_class,
-                                                       show_plot=self.show_plot)
+                                                       statistical_measure)
+
+        self.cd_of_class = cd  # Single class does not need an extra folder
 
     def obj(self, xk, *args):
         """
@@ -148,17 +167,15 @@ class ModelicaCalibrator(Calibrator):
                                                self.calibration_class.stop_time,
                                                self.calibration_class.relevant_intervals))
         # Setup the visualizer for plotting and logging:
-        self.logger.calibrate_new_class(self.calibration_class)
-        self.logger.log_initial_names(self.statistical_measure)
+        self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
+        self.logger.log_initial_names()
 
         # Run optimization
         self._res = self.optimize(method, framework)
 
         #%% Save the relevant results.
-        # TODO Make on last simulation to save the result even better!
         self.logger.save_calibration_result(self._current_best_iterate,
-                                            self.sim_api.model_name,
-                                            self.statistical_measure)
+                                            self.sim_api.model_name)
 
     def validate(self, goals):
         if not isinstance(goals, data_types.Goals):
@@ -229,10 +246,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Working-Directory:
             # Alter the working directory for saving the simulations-results
-            cd_of_class = os.path.join(self.cd, "{}_{}_{}".format(cal_class.name,
-                                                                  cal_class.start_time,
-                                                                  cal_class.stop_time))
-            self.sim_api.set_cd(cd_of_class)
+            self.cd_of_class = os.path.join(self.cd, "{}_{}_{}".format(cal_class.name,
+                                                                       cal_class.start_time,
+                                                                       cal_class.stop_time))
+            self.sim_api.set_cd(self.cd_of_class)
 
             #%% Calibration-Setup
             # Reset counter for new calibration

@@ -5,7 +5,7 @@ other simulation software.
 
 from ebcpy import data_types
 # pylint: disable=I1101
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 class CalibrationClass:
