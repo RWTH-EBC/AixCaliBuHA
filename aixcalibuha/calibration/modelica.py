@@ -3,12 +3,8 @@ use-cases of calibration, mainly for Modelica
 Calibration."""
 
 import os
-import time
-from abc import abstractmethod
+import numpy as np
 from ebcpy import data_types
-import ebcpy.modelica.simres as sr_ebc
-import ebcpy.modelica.manipulate_ds as man_ds
-import modelicares.simres as sr
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
 from aixcalibuha import CalibrationClass
@@ -41,7 +37,6 @@ class ModelicaCalibrator(Calibrator):
     _res = None
     # Timedelta before each simulation to initialize the model. Default is zero
     timedelta = 0
-    total_sim_time = 0
 
     def __init__(self, framework, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
@@ -118,9 +113,8 @@ class ModelicaCalibrator(Calibrator):
         else:
             savepath_files = ""
         # Simulate
-        t_sim = time.time()
         self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
-        self.total_sim_time += time.time()-t_sim
+
         #%% Load results and write to goals object
         sim_target_data = data_types.SimTargetData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
@@ -129,10 +123,16 @@ class ModelicaCalibrator(Calibrator):
             self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
-        total_res, verbose_information = self.goals.eval_difference(self.statistical_measure,
-                                                                    verbose=True)
-        self._obj_his.append(total_res)
-        self.logger.calibration_callback_func(xk, total_res, verbose_information)
+        total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
+                                                                     verbose=True)
+        if total_res < self._current_best_iterate["Objective"]:
+            self._current_best_iterate = {"Iterate": self._counter,
+                                          "Objective": total_res,
+                                          "Unweighted Objective": unweighted_objective,
+                                          "Parameters": xk_descaled,
+                                          }
+
+        self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
         return total_res
 
     def calibrate(self, method=None, framework=None):
@@ -152,14 +152,11 @@ class ModelicaCalibrator(Calibrator):
         self.logger.log_initial_names(self.statistical_measure)
 
         # Run optimization
-        t1 = time.time()
         self._res = self.optimize(method, framework)
-        print("total time {}".format((time.time()-t1)))
-        print("total sim time {}".format(self.total_sim_time))
 
         #%% Save the relevant results.
         # TODO Make on last simulation to save the result even better!
-        self.logger.save_calibration_result(self._res,
+        self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
                                             self.statistical_measure)
 
@@ -240,6 +237,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             #%% Calibration-Setup
             # Reset counter for new calibration
             self._counter = 0
+            # Reset best iterate for new class
+            self._current_best_iterate = {"Objective": np.inf}
             self._relevant_time_intervals = cal_class.relevant_intervals
             self.goals = cal_class.goals
             self.tuner_paras = cal_class.tuner_paras

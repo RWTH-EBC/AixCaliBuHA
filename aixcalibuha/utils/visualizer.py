@@ -71,27 +71,28 @@ class CalibrationLogger(Logger):
         info_string = self._get_tuner_para_values_as_string(xk_descaled, obj, verbose_information)
         self.log(info_string)
 
-    def save_calibration_result(self, res, model_name, statistical_measure, **kwargs):
+    def save_calibration_result(self, best_iterate, model_name, statistical_measure, **kwargs):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
 
-        :param scipy.optimize.minimize.result res:
+        :param dict best_iterate:
             Result object of the minimization
         :param str model_name:
             Name of the model being calibrated
         :param str statistical_measure:
             Statistical measure used for calibration.
         """
-        result_log = "Results for calibration of model: {}\n".format(model_name)
-        result_log += "Used statistical measure {}\n".format(statistical_measure)
-        result_log += "Final parameter values:\n"
-        result_log += "{}\n".format(self._get_tuner_para_names_as_string(statistical_measure))
-        final_values = self._get_tuner_para_values_as_string(self.tuner_paras.descale(res.x),
-                                                             res.fun, {})
-        result_log += "{}\n".format(final_values)
+        result_log = "\nResults for calibration of model: {}\n".format(model_name)
         result_log += "Number of iterations: {}\n".format(self._counter_calibration)
-        result_log += "Result of optimization-framework:\n{}".format(res)
+        result_log += "Final parameter values:\n"
+        # Set the iteration counter to the actual number of the best iteration is printed
+        self._counter_calibration = best_iterate["Iterate"]
+        result_log += "{}\n".format(self._get_tuner_para_names_as_string(statistical_measure))
+        final_values = self._get_tuner_para_values_as_string(best_iterate["Parameters"],
+                                                             best_iterate["Objective"],
+                                                             best_iterate["Unweighted Objective"])
+        result_log += "{}\n".format(final_values)
         self.log(result_log)
         self._counter_calibration = 0
 
@@ -150,10 +151,10 @@ class CalibrationLogger(Logger):
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
         info_string += "   {0:{width}s}".format(statistical_measure, width=self._width)
-        info_string += "   {}".format("[Underlying calculation (SUM(w_i*val_i))]")
+        info_string += "   {}".format("Unweighted {}".format(statistical_measure))
         return info_string
 
-    def _get_tuner_para_values_as_string(self, xk_descaled, obj, verbose_information):
+    def _get_tuner_para_values_as_string(self, xk_descaled, obj, unweighted_objective):
         """
         Returns a string with the values of current tuner parameters
         as well as the objective value.
@@ -162,8 +163,10 @@ class CalibrationLogger(Logger):
             Array with the current values of the calibration, descaled to bounds
         :param float obj:
             Current objective value.
+        :param dict unweighted_objective:
+            Further information about the objective value of each individual goal
         :return: str
-        The desired string
+            The desired string
         """
         # This will limit the number of iterations to 999999999 (for correct format).
         # More iterations will most likely never be used.
@@ -176,8 +179,8 @@ class CalibrationLogger(Logger):
         # Add the last return value of the objective function.
         info_string += "   {0:{width}.{prec}f}".format(obj, width=self._width,
                                                        prec=self._prec)
-        _verbose_info = " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
-                                    for weight, val in verbose_information.items()])
+        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
+                                           for weight, val in unweighted_objective.items()])
         info_string += "   {}".format(_verbose_info)
         return info_string
 
@@ -310,7 +313,6 @@ class CalibrationVisualizer(CalibrationLogger):
         self.fig_tuner.savefig(filepath_tuner)
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
-
 
     def _plot_tuner_parameters(self, xk=None, for_setup=False):
         """
