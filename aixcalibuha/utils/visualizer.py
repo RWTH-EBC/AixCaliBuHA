@@ -150,6 +150,21 @@ class CalibrationLogger(Logger):
         _text_initial_names = self._get_tuner_para_names_as_string()
         self.log(_text_initial_names)
 
+    def log_intersection_of_tuners(self, intersected_tuner_parameters):
+        """
+        If an intersection for multiple classes occurs, an information about
+        the statistics of the dataset has to be provided.
+
+        :param dict intersected_tuner_parameters:
+            Dict with keys being the name of the tuner parameter and the
+            value being the list with all the different "best" values for
+            the tuner parameter.
+        """
+        self.log("Multiple 'best' values for the following tuner parameters "
+                 "were identified in different "
+                 "classes:\n{}".format("\n".join(["{}: {}".format(tuner, values)
+                                                  for tuner, values in intersected_tuner_parameters.items()])))
+
     def _get_tuner_para_names_as_string(self):
         """
         Returns a string with the names of current tunerParameters
@@ -350,6 +365,41 @@ class CalibrationVisualizer(CalibrationLogger):
         self.fig_tuner.savefig(filepath_tuner)
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
+
+    def log_intersection_of_tuners(self, intersected_tuner_parameters):
+        """
+        If an intersection for multiple classes occurs, an information about
+        the statistics of the dataset has to be provided.
+
+        :param dict intersected_tuner_parameters:
+            Dict with keys being the name of the tuner parameter and the
+            value being the list with all the different "best" values for
+            the tuner parameter.
+        """
+        super().log_intersection_of_tuners(intersected_tuner_parameters)
+        x_labels = intersected_tuner_parameters.keys()
+        data = list(intersected_tuner_parameters.values())
+        fig_intersection, ax_intersection = plt.subplots(1, len(x_labels))
+        for i, x_label in enumerate(x_labels):
+            cur_ax = ax_intersection[i]
+            cur_ax.violinplot(data[i], showmeans=True, showmedians=False,
+                              showextrema=True)
+            cur_ax.plot([1] * len(data[i]), data[i], "ro", label="Results")
+
+            cur_ax.get_xaxis().set_tick_params(direction='out')
+            cur_ax.xaxis.set_ticks_position('bottom')
+            cur_ax.set_xticks(np.arange(1, 2))
+            cur_ax.set_xlim(0.25, 1.75)
+            cur_ax.set_xticklabels([x_label])
+            cur_ax.legend(loc="upper right")
+
+        # Always store in the parent diretory as this info is relevant for all classes
+        fig_intersection.suptitle("Intersection of Tuner Parameters")
+        fig_intersection.savefig(os.path.join(os.path.dirname(self.cd),
+                                              "tuner_parameter_intersection_plot.svg"))
+        if self.show_plot:
+            plt.draw()
+            plt.pause(15)
 
     def _plot_tuner_parameters(self, xk=None, for_setup=False):
         """

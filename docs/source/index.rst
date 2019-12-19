@@ -58,7 +58,7 @@ Version History
 - **v0.1.2**: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.
 - **v0.1.3**: Remove Continuous Calibration methods and introduce new, better methods for calibration of multiple classes.
 
-   - Issue 43: Same class now optimizes to one optimum instead of multiple
+   - Issue 43: Same class now optimizes to one optimum instead of multiple. If an intersection in tuner parameters occurs, the statistics are logged and plotted so the user can better decide with what values to go on.
    - Issue 42: Visualizer is adjusted to better print the results more readable
    - Issue 39: Several kwargs are added for better user-interaction and plotting of multiple classes
    - Issue 46: Current best iterate is stored to ensure an interruption of a calibration won't yield in a lost optimized value. Keyboard interrupt is now possible.

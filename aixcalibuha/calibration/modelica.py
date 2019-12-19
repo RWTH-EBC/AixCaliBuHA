@@ -26,7 +26,30 @@ class ModelicaCalibrator(Calibrator):
         e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
-    TODO: Add supported kwargs as a description
+    :keyword boolean save_files:
+        If true, all simulation files for each iteration will be saved!
+    :keyword float timedelta:
+        If you use this class for calibrating a single time-interval,
+        you can set the timedelta to instantiate the simulation before
+        actually evaluating it for the objective.
+        The given float (default is 0) is substracted from the start_time
+        of your calibration_class. You can find a visualisation of said timedelta
+        in the img folder of the project.
+    :keyword boolean verbose_logging:
+        Default is True. If False, the standard Logger without
+        Visualization in Form of plots is used.
+        If you use this, the following keyword arguments below will help
+        to further adjust the logging.
+    :keyword boolean show_plot:
+        If False, all created plots are not shown during calibration but only
+        stored at the end of the process.
+    :keyword boolean create_tsd_plot:
+        If False, the plot of the time series data (goals) is not created and
+        thus shown in during calibration. It therefore is also not stored, even if
+        you set the save_tsd_plot keyword-argument to true.
+    :keyword boolean save_tsd_plot:
+        If True, at each iteration the created plot of the
+        time-series is saved. This may make the process much slower
     """
 
     # Dummy variable for accessing the current simulation result
@@ -195,7 +218,11 @@ class ModelicaCalibrator(Calibrator):
 class MultipleClassCalibrator(ModelicaCalibrator):
     """
     Class for calibration of multiple calibration classes.
-    # TODO Add docstrings
+    When passing multiple classes of the same name, all names
+    are merged into one class with so called relevant time intervals.
+    These time intervals are used for the evaluation of the objective
+    function. Please have a look at the file in \img\typeOfContinouusCalibration.pdf
+    for a better understanding on how this class works.
     """
 
     # Default value for the reference time is zero
@@ -277,8 +304,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
-            self._cal_history.append({"res": self._res,
+            self._cal_history.append({"res": self._current_best_iterate,
                                       "cal_class": cal_class})
+
+        self.check_intersection_of_tuner_parameters()
 
     def _apply_start_time_method(self, start_time):
         """Method to be calculate the start_time based on the used
@@ -289,6 +318,26 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         else:
             # With fixed start, the _ref_time parameter is always returned
             return self.reference_start_time
+
+    def check_intersection_of_tuner_parameters(self):
+        # merge all tuners
+        merged_tuner_parameters = {}
+        for cal_class in self._cal_history:
+            for tuner_name, best_value in cal_class["res"]["Parameters"].items():
+                if tuner_name in merged_tuner_parameters:
+                    merged_tuner_parameters[tuner_name].append(best_value)
+                else:
+                    merged_tuner_parameters[tuner_name] = [best_value]
+
+        # pop single values, as of no interest
+        intersected_tuners = {}
+        for tuner_para, values in merged_tuner_parameters.items():
+            if len(values) >= 2:
+                intersected_tuners[tuner_para] = values
+
+        # Plot or log the information, depending on which logger you are using:
+        if intersected_tuners.keys():
+            self.logger.log_intersection_of_tuners(intersected_tuners)
 
     @staticmethod
     def _merge_calibration_classes(calibration_classes):
@@ -318,6 +367,3 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                                                        relevant_intervals=values["intervals"]))
 
         return cal_classes_merged
-
-# TODO: Address plotting and layout issues
-# TODO: Create function to create violin plot for intersection of tuner parameters
