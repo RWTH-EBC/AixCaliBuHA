@@ -8,7 +8,6 @@ from aixcalibuha import CalibrationClass
 class TestDataTypes(unittest.TestCase):
     """Test-class for the data_types module of ebcpy."""
 
-
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
         with self.assertRaises(ValueError):
@@ -27,6 +26,7 @@ class TestDataTypes(unittest.TestCase):
             dummy_cal_class.set_tuner_paras(dummy_tuner_para)
         with self.assertRaises(TypeError):
             dummy_cal_class.set_goals(dummy_goal)
+
 
 if __name__ == "__main__":
     unittest.main()

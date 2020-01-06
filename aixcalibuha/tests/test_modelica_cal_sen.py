@@ -71,7 +71,8 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                                self.dym_api,
                                                                self.statistical_measure,
                                                                self.calibration_classes,
-                                                               fix_start_time=0,
+                                                               start_time_method='fixstart',
+                                                               reference_start_time=0,
                                                                num_function_calls=5)
         modelica_calibrator.calibrate(method=None)
 
