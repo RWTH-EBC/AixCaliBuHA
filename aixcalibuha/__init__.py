@@ -86,3 +86,49 @@ class CalibrationClass:
             raise TypeError("Given tuner_paras is of type {} but should be "
                             "type TunerParas".format(type(tuner_paras).__name__))
         self.tuner_paras = tuner_paras
+
+
+def merge_calibration_classes(calibration_classes):
+    """
+    Given a list of multiple calibration-classes, this function merges given
+    objects by the "name" attribute. Relevant intervals are set, in order
+    to maintain the start and stop-time info.
+    :param list calibration_classes:
+        List containing multiple CalibrationClass-Objects
+    :return: list cal_classes_merged:
+        A list containing one CalibrationClass-Object for each different
+        "name" of class.
+
+    Example:
+    >>> cal_classes = [CalibrationClass("on", 0, 100),
+    >>>                CalibrationClass("off", 100, 200),
+    >>>                CalibrationClass("on", 200, 300)]
+    >>> merged_classes = merge_calibration_classes(cal_classes)
+    Is equal to:
+    >>> merged_classes = [CalibrationClass("on", 0, 300,
+    >>>                                    relevant_intervals=[(0,100), (200,300)]),
+    >>>                   CalibrationClass("off", 100, 200)]
+    """
+    # Use a dict for easy name-access
+    temp_merged = {}
+    for cal_class in calibration_classes:
+        _name = cal_class.name
+        if _name in temp_merged:
+            temp_merged[_name]["intervals"] += cal_class.relevant_intervals
+        else:
+            temp_merged[_name] = {"goals": cal_class.goals,
+                                  "tuner_paras": cal_class.tuner_paras,
+                                  "intervals": cal_class.relevant_intervals
+                                  }
+    # Convert dict to actual calibration-classes
+    cal_classes_merged = []
+    for _name, values in temp_merged.items():
+        # Flatten the list of tuples and get the start- and stop-values
+        start_time = min(sum(values["intervals"], ()))
+        stop_time = max(sum(values["intervals"], ()))
+        cal_classes_merged.append(CalibrationClass(_name, start_time, stop_time,
+                                                   goals=values["goals"],
+                                                   tuner_paras=values["tuner_paras"],
+                                                   relevant_intervals=values["intervals"]))
+
+    return cal_classes_merged

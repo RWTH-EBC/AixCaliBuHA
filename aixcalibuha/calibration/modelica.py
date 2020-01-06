@@ -5,6 +5,7 @@ Calibration."""
 import os
 import numpy as np
 from ebcpy import data_types
+import aixcalibuha
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
 from aixcalibuha import CalibrationClass
@@ -223,10 +224,19 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     These time intervals are used for the evaluation of the objective
     function. Please have a look at the file in \img\typeOfContinouusCalibration.pdf
     for a better understanding on how this class works.
+
+    :keyword str merge_multiple_classes:
+        Default True. If False, the given list of calibration-classes
+        is handeled as-is. This means if you pass two CalibrationClass objects
+        with the same name (e.g. "device on"), the calibration process will run
+        for both these classes stand-alone.
+        This will automatically yield an intersection of tuner-parameters, however may
+        have advantages in some cases.
     """
 
     # Default value for the reference time is zero
     reference_start_time = 0
+    merge_multiple_classes = True
 
     def __init__(self, framework, cd, sim_api, statistical_measure, calibration_classes,
                  start_time_method='fixstart', reference_start_time=0, **kwargs):
@@ -240,12 +250,15 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 raise TypeError("calibration_classes is of type {} but should "
                                 "be {}".format(type(cal_class).__name__,
                                                type(CalibrationClass).__name__))
+        # Pop kwargs of this class:
+        self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
 
         # Instantiate parent-class
         super().__init__(framework, cd, sim_api, statistical_measure,
                          calibration_classes[0], **kwargs)
         # Merge the multiple calibration_classes
-        self.calibration_classes = self._merge_calibration_classes(calibration_classes)
+        if self.merge_multiple_classes:
+            self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
         self._cal_history = []
 
         # Choose the time-method
@@ -261,6 +274,17 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.reference_start_time = reference_start_time
 
     def calibrate(self, method=None, framework=None):
+
+        # First check possible intersection of tuner-parameteres
+        # and warn the user about it
+        all_tuners = []
+        for cal_class in self.calibration_classes:
+            all_tuners.append(cal_class.tuner_paras.get_names())
+        intersection = set(all_tuners[0]).intersection(*all_tuners)
+        if intersection:
+            self.logger.log("The following tuner-parameters intersect over multiple"
+                            " classes:\n{}".format(", ".join(list(intersection))))
+
         # Iterate over the different existing classes
         for cal_class in self.calibration_classes:
             #%% Simulation-Time:
@@ -319,7 +343,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             # With fixed start, the _ref_time parameter is always returned
             return self.reference_start_time
 
-    def check_intersection_of_tuner_parameters(self):
+    def check_intersection_of_tuner_parameters(self, prior=True):
         # merge all tuners
         merged_tuner_parameters = {}
         for cal_class in self._cal_history:
@@ -338,32 +362,3 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         # Plot or log the information, depending on which logger you are using:
         if intersected_tuners.keys():
             self.logger.log_intersection_of_tuners(intersected_tuners)
-
-    @staticmethod
-    def _merge_calibration_classes(calibration_classes):
-        # Use a dict for easy name-access
-        # TODO: Fetch case were intervals are already in place
-        temp_merged = {}
-        for cal_class in calibration_classes:
-            _name = cal_class.name
-            if _name in temp_merged:
-                temp_merged[_name]["intervals"].append((cal_class.start_time,
-                                                        cal_class.stop_time))
-            else:
-                temp_merged[_name] = {"goals": cal_class.goals,
-                                      "tuner_paras": cal_class.tuner_paras,
-                                      "intervals": [(cal_class.start_time,
-                                                     cal_class.stop_time)]
-                                      }
-        # Convert dict to actual calibration-classes
-        cal_classes_merged = []
-        for _name, values in temp_merged.items():
-            # Flatten the list of tuples and get the start- and stop-values
-            start_time = min(sum(values["intervals"], ()))
-            stop_time = max(sum(values["intervals"], ()))
-            cal_classes_merged.append(CalibrationClass(_name, start_time, stop_time,
-                                                       goals=values["goals"],
-                                                       tuner_paras=values["tuner_paras"],
-                                                       relevant_intervals=values["intervals"]))
-
-        return cal_classes_merged
