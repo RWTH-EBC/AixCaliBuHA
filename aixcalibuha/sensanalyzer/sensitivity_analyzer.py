@@ -11,6 +11,7 @@ from ebcpy.utils import visualizer
 from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
+import aixcalibuha
 from aixcalibuha import CalibrationClass
 
 
@@ -31,6 +32,13 @@ class SenAnalyzer:
         Used to evaluate the difference of simulated and measured data.
         Like "RMSE", "MAE" etc. See utils.statistics_analyzer.py for
         further info.
+    :keyword str merge_multiple_classes:
+        Default True. If False, the given list of calibration-classes
+        is handeled as-is. This means if you pass two CalibrationClass objects
+        with the same name (e.g. "device on"), the calibration process will run
+        for both these classes stand-alone.
+        This will automatically yield an intersection of tuner-parameters, however may
+        have advantages in some cases.
     """
     simulation_api = simulationapi.SimulationAPI
     tuner_paras = data_types.TunerParas
@@ -42,7 +50,7 @@ class SenAnalyzer:
     method = ""
 
     def __init__(self, cd, simulation_api, sensitivity_problem,
-                 calibration_classes, statistical_measure):
+                 calibration_classes, statistical_measure, **kwargs):
         """Instantiate class parameters"""
         # Setup the logger
         self.logger = visualizer.Logger(cd, self.__class__.__name__)
@@ -61,13 +69,16 @@ class SenAnalyzer:
                     raise TypeError("calibration_classes is of type {} but should "
                                     "be {}".format(type(cal_class).__name__,
                                                    type(CalibrationClass).__name__))
-            self.calibration_classes = calibration_classes
         elif isinstance(calibration_classes, CalibrationClass):
             self.calibration_classes = [calibration_classes]
         else:
             raise TypeError("calibration_classes is of type {} but should "
                             "be {} or list".format(type(calibration_classes).__name__,
                                                    type(CalibrationClass).__name__))
+
+        # Merge the classes for avoiding possible intersection of tuner-parameters
+        if kwargs.pop("merge_multiple_classes", True):
+            self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
 
         # Choose which analysis function to use and the list of keys in the analysis output to store
         if self.method.lower() == 'morris':
@@ -143,7 +154,7 @@ class SenAnalyzer:
 
         return samples
 
-    def simulate_samples(self, samples, start_time, stop_time):
+    def simulate_samples(self, samples, start_time, stop_time, relevant_intervals):
         """
         Put the parameter in dymola model, run it.
 
@@ -153,6 +164,11 @@ class SenAnalyzer:
             Start time of simulation
         :param float stop_time:
             Stop time of simulation
+        :param list relevant_intervals:
+            List with time-intervals relevant for the calibration.
+            Each list element has to be a tuple with the first element being
+            the start-time as float/int and the second item being the end-time
+            of the interval as float/int.
         :return np.array
             An array containing the evaluated differences for each sample
         """
@@ -170,8 +186,7 @@ class SenAnalyzer:
             # Load the result file to the goals object
             sim_target_data = data_types.SimTargetData(filepath)
             self.goals.set_sim_target_data(sim_target_data)
-            self.goals.set_relevant_time_interval(start_time,
-                                                  stop_time)
+            self.goals.set_relevant_time_intervals(relevant_intervals)
 
             # Evaluate the current objective
             total_res = self.goals.eval_difference(self.statistical_measure)
@@ -200,9 +215,11 @@ class SenAnalyzer:
             self.goals = cal_class.goals
             self.problem = SensitivityProblem.create_problem(self.tuner_paras)
             samples = self.generate_samples()
-            output_array = self.simulate_samples(samples,
-                                                 start_time=cal_class.start_time,
-                                                 stop_time=cal_class.stop_time)
+            output_array = self.simulate_samples(
+                samples,
+                cal_class.start_time,
+                cal_class.stop_time,
+                cal_class.relevant_intervals)
             salib_analyze_result = self.analysis_function(samples, output_array)
             all_results.append(salib_analyze_result)
         return all_results

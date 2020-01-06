@@ -3,6 +3,12 @@
 **Aix** (from French Aix-la-Chapelle) 
 **Cali**bration for **Bu**ilding and **H**V**A**C Systems
 
+# Key features
+* Calibration 
+* Sensitivity Analysis
+* Calibration Visualizer
+
+
 ## Work in Progress
 
 ### Link dependencies
@@ -29,25 +35,15 @@ If you don't have modelicares installed, just go ahead and run the line below to
 
 `pip install -e "Path/to/this/repository"`
 
-If you have modelicares installed, you have two options:
+# Documentation
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
 
-### 1. Uninstall modelicares first (fastest method) 
 
-Run
+# Code Quality
 
-`pip uninstall modelicares`
+* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
+* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
 
-to uninstall modelicares and then run
-
-`pip install -e "Path/to/this/repository"`
-
-to install the repository.
-
-### 2. Force reinstall
-
-`pip install -e "Path/to/this/repository" --force-reinstall modelicares`
-
-However, this method also re-installs all packages required for modelicares, such as numpy, scipy etc. This takes quite some time.
 
 If environment variables are not set properly, try more explicit command in Windows shell:
 
@@ -59,6 +55,8 @@ Be aware of forward slashes (for python) and backslashes (for Windows). You migh
 ## Important hints
 
 ### Framework structure
+(Information still up to date?)
+
 Adhere to the following UML diagram as overall structure!
 
 Open the [*.xml file](https://git.rwth-aachen.de/EBC/EBC_intern/modelica-calibration/blob/master/img/Calibration_Framework_EBC.xml) (download an load from local drive) with the online plattform [draw.io](draw.io).
