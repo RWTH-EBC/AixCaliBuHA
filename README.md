@@ -8,6 +8,21 @@
 * Sensitivity Analysis
 * Calibration Visualizer
 
+# Documentation
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
+
+# Code Quality
+
+* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
+* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
+
+
+If environment variables are not set properly, try more explicit command in Windows shell:
+
+`C:\Path\to\pythonDirectory\python.exe -c "import pip" & C:\Path\to\pythonDirectory\python.exe -m pip install -e C:\Path\to\this\repository`
+
+Be aware of forward slashes (for python) and backslashes (for Windows). You might need to encompass paths in inverted commas (") in order to handle spaces.
+
 
 ## Work in Progress
 
@@ -34,23 +49,6 @@ install the newest version of the fork together with this repository, you have t
 If you don't have modelicares installed, just go ahead and run the line below to install this repository:
 
 `pip install -e "Path/to/this/repository"`
-
-# Documentation
-Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
-
-
-# Code Quality
-
-* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
-* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
-
-
-If environment variables are not set properly, try more explicit command in Windows shell:
-
-`C:\Path\to\pythonDirectory\python.exe -c "import pip" & C:\Path\to\pythonDirectory\python.exe -m pip install -e C:\Path\to\this\repository`
-
-Be aware of forward slashes (for python) and backslashes (for Windows). You might need to encompass paths in inverted commas (") in order to handle spaces.
-
 
 ## Important hints
 
