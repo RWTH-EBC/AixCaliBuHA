@@ -8,23 +8,36 @@
 * Sensitivity Analysis
 * Calibration Visualizer
 
-# Documentation
-Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
+# Installation
+Until this is open source, you have to install it (and `ebcpy`) via:
+```
+git clone https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy
+pip install -e ebcpy
+git clone https://git.rwth-aachen.de/EBC/EBC_all/Optimization-and-Calibration/AixCaliBuHA
+pip install -e AixCaliBuHA
+```
+You may switch branches to `development` for newly available features.
 
-# Code Quality
+## How to get started?
+We recommend running our jupyter-notebook. For this, run the following code:
+```
+# If not jupyter is not already installed:
+pip install jupyter
+# Go into your ebcpy-folder (cd \path_to_\AixCaliBuHA) or change the path to tutorial.ipynb and run:
+jupyter notebook AixCaliBuHA\examples\tutorial.ipynb
+```
+If you have any questions, please contact us or raise an issue.
+Additionally we refer to the official [Documentation](#Documentation).
 
-* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
-* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
 
+## Important hints
 
-If environment variables are not set properly, try more explicit command in Windows shell:
+### Framework structure
+(Information still up to date?)
 
-`C:\Path\to\pythonDirectory\python.exe -c "import pip" & C:\Path\to\pythonDirectory\python.exe -m pip install -e C:\Path\to\this\repository`
+Adhere to the following UML diagram as overall structure!
 
-Be aware of forward slashes (for python) and backslashes (for Windows). You might need to encompass paths in inverted commas (") in order to handle spaces.
-
-
-## Work in Progress
+Open the [*.xml file](https://git.rwth-aachen.de/EBC/EBC_intern/modelica-calibration/blob/master/img/Calibration_Framework_EBC.xml) (download an load from local drive) with the online plattform [draw.io](draw.io).
 
 ### Link dependencies
 
@@ -40,24 +53,6 @@ Currently, this repo represents some kind of "master/overall" repo. Therefore, a
    * "parallel computation is done automatically"
    * "written in Java so that it is platform independent"
    * "GenOpt **has not been** designed for linear programming problems, ..."
-
-## How to install?
-
-**Note:** This repository works with a fork of the pypi-project [modelicares](https://github.com/kdavies4/ModelicaRes) ([our fork](https://github.com/RWTH-EBC/ModelicaRes)). To automatically 
-install the newest version of the fork together with this repository, you have to options.
-
-If you don't have modelicares installed, just go ahead and run the line below to install this repository:
-
-`pip install -e "Path/to/this/repository"`
-
-## Important hints
-
-### Framework structure
-(Information still up to date?)
-
-Adhere to the following UML diagram as overall structure!
-
-Open the [*.xml file](https://git.rwth-aachen.de/EBC/EBC_intern/modelica-calibration/blob/master/img/Calibration_Framework_EBC.xml) (download an load from local drive) with the online plattform [draw.io](draw.io).
 
 
 ## Associates
