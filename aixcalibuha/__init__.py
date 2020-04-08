@@ -3,9 +3,243 @@ Python package to calibrate models created in Modelica or possible
 other simulation software.
 """
 
+import pandas as pd
+import numpy as np
 from ebcpy import data_types
+from ebcpy.utils import statistics_analyzer
 # pylint: disable=I1101
-__version__ = "0.1.3"
+__version__ = "0.1.4"
+
+
+class Goals:
+    """
+    Class for one or multiple goals. Used to evaluate the
+    difference between current simulation and measured data
+
+    :param (ebcpy.data_types.TimeSeriesData, pd.DataFrame) meas_target_data:
+        The dataset of the measurement. It acts as a point of reference
+        for the simulation output. If the dimensions of the given DataFrame and later
+        added simulation-data are not equal, an error is raised.
+        Has to hold all variables listed under the MEASUREMENT_NAME variable in the
+        variable_names dict.
+    :param dict variable_names:
+        A dictionary to construct the goals-DataFrame using pandas MultiIndex-Functionality.
+        The dict has to follow the structure.
+        variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}
+            - VARIABLE_NAME: A string which holds the actual name
+                of the variable you use as a goal.
+                E.g.: VARIABLE_NAME="Temperature_Condenser_Outflow"
+            - MEASUREMENT_NAME: Is either a string or a tuple. Hold the name the variable
+                has inside the given meas_target_data. If you want to specify a tag you have
+                to pass a tuple, like: (MEASUREMENT_NAME, TAG_NAME). Else just pass a string.
+                E.g.: MEASUREMENT_NAME="HydraulicBench[4].T_Out" or
+                      MEASUREMENT_NAME=("HydraulicBench[4].T_Out", "preprocessed")
+            - SIMULATION_NAME is either a string or a tuple, just like MEASUREMENT_NAME.
+                E.g. (for Modelica): SIMULATION_NAME="HeatPump.Condenser.Vol.T"
+        You may use a tuple instead of a list OR a dict
+        with key "meas" for measurement and key "sim" for simulation. These options may be
+        relevant for your own code readability.
+        E.g. variable_names = {VARIABLE_NAME: {"meas":MEASUREMENT_NAME,
+                                               "sim": SIMULATION_NAME}}
+
+    :param list weightings:
+        Values between 0 and 1 to account for multiple Goals to be evaluated.
+        If multiple goals are selected, and weightings is None, each
+        weighting will be equal to 1/(Number of goals).
+        The weighting is scaled so that the sum will equal 1.
+    """
+
+    # Set default string for measurement reference
+    meas_tag_str = "meas"
+    sim_tag_str = "sim"
+
+    def __init__(self, meas_target_data, variable_names, weightings=None):
+        """Initialize class-objects and check correct input."""
+
+        # Open the meas target data:
+        if not isinstance(meas_target_data, (data_types.TimeSeriesData, pd.DataFrame)):
+            raise TypeError("Given meas_target_data is of type {} but TimeSeriesData "
+                            "is required.".format(type(meas_target_data).__name__))
+
+        if not isinstance(variable_names, dict):
+            raise TypeError("Given variable_names is of type {} but a dict is "
+                            "required.".format(type(variable_names).__name__))
+
+        # Extract the measurement-information out of the dict.
+        self.variable_names = variable_names
+
+        # Used to speed up the frequently used set_sim_target_data function
+        self._sim_var_matcher = {}
+        _columns = []  # Used to extract relevant part of df
+
+        _rename_cols_dict = {}
+        for var_name, meas_sim_info in self.variable_names.items():
+            # First extract the information about the measurement out of the dict
+            if isinstance(meas_sim_info, dict):
+                meas_info = meas_sim_info[self.meas_tag_str]
+                self._sim_var_matcher[var_name] = meas_sim_info[self.sim_tag_str]
+            elif isinstance(meas_sim_info, (list, tuple)):
+                meas_info = meas_sim_info[0]
+                self._sim_var_matcher[var_name] = meas_sim_info[1]
+            else:
+                raise TypeError("Variable {} of variable_names has a value"
+                                "neither being a dict, list or tuple.".format(var_name))
+            # Now get the info to extract the values out of the given tsd
+            # Convert string with into a list of tuples containing the relevant tag.
+            # If mulitple tags exist, and the default tag (self.meas_tag_str)
+            # is not present, an error is raised.
+            if isinstance(meas_info, str):
+                if isinstance(meas_target_data[meas_info], pd.Series):
+                    raise TypeError("Given meas_target_data contains columns without a tag."
+                                    "Please only pass MultiIndex-DataFrame objects.")
+                tags = meas_target_data[meas_info].columns
+                _rename_cols_dict[meas_info] = var_name
+                if len(tags) != 1 and self.meas_tag_str not in tags:
+                    raise TypeError("Not able to automatically select variables and tags. "
+                                    "Variable {} has mutliple tags, none of which "
+                                    "is specified as {}.".format(meas_info, self.meas_tag_str))
+                elif self.meas_tag_str in tags:
+                    _columns.append((meas_info, self.meas_tag_str))
+                else:
+                    _columns.append((meas_info, tags[0]))
+            elif isinstance(meas_info, tuple):
+                _rename_cols_dict[meas_info[0]] = var_name
+                _columns.append(meas_info)
+            else:
+                raise TypeError("Measurement Info on variable {} is "
+                                "neither of type string or tuple.".format(var_name))
+
+        # Take the subset of the given tsd based on var_names and tags.
+        self._tsd = meas_target_data[_columns].copy()
+
+        # Rename all variables to the given var_name (key of self.variable_names)
+        self._tsd = self._tsd.rename(columns=_rename_cols_dict, level=0)
+
+        # Rename all tags to the default measurement name for consistency.
+        d = dict(zip(self._tsd.columns.levels[1],
+                     [self.meas_tag_str for _ in range(len(_columns))]))
+        self._tsd = self._tsd.rename(columns=d, level=1)
+
+        # Save the tsd to a tsd_ref object
+        # Used to never lose the original dataframe.
+        # _tsd may be altered by relevant intervals, this object never!
+        self._tsd_ref = self._tsd.copy()
+
+        # Set the weightings, if not specified.
+        self._num_goals = len(_columns)
+        if weightings is None:
+            self._weightings = np.array([1/self._num_goals for i in range(self._num_goals)])
+        else:
+            if not isinstance(weightings, (list, np.ndarray)):
+                raise TypeError("weightings is of type {} but should be of type"
+                                " list.".format(type(weightings).__name__))
+            if len(weightings) != self._num_goals:
+                raise IndexError("The given number of weightings ({}) does not match the number"
+                                 " of goals ({})".format(len(weightings), self._num_goals))
+            self._weightings = np.array(weightings) / sum(weightings)
+
+    def __str__(self):
+        """Overwrite string method to present the Goals-Object more
+        nicely."""
+        return str(self._tsd)
+
+    def eval_difference(self, statistical_measure, verbose=False):
+        """
+        Evaluate the difference of the measurement and simulated data based on the
+        given statistical_measure.
+
+        :param str statistical_measure:
+            Method supported by ebcpy.utils.statistics_analyzer.StatisticsAnalyzer, e.g. RMSE
+        :param boolean verbose:
+            If True, a dict with difference-values of for all goals and the
+            corresponding weightings is returned together with the total difference.
+            This can be useful to better understand which goals is performing
+            well in an optimization and which goals needs further is not performing well.
+        :return: float total_difference
+            weighted ouput for all goals.
+        """
+        stat_analyzer = statistics_analyzer.StatisticsAnalyzer(statistical_measure)
+        total_difference = 0
+        _verbose_calculation = {}
+
+        for i, goal_name in enumerate(self.variable_names.keys()):
+            _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
+                                       sim=self._tsd[(goal_name, self.sim_tag_str)])
+            _verbose_calculation[self._weightings[i]] = _diff
+            total_difference += self._weightings[i] * _diff
+
+        if verbose:
+            return total_difference, _verbose_calculation
+        else:
+            return total_difference
+
+    def set_sim_target_data(self, sim_target_data):
+        """Alter the object with new simulation data
+        self._sim_target_data based on the given dataframe
+        sim_target_data.
+
+        :param TimeSeriesData sim_target_data:
+            Object with simulation target data. This data should be
+            the output of a simulation, hence "sim"-target-data.
+        """
+        # Check correct input to avoid wrong results at all cost
+        if not isinstance(sim_target_data, (data_types.TimeSeriesData, pd.DataFrame)):
+            raise TypeError("Given meas_target_data is of type {} but TimeSeriesData "
+                            "is required.".format(type(sim_target_data).__name__))
+
+        if not isinstance(sim_target_data.index, type(self._tsd_ref.index)):
+            raise IndexError("Given sim_target_data is using {} as an index, but the "
+                             "reference results (measured-data) was declared using the "
+                             "{}. Convert your measured-data index to solve this error. "
+                             "".format(type(sim_target_data.index).__name__,
+                                       type(self._tsd_ref.index).__name__))
+
+        for goal_name in self.variable_names.keys():
+            # Three critical cases may occur:
+            # 1. sim_target_data is bigger (in len) than _tsd_ref
+            #   --> Only the first part is accepted
+            # 2. sim_target_data is smaller than _tsd_ref
+            #   --> Missing values become NaN, which is fine. If no other function eliminates
+            #       the NaNs, an error is raised when doing eval_difference().
+            # 3. The index differs:
+            #   --> All new values are NaN. However, this should raise an error, as an error
+            #   in eval_difference would not lead back to this function.
+            self._tsd_ref[(goal_name, self.sim_tag_str)] = \
+                sim_target_data[self._sim_var_matcher[goal_name]]
+        # Sort the index for better visualisation
+        self._tsd_ref = self._tsd_ref.sort_index(axis=1)
+        self._tsd = self._tsd_ref.copy()
+
+    def set_relevant_time_intervals(self, intervals):
+        """
+        For many calibration-uses cases, different time-intervals of the measured
+        and simulated data are relevant. Set the interval to be used with this function.
+        This will change both measured and simulated data. Therefore, the eval_difference
+        function can be called at every moment.
+
+        :param list intervals:
+            List with time-intervals. Each list element has to be a tuple
+            with the first element being the start_time as float or int and
+            the second item being the end_time of the interval as float or int.
+            E.g:
+            [(0, 100), [150, 200), (500, 600)]
+        """
+        _df_ref = self._tsd_ref.copy()
+        # Create initial False mask
+        _mask = np.full(_df_ref.index.shape, False)
+        # Dynamically make mask for multiple possible time-intervals
+        for _start_time, _end_time in intervals:
+            _mask = _mask | ((_df_ref.index >= _start_time) & (_df_ref.index <= _end_time))
+        # TODO: Is the data temporarly deleted if a segment is applied? Maybe we need a base-tsd and a current-tsd like _curr_tsd
+        self._tsd = _df_ref.loc[_mask]
+
+    def get_goals_list(self):
+        """Get the internal list containing all goals."""
+        return list(self.variable_names.keys())
+
+    def get_goals_data(self):
+        """Get the current time-series-data object."""
+        return self._tsd.copy()
 
 
 class CalibrationClass:
@@ -38,8 +272,8 @@ class CalibrationClass:
         to be in an ascending order or be limited to the start_time and end_time parameters.
     """
 
-    goals = data_types.Goals
-    tuner_paras = data_types.TunerParas
+    goals = None
+    tuner_paras = None
     relevant_intervals = []
 
     def __init__(self, name, start_time, stop_time, goals=None,
@@ -70,7 +304,7 @@ class CalibrationClass:
         :param Goals goals:
             Goals-data-type
         """
-        if not isinstance(goals, data_types.Goals):
+        if not isinstance(goals, Goals):
             raise TypeError("Given goals parameter is of type {} but should be "
                             "type Goals".format(type(goals).__name__))
         self.goals = goals

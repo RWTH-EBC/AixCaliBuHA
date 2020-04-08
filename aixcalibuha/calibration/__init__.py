@@ -5,6 +5,7 @@ Calibrator."""
 from abc import abstractmethod
 from ebcpy import data_types
 from ebcpy import optimization
+from aixcalibuha import Goals
 
 
 class Calibrator(optimization.Optimizer):
@@ -14,10 +15,10 @@ class Calibrator(optimization.Optimizer):
     """
 
     tuner_paras = data_types.TunerParas
-    goals = data_types.Goals
+    goals = Goals
 
-    def __init__(self, framework, cd, sim_api, statistical_measure, **kwargs):
-        super().__init__(framework, cd, **kwargs)
+    def __init__(self, cd, sim_api, statistical_measure, **kwargs):
+        super().__init__(cd, **kwargs)
         self.sim_api = sim_api
         self.statistical_measure = statistical_measure
 
@@ -30,7 +31,7 @@ class Calibrator(optimization.Optimizer):
         raise NotImplementedError('{}.obj function is not defined'.format(self.__class__.__name__))
 
     @abstractmethod
-    def calibrate(self, method=None, framework=None):
+    def calibrate(self, framework, method=None):
         """
         Base calibration function. The idea is to call this function and start the
         calibration-process. This function has to be overwritten.
@@ -45,7 +46,7 @@ class Calibrator(optimization.Optimizer):
         again to validate the calibration. The final parameter vector of the
         calibration is used.
 
-        :param data_types.Goals goals:
+        :param aixcalibuha.Goals goals:
             Goals with data to be validated
         """
         raise NotImplementedError('{}.validate function is not'

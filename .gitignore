@@ -1,9 +1,12 @@
+# Individual #
+#####################
 bin
 .metadata
 *.pyc
 *.bak
 .project
 .pydevproject
+aixcalibuha/examples/testzone
 
 # pip install #
 #####################
@@ -19,6 +22,10 @@ build
 .idea
 .cache
 venv
+
+# Jupyter Notebook #
+#####################
+.ipynb_checkpoints
 
 # Unittest #
 #####################

@@ -9,7 +9,7 @@ from ebcpy.simulationapi.dymola_api import DymolaAPI
 from ebcpy import data_types
 from aixcalibuha.calibration import modelica
 from aixcalibuha.sensanalyzer import sensitivity_analyzer
-from aixcalibuha import CalibrationClass
+from aixcalibuha import CalibrationClass, Goals
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -30,10 +30,12 @@ class TestModelicaCalibrator(unittest.TestCase):
                                             [130, 220, 5000, 0.04],
                                             [(100, 500), (100, 500),
                                              (200, 10000), (0.005, 0.05)])
-        mtd = data_types.MeasTargetData(example_mat_file)
-        std = data_types.SimTargetData(example_mat_file)
-        cols = ["heater.heatPorts[1].T", "heater1.heatPorts[1].T"]
-        goals = data_types.Goals(cols, cols, mtd, sim_target_data=std, weightings=[0.7, 0.3])
+        mtd = data_types.TimeSeriesData(example_mat_file)
+        var_names = {"Var1": ["heater.heatPorts[1].T", "heater.heatPorts[1].T"],
+                     "Var2": ["heater.heatPorts[1].T", "heater.heatPorts[1].T"]}
+        goals = Goals(meas_target_data=mtd,
+                      variable_names=var_names,
+                      weightings=[0.7, 0.3])
         self.calibration_class = CalibrationClass("Device On", 0, 3600,
                                                   goals=goals,
                                                   tuner_paras=tuner_paras)
@@ -55,26 +57,25 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.ModelicaCalibrator."""
-        modelica_calibrator = modelica.ModelicaCalibrator("dlib_minimize",
-                                                          self.example_cal_dir,
+        modelica_calibrator = modelica.ModelicaCalibrator(self.example_cal_dir,
                                                           self.dym_api,
                                                           self.statistical_measure,
                                                           self.calibration_class,
                                                           num_function_calls=5)
         # Test run for scipy and L-BFGS-B
-        modelica_calibrator.calibrate(method=None)
+        modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        modelica_calibrator = modelica.MultipleClassCalibrator("dlib_minimize",
-                                                               self.example_cal_dir,
+        modelica_calibrator = modelica.MultipleClassCalibrator(self.example_cal_dir,
                                                                self.dym_api,
                                                                self.statistical_measure,
                                                                self.calibration_classes,
                                                                start_time_method='fixstart',
                                                                reference_start_time=0,
                                                                num_function_calls=5)
-        modelica_calibrator.calibrate(method=None)
+
+        modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
     def test_sen_ana_run(self):
         """
