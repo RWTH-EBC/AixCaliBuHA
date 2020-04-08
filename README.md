@@ -21,13 +21,25 @@ You may switch branches to `development` for newly available features.
 ## How to get started?
 We recommend running our jupyter-notebook. For this, run the following code:
 ```
-# If not jupyter is not already installed:
+# If jupyter is not already installed:
 pip install jupyter
 # Go into your ebcpy-folder (cd \path_to_\AixCaliBuHA) or change the path to tutorial.ipynb and run:
 jupyter notebook AixCaliBuHA\examples\tutorial.ipynb
 ```
 If you have any questions, please contact us or raise an issue.
 Additionally we refer to the official [Documentation](#Documentation).
+
+
+
+# Documentation
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
+
+
+# Code Quality
+
+* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
+* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
+
 
 
 ## Important hints
