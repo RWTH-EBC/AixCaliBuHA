@@ -1,15 +1,15 @@
-[![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
-[![coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
-
 # AixCaliBuHA
 
 **Aix** (from French Aix-la-Chapelle) 
 **Cali**bration for **Bu**ilding and **H**V**A**C Systems
 
+This framework attempts to make the process of calibrating models used in Building
+and HVAC Systems easier. Different sub-packages help with the underlying tasks of:
+
 # Key features
-* Calibration 
-* Sensitivity Analysis
-* Calibration Visualizer
+- Performing a **Sensitivity Analysis** to discover tuner parameters for the calibration
+- **Calibration** of a given model based on the tuner parameters, the calibration classes and specified goals to evaluate the objective function of the underlying optimization
+
 
 # Installation
 Basic knowlege about **git** and **python** are required to understand the following simple steps.  
@@ -39,29 +39,10 @@ Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Opt
 # Problems?
 Please [raise an issue here](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
 
-## Important hints
 
-### Framework structure
-(Information still up to date?)
-
-Adhere to the following UML diagram as overall structure!
-
-Open the [*.xml file](https://git.rwth-aachen.de/EBC/EBC_intern/modelica-calibration/blob/master/img/Calibration_Framework_EBC.xml) (download an load from local drive) with the online plattform [draw.io](draw.io).
-
-### Link dependencies
-
-Currently, this repo represents some kind of "master/overall" repo. Therefore, all related ongoing projects are linked here:
-
-*  [Tool DyOS](http://www.avt.rwth-aachen.de/cms/AVT/Forschung/Software/~iptr/DyOS/) from AVT, RWTH Aachen University
-*  `Design` Library included in Dymola (See also Dymola User Manual Volume 2)
-*  [`Optimization` Library](https://www.modelica.org/libraries) (DLR-SR), s. help in [EBC-SharePoint](https://ecampus.rwth-aachen.de/units/eonerc/ebc/Wiki/Optimierung%20mit%20Dymola.aspx)
-*  [GenOpt](https://simulationresearch.lbl.gov/GO/): Quotes:
-   * "minimization of a cost function that is evaluated by an external simulation program"
-   * "developed for optimization problems where the cost function is computationally expensive and its derivatives are not available"
-   * "ocal and global multi-dimensional and one-dimensional optimization algorithms"
-   * "parallel computation is done automatically"
-   * "written in Java so that it is platform independent"
-   * "GenOpt **has not been** designed for linear programming problems, ..."
+## Wiki on Calibration
+We have gathered some information about Calibration and especially the underlying Optimization with focus on available frameworks automating task.
+Please see our [Wiki]() for that. 
 
 
 ## Associates
