@@ -63,6 +63,10 @@ Version History
    - Issue 39: Several kwargs are added for better user-interaction and plotting of multiple classes
    - Issue 46: Current best iterate is stored to ensure an interruption of a calibration won't yield in a lost optimized value. Keyboard interrupt is now possible.
 
+- **v0.1.4**
+   - Add Goals from ebcpy
+   - Add new tutorial for a better start with the framework. (See Issue 49)
+   - Make changes based on new version 0.1.5 in ebcpy
 
 Indices and tables
 ==================

@@ -5,6 +5,7 @@ If not, please raise an issue.
 """
 from ebcpy import data_types
 from ebcpy.examples import data_types_example
+from aixcalibuha.examples import goals_example
 from aixcalibuha import CalibrationClass
 
 
@@ -30,7 +31,7 @@ def setup_calibration_classes():
     ]
     # Load the tuner parameters and goals
     tuner_paras = data_types_example.setup_tuner_paras()
-    goals = data_types_example.setup_goals()
+    goals = goals_example.setup_goals()
     # Set the tuner parameters and goals to all classes:
     for cal_class in calibration_classes:
         cal_class.set_tuner_paras(tuner_paras)

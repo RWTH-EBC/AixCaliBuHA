@@ -12,7 +12,7 @@ from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
 import aixcalibuha
-from aixcalibuha import CalibrationClass
+from aixcalibuha import CalibrationClass, Goals
 
 
 class SenAnalyzer:
@@ -42,7 +42,7 @@ class SenAnalyzer:
     """
     simulation_api = simulationapi.SimulationAPI
     tuner_paras = data_types.TunerParas
-    goals = data_types.Goals
+    goals = Goals
     calibration_classes = []
     analysis_variables = []
     analysis_function = None
@@ -184,7 +184,7 @@ class SenAnalyzer:
             filepath = self.simulation_api.simulate()
 
             # Load the result file to the goals object
-            sim_target_data = data_types.SimTargetData(filepath)
+            sim_target_data = data_types.TimeSeriesData(filepath)
             self.goals.set_sim_target_data(sim_target_data)
             self.goals.set_relevant_time_intervals(relevant_intervals)
 

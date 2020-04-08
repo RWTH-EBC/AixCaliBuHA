@@ -33,7 +33,7 @@ class CalibrationLogger(Logger):
     # Instantiate dummy parameters
     calibration_class = aixcalibuha.CalibrationClass
     tuner_paras = data_types.TunerParas
-    goals = data_types.Goals
+    goals = aixcalibuha.Goals
     integer_prec = 4  # Number of integer parts
     decimal_prec = 6
     _counter_calibration = 0  # Number of function calls of calibration
@@ -136,10 +136,10 @@ class CalibrationLogger(Logger):
         """
         Set the currently used Goals object to use the information for logging.
 
-        :param ebcpy.data_types.Goals goals:
+        :param ebcpy.aixcalibuha.Goals goals:
             Goals to be set to the object
         """
-        if not isinstance(goals, data_types.Goals):
+        if not isinstance(goals, aixcalibuha.Goals):
             raise TypeError("Given goals is of type {} but type"
                             "Goals is needed.".format(type(goals).__name__))
         self.goals = goals
@@ -352,6 +352,8 @@ class CalibrationVisualizer(CalibrationLogger):
             Name of the model being calibrated
         :param str statistical_measure:
             Statistical measure used for calibration.
+            One of the supported methods in
+            ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
         :keyword str file_type:
             svg, pdf or png
         """
@@ -379,9 +381,9 @@ class CalibrationVisualizer(CalibrationLogger):
         super().log_intersection_of_tuners(intersected_tuner_parameters)
         x_labels = intersected_tuner_parameters.keys()
         data = list(intersected_tuner_parameters.values())
-        fig_intersection, ax_intersection = plt.subplots(1, len(x_labels))
+        fig_intersection, ax_intersection = plt.subplots(1, len(x_labels), squeeze=False)
         for i, x_label in enumerate(x_labels):
-            cur_ax = ax_intersection[i]
+            cur_ax = ax_intersection[0][i]
             cur_ax.violinplot(data[i], showmeans=True, showmedians=False,
                               showextrema=True)
             cur_ax.plot([1] * len(data[i]), data[i], "ro", label="Results")
@@ -437,7 +439,8 @@ class CalibrationVisualizer(CalibrationLogger):
         # Get information on the relevant-intervals of the calibration:
         rel_intervals = self.calibration_class.relevant_intervals
 
-        _goals = self.goals.get_goals_list()
+        _goals_df = self.goals.get_goals_data()
+        _goals_names = self.goals.get_goals_list()
         goal_counter = 0
         for row in range(self._n_rows_goals):
             for col in range(self._n_cols_goals):
@@ -446,12 +449,13 @@ class CalibrationVisualizer(CalibrationLogger):
                 if goal_counter >= self._num_goals:
                     cur_ax.axis("off")
                 else:
-                    cur_goal = _goals[goal_counter]
-                    goal_names = self.goals.get_goal_names(goal_counter)
-                    cur_ax.plot(cur_goal.sim,
-                                label=goal_names["sim_name"] + "_sim", linestyle="--", color="r")
-                    cur_ax.plot(cur_goal.meas,
-                                label=goal_names["meas_name"] + "_meas", color="b")
+                    cur_goal = _goals_names[goal_counter]
+                    cur_ax.plot(_goals_df[cur_goal, self.goals.sim_tag_str],
+                                label=cur_goal + "_{}".format(self.goals.sim_tag_str),
+                                linestyle="--", color="r")
+                    cur_ax.plot(_goals_df[cur_goal, self.goals.meas_tag_str],
+                                label=cur_goal + "_{}".format(self.goals.meas_tag_str),
+                                color="b")
                     # Mark the disregarded intervals in grey
                     _start = self.calibration_class.start_time
                     _first = True  # Only create one label

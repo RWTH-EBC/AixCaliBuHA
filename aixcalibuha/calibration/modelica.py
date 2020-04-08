@@ -8,14 +8,14 @@ from ebcpy import data_types
 import aixcalibuha
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
-from aixcalibuha import CalibrationClass
+from aixcalibuha import CalibrationClass, Goals
 
 
 class ModelicaCalibrator(Calibrator):
     """
     Calibrator for Modelica simulation methods. This class can
     be used for single time-intervals of calibration. The objective
-    should be the standard-objective function for all calibration
+    function is the standard-objective function for all calibration
     processes of modelica-models.
 
     :param str,os.path.normpath cd:
@@ -24,32 +24,34 @@ class ModelicaCalibrator(Calibrator):
         Simulation-API for running the models
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
+        One of the supported methods in
+        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
         e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
-    :keyword boolean save_files:
-        If true, all simulation files for each iteration will be saved!
     :keyword float timedelta:
         If you use this class for calibrating a single time-interval,
         you can set the timedelta to instantiate the simulation before
         actually evaluating it for the objective.
-        The given float (default is 0) is substracted from the start_time
+        The given float (default is 0) is subtracted from the start_time
         of your calibration_class. You can find a visualisation of said timedelta
         in the img folder of the project.
+    :keyword boolean save_files:
+        If true, all simulation files for each iteration will be saved!
     :keyword boolean verbose_logging:
         Default is True. If False, the standard Logger without
         Visualization in Form of plots is used.
         If you use this, the following keyword arguments below will help
         to further adjust the logging.
     :keyword boolean show_plot:
-        If False, all created plots are not shown during calibration but only
-        stored at the end of the process.
+        Default is True. If False, all created plots are not shown during
+        calibration but only stored at the end of the process.
     :keyword boolean create_tsd_plot:
-        If False, the plot of the time series data (goals) is not created and
-        thus shown in during calibration. It therefore is also not stored, even if
-        you set the save_tsd_plot keyword-argument to true.
+        Default is True. If False, the plot of the time series data (goals)
+        is not created and thus shown in during calibration. It therefore is
+        also not stored, even if you set the save_tsd_plot keyword-argument to true.
     :keyword boolean save_tsd_plot:
-        If True, at each iteration the created plot of the
+        Default is False. If True, at each iteration the created plot of the
         time-series is saved. This may make the process much slower
     """
 
@@ -66,7 +68,7 @@ class ModelicaCalibrator(Calibrator):
     # Working directory for class
     cd_of_class = None
 
-    def __init__(self, framework, cd, sim_api, statistical_measure, calibration_class, **kwargs):
+    def __init__(self, cd, sim_api, statistical_measure, calibration_class, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
@@ -93,7 +95,7 @@ class ModelicaCalibrator(Calibrator):
                                               type(keyword_value).__name__))
 
         #%% Initialize all public parameters
-        super().__init__(framework, cd, sim_api, statistical_measure, **kwargs)
+        super().__init__(cd, sim_api, statistical_measure, **kwargs)
         if not isinstance(calibration_class, CalibrationClass):
             raise TypeError("calibration_classes is of type {} but should be "
                             "{}".format(type(calibration_class).__name__,
@@ -159,7 +161,7 @@ class ModelicaCalibrator(Calibrator):
         self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
 
         #%% Load results and write to goals object
-        sim_target_data = data_types.SimTargetData(self._filepath_dsres)
+        sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
         if self._relevant_time_intervals:
             # Trim results based on start and end-time
@@ -178,7 +180,7 @@ class ModelicaCalibrator(Calibrator):
         self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
         return total_res
 
-    def calibrate(self, method=None, framework=None):
+    def calibrate(self, framework, method=None):
         #%% Start Calibration:
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
@@ -195,14 +197,14 @@ class ModelicaCalibrator(Calibrator):
         self.logger.log_initial_names()
 
         # Run optimization
-        self._res = self.optimize(method, framework)
+        self._res = self.optimize(framework, method)
 
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name)
 
     def validate(self, goals):
-        if not isinstance(goals, data_types.Goals):
+        if not isinstance(goals, Goals):
             raise TypeError("Given goals is of type {} but type"
                             "Goals is needed.".format(type(goals).__name__))
         #%% Start Validation:
@@ -238,7 +240,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     reference_start_time = 0
     merge_multiple_classes = True
 
-    def __init__(self, framework, cd, sim_api, statistical_measure, calibration_classes,
+    def __init__(self, cd, sim_api, statistical_measure, calibration_classes,
                  start_time_method='fixstart', reference_start_time=0, **kwargs):
         # Check if input is correct
         if not isinstance(calibration_classes, list):
@@ -254,7 +256,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
 
         # Instantiate parent-class
-        super().__init__(framework, cd, sim_api, statistical_measure,
+        super().__init__(cd, sim_api, statistical_measure,
                          calibration_classes[0], **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
@@ -273,7 +275,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                             "has to be float or int.".format(type(reference_start_time).__name__))
         self.reference_start_time = reference_start_time
 
-    def calibrate(self, method=None, framework=None):
+    def calibrate(self, framework, method=None):
 
         # First check possible intersection of tuner-parameteres
         # and warn the user about it
@@ -324,7 +326,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Execution
             # Run the single ModelicaCalibration
-            super().calibrate(method, framework)
+            super().calibrate(framework, method)
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
@@ -348,7 +350,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         merged_tuner_parameters = {}
         for cal_class in self._cal_history:
             for tuner_name, best_value in cal_class["res"]["Parameters"].items():
-                if tuner_name in merged_tuner_parameters:
+                if (tuner_name in merged_tuner_parameters and
+                        best_value not in merged_tuner_parameters[tuner_name]):
                     merged_tuner_parameters[tuner_name].append(best_value)
                 else:
                     merged_tuner_parameters[tuner_name] = [best_value]

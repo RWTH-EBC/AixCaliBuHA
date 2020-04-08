@@ -1,6 +1,6 @@
 numpy
 scipy
-pandas
+pandas>=0.25
 matplotlib
 modelicares
 tables
@@ -8,6 +8,4 @@ h5py
 psutil
 xlrd
 SALib
-PyQt5
-cmake
 ebcpy @ git+https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy@development
