@@ -1,3 +1,6 @@
+[![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
+[![coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
+
 # AixCaliBuHA
 
 **Aix** (from French Aix-la-Chapelle) 
@@ -9,38 +12,32 @@
 * Calibration Visualizer
 
 # Installation
-Until this is open source, you have to install it (and `ebcpy`) via:
+Basic knowlege about **git** and **python** are required to understand the following simple steps.  
+We tested this with `cmd` on a *Windows* 10 machine.
+
+Until this is not publically available, you have to install it (and [`ebcpy`](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/blob/master/README.md)) via:
 ```
 git clone https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy
 pip install -e ebcpy
 git clone https://git.rwth-aachen.de/EBC/EBC_all/Optimization-and-Calibration/AixCaliBuHA
 pip install -e AixCaliBuHA
 ```
-You may switch branches to `development` for newly available features.
 
 ## How to get started?
-We recommend running our jupyter-notebook. For this, run the following code:
+We recommend running our jupyter-notebook to be guided through a **helpful tutorial**.  
+For this, run the following code:
 ```
 # If jupyter is not already installed:
 pip install jupyter
 # Go into your ebcpy-folder (cd \path_to_\AixCaliBuHA) or change the path to tutorial.ipynb and run:
 jupyter notebook AixCaliBuHA\examples\tutorial.ipynb
 ```
-If you have any questions, please contact us or raise an issue.
-Additionally we refer to the official [Documentation](#Documentation).
-
-
 
 # Documentation
-Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
+Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
 
-
-# Code Quality
-
-* [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg )](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
-* [coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
-
-
+# Problems?
+Please [raise an issue here](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
 
 ## Important hints
 
