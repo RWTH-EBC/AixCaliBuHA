@@ -37,6 +37,7 @@ def setup_goals():
     meas_target_data = data_types.TimeSeriesData(os.path.join(_filepath,
                                                               "data",
                                                               "ref_result.hdf"))
+    # Format: variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}
     variable_names = {"T_heater": ["measured_T_heater", "heater.heatPorts[1].T"],
                       "T_heater_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"]}
 
