@@ -17,7 +17,7 @@ class TestDataTypes(unittest.TestCase):
         """
         self.framework_dir = os.path.dirname(os.path.dirname(__file__))
         self.example_dir = os.path.join(self.framework_dir, "examples", "data")
-        self.example_data_hdf_path = os.path.join(self.example_dir, "example_data.hdf")
+        self.example_data_hdf_path = os.path.join(self.example_dir, "ref_result.hdf")
 
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
@@ -38,17 +38,17 @@ class TestDataTypes(unittest.TestCase):
         with self.assertRaises(TypeError):
             dummy_cal_class.set_goals(dummy_goal)
 
-
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="parameters")
-        meas_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="parameters")
+        sim_target_data = data_types.TimeSeriesData(os.path.join(self.example_dir,
+                                                                 "simTargetData.mat"))
+
+        meas_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="FloatIndex")
 
         # Setup three variables for different format of setup
-        var_names = {"Var_1": ["sine.amplitude / ", "sine.freqHz / Hz"],
-                     "Var_2": ("sine.phase / rad", "sine.freqHz / Hz"),
-                     "Var_3": {"meas": "sine.startTime / s", "sim": "sine.freqHz / Hz"}}
+        var_names = {"Var_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"],
+                     "Var_2": {"meas": "measured_T_heater", "sim": "heater.heatPorts[1].T"}}
 
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
@@ -57,10 +57,13 @@ class TestDataTypes(unittest.TestCase):
         # Check set_sim_target_data:
         goals.set_sim_target_data(sim_target_data)
 
+        # Set relevant time interval test:
+        goals.set_relevant_time_intervals([(0, 100)])
+
         # Check the eval_difference function:
         self.assertIsInstance(goals.eval_difference("RMSE"), float)
         # Try to alter the sim_target_data object with something wrong
-        with self.assertRaises(TypeError):
+        with self.assertRaises(IndexError):
             goals.set_sim_target_data([])
         # Play around with wrong weightings:
         with self.assertRaises(IndexError):

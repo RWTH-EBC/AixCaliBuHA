@@ -156,7 +156,7 @@ class CalibrationLogger(Logger):
         the statistics of the dataset has to be provided.
 
         :param dict intersected_tuner_parameters:
-            Dict with keys being the name of the tuner parameter and the
+            Dict with cols being the name of the tuner parameter and the
             value being the list with all the different "best" values for
             the tuner parameter.
         """
@@ -374,7 +374,7 @@ class CalibrationVisualizer(CalibrationLogger):
         the statistics of the dataset has to be provided.
 
         :param dict intersected_tuner_parameters:
-            Dict with keys being the name of the tuner parameter and the
+            Dict with cols being the name of the tuner parameter and the
             value being the list with all the different "best" values for
             the tuner parameter.
         """

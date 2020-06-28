@@ -9,13 +9,13 @@ INSTALL_REQUIRES = ['numpy',
                     'h5py',
                     'SALib',
                     'cmake',
-                    'ebcpy>=0.1.3'
+                    'ebcpy>=0.1.5',
                     ]
 SETUP_REQUIRES = INSTALL_REQUIRES.copy()  # Add all open-source packages to setup-requires
 #INSTALL_REQUIRES.append('dlib')
 
 setuptools.setup(name='aixcalibuha',
-                 version='0.1.4',
+                 version='0.1.5',
                  description='Framework used for sensitivity-analysis'
                              'and calibration for models of HVAC '
                              'components.',
@@ -29,4 +29,8 @@ setuptools.setup(name='aixcalibuha',
                  packages=setuptools.find_packages(exclude=['img']),
                  setup_requires=SETUP_REQUIRES,
                  install_requires=INSTALL_REQUIRES,
+                 entry_points={
+                     'console_scripts': ['modelica_calibration=bin.run_modelica_calibration:main',
+                                         'guided_setup=bin.guided_setup:main'],
+                 }
                  )

@@ -49,7 +49,7 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
     for result in sen_result:
         print(pd.DataFrame(result))
 
-    cal_classes = sen_analyzer.automatic_select(cal_classes,
+    cal_classes = sen_analyzer.automatic_select(sen_analyzer.calibration_classes,
                                                 sen_result,
                                                 threshold=1)
 

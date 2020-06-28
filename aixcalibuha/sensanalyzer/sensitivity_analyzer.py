@@ -3,6 +3,7 @@ Module for classes revolving around performing sensitivity analysis.
 """
 
 import copy
+import os
 from SALib.sample import morris
 from SALib.sample import saltelli as sobol
 from SALib.analyze import morris as analyze_morris
@@ -39,6 +40,16 @@ class SenAnalyzer:
         for both these classes stand-alone.
         This will automatically yield an intersection of tuner-parameters, however may
         have advantages in some cases.
+    :keyword boolean fail_on_error:
+        Default is False. If True, the calibration will stop with an error if
+        the simulation fails. See also: ret_val_on_error
+    :keyword float,np.NAN ret_val_on_error
+        Default is np.NAN. If fail_on_error is false, you can specify here
+        which value to return in the case of a failed simulation. Possible
+        options are np.NaN, np.inf or some other high numbers. be aware that this
+        max influence the solver.
+    :keyword boolean save_files:
+        If true, all simulation files for each iteration will be saved!
     """
     simulation_api = simulationapi.SimulationAPI
     tuner_paras = data_types.TunerParas
@@ -48,6 +59,9 @@ class SenAnalyzer:
     analysis_function = None
     problem = {}
     method = ""
+    fail_on_error = True
+    save_files = False
+    ret_val_on_error = np.NAN
 
     def __init__(self, cd, simulation_api, sensitivity_problem,
                  calibration_classes, statistical_measure, **kwargs):
@@ -80,7 +94,10 @@ class SenAnalyzer:
         if kwargs.pop("merge_multiple_classes", True):
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
 
-        # Choose which analysis function to use and the list of keys in the analysis output to store
+        # Update kwargs
+        self.__dict__.update(kwargs)
+
+        # Choose which analysis function to use and the list of cols in the analysis output to store
         if self.method.lower() == 'morris':
             self.analysis_function = self.morris_analyze_function
             self.analysis_variables = ['mu_star', 'sigma', 'mu_star_conf']
@@ -100,10 +117,10 @@ class SenAnalyzer:
             The NumPy array containing the model outputs
         :return:
             returns the result of the SALib.analyze.sobol method (from the documentation:
-            a dictionary with keys `S1`, `S1_conf`, `ST`, and `ST_conf`, where each entry
+            a dictionary with cols `S1`, `S1_conf`, `ST`, and `ST_conf`, where each entry
             is a list of size D (the number of parameters) containing the indices in the same
             order as the parameter file. If calc_second_order is True, the dictionary also
-            contains keys `S2` and `S2_conf`.)
+            contains cols `S2` and `S2_conf`.)
         """
         if 'calc_second_order' not in self.sensitivity_problem.sampler_parameters:
             raise KeyError('sobol method requires the `calc_second_order`'
@@ -122,7 +139,7 @@ class SenAnalyzer:
             The NumPy array containing the model outputs
         :return:
             returns the result of the SALib.analyze.sobol method (from the documentation:
-            a dictionary with keys `mu`, `mu_star`, `sigma`, and `mu_star_conf`, where each
+            a dictionary with cols `mu`, `mu_star`, `sigma`, and `mu_star_conf`, where each
             entry is a list of size D (the number of parameters) containing the indices in the
             same order as the parameter file.)
         """
@@ -181,10 +198,28 @@ class SenAnalyzer:
             # Simulate the current values
             self.logger.log('Parameter variation {} of {}'.format(i+1, len(samples)))
             self.simulation_api.set_initial_values(initial_values)
-            filepath = self.simulation_api.simulate()
 
-            # Load the result file to the goals object
-            sim_target_data = data_types.TimeSeriesData(filepath)
+            # Simulate
+            try:
+                # Generate the folder name for the calibration
+                if self.save_files:
+                    savepath_files = os.path.join(self.simulation_api.cd,
+                                                  "simulation_{}".format(str(i + 1)))
+                    filepath = self.simulation_api.simulate(savepath_files=savepath_files)
+                    # Load the result file to the goals object
+                    sim_target_data = data_types.TimeSeriesData(filepath)
+                else:
+                    target_sim_names = [sim_name for meas_name, sim_name in self.goals.variable_names.values()]
+                    self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
+                    df = self.simulation_api.simulate(savepath_files="")
+                    # Convert it to time series data object
+                    sim_target_data = data_types.TimeSeriesData(df)
+            except Exception as e:
+                if self.fail_on_error:
+                    raise e
+                else:
+                    return self.ret_val_on_error
+
             self.goals.set_sim_target_data(sim_target_data)
             self.goals.set_relevant_time_intervals(relevant_intervals)
 
