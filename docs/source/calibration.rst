@@ -2,12 +2,14 @@
 
 Calibrator
 =====================
+
 .. automodule:: aixcalibuha.calibration
    :members:
 
 .. _modelica_cal:
 
-Calibration
+Modelica Calibration
 ------------------
+
 .. automodule:: aixcalibuha.calibration.modelica
    :members:

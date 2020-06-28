@@ -53,6 +53,14 @@ class ModelicaCalibrator(Calibrator):
     :keyword boolean save_tsd_plot:
         Default is False. If True, at each iteration the created plot of the
         time-series is saved. This may make the process much slower
+    :keyword boolean fail_on_error:
+        Default is False. If True, the calibration will stop with an error if
+        the simulation fails. See also: ret_val_on_error
+    :keyword float,np.NAN ret_val_on_error
+        Default is np.NAN. If fail_on_error is false, you can specify here
+        which value to return in the case of a failed simulation. Possible
+        options are np.NaN, np.inf or some other high numbers. be aware that this
+        max influence the solver.
     """
 
     # Dummy variable for accessing the current simulation result
@@ -78,6 +86,8 @@ class ModelicaCalibrator(Calibrator):
         self.verbose_logging = kwargs.pop("verbose_logging", True)
         self.save_files = kwargs.pop("save_files", False)
         self.timedelta = kwargs.pop("timedelta", 0)
+        self.fail_on_error = kwargs.pop("fail_on_error", False)
+        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
@@ -151,17 +161,27 @@ class ModelicaCalibrator(Calibrator):
         xk_descaled = self.tuner_paras.descale(xk)
         # Set initial values for modelica simulation
         self.sim_api.set_initial_values(xk_descaled)
-        # Generate the folder name for the calibration
-        if self.save_files:
-            savepath_files = os.path.join(self.sim_api.cd,
-                                          "simulation_{}".format(str(self._counter)))
-        else:
-            savepath_files = ""
         # Simulate
-        self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
+        try:
+            # Generate the folder name for the calibration
+            if self.save_files:
+                savepath_files = os.path.join(self.sim_api.cd,
+                                              "simulation_{}".format(str(self._counter)))
+                self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
+                # %% Load results and write to goals object
+                sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
+            else:
+                target_sim_names = [sim_name for meas_name, sim_name in self.goals.variable_names.values()]
+                self.sim_api.set_sim_setup({"resultNames": target_sim_names})
+                df = self.sim_api.simulate(savepath_files="")
+                # Convert it to time series data object
+                sim_target_data = data_types.TimeSeriesData(df)
+        except Exception as e:
+            if self.fail_on_error:
+                raise e
+            else:
+                return self.ret_val_on_error
 
-        #%% Load results and write to goals object
-        sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
         self.goals.set_sim_target_data(sim_target_data)
         if self._relevant_time_intervals:
             # Trim results based on start and end-time
@@ -217,6 +237,15 @@ class ModelicaCalibrator(Calibrator):
         val_result = self.obj(xk)
         self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
 
+    def _handle_error(self, error):
+        """
+        Also save the plots if an error occurs.
+        See ebcpy.optimization.Optimizer._handle_error for more info.
+        """
+        self.logger.save_calibration_result(self._current_best_iterate,
+                                            self.sim_api.model_name)
+        super()._handle_error(error)
+
 
 class MultipleClassCalibrator(ModelicaCalibrator):
     """
@@ -227,6 +256,18 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     function. Please have a look at the file in \img\typeOfContinouusCalibration.pdf
     for a better understanding on how this class works.
 
+    :param str start_time_method:
+        Default is 'fixstart'. Method you want to use to
+        specify the start time of your simulation. If 'fixstart' is selected,
+        the keyword argument fixstart is used for all classes (Default is 0).
+        If 'timedelta' is used, the keyword argument timedelta specifies the
+        time being subtracted from each start time of each calibration class.
+        Please have a look at the file in \img\typeOfContinouusCalibration.pdf
+        for a better visualization.
+    :keyword float fix_start_time:
+        Value for the fix start time if start_time_method="fixstart". Default is zero.
+    :keyword float timedelta:
+        Value for timedelta if start_time_method="timedelta". Default is zero.
     :keyword str merge_multiple_classes:
         Default True. If False, the given list of calibration-classes
         is handeled as-is. This means if you pass two CalibrationClass objects
@@ -237,11 +278,11 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     """
 
     # Default value for the reference time is zero
-    reference_start_time = 0
+    fix_start_time = 0
     merge_multiple_classes = True
 
     def __init__(self, cd, sim_api, statistical_measure, calibration_classes,
-                 start_time_method='fixstart', reference_start_time=0, **kwargs):
+                 start_time_method='fixstart', **kwargs):
         # Check if input is correct
         if not isinstance(calibration_classes, list):
             raise TypeError("calibration_classes is of type "
@@ -254,6 +295,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                                                type(CalibrationClass).__name__))
         # Pop kwargs of this class:
         self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
+        # Apply (if given) the fix_start_time. Check for correct input as-well.
+        self.fix_start_time = kwargs.pop("fix_start_time", 0)
+        self.timedelta = kwargs.pop("timedelta", 0)
 
         # Instantiate parent-class
         super().__init__(cd, sim_api, statistical_measure,
@@ -269,11 +313,6 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                              "'fixstart' or 'timedelta'".format(start_time_method))
         else:
             self.start_time_method = start_time_method
-        # Apply (if given) the reference start time. Check for correct input as-well.
-        if not isinstance(reference_start_time, (int, float)):
-            raise TypeError("Given reference_start_time is of type {} but "
-                            "has to be float or int.".format(type(reference_start_time).__name__))
-        self.reference_start_time = reference_start_time
 
     def calibrate(self, framework, method=None):
 
@@ -340,10 +379,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         start-time-method (timedelta or fix-start."""
         if self.start_time_method == "timedelta":
             # Using timedelta, _ref_time is subtracted of the given start-time
-            return start_time - self.reference_start_time
+            return start_time - self.timedelta
         else:
             # With fixed start, the _ref_time parameter is always returned
-            return self.reference_start_time
+            return self.fix_start_time
 
     def check_intersection_of_tuner_parameters(self, prior=True):
         # merge all tuners

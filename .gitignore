@@ -1,6 +1,5 @@
 # Individual #
 #####################
-bin
 .metadata
 *.pyc
 *.bak

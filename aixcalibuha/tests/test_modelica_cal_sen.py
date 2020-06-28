@@ -10,6 +10,7 @@ from ebcpy import data_types
 from aixcalibuha.calibration import modelica
 from aixcalibuha.sensanalyzer import sensitivity_analyzer
 from aixcalibuha import CalibrationClass, Goals
+from aixcalibuha.examples import cal_classes_example
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -22,31 +23,12 @@ class TestModelicaCalibrator(unittest.TestCase):
         framework_dir = os.path.dirname(os.path.dirname(__file__))
         example_dir = os.path.join(framework_dir, "examples")
         self.example_cal_dir = os.path.join(example_dir, "test_calibration")
-        example_mat_file = os.path.join(example_dir, "data", "ref_result.mat")
 
-        #%% As all test rely on goals, tuner_parameter and a
-        # calibration class, we will always create them here
-        tuner_paras = data_types.TunerParas(["heatConv_a", "heatConv_b", "C", "m_flow_2"],
-                                            [130, 220, 5000, 0.04],
-                                            [(100, 500), (100, 500),
-                                             (200, 10000), (0.005, 0.05)])
-        mtd = data_types.TimeSeriesData(example_mat_file)
-        var_names = {"Var1": ["heater.heatPorts[1].T", "heater.heatPorts[1].T"],
-                     "Var2": ["heater.heatPorts[1].T", "heater.heatPorts[1].T"]}
-        goals = Goals(meas_target_data=mtd,
-                      variable_names=var_names,
-                      weightings=[0.7, 0.3])
-        self.calibration_class = CalibrationClass("Device On", 0, 3600,
-                                                  goals=goals,
-                                                  tuner_paras=tuner_paras)
-        self.calibration_classes = [CalibrationClass("Device On", 0, 1200,
-                                                     goals=goals,
-                                                     tuner_paras=tuner_paras),
-                                    CalibrationClass("Device Off", 1200, 3600,
-                                                     goals=goals,
-                                                     tuner_paras=tuner_paras)]
+        # As the examples should work, and the cal_class example uses the other examples,
+        # we will test it here:
+        self.calibration_classes = cal_classes_example.setup_calibration_classes()
 
-        self.statistical_measure = "MAE"
+        self.statistical_measure = "NRMSE"
         # %% Instantiate dymola-api
         packages = [os.path.join(example_dir, "AixCalTest", "package.mo")]
         model_name = "AixCalTest.TestModel"
@@ -60,8 +42,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         modelica_calibrator = modelica.ModelicaCalibrator(self.example_cal_dir,
                                                           self.dym_api,
                                                           self.statistical_measure,
-                                                          self.calibration_class,
-                                                          num_function_calls=5)
+                                                          self.calibration_classes[0],
+                                                          num_function_calls=5,
+                                                          show_plot=False)
         # Test run for scipy and L-BFGS-B
         modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
@@ -72,8 +55,9 @@ class TestModelicaCalibrator(unittest.TestCase):
                                                                self.statistical_measure,
                                                                self.calibration_classes,
                                                                start_time_method='fixstart',
-                                                               reference_start_time=0,
-                                                               num_function_calls=5)
+                                                               fix_start_time=0,
+                                                               num_function_calls=5,
+                                                               show_plot=False)
 
         modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
@@ -98,7 +82,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         self.assertIsInstance(sen_result, list)
         self.assertIsInstance(sen_result[0], dict)
 
-        cal_classes = sen_ana.automatic_select(self.calibration_classes,
+        cal_classes = sen_ana.automatic_select(sen_ana.calibration_classes,
                                                sen_result,
                                                threshold=1)
         self.assertIsInstance(cal_classes, list)

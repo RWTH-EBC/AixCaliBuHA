@@ -37,16 +37,6 @@ run ``pip uninstall modelicares"`` before installing aixcal.
    senanalyzer
    calibration
 
-.. _calibration-class:
-CalibrationClass
-------------------
-
-Last but not least, a calibration class is an object wrapping the most important information for a calibration into one class.
-The **Tuner parameters** and **Goals** are members, as well as the time-interval for the simulation and the name of the class.
-
-
-.. autoclass:: aixcalibuha.data_types.CalibrationClass
-   :members:
 
 Version History
 ---------------
@@ -67,6 +57,14 @@ Version History
    - Add Goals from ebcpy
    - Add new tutorial for a better start with the framework. (See Issue 49)
    - Make changes based on new version 0.1.5 in ebcpy
+
+- **v0.1.5**
+   - Add new scripts in bin folder to ease the setup of the calibration for new users
+   - Add configuration files and save/load classes
+   - Issue 54: Skip failed simulations using two new kwargs in ModelicaCalibrator class
+   - Issue 53: Save final plots despite abortion of calibration process via STRG+C
+   - Issue 51: Refactor reference_start_time to fix_start_time
+   - Issue 23: Model Wrapper for MoCaTe files.
 
 Indices and tables
 ==================
