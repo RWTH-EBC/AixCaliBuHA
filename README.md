@@ -20,7 +20,7 @@ and HVAC Systems easier. Different sub-packages help with the underlying tasks o
 Basic knowlege about **git** and **python** are required to understand the following simple steps.  
 We tested this with `cmd` on a *Windows* 10 machine.
 
-Until this is not publicly available, you have to install it (and [`ebcpy`](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/blob/master/README.md)) via:
+Until this is not publically available, you have to install it (and [`ebcpy`](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/blob/master/README.md)) via:
 ```
 git clone https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy
 pip install -e ebcpy
