@@ -5,6 +5,7 @@ If not, please raise an issue.
 """
 
 import os
+import numpy as np
 from ebcpy.examples import dymola_api_example
 from aixcalibuha.calibration import modelica
 from aixcalibuha.examples import cal_classes_example
@@ -40,7 +41,9 @@ def run_calibration(sim_api, cal_classes, stat_measure):
                          "verbose_logging": True,
                          "show_plot": True,
                          "create_tsd_plot": True,
-                         "save_tsd_plot": True}
+                         "save_tsd_plot": True,
+                         "fail_on_error": False,
+                         "ret_val_on_error": np.NAN}
     # Specify kwargs for multiple-class-calibration
     kwargs_multiple_classes = {"merge_multiple_classes": True}
 
@@ -88,7 +91,7 @@ def run_calibration(sim_api, cal_classes, stat_measure):
             statistical_measure=stat_measure,
             calibration_classes=cal_classes,
             start_time_method="timedelta",
-            reference_start_time=0,
+            timedelta=0,
             **kwargs_calibrator)
 
     # Start the calibration process
