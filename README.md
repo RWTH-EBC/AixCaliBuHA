@@ -68,15 +68,9 @@ Afterwards, you can run
 run_modelica_calibration --config=my_generated_config.yaml
 ```
 To give you an idea of what you have to do and where to click, here is a little example.
-<!-- blank line -->
-<figure class="video_container">
-  <video controls="true" allowfullscreen="true">
-    <source src="img/guided_setup.mp4" type="video/mp4">
-    <source src="img/guided_setup.ogg" type="video/ogg">
-    <source src="img/guided_setup.webm" type="video/webm">
-  </video>
-</figure>
-<!-- blank line -->
+
+
+![Sample Video](img/guided_setup.mp4)
 
 
 ### TimeSeriesData
