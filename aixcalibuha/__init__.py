@@ -10,6 +10,100 @@ from ebcpy.utils import statistics_analyzer
 # pylint: disable=I1101
 __version__ = "0.1.5"
 
+class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist es Wrapper im selben Skript.
+    """
+    Prepare everything needed for perform a calibration.
+        - Cleaning data
+        - Setup the goals
+        - Setup the tuner
+        - Setup calibration classes
+
+    :param: to add
+    ...
+    """
+
+    def __init__(self, meas_target_data, sim_target_data, SIM_API,
+                 variable_names, weightings, number_cal_classes,
+                 classes_json, tuner_paras):
+
+        self.meas_target_data = meas_target_data
+        self.SIM_API = SIM_API
+        self.variable_names = variable_names
+        self.weightings = weightings
+        self.sim_target_data = sim_target_data
+        self.number_cal_classes = number_cal_classes
+        self.classes_json = classes_json
+        self.tuner_paras = tuner_paras
+
+
+    def setup_goals(self):
+        """
+        Setup of the Goals object.
+        First, some simulated and measured target data is loaded.
+        Then the goals object is instantiated. Please refer to the
+        Goals documentation on the meaning of the parameters.
+
+
+        :return: Goals object
+        :rtype: aixcalibuha.Goals
+
+        Example:
+
+        >>> goals = setup_goals()
+        >>> dif = goals.eval_difference(statistical_measure="RMSE")
+        >>> print(round(dif, 3))
+        1.055
+        """
+
+        # Setup the goals object
+        self.goals = Goals(meas_target_data=self.meas_target_data,
+                           variable_names=self.variable_names,
+                           weightings=self.weightings
+                           )
+        self.goals.set_sim_target_data(self.sim_target_data)
+
+        # To match measured and simulated time interval (Removes all "NaN")
+        self.goals.set_relevant_time_intervals([(self.SIM_API.sim_setup["startTime"], self.SIM_API.sim_setup["stopTime"])])
+
+        return self.goals
+
+
+    def setup_calibration_classes(self):
+        """
+        Setup of a list calibration classes.
+        The measured data of the setup_goals example can
+        be segmentized into two classes. You can either use
+        classes from the segmentizer package or manually define
+        classes of interest to you. In this example the we have
+        a manual segmentation, as the example is fairly small.
+
+        :param object tuner_paras:
+
+        :param object goals:
+
+        :return: List of calibration classes
+        :rtype: list
+        """
+        # Define the basic time-intervals and names for the calibration-classes:
+        # Read informations from json file
+        self.cal_classes = []
+        # Create CalibrationClass object
+        for i in range(self.number_cal_classes):
+                self.cal_classes.append(CalibrationClass(name=self.classes_json[i][0],
+                                                         start_time=self.classes_json[i][1],
+                                                         stop_time=self.classes_json[i][2]))
+
+        # Set the tuner parameters and goals to all classes:
+        for cal_class in self.cal_classes:
+            cal_class.set_tuner_paras(self.tuner_paras)
+            cal_class.set_goals(self.goals)
+        # Use different tuner paras if necessary (example: in cool down phase (calibrationclass 4 in the example) there is no m_flow --> no tuning of m_flow possible)
+        # different_tuner_paras = data_types.TunerParas(names=["C", "heatConv_a"],
+        #                                               initial_values=[5000, 200],
+        #                                               bounds=[(4000, 6000), (10, 300)])
+        # calibration_classes[3].set_tuner_paras(different_tuner_paras)
+
+        return self.cal_classes
 
 class Goals:
     """
@@ -380,7 +474,7 @@ class Goals:
         nicely."""
         return str(self._tsd)
 
-    def eval_difference(self, statistical_measure, verbose=False):
+    def eval_difference(self, statistical_measure, verbose=False, penaltyfactor=1):
         """
         Evaluate the difference of the measurement and simulated data based on the
         given statistical_measure.
@@ -392,6 +486,8 @@ class Goals:
             corresponding weightings is returned together with the total difference.
             This can be useful to better understand which goals is performing
             well in an optimization and which goals needs further is not performing well.
+        :param float penaltyfactor:
+            ...to add..
         :return: float total_difference
             weighted ouput for all goals.
         """
@@ -400,8 +496,15 @@ class Goals:
         _verbose_calculation = {}
 
         for i, goal_name in enumerate(self.variable_names.keys()):
+            if self._tsd.isnull().values.any():
+                raise ValueError("There are not valid values in the simulated target data. Probably the timeinterval"
+                                 "of measured and simulated data are not equal. Please check the frequencies"
+                                 " in the json file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])
+            # Apply penalty function
+            _diff = _diff * penaltyfactor
+
             _verbose_calculation[self._weightings[i]] = _diff
             total_difference += self._weightings[i] * _diff
 
@@ -560,6 +663,44 @@ class CalibrationClass:
             raise TypeError("Given tuner_paras is of type {} but should be "
                             "type TunerParas".format(type(tuner_paras).__name__))
         self.tuner_paras = tuner_paras
+
+    def use_specific_tuners(self, selection):
+        """
+        Use specific tuner parameter, if user knows which tuner parameter have an impact and which have not.
+        If just one "TunerParas" class object is defined (see data_types.TunerParas()) the iteration for every
+        calibration class is unnecessary because the first iteration causes an overwriting process of the
+        TunerParas object in the current CalibrationClass object with "set_tuner_paras".
+
+        :param list selection:
+            List of strings with desired tunerparameters for calibration
+        """
+
+        removing_names = []
+        removing_bounds = []
+        for i, name in enumerate(self.tuner_paras.get_names()):
+            if not name in selection:
+                removing_bounds.append(self.tuner_paras.bounds[i])
+                removing_names.append(name)
+        self.tuner_paras.remove_names(removing_names)
+        self.set_tuner_paras(self.tuner_paras)
+
+    # def use_specific_tuners(self, selection):
+    #     """
+    #     Use specific tuner parameter, if user knows which tuner parameter have an impact and which have not.
+    #
+    #     :param list selection:
+    #         List of strings with desired tunerparameters for calibration
+    #     """
+    #
+    #     for num_class, cal_class in enumerate(self.cal_classes):
+    #         removing_names = []
+    #         removing_bounds = []
+    #         for i, name in enumerate(self.tuner_paras.get_names()):
+    #             if not name in selection:
+    #                 removing_bounds.append(self.tuner_paras.bounds[i])
+    #                 removing_names.append(name)
+    #         self.tuner_paras.remove_names(removing_names)
+    #         cal_class.set_tuner_paras(self.tuner_paras)
 
 
 def merge_calibration_classes(calibration_classes):

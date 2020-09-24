@@ -9,6 +9,7 @@ import aixcalibuha
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
 from aixcalibuha import CalibrationClass, Goals
+import time
 
 
 class ModelicaCalibrator(Calibrator):
@@ -76,7 +77,7 @@ class ModelicaCalibrator(Calibrator):
     # Working directory for class
     cd_of_class = None
 
-    def __init__(self, cd, sim_api, statistical_measure, calibration_class, **kwargs):
+    def __init__(self, cd, sim_api, statistical_measure, calibration_class, meas_input_data, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
@@ -88,6 +89,7 @@ class ModelicaCalibrator(Calibrator):
         self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
+        self.meas_input_data = meas_input_data
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
@@ -154,6 +156,7 @@ class ModelicaCalibrator(Calibrator):
         :return:
         Objective value based on the used quality measurement
         """
+        # edit: This funktion is called by the optimizationframework (scipy, dlib, etc.)
         #%% Initialize class objects
         self._current_iterate = xk
         self._counter += 1
@@ -173,7 +176,7 @@ class ModelicaCalibrator(Calibrator):
             else:
                 target_sim_names = self.goals.get_sim_var_names()
                 self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                df = self.sim_api.simulate(savepath_files="")
+                df = self.sim_api.simulate(self.meas_input_data, savepath_files="")
                 # Convert it to time series data object
                 sim_target_data = data_types.TimeSeriesData(df)
         except Exception as e:
@@ -188,20 +191,39 @@ class ModelicaCalibrator(Calibrator):
             self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
-        total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
+        # Penalty function (get penaltyfactor)
+        if self.sim_api.count > 1:
+            penalty = self.get_penalty(xk_descaled)
+            # Evaluate with penalty
+            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
+                                                                     verbose=True, penaltyfactor=penalty)
+            self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
+
+        # There is no benchmark in the first iteration, so no penalty is applied
+        else:
+            penalty = None
+            # Evaluate withthout penalty
+            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
                                                                      verbose=True)
+            self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
+
         if total_res < self._current_best_iterate["Objective"]:
+            #self.best_goals = self.goals
             self._current_best_iterate = {"Iterate": self._counter,
                                           "Objective": total_res,
                                           "Unweighted Objective": unweighted_objective,
                                           "Parameters": xk_descaled,
+                                          "Goals": self.goals,
+                                          "better_current_result": True,     # For penalty function and for saving goals as csv
+                                          "Penaltyfactor": penalty                # Changed to false in this script after calling function "save_calibration_results"
                                           }
 
-        self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
+        # self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
         return total_res
 
     def calibrate(self, framework, method=None):
         #%% Start Calibration:
+        self.logger.log("Calibration of day {}. Iterationstep Digital Twin Framework: {}".format(self.current_timestamp, self.sim_api.count))
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
@@ -216,12 +238,26 @@ class ModelicaCalibrator(Calibrator):
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
         self.logger.log_initial_names()
 
+        # Duration of Calibration
+        t_cal_start = time.time()
+
+        # # Previous
+        # if self.sim_api.count > 1:
+
+
         # Run optimization
         self._res = self.optimize(framework, method)
 
+        t_cal_stop = time.time()
+        self.t_cal = t_cal_stop - t_cal_start
+
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
-                                            self.sim_api.model_name)
+                                            self.sim_api.model_name,
+                                            self.t_cal,
+                                            self.sim_api.count)
+        # Reset
+        self._current_best_iterate['better_current_result'] = False
 
     def validate(self, goals):
         if not isinstance(goals, Goals):
@@ -245,6 +281,54 @@ class ModelicaCalibrator(Calibrator):
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name)
         super()._handle_error(error)
+
+    def get_penalty(self, current_tuner_values):
+        """
+        Get penalty factor for evaluation of current objective. The penaltyfactor
+        considers deviations of the tuner parameters in the objective function.
+        First the relative deviation between the current best values
+        of the tuner parameters from the recalibration steps and
+        the tuner parameters obtained in the current iteration step is determined.
+        Then the penaltyfactor is being increased according to the relative deviation.
+
+        :param pd.series current_tuner_values:
+            To add
+        :return: float penalty
+            Penaltyfactor for evaluation.
+        """
+        # TO-DO: Add possibility to consider the sensitivity of tuner parameters
+
+        # Get lists of tuner values (latest best & current values)
+        previous = self.sim_api.current_best_tuners
+        current = list(current_tuner_values)
+        # Get borders for applying penalty function
+
+        # Apply penalty function
+        penalty = 1
+        dev_all = []
+        for i,value in enumerate(previous):
+            # Ingore tuner parameter whose current best value is 0
+            if previous[i] == 0:
+                continue
+            # Get relative deviation of tuner values (reference: previous)
+            dev = abs(current[i] - previous[i]) / abs(previous[i])
+            # Add corresponding function for penaltyfactor here
+            # add 0% to penaltyfactor
+            if dev < 0.2:
+                continue
+            # add 2% to penaltyfactor
+            elif dev < 0.4:
+                penalty += 0.02
+            # add 4% to penaltyfactor
+            elif dev < 0.6:
+                penalty += 0.04
+            # add 8% to penaltyfactor
+            else:
+                penalty += 0.08
+            dev_all.append(dev)
+
+        return penalty
+
 
 
 class MultipleClassCalibrator(ModelicaCalibrator):
@@ -281,8 +365,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     fix_start_time = 0
     merge_multiple_classes = True
 
-    def __init__(self, cd, sim_api, statistical_measure, calibration_classes,
-                 start_time_method='fixstart', **kwargs):
+    def __init__(self, cd, sim_api, statistical_measure, calibration_classes, meas_input_data,
+                 current_timestamp, start_time_method='fixstart', **kwargs):
         # Check if input is correct
         if not isinstance(calibration_classes, list):
             raise TypeError("calibration_classes is of type "
@@ -301,11 +385,13 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         # Instantiate parent-class
         super().__init__(cd, sim_api, statistical_measure,
-                         calibration_classes[0], **kwargs)
+                         calibration_classes[0], meas_input_data, **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
         self._cal_history = []
+        # Get current timespamp of calibration
+        self.current_timestamp = current_timestamp
 
         # Choose the time-method
         if start_time_method.lower() not in ["fixstart", "timedelta"]:
@@ -318,11 +404,12 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         # First check possible intersection of tuner-parameteres
         # and warn the user about it
+
         all_tuners = []
         for cal_class in self.calibration_classes:
             all_tuners.append(cal_class.tuner_paras.get_names())
         intersection = set(all_tuners[0]).intersection(*all_tuners)
-        if intersection:
+        if intersection and len(self.calibration_classes) > 1:
             self.logger.log("The following tuner-parameters intersect over multiple"
                             " classes:\n{}".format(", ".join(list(intersection))))
 
@@ -372,7 +459,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             self._cal_history.append({"res": self._current_best_iterate,
                                       "cal_class": cal_class})
 
-        self.check_intersection_of_tuner_parameters()
+        self.res_tuner = self.check_intersection_of_tuner_parameters()
+
+        return self.res_tuner, self._current_best_iterate
 
     def _apply_start_time_method(self, start_time):
         """Method to be calculate the start_time based on the used
@@ -385,7 +474,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             return self.fix_start_time
 
     def check_intersection_of_tuner_parameters(self, prior=True):
-        # merge all tuners
+        # merge all tuners (writes all values from all classes in one dictionary)
         merged_tuner_parameters = {}
         for cal_class in self._cal_history:
             for tuner_name, best_value in cal_class["res"]["Parameters"].items():
@@ -395,12 +484,31 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 else:
                     merged_tuner_parameters[tuner_name] = [best_value]
 
+        # Get tuner parameter
+        res_tuner = {}
+        for tuner_para, values in merged_tuner_parameters.items():
+            res_tuner[tuner_para] = values[0]
+
         # pop single values, as of no interest
         intersected_tuners = {}
         for tuner_para, values in merged_tuner_parameters.items():
             if len(values) >= 2:
                 intersected_tuners[tuner_para] = values
 
-        # Plot or log the information, depending on which logger you are using:
+        # Handle tuner intersections
         if intersected_tuners.keys():
-            self.logger.log_intersection_of_tuners(intersected_tuners)
+            # Plot or log the information, depending on which logger you are using:
+            self.logger.log_intersection_of_tuners(intersected_tuners, self.sim_api.count)
+
+            # Return average value of ALL tuner parameters (not only intersected). Reason: if there is an intersection
+            # of a tuner parameter, but the results of both calibration classes are exactly the same, there is no
+            # intersection and the affected parameter will not be delivered to "res_tuner" if one of the other tuners
+            # intersect and "intersected_tuners.keys()" is true.
+            average_tuner_parameter = {}
+            for tuner_para, values in merged_tuner_parameters.items():
+                average_tuner_parameter[tuner_para] = sum(values) / len(values)
+
+            # Create result-dictonary
+            res_tuner = average_tuner_parameter
+
+        return res_tuner

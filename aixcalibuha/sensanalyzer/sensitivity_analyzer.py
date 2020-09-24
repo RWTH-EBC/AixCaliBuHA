@@ -4,6 +4,7 @@ Module for classes revolving around performing sensitivity analysis.
 
 import copy
 import os
+import time
 from SALib.sample import morris
 from SALib.sample import saltelli as sobol
 from SALib.analyze import morris as analyze_morris
@@ -171,7 +172,7 @@ class SenAnalyzer:
 
         return samples
 
-    def simulate_samples(self, samples, start_time, stop_time, relevant_intervals):
+    def simulate_samples(self, samples, start_time, stop_time, relevant_intervals, meas_input_data):
         """
         Put the parameter in dymola model, run it.
 
@@ -211,7 +212,7 @@ class SenAnalyzer:
                 else:
                     target_sim_names = self.goals.get_sim_var_names()
                     self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.simulation_api.simulate(savepath_files="")
+                    df = self.simulation_api.simulate(meas_input_data, savepath_files="")
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
             except Exception as e:
@@ -229,7 +230,7 @@ class SenAnalyzer:
 
         return np.asarray(output)
 
-    def run(self):
+    def run(self, meas_input_data):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -242,6 +243,7 @@ class SenAnalyzer:
         """
         all_results = []
         for cal_class in self.calibration_classes:
+            t_sen_start = time.time()
             self.logger.log('Start sensitivity analysis of class: {}, '
                             'Time-Interval: {}-{} s'.format(cal_class.name,
                                                             cal_class.start_time,
@@ -254,8 +256,11 @@ class SenAnalyzer:
                 samples,
                 cal_class.start_time,
                 cal_class.stop_time,
-                cal_class.relevant_intervals)
+                cal_class.relevant_intervals,
+                meas_input_data)
             salib_analyze_result = self.analysis_function(samples, output_array)
+            t_sen_stop = time.time()
+            salib_analyze_result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(salib_analyze_result)
         return all_results
 
@@ -285,6 +290,10 @@ class SenAnalyzer:
                 if sen_value < threshold:
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
+            if not tuner_paras.get_names():
+                raise ValueError('Automatic selection removed all tuner parameter from class {} after Sensitivityanalysis was done.'
+                                 ' Please adjust the threshold in json or manually chose tuner parameters for '
+                                 'the calibration.'.format(cal_class.name))
             cal_class.set_tuner_paras(tuner_paras)
         return calibration_classes
 
