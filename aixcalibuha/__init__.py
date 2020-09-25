@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from ebcpy import data_types
 from ebcpy.utils import statistics_analyzer
+import warnings
 # pylint: disable=I1101
 __version__ = "0.1.5"
 
@@ -89,9 +90,14 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
         self.cal_classes = []
         # Create CalibrationClass object
         for i in range(self.number_cal_classes):
-                self.cal_classes.append(CalibrationClass(name=self.classes_json[i][0],
-                                                         start_time=self.classes_json[i][1],
-                                                         stop_time=self.classes_json[i][2]))
+            if self.classes_json[i][2] > self.SIM_API.sim_setup['stopTime']:
+                self.classes_json[i][2] = self.SIM_API.sim_setup['stopTime']
+                warnings.warn('The stoptime of calibration class {} \nexceeds the stoptime adjusted during'
+                              ' the extraction of the data and is changed to {} seconds.'
+                              .format(self.classes_json[i][0], self.SIM_API.sim_setup['stopTime']))
+            self.cal_classes.append(CalibrationClass(name=self.classes_json[i][0],
+                                                     start_time=self.classes_json[i][1],
+                                                     stop_time=self.classes_json[i][2]))
 
         # Set the tuner parameters and goals to all classes:
         for cal_class in self.cal_classes:
@@ -497,8 +503,8 @@ class Goals:
 
         for i, goal_name in enumerate(self.variable_names.keys()):
             if self._tsd.isnull().values.any():
-                raise ValueError("There are not valid values in the simulated target data. Probably the timeinterval"
-                                 "of measured and simulated data are not equal. Please check the frequencies"
+                raise ValueError("There are not valid values in the simulated target data. Probably the time interval"
+                                 " of measured and simulated data are not equal. Please check the frequencies"
                                  " in the json file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])

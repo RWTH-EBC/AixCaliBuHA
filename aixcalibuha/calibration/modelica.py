@@ -223,7 +223,8 @@ class ModelicaCalibrator(Calibrator):
 
     def calibrate(self, framework, method=None):
         #%% Start Calibration:
-        self.logger.log("Calibration of day {}. Iterationstep Digital Twin Framework: {}".format(self.current_timestamp, self.sim_api.count))
+        self.logger.log("Calibration of day {}, starting at {}. Iterationstep Digital Twin Framework: {}"
+                        .format(self.current_timestamp.date(), self.current_timestamp.time(), self.sim_api.count))
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
