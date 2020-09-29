@@ -77,13 +77,16 @@ class ModelicaCalibrator(Calibrator):
     # Working directory for class
     cd_of_class = None
 
-    def __init__(self, cd, sim_api, statistical_measure, calibration_class, meas_input_data, **kwargs):
+    def __init__(self, cd, sim_api, statistical_measure, framework, method,
+                 calibration_class, meas_input_data, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
         # Pop the items so they wont be added when calling the
         # __init__ of the parent class. Always pop with a default value in case
         # the keyword is not passed.
+        self.method = method
+        self.framework = framework
         self.verbose_logging = kwargs.pop("verbose_logging", True)
         self.save_files = kwargs.pop("save_files", False)
         self.timedelta = kwargs.pop("timedelta", 0)
@@ -221,7 +224,7 @@ class ModelicaCalibrator(Calibrator):
         # self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
         return total_res
 
-    def calibrate(self, framework, method=None):
+    def calibrate(self):
         #%% Start Calibration:
         self.logger.log("Calibration of day {}, starting at {}. Iterationstep Digital Twin Framework: {}"
                         .format(self.current_timestamp.date(), self.current_timestamp.time(), self.sim_api.count))
@@ -242,12 +245,8 @@ class ModelicaCalibrator(Calibrator):
         # Duration of Calibration
         t_cal_start = time.time()
 
-        # # Previous
-        # if self.sim_api.count > 1:
-
-
         # Run optimization
-        self._res = self.optimize(framework, method)
+        self._res = self.optimize(self.framework, self.method)
 
         t_cal_stop = time.time()
         self.t_cal = t_cal_stop - t_cal_start
@@ -312,7 +311,10 @@ class ModelicaCalibrator(Calibrator):
             if previous[i] == 0:
                 continue
             # Get relative deviation of tuner values (reference: previous)
-            dev = abs(current[i] - previous[i]) / abs(previous[i])
+            try:
+                dev = abs(current[i] - previous[i]) / abs(previous[i])
+            except:
+                print('Exception here for Bugfix.')
             # Add corresponding function for penaltyfactor here
             # add 0% to penaltyfactor
             if dev < 0.2:
@@ -366,7 +368,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     fix_start_time = 0
     merge_multiple_classes = True
 
-    def __init__(self, cd, sim_api, statistical_measure, calibration_classes, meas_input_data,
+    def __init__(self, cd, sim_api, statistical_measure, framework, method, calibration_classes, meas_input_data,
                  current_timestamp, start_time_method='fixstart', **kwargs):
         # Check if input is correct
         if not isinstance(calibration_classes, list):
@@ -385,7 +387,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.timedelta = kwargs.pop("timedelta", 0)
 
         # Instantiate parent-class
-        super().__init__(cd, sim_api, statistical_measure,
+        super().__init__(cd, sim_api, statistical_measure, framework, method,
                          calibration_classes[0], meas_input_data, **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
@@ -401,7 +403,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         else:
             self.start_time_method = start_time_method
 
-    def calibrate(self, framework, method=None):
+    def calibrate(self):
 
         # First check possible intersection of tuner-parameteres
         # and warn the user about it
@@ -453,7 +455,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Execution
             # Run the single ModelicaCalibration
-            super().calibrate(framework, method)
+            super().calibrate()
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
