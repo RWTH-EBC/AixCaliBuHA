@@ -192,14 +192,14 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Evaluate the current objective
         # Penalty function (get penaltyfactor)
-        if self.sim_api.count > 1:
+        if self.sim_api.count > 1 and self.sim_api.current_best_tuners:
             penalty = self.get_penalty(xk_descaled)
             # Evaluate with penalty
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
                                                                      verbose=True, penaltyfactor=penalty)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
 
-        # There is no benchmark in the first iteration, so no penalty is applied
+        # There is no benchmark in the first iteration or first iterations were skipped, so no penalty is applied
         else:
             penalty = None
             # Evaluate withthout penalty
