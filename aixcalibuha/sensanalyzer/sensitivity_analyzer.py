@@ -65,13 +65,16 @@ class SenAnalyzer:
     ret_val_on_error = np.NAN
 
     def __init__(self, cd, simulation_api, sensitivity_problem,
-                 calibration_classes, statistical_measure, **kwargs):
+                 calibration_classes, statistical_measure, sim_input_data, **kwargs):
         """Instantiate class parameters"""
         # Setup the logger
+        if not os.path.exists(cd):
+            os.mkdir(cd)
         self.logger = visualizer.Logger(cd, self.__class__.__name__)
         # Add any simulation_api, dymolapi or pyfmi
         self.simulation_api = simulation_api
         self.statistical_measure = statistical_measure
+        self.sim_input_data = sim_input_data
 
         self.sensitivity_problem = sensitivity_problem
         self.problem = sensitivity_problem.problem
@@ -172,7 +175,7 @@ class SenAnalyzer:
 
         return samples
 
-    def simulate_samples(self, samples, start_time, stop_time, relevant_intervals, meas_input_data):
+    def simulate_samples(self, samples, start_time, stop_time, relevant_intervals):
         """
         Put the parameter in dymola model, run it.
 
@@ -187,6 +190,8 @@ class SenAnalyzer:
             Each list element has to be a tuple with the first element being
             the start-time as float/int and the second item being the end-time
             of the interval as float/int.
+        :param dataframe sim_input_data:
+            Input data from database
         :return np.array
             An array containing the evaluated differences for each sample
         """
@@ -212,7 +217,7 @@ class SenAnalyzer:
                 else:
                     target_sim_names = self.goals.get_sim_var_names()
                     self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.simulation_api.simulate(meas_input_data, savepath_files="")
+                    df = self.simulation_api.simulate(self.sim_input_data, savepath_files="")
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
             except Exception as e:
@@ -230,7 +235,7 @@ class SenAnalyzer:
 
         return np.asarray(output)
 
-    def run(self, meas_input_data):
+    def run(self):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -256,8 +261,7 @@ class SenAnalyzer:
                 samples,
                 cal_class.start_time,
                 cal_class.stop_time,
-                cal_class.relevant_intervals,
-                meas_input_data)
+                cal_class.relevant_intervals)
             salib_analyze_result = self.analysis_function(samples, output_array)
             t_sen_stop = time.time()
             salib_analyze_result['duration[s]'] = t_sen_stop - t_sen_start

@@ -88,8 +88,8 @@ class ModelicaCalibrator(Calibrator):
         self.method = method
         self.framework = framework
         self.verbose_logging = kwargs.pop("verbose_logging", True)
-        self.save_files = kwargs.pop("save_files", False)
-        self.timedelta = kwargs.pop("timedelta", 0)
+        # self.save_files = kwargs.pop("save_files", False)     # Datensicherung selbst hinterlegt
+        # self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.meas_input_data = meas_input_data
@@ -99,15 +99,15 @@ class ModelicaCalibrator(Calibrator):
                              "show_plot": kwargs.pop("show_plot", None),
                              }
 
-        # Check if types are correct:
-        # Booleans:
-        _bool_kwargs = ["save_files"]
-        for bool_keyword in _bool_kwargs:
-            keyword_value = self.__getattribute__(bool_keyword)
-            if not isinstance(keyword_value, bool):
-                raise TypeError("Given {} is of type {} but should be type "
-                                "bool".format(bool_keyword,
-                                              type(keyword_value).__name__))
+        # # Check if types are correct:
+        # # Booleans:
+        # _bool_kwargs = ["save_files"]
+        # for bool_keyword in _bool_kwargs:
+        #     keyword_value = self.__getattribute__(bool_keyword)
+        #     if not isinstance(keyword_value, bool):
+        #         raise TypeError("Given {} is of type {} but should be type "
+        #                         "bool".format(bool_keyword,
+        #                                       type(keyword_value).__name__))
 
         #%% Initialize all public parameters
         super().__init__(cd, sim_api, statistical_measure, **kwargs)
@@ -118,6 +118,7 @@ class ModelicaCalibrator(Calibrator):
         self.calibration_class = calibration_class
         self.goals = self.calibration_class.goals
         self.tuner_paras = self.calibration_class.tuner_paras
+        # Scale bounds
         self.x0 = self.tuner_paras.scale(self.tuner_paras.get_initial_values())
         if self.tuner_paras.bounds is None:
             self.bounds = None
@@ -168,20 +169,20 @@ class ModelicaCalibrator(Calibrator):
         # Set initial values for modelica simulation
         self.sim_api.set_initial_values(xk_descaled)
         # Simulate
-        try:
+        try:    # Sichern der Daten selbst hinterlegt
             # Generate the folder name for the calibration
-            if self.save_files:
-                savepath_files = os.path.join(self.sim_api.cd,
-                                              "simulation_{}".format(str(self._counter)))
-                self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
-                # %% Load results and write to goals object
-                sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
-            else:
-                target_sim_names = self.goals.get_sim_var_names()
-                self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                df = self.sim_api.simulate(self.meas_input_data, savepath_files="")
-                # Convert it to time series data object
-                sim_target_data = data_types.TimeSeriesData(df)
+            # if self.save_files:
+            #     savepath_files = os.path.join(self.sim_api.cd,
+            #                                   "simulation_{}".format(str(self._counter)))
+            #     self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
+            #     # %% Load results and write to goals object
+            #     sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
+            # else:
+            target_sim_names = self.goals.get_sim_var_names()
+            self.sim_api.set_sim_setup({"resultNames": target_sim_names})
+            df = self.sim_api.simulate(self.meas_input_data, savepath_files="")
+            # Convert it to time series data object
+            sim_target_data = data_types.TimeSeriesData(df)
         except Exception as e:
             if self.fail_on_error:
                 raise e
@@ -370,7 +371,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
     def __init__(self, cd, sim_api, statistical_measure, framework, method, calibration_classes, meas_input_data,
                  current_timestamp, start_time_method='fixstart', **kwargs):
-        # Check if input is correct
+        # Check if input is correct (Wird bereits in main gemacht)
         if not isinstance(calibration_classes, list):
             raise TypeError("calibration_classes is of type "
                             "%s but should be list" % type(calibration_classes).__name__)
@@ -380,7 +381,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 raise TypeError("calibration_classes is of type {} but should "
                                 "be {}".format(type(cal_class).__name__,
                                                type(CalibrationClass).__name__))
-        # Pop kwargs of this class:
+        # Pop kwargs of this class (pass parameters and remove from kwarg dict):
         self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
         # Apply (if given) the fix_start_time. Check for correct input as-well.
         self.fix_start_time = kwargs.pop("fix_start_time", 0)
@@ -468,7 +469,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
     def _apply_start_time_method(self, start_time):
         """Method to be calculate the start_time based on the used
-        start-time-method (timedelta or fix-start."""
+        start-time-method (timedelta or fix-start)."""
         if self.start_time_method == "timedelta":
             # Using timedelta, _ref_time is subtracted of the given start-time
             return start_time - self.timedelta
