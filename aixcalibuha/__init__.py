@@ -504,7 +504,7 @@ class Goals:
         for i, goal_name in enumerate(self.variable_names.keys()):
             if self._tsd.isnull().values.any():
                 raise ValueError("There are not valid values in the simulated target data. Probably the time interval"
-                                 " of measured and simulated data are not equal. Please check the frequencies"
+                                 " of measured and simulated data are not equal. \nPlease check the frequencies"
                                  " in the json file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])

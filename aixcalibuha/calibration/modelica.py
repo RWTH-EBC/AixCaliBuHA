@@ -118,13 +118,16 @@ class ModelicaCalibrator(Calibrator):
         self.calibration_class = calibration_class
         self.goals = self.calibration_class.goals
         self.tuner_paras = self.calibration_class.tuner_paras
-        # Scale bounds
+        # Scale tuner on boundaries
         self.x0 = self.tuner_paras.scale(self.tuner_paras.get_initial_values())
         if self.tuner_paras.bounds is None:
             self.bounds = None
         else:
             # As tuner-parameters are scaled between 0 and 1, the scaled bounds are always 0 and 1
             self.bounds = [(0, 1) for i in range(len(self.x0))]
+        if self.start_time_method == "fixstart":
+            # reset timedelta if "fixstart" method was chosen
+            self.timedelta = 0
         # Add the values to the simulation setup.
         self.sim_api.set_sim_setup({"initialNames": self.tuner_paras.get_names(),
                                     "startTime": self.calibration_class.start_time - self.timedelta,
@@ -164,7 +167,7 @@ class ModelicaCalibrator(Calibrator):
         #%% Initialize class objects
         self._current_iterate = xk
         self._counter += 1
-        # Convert set if multiple goals of different scales are used
+        # Convert tuner set if multiple goals of different scales are used
         xk_descaled = self.tuner_paras.descale(xk)
         # Set initial values for modelica simulation
         self.sim_api.set_initial_values(xk_descaled)
@@ -180,6 +183,7 @@ class ModelicaCalibrator(Calibrator):
             # else:
             target_sim_names = self.goals.get_sim_var_names()
             self.sim_api.set_sim_setup({"resultNames": target_sim_names})
+            # Just specified time intervall in cal classes is simulated
             df = self.sim_api.simulate(self.meas_input_data, savepath_files="")
             # Convert it to time series data object
             sim_target_data = data_types.TimeSeriesData(df)
@@ -191,7 +195,7 @@ class ModelicaCalibrator(Calibrator):
 
         self.goals.set_sim_target_data(sim_target_data)
         if self._relevant_time_intervals:
-            # Trim results based on start and end-time
+            # Trim results based on start and end-time of cal class
             self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
@@ -206,11 +210,12 @@ class ModelicaCalibrator(Calibrator):
         # There is no benchmark in the first iteration or first iterations were skipped, so no penalty is applied
         else:
             penalty = None
-            # Evaluate withthout penalty
+            # Evaluate without penalty
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
                                                                      verbose=True)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
 
+        # current best iteration step of current calibration class
         if total_res < self._current_best_iterate["Objective"]:
             #self.best_goals = self.goals
             self._current_best_iterate = {"Iterate": self._counter,
@@ -260,7 +265,7 @@ class ModelicaCalibrator(Calibrator):
         # Reset
         self._current_best_iterate['better_current_result'] = False
 
-    def validate(self, goals):
+    def validate(self, goals):      # currently not used
         if not isinstance(goals, Goals):
             raise TypeError("Given goals is of type {} but type"
                             "Goals is needed.".format(type(goals).__name__))
@@ -386,6 +391,12 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         # Apply (if given) the fix_start_time. Check for correct input as-well.
         self.fix_start_time = kwargs.pop("fix_start_time", 0)
         self.timedelta = kwargs.pop("timedelta", 0)
+        # Choose the time-method
+        if start_time_method.lower() not in ["fixstart", "timedelta"]:
+            raise ValueError("Given start_time_method {} is not supported. Please choose between"
+                             "'fixstart' or 'timedelta'".format(start_time_method))
+        else:
+            self.start_time_method = start_time_method
 
         # Instantiate parent-class
         super().__init__(cd, sim_api, statistical_measure, framework, method,
@@ -397,16 +408,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         # Get current timespamp of calibration
         self.current_timestamp = current_timestamp
 
-        # Choose the time-method
-        if start_time_method.lower() not in ["fixstart", "timedelta"]:
-            raise ValueError("Given start_time_method {} is not supported. Please choose between"
-                             "'fixstart' or 'timedelta'".format(start_time_method))
-        else:
-            self.start_time_method = start_time_method
-
     def calibrate(self):
 
-        # First check possible intersection of tuner-parameteres
+        # First check possible intersection of tuner parameters
         # and warn the user about it
 
         all_tuners = []
@@ -421,8 +425,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         for cal_class in self.calibration_classes:
             #%% Simulation-Time:
             # Alter the simulation time.
-            # The fix-start time or timedelta approach is applied,
-            # based on the Boolean in place
+            # The fix-start time or timedelta approach is applied
             start_time = self._apply_start_time_method(cal_class.start_time)
             self.sim_api.set_sim_setup({"startTime": start_time,
                                         "stopTime": cal_class.stop_time})
@@ -465,6 +468,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         self.res_tuner = self.check_intersection_of_tuner_parameters()
 
+        # self._current_best_iterate are allways the results from last class which was calibrated
         return self.res_tuner, self._current_best_iterate
 
     def _apply_start_time_method(self, start_time):
