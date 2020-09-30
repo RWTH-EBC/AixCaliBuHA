@@ -200,7 +200,7 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Evaluate the current objective
         # Penalty function (get penaltyfactor)
-        if self.sim_api.count > 1 and self.sim_api.current_best_tuners:
+        if self.sim_api.count > 1 and self.sim_api.benchmark_exists:
             penalty = self.get_penalty(xk_descaled)
             # Evaluate with penalty
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
@@ -304,21 +304,23 @@ class ModelicaCalibrator(Calibrator):
         """
         # TO-DO: Add possibility to consider the sensitivity of tuner parameters
 
-        # Get lists of tuner values (latest best & current values)
-        previous = self.sim_api.current_best_tuners
-        current = list(current_tuner_values)
+        # Get lists of tuner values (latest best (with all other tuners) & current values)
+        previous = self.sim_api.all_tuners_dict
+        current = dict(current_tuner_values)
         # Get borders for applying penalty function
 
         # Apply penalty function
         penalty = 1
         dev_all = []
-        for i,value in enumerate(previous):
+        for key,value in current.items():
             # Ingore tuner parameter whose current best value is 0
-            if previous[i] == 0:
+            if previous[key] == 0:
                 continue
             # Get relative deviation of tuner values (reference: previous)
             try:
-                dev = abs(current[i] - previous[i]) / abs(previous[i])
+                dev = abs(current[key] - previous[key]) / abs(previous[key])
+                # TO-DO: Wie soll Gewichtungsfaktor aussehen für einzelne Tunerparameter bei quadr. Abweichung?
+                dev_square = (current[key] - previous[key]) ** 2
             except:
                 print('Exception here for Bugfix.')
             # Add corresponding function for penaltyfactor here
@@ -475,8 +477,16 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         """Method to be calculate the start_time based on the used
         start-time-method (timedelta or fix-start)."""
         if self.start_time_method == "timedelta":
-            # Using timedelta, _ref_time is subtracted of the given start-time
-            return start_time - self.timedelta
+            # Check if timedelta does not fall below the startime (start_time should not be lower then zero)
+            if start_time - self.timedelta < 0:
+                import warnings
+                warnings.warn('Simulation start time current calibration class \n falls below 0, because'
+                              ' of the chosen timedelta. The start time will be set to 0 seconds.'
+                              )
+                return 0
+            else:
+                # Using timedelta, _ref_time is subtracted of the given start-time
+                return start_time - self.timedelta
         else:
             # With fixed start, the _ref_time parameter is always returned
             return self.fix_start_time
