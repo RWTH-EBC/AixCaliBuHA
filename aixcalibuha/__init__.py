@@ -7,7 +7,9 @@ import pandas as pd
 import numpy as np
 from ebcpy import data_types
 from ebcpy.utils import statistics_analyzer
+import datetime
 import warnings
+warnings.simplefilter('always', UserWarning)    # for printing always warnings in loops
 # pylint: disable=I1101
 __version__ = "0.1.5"
 
@@ -23,9 +25,9 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
     ...
     """
 
-    def __init__(self, meas_target_data, sim_target_data, SIM_API,
+    def __init__(self, meas_target_data, sim_target_data, skip, SIM_API,
                  variable_names, weightings, number_cal_classes,
-                 classes_json, tuner_paras):
+                 classes_toml, tuner_paras, timestamp):
 
         self.meas_target_data = meas_target_data
         self.SIM_API = SIM_API
@@ -33,8 +35,10 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
         self.weightings = weightings
         self.sim_target_data = sim_target_data
         self.number_cal_classes = number_cal_classes
-        self.classes_json = classes_json
+        self.classes_toml = classes_toml
         self.tuner_paras = tuner_paras
+        self.skip = skip
+        self.timestamp = timestamp
 
 
     def setup_goals(self):
@@ -64,7 +68,12 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
         self.goals.set_sim_target_data(self.sim_target_data)
 
         # To match measured and simulated time interval (Removes all "NaN")
-        self.goals.set_relevant_time_intervals([(self.SIM_API.sim_setup["startTime"], self.SIM_API.sim_setup["stopTime"])])
+        self.goals.set_relevant_time_intervals([(self.SIM_API.sim_setup["startTime"], self.classes_toml[-1][2])])
+        # self.classes_json[-1][2] is the stoptime of the LAST class element. This is important because we want
+        # to evaluate the time interval to the end of this class and not to the stoptime specified in toml.
+
+        # extract goals data to dataframe for check if compressor is on (see setup_calibration_classes)
+        self.goals_data = self.goals.get_goals_data()
 
         return self.goals
 
@@ -86,18 +95,18 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
         :rtype: list
         """
         # Define the basic time-intervals and names for the calibration-classes:
-        # Read informations from json file
+        # Read informations from toml file
         self.cal_classes = []
         # Create CalibrationClass object
         for i in range(self.number_cal_classes):
-            if self.classes_json[i][2] > self.SIM_API.sim_setup['stopTime']:
-                self.classes_json[i][2] = self.SIM_API.sim_setup['stopTime']
+            if self.classes_toml[i][2] > self.SIM_API.sim_setup['stopTime']:
+                self.classes_toml[i][2] = self.SIM_API.sim_setup['stopTime']
                 warnings.warn('The stoptime of calibration class {} \nexceeds the stoptime adjusted during'
                               ' the extraction of the data and is changed to {} seconds.'
-                              .format(self.classes_json[i][0], self.SIM_API.sim_setup['stopTime']))
-            self.cal_classes.append(CalibrationClass(name=self.classes_json[i][0],
-                                                     start_time=self.classes_json[i][1],
-                                                     stop_time=self.classes_json[i][2]))
+                              .format(self.classes_toml[i][0], self.SIM_API.sim_setup['stopTime']))
+            self.cal_classes.append(CalibrationClass(name=self.classes_toml[i][0],
+                                                     start_time=self.classes_toml[i][1],
+                                                     stop_time=self.classes_toml[i][2]))
 
         # Set the tuner parameters and goals to all classes:
         for cal_class in self.cal_classes:
@@ -109,7 +118,32 @@ class Preparation:      # Evtl. als Wrapper in eigenem Skript aufbauen, hier ist
         #                                               bounds=[(4000, 6000), (10, 300)])
         # calibration_classes[3].set_tuner_paras(different_tuner_paras)
 
-        return self.cal_classes
+
+        # Check if there are any values of the targets bigger then zero. For example the compressor could be
+        # switched off in observed period. If so: no calibration for the current iteration step is done.
+
+            ## %% TO-DO: What if compressor was shut off in just one calibration class? skip the class not whole cali.
+
+            # Get goals of current calibration class
+            goals_data_current_class = self.goals_data.loc[cal_class.start_time: cal_class.stop_time]
+
+            # Iterate over all target variables of the class
+            for i, target in enumerate(cal_class.goals.get_goals_list()):
+                # get mean of goals to evaluate
+                mean_of_meas_data = goals_data_current_class[target]["meas"].mean()
+                if mean_of_meas_data == 0:
+                    warnings.warn("Class '{}': The target '{}' seems \nto contain no data bigger then zero during the "
+                                  "current considered period (affects day {}). This will cause problems for scale-"
+                                  "independent metrics like CVRMSE,\n because the mean of the measured targes will be 0."
+                                  " The calibration will be executed for the next period."
+                                  .format(cal_class.name, target, self.timestamp.date()))
+                    # Switch skipping on
+                    # self.skip = True
+                    self.skip['skip'] = True
+                    self.skip['cal_class']
+                    return self.cal_classes, self.skip
+
+        return self.cal_classes, self.skip
 
 class Goals:
     """
@@ -505,7 +539,7 @@ class Goals:
             if self._tsd.isnull().values.any():
                 raise ValueError("There are not valid values in the simulated target data. Probably the time interval"
                                  " of measured and simulated data are not equal. \nPlease check the frequencies"
-                                 " in the json file (outputInterval & frequency).")
+                                 " in the toml file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])
             # Apply penalty function
