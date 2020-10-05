@@ -34,6 +34,9 @@ class SenAnalyzer:
         Used to evaluate the difference of simulated and measured data.
         Like "RMSE", "MAE" etc. See utils.statistics_analyzer.py for
         further info.
+    :param pd.Dataframe sim_input_data:
+        Pandas dataframe of the simulated input data,
+        extracted from the specified database (see class GetData in "data_aquisition.py").
     :keyword str merge_multiple_classes:
         Default True. If False, the given list of calibration-classes
         is handeled as-is. This means if you pass two CalibrationClass objects

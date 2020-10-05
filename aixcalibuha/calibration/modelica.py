@@ -19,7 +19,7 @@ class ModelicaCalibrator(Calibrator):
     function is the standard-objective function for all calibration
     processes of modelica-models.
 
-    :param str,os.path.normpath cd:
+    :param WindowsPath cal cd:
         Working directory
     :param ebcpy.simulationapi.SimulationAPI sim_api:
         Simulation-API for running the models
@@ -30,6 +30,9 @@ class ModelicaCalibrator(Calibrator):
         e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
+    :param pd.Dataframe sim_input_data:
+        Pandas dataframe of the simulated input data,
+        extracted from the specified database (see class GetData in "data_aquisition.py").
     :keyword float timedelta:
         If you use this class for calibrating a single time-interval,
         you can set the timedelta to instantiate the simulation before
@@ -78,7 +81,7 @@ class ModelicaCalibrator(Calibrator):
     cd_of_class = None
 
     def __init__(self, cd, sim_api, statistical_measure, framework, method,
-                 calibration_class, meas_input_data, **kwargs):
+                 calibration_class, sim_input_data, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
@@ -92,7 +95,8 @@ class ModelicaCalibrator(Calibrator):
         # self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
-        self.meas_input_data = meas_input_data
+        self.apply_penalty = kwargs.pop("apply_penalty", True)
+        self.sim_input_data = sim_input_data
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
@@ -184,7 +188,7 @@ class ModelicaCalibrator(Calibrator):
             target_sim_names = self.goals.get_sim_var_names()
             self.sim_api.set_sim_setup({"resultNames": target_sim_names})
             # Just specified time intervall in cal classes is simulated
-            df = self.sim_api.simulate(self.meas_input_data, savepath_files="")
+            df = self.sim_api.simulate(self.sim_input_data, savepath_files="")
             # Convert it to time series data object
             sim_target_data = data_types.TimeSeriesData(df)
         except Exception as e:
@@ -200,7 +204,7 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Evaluate the current objective
         # Penalty function (get penaltyfactor)
-        if self.sim_api.count > 1 and self.sim_api.benchmark_exists:
+        if self.sim_api.count > 1 and self.sim_api.benchmark_exists and self.apply_penalty:
             penalty = self.get_penalty(xk_descaled)
             # Evaluate with penalty
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
@@ -232,8 +236,6 @@ class ModelicaCalibrator(Calibrator):
 
     def calibrate(self):
         #%% Start Calibration:
-        self.logger.log("Calibration of day {}, starting at {}. Iterationstep Digital Twin Framework: {}"
-                        .format(self.current_timestamp.date(), self.current_timestamp.time(), self.sim_api.count))
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
@@ -376,7 +378,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     fix_start_time = 0
     merge_multiple_classes = True
 
-    def __init__(self, cd, sim_api, statistical_measure, framework, method, calibration_classes, meas_input_data,
+    def __init__(self, cd, sim_api, statistical_measure, framework, method, calibration_classes, sim_input_data,
                  current_timestamp, start_time_method='fixstart', **kwargs):
         # Check if input is correct (Wird bereits in main gemacht)
         if not isinstance(calibration_classes, list):
@@ -402,7 +404,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         # Instantiate parent-class
         super().__init__(cd, sim_api, statistical_measure, framework, method,
-                         calibration_classes[0], meas_input_data, **kwargs)
+                         calibration_classes[0], sim_input_data, **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
@@ -411,6 +413,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.current_timestamp = current_timestamp
 
     def calibrate(self):
+
+        # Log Start
+        self.logger.log("Calibration of day {}, starting at {}. Iterationstep Digital Twin Framework: {}"
+                        .format(self.current_timestamp.date(), self.current_timestamp.time(), self.sim_api.count))
 
         # First check possible intersection of tuner parameters
         # and warn the user about it
@@ -525,6 +531,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             average_tuner_parameter = {}
             for tuner_para, values in merged_tuner_parameters.items():
                 average_tuner_parameter[tuner_para] = sum(values) / len(values)
+
+            self.logger.log("The tuner parameters used for evaluation are averaged as follows:\n {}"
+                            .format(tuner, values) for tuner, values in average_tuner_parameter)
 
             # Create result-dictonary
             res_tuner = average_tuner_parameter
