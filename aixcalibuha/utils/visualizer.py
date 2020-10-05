@@ -11,6 +11,7 @@ from ebcpy.utils.visualizer import Logger
 import matplotlib.pyplot as plt
 import numpy as np
 import aixcalibuha
+import csv
 from shutil import copyfile
 
 
@@ -390,6 +391,16 @@ class CalibrationVisualizer(CalibrationLogger):
 
         #filepath_bestgoal = os.path.join(iterpath, str(res["Iterate"]) + "_goals.%s" % file_type)
 
+        # Save calibration results as csv
+        res_dict = dict(res['Parameters'])
+        res_dict['Objective'] = res["Objective"]
+        res_dict['Duration'] = duration
+        res_csv = f'{self.cd}\\Iteration_{itercount}\\RESULTS_{self.calibration_class.name}_iteration{itercount}.csv'
+        with open(res_csv, 'w') as rescsv:
+            writer = csv.DictWriter(rescsv, res_dict.keys())
+            writer.writeheader()
+            writer.writerow(res_dict)
+
 
         # Save figures & close plots
         copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
@@ -400,15 +411,6 @@ class CalibrationVisualizer(CalibrationLogger):
         if res['better_current_result'] == True:
             # save improvement of recalibration ("best goals df" as csv)
             res['Goals'].get_goals_data().to_csv(os.path.join(iterpath, 'goals_df.csv'), sep=",", decimal=".")
-
-        # Safe Resultfiles as csv
-        # obj & tuner
-        cal_results = res
-        cal_results['duration'] = duration
-        cal_results = data_types.TimeSeriesData(res)
-        cal_results.to_csv(f'{self.cd}\\Iteration_{itercount}\\RESULTS_{self.calibration_class.name}_iteration{itercount}.csv')
-        # best goals dataframe
-        best_goals_df = res['Goals'].get_goals_data()
 
 
     def log_intersection_of_tuners(self, intersected_tuner_parameters, itercount):
