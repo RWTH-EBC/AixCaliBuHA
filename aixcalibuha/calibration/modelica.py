@@ -96,6 +96,7 @@ class ModelicaCalibrator(Calibrator):
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.apply_penalty = kwargs.pop("apply_penalty", True)
+        self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.sim_input_data = sim_input_data
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
@@ -205,7 +206,8 @@ class ModelicaCalibrator(Calibrator):
         #%% Evaluate the current objective
         # Penalty function (get penaltyfactor)
         if self.sim_api.count > 1 and self.sim_api.benchmark_exists and self.apply_penalty:
-            penalty = self.get_penalty(xk_descaled)
+            current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
+            penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
             # Evaluate with penalty
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
                                                                      verbose=True, penaltyfactor=penalty)
@@ -290,7 +292,7 @@ class ModelicaCalibrator(Calibrator):
                                             self.sim_api.model_name)
         super()._handle_error(error)
 
-    def get_penalty(self, current_tuner_values):
+    def get_penalty(self, current_tuners, current_tuners_scaled):
         """
         Get penalty factor for evaluation of current objective. The penaltyfactor
         considers deviations of the tuner parameters in the objective function.
@@ -308,37 +310,42 @@ class ModelicaCalibrator(Calibrator):
 
         # Get lists of tuner values (latest best (with all other tuners) & current values)
         previous = self.sim_api.all_tuners_dict
-        current = dict(current_tuner_values)
-        # Get borders for applying penalty function
+        previous_scaled = self.sim_api.all_tuners_dict_scaled
+        # previous_scaled = list(self.sim_api.all_tuners_dict.keys())
+        current = current_tuners
+        current_scaled = dict(current_tuners_scaled)
 
         # Apply penalty function
         penalty = 1
-        dev_all = []
-        for key,value in current.items():
-            # Ingore tuner parameter whose current best value is 0
-            if previous[key] == 0:
-                continue
-            # Get relative deviation of tuner values (reference: previous)
-            try:
-                dev = abs(current[key] - previous[key]) / abs(previous[key])
-                # TO-DO: Wie soll Gewichtungsfaktor aussehen für einzelne Tunerparameter bei quadr. Abweichung?
-                dev_square = (current[key] - previous[key]) ** 2
-            except:
-                print('Exception here for Bugfix.')
+        weighting_factor = 0.1
+        for key,value in current_scaled.items():
             # Add corresponding function for penaltyfactor here
-            # add 0% to penaltyfactor
-            if dev < 0.2:
-                continue
-            # add 2% to penaltyfactor
-            elif dev < 0.4:
-                penalty += 0.02
-            # add 4% to penaltyfactor
-            elif dev < 0.6:
-                penalty += 0.04
-            # add 8% to penaltyfactor
+            if self.perform_square_deviation:
+                # Apply quadratic deviation
+                dev_square = (current_scaled[key] - previous_scaled[key]) ** 2
+                penalty += weighting_factor * dev_square
             else:
-                penalty += 0.08
-            dev_all.append(dev)
+                # Apply relative deviation
+                # Ingore tuner parameter whose current best value is 0
+                if previous[key] == 0:
+                    continue
+                # Get relative deviation of tuner values (reference: previous)
+                try:
+                    dev = abs(current[key] - previous[key]) / abs(previous[key])
+                except:
+                    print('Exception here for Bugfix.')
+                # add 0% to penaltyfactor
+                if dev < 0.2:
+                    continue
+                # add 2% to penaltyfactor
+                elif dev < 0.4:
+                    penalty += 0.02
+                # add 4% to penaltyfactor
+                elif dev < 0.6:
+                    penalty += 0.04
+                # add 8% to penaltyfactor
+                else:
+                    penalty += 0.08
 
         return penalty
 
