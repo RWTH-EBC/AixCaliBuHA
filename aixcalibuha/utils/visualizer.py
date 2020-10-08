@@ -387,7 +387,10 @@ class CalibrationVisualizer(CalibrationLogger):
 
         filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % file_type)
         filepath_obj = os.path.join(iterpath, "objective_plot.%s" % file_type)
-        bestgoal = os.path.join(self.cd, self.goals_dir, str(res["Iterate"]) + "_goals.%s" % file_type)
+        if self.save_tsd_plot:
+            bestgoal = os.path.join(self.cd, self.goals_dir, str(res["Iterate"]) + "_goals.%s" % file_type)
+            # Copy best goals figure
+            copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
 
         #filepath_bestgoal = os.path.join(iterpath, str(res["Iterate"]) + "_goals.%s" % file_type)
 
@@ -403,12 +406,11 @@ class CalibrationVisualizer(CalibrationLogger):
 
 
         # Save figures & close plots
-        copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
         self.fig_tuner.savefig(filepath_tuner)
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
 
-        if res['better_current_result'] == True:
+        if res['better_current_result'] == True and self.save_tsd_plot:
             # save improvement of recalibration ("best goals df" as csv)
             res['Goals'].get_goals_data().to_csv(os.path.join(iterpath, 'goals_df.csv'), sep=",", decimal=".")
 
