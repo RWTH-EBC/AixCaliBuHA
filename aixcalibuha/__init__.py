@@ -600,6 +600,8 @@ class Goals:
             [(0, 100), [150, 200), (500, 600)]
         """
         _df_ref = self._tsd_ref.copy()
+        # Interpolate if resampling is activated (see toml file for more informations)
+        _df_ref = _df_ref.interpolate()
         # Create initial False mask
         _mask = np.full(_df_ref.index.shape, False)
         # Dynamically make mask for multiple possible time-intervals
@@ -607,8 +609,8 @@ class Goals:
             _mask = _mask | ((_df_ref.index >= _start_time) & (_df_ref.index <= _end_time))
         # TODO: Is the data temporarly deleted if a segment is applied? Maybe we need a base-tsd and a current-tsd like _curr_tsd
         self._tsd = _df_ref.loc[_mask]
-        # Interpolate if resampling is activated (see toml file for more informations)
-        self._tsd = self._tsd.interpolate()
+        # # Interpolate if resampling is activated (see toml file for more informations)
+        # self._tsd = self._tsd.interpolate()
 
 
     def get_goals_list(self):
