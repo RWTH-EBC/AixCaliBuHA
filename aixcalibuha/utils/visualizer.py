@@ -304,9 +304,11 @@ class CalibrationVisualizer(CalibrationLogger):
 
         # %% Set-up figure for objective-plotting
         self.fig_obj, self.ax_obj = plt.subplots(1, 1)
-        self.fig_obj.suptitle(name + ": Objective")
+        # self.fig_obj.suptitle(name + ": Objective")
+        self.fig_obj.suptitle(name + ": Zielfunktionswert")
         self.ax_obj.set_ylabel(self.statistical_measure)
-        self.ax_obj.set_xlabel("Number iterations")
+        # self.ax_obj.set_xlabel("Number iterations")
+        self.ax_obj.set_xlabel("Anzahl der Iterationen")
         # If the changes are small, it seems like the plot does
         # not fit the printed values. This boolean assures that no offset is used.
         self.ax_obj.ticklabel_format(useOffset=False)
@@ -318,7 +320,8 @@ class CalibrationVisualizer(CalibrationLogger):
         self._n_rows_tuner = int(np.ceil(num_tuners / self._n_cols_tuner))
         self.fig_tuner, self.ax_tuner = plt.subplots(self._n_rows_tuner, self._n_cols_tuner,
                                                      squeeze=False, sharex=True)
-        self.fig_tuner.suptitle(name + ": Tuner Parameters")
+        # self.fig_tuner.suptitle(name + ": Tuner Parameters")
+        self.fig_tuner.suptitle(name + ": Tuner-Parameter")
         self._plot_tuner_parameters(for_setup=True)
 
         # %% Setup Goals figure
@@ -430,20 +433,24 @@ class CalibrationVisualizer(CalibrationLogger):
         data = list(intersected_tuner_parameters.values())
         fig_intersection, ax_intersection = plt.subplots(1, len(x_labels), squeeze=False)
         for i, x_label in enumerate(x_labels):
+            # Remove name of record (modelica) for visualization
+            x_label_vis = x_label.replace('TunerParameter.', '')
             cur_ax = ax_intersection[0][i]
             cur_ax.violinplot(data[i], showmeans=True, showmedians=False,
                               showextrema=True)
-            cur_ax.plot([1] * len(data[i]), data[i], "ro", label="Results")
+            # cur_ax.plot([1] * len(data[i]), data[i], "ro", label="Results")
+            cur_ax.plot([1] * len(data[i]), data[i], "ro", label="Ergebnisse")
 
             cur_ax.get_xaxis().set_tick_params(direction='out')
             cur_ax.xaxis.set_ticks_position('bottom')
             cur_ax.set_xticks(np.arange(1, 2))
             cur_ax.set_xlim(0.25, 1.75)
-            cur_ax.set_xticklabels([x_label])
+            cur_ax.set_xticklabels([x_label_vis])
             cur_ax.legend(loc="upper right")
 
         # Always store in the parent diretory as this info is relevant for all classes
-        fig_intersection.suptitle("Intersection of Tuner Parameters")
+        # fig_intersection.suptitle("Intersection of Tuner Parameters")
+        fig_intersection.suptitle("Überschneidung der Tuner-Parameter")
         path_intersections = os.path.join(os.path.dirname(self.cd), "tunerintersections")
         if not os.path.exists(path_intersections):
             os.makedirs(path_intersections)
@@ -465,12 +472,16 @@ class CalibrationVisualizer(CalibrationLogger):
         for row in range(self._n_rows_tuner):
             for col in range(self._n_cols_tuner):
                 cur_ax = self.ax_tuner[row][col]
+                tuner_names_vis = self.tuner_paras.get_names()
+                # Remove name of record (modelica)
+                for i, name in enumerate(tuner_names_vis):
+                    tuner_names_vis[i] = name.replace('TunerParameter.', '')
                 if tuner_counter >= len(self.tuner_paras.get_names()):
                     cur_ax.axis("off")
                 else:
                     tuner_para_name = self.tuner_paras.get_names()[tuner_counter]
                     if for_setup:
-                        cur_ax.set_ylabel(tuner_para_name)
+                        cur_ax.set_ylabel(tuner_names_vis[tuner_counter])
                         max_value = self.tuner_paras.get_value(tuner_para_name, "max")
                         min_value = self.tuner_paras.get_value(tuner_para_name, "min")
                         ini_val = self.tuner_paras.get_value(tuner_para_name, "initial_value")
