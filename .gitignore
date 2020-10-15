@@ -31,3 +31,5 @@ venv
 .pytest_cache
 htmlcov
 .coverage
+
+modelica_calibration_templates
