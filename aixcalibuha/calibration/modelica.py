@@ -317,7 +317,7 @@ class ModelicaCalibrator(Calibrator):
 
         # Apply penalty function
         penalty = 1
-        weighting_factor = 0.1
+        weighting_factor = 0.2
         for key,value in current_scaled.items():
             # Add corresponding function for penaltyfactor here
             if self.perform_square_deviation:
@@ -415,6 +415,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
+        else:
+            self.calibration_classes = calibration_classes
         self._cal_history = []
         # Get current timespamp of calibration
         self.current_timestamp = current_timestamp
