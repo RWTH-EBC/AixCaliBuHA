@@ -98,8 +98,10 @@ class SenAnalyzer:
                                                    type(CalibrationClass).__name__))
 
         # Merge the classes for avoiding possible intersection of tuner-parameters
-        if kwargs.pop("merge_multiple_classes", True):
+        if kwargs.pop("merge_multiple_classes", False):
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
+        else:
+            self.calibration_classes = calibration_classes
 
         # Update kwargs
         self.__dict__.update(kwargs)
@@ -180,7 +182,7 @@ class SenAnalyzer:
 
     def simulate_samples(self, samples, start_time, stop_time, relevant_intervals):
         """
-        Put the parameter in dymola model, run it.
+        Put the parameters in the model and simulate it.
 
         :param list samples:
             Output variables in dymola
@@ -260,6 +262,7 @@ class SenAnalyzer:
             self.goals = cal_class.goals
             self.problem = SensitivityProblem.create_problem(self.tuner_paras)
             samples = self.generate_samples()
+            # Generate list with metrics of every parameter variation
             output_array = self.simulate_samples(
                 samples,
                 cal_class.start_time,
@@ -301,7 +304,8 @@ class SenAnalyzer:
                 raise ValueError('Automatic selection removed all tuner parameter from class {} after Sensitivityanalysis was done.'
                                  ' Please adjust the threshold in json or manually chose tuner parameters for '
                                  'the calibration.'.format(cal_class.name))
-            cal_class.set_tuner_paras(tuner_paras)
+            # cal_class.set_tuner_paras(tuner_paras)
+            cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
 
