@@ -96,6 +96,7 @@ class ModelicaCalibrator(Calibrator):
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.apply_penalty = kwargs.pop("apply_penalty", True)
+        self.penalty_factor = kwargs.pop("penalty_factor", 0)
         self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.sim_input_data = sim_input_data
         # Extract kwargs for the visualizer
@@ -317,13 +318,12 @@ class ModelicaCalibrator(Calibrator):
 
         # Apply penalty function
         penalty = 1
-        weighting_factor = 0.2
         for key,value in current_scaled.items():
             # Add corresponding function for penaltyfactor here
             if self.perform_square_deviation:
                 # Apply quadratic deviation
                 dev_square = (current_scaled[key] - previous_scaled[key]) ** 2
-                penalty += weighting_factor * dev_square
+                penalty += self.penalty_factor * dev_square
             else:
                 # Apply relative deviation
                 # Ingore tuner parameter whose current best value is 0
@@ -398,7 +398,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                                 "be {}".format(type(cal_class).__name__,
                                                type(CalibrationClass).__name__))
         # Pop kwargs of this class (pass parameters and remove from kwarg dict):
-        self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
+        self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", False)
         # Apply (if given) the fix_start_time. Check for correct input as-well.
         self.fix_start_time = kwargs.pop("fix_start_time", 0)
         self.timedelta = kwargs.pop("timedelta", 0)
@@ -464,7 +464,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             self.tuner_paras = cal_class.tuner_paras
             self.x0 = self.tuner_paras.scale(self.tuner_paras.get_initial_values())
             # Either bounds are present or not.
-            # If present, the obj will scale the values to 0 and 1. If not,
+            # If present, the obj will scale the values to 0 and 1. If not
             # we have an unconstrained optimization.
             if self.tuner_paras.bounds is None:
                 self.bounds = None
