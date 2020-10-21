@@ -479,7 +479,7 @@ class CalibrationClass:
         if goals:
             self.set_goals(goals)
         if tuner_paras:
-            self.set_tuner_paras(tuner_paras)
+            self.tuner_paras = tuner_paras
         if relevant_intervals:
             self.relevant_intervals = relevant_intervals
         else:
@@ -574,6 +574,7 @@ def merge_calibration_classes(calibration_classes):
     temp_merged = {}
     for cal_class in calibration_classes:
         _name = cal_class.name
+        # First create dictionary with all calibration classes
         if _name in temp_merged:
             temp_merged[_name]["intervals"] += cal_class.relevant_intervals
         else:
