@@ -332,20 +332,21 @@ class ModelicaCalibrator(Calibrator):
                 # Get relative deviation of tuner values (reference: previous)
                 try:
                     dev = abs(current[key] - previous[key]) / abs(previous[key])
+                    penalty += self.penalty_factor * dev
                 except:
                     print('Exception here for Bugfix.')
-                # add 0% to penaltyfactor
-                if dev < 0.2:
-                    continue
-                # add 2% to penaltyfactor
-                elif dev < 0.4:
-                    penalty += 0.02
-                # add 4% to penaltyfactor
-                elif dev < 0.6:
-                    penalty += 0.04
-                # add 8% to penaltyfactor
-                else:
-                    penalty += 0.08
+                # # add 0% to penaltyfactor
+                # if dev < 0.2:
+                #     continue
+                # # add 2% to penaltyfactor
+                # elif dev < 0.4:
+                #     penalty += 0.02
+                # # add 4% to penaltyfactor
+                # elif dev < 0.6:
+                #     penalty += 0.04
+                # # add 8% to penaltyfactor
+                # else:
+                #     penalty += 0.08
 
         return penalty
 
