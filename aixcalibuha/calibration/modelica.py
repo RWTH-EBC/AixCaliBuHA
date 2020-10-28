@@ -12,7 +12,7 @@ from aixcalibuha import CalibrationClass, Goals
 import time
 
 
-class ModelicaCalibrator(Calibrator):
+class SingleClassCalibrator(Calibrator):
     """
     Calibrator for Modelica simulation methods. This class can
     be used for single time-intervals of calibration. The objective
@@ -213,13 +213,11 @@ class ModelicaCalibrator(Calibrator):
             total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
                                                                      verbose=True, penaltyfactor=penalty)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
-
         # There is no benchmark in the first iteration or first iterations were skipped, so no penalty is applied
         else:
             penalty = None
             # Evaluate without penalty
-            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
-                                                                     verbose=True)
+            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,verbose=True)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
 
         # current best iteration step of current calibration class
@@ -352,7 +350,7 @@ class ModelicaCalibrator(Calibrator):
 
 
 
-class MultipleClassCalibrator(ModelicaCalibrator):
+class MultipleClassCalibrator(SingleClassCalibrator):
     """
     Class for calibration of multiple calibration classes.
     When passing multiple classes of the same name, all names
