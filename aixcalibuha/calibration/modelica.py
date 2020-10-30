@@ -232,10 +232,14 @@ class ModelicaCalibrator(Calibrator):
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
         self.goals = goals
+        # Reset relevant time intervals to validate on whole time range
+        self._relevant_time_intervals = []
         # Use the results parameter vector to simulate again.
         xk = self._res.x
         val_result = self.obj(xk)
         self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
+
+        return self.goals
 
     def _handle_error(self, error):
         """
@@ -315,6 +319,11 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             self.start_time_method = start_time_method
 
     def calibrate(self, framework, method=None):
+        # delete old calibration results if existent
+        try:
+            os.remove(os.path.join(os.getcwd(), "calibration_results.json"))
+        except:
+            pass
 
         # First check possible intersection of tuner-parameteres
         # and warn the user about it
