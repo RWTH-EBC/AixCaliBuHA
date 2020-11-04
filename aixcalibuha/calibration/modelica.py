@@ -232,14 +232,10 @@ class ModelicaCalibrator(Calibrator):
                         "framework-class {}".format(self.sim_api.model_name,
                                                     self.__class__.__name__))
         self.goals = goals
-        # Reset relevant time intervals to validate on whole time range
-        self._relevant_time_intervals = []
         # Use the results parameter vector to simulate again.
         xk = self._res.x
         val_result = self.obj(xk)
         self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
-
-        return self.goals
 
     def _handle_error(self, error):
         """
