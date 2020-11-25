@@ -97,19 +97,6 @@ class CalibrationLogger(Logger):
         self.log(result_log)
         self._counter_calibration = 0
 
-        # Save relevant results in JSON
-        import json
-        results_file_path = os.path.join(os.getcwd(), "calibration_results.json")
-        try:
-            with open(results_file_path, 'r') as json_file:
-                parameter_values = json.load(json_file)
-        except:
-            parameter_values = {}
-        new_parameter_values = dict(zip(list(self.tuner_paras.get_names()), best_iterate["Parameters"]))
-        updated_parameter_values = {**parameter_values, **new_parameter_values}
-        with open(results_file_path, 'w') as json_file:
-            json.dump(updated_parameter_values, json_file , indent=4)
-
     def calibrate_new_class(self, calibration_class, cd=None):
         """Function to setup the figures for a new class of calibration.
         This function is called when instantiating this Class. If you
