@@ -180,7 +180,6 @@ class ModelicaCalibrator(Calibrator):
         # Convert set if multiple goals of different scales are used
         xk_descaled = self.tuner_paras.descale(xk)
         # Set initial values for modelica simulation, depending on calibration strategy
-        ################################################################################################################
         if self.calibration_strategy == "sequential" and self._cal_history:
             already_calibrated_parameters = {}
             for cal_run in self._cal_history:
@@ -190,8 +189,7 @@ class ModelicaCalibrator(Calibrator):
             import pandas as pd
             initial_values = pd.Series(already_calibrated_parameters).append(xk_descaled)
             self.sim_api.set_initial_values(initial_values)
-        ################################################################################################################
-        else:
+        else: # for "parallel" and first run of "sequential" strategy
             self.sim_api.set_initial_values(xk_descaled)
         # Simulate
         try:
@@ -384,30 +382,26 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             #%% Calibration-Setup
             # Reset counter for new calibration
             self._counter = 0
-            ############################################################################################################
+            # Retrieve already calibrated parameters (i.e. calibrated in the previous classes)
             already_calibrated_parameters = {}
             already_calibrated_names = []
             if self._cal_history:
                 for cal_run in self._cal_history:
                     for parameter_name in cal_run['res']['Parameters'].index:
                         already_calibrated_parameters[parameter_name] = cal_run['res']['Parameters'][parameter_name]
-
                 already_calibrated_names = list(already_calibrated_parameters.keys())
-            ############################################################################################################
             # Reset best iterate for new class
             self._current_best_iterate = {"Objective": np.inf}
             self._relevant_time_intervals = cal_class.relevant_intervals
             self.goals = cal_class.goals
             self.tuner_paras = cal_class.tuner_paras
-            # if parameter was already calibrated and gets calibrated again, set previous result value as initial value
-            ############################################################################################################
+            # Set initial values
             initial_values = self.tuner_paras.get_initial_values()
             if self.calibration_strategy == "sequential" and self._cal_history:
+                # Use parameter values calibrated in previous classes as initial parameter values for this class
                 for num, parameter_name in enumerate(self.tuner_paras.get_names()):
                     if parameter_name in already_calibrated_names:
-                        # Use parameter values calibrated in previous classes as initial parameter values for this class
                         initial_values[num] = already_calibrated_parameters[parameter_name]
-            ############################################################################################################
             self.x0 = self.tuner_paras.scale(initial_values)
             # Either bounds are present or not.
             # If present, the obj will scale the values to 0 and 1. If not,
@@ -416,8 +410,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 self.bounds = None
             else:
                 self.bounds = [(0, 1) for i in range(len(self.x0))]
+            # Set initial names
             initial_names = self.tuner_paras.get_names()
             if self.calibration_strategy == "sequential":
+                # Use names of parameters calibrated in previous classes and of parameters that are calibrate now
                 initial_names = already_calibrated_names + self.tuner_paras.get_names()
             self.sim_api.set_sim_setup({"initialNames": initial_names})
             # Used so that the logger prints the correct class.
@@ -434,18 +430,15 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         self.check_intersection_of_tuner_parameters()
 
-        ################################################################################################################
-        # Save relevant results in JSON
+        # Save calibrated parameter values in JSON
         if self.result_path:
             parameter_values = {}
             for cal_run in self._cal_history:
                 for parameter_name in cal_run['res']['Parameters'].index:
                     parameter_values[parameter_name] = cal_run['res']['Parameters'][parameter_name]
-
             import json
             with open(self.result_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
-        ################################################################################################################
 
 
     def _apply_start_time_method(self, start_time):
