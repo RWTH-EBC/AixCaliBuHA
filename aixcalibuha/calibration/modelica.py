@@ -29,8 +29,8 @@ class ModelicaCalibrator(Calibrator):
         e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
-    :param str calibration_method:
-        Default is 'parallel'. Method you want to use for multi-class calibration.
+    :param str calibration_strategy:
+        Default is 'parallel'. Strategy you want to use for multi-class calibration.
         If 'parallel' is used, parameters will be calibrated on the respective time intervals
         independently. If 'sequential' is used, the order of the calibration classes matters:
         The resulting parameter values of one class will be used as starting values for calibration
@@ -86,7 +86,7 @@ class ModelicaCalibrator(Calibrator):
     cd_of_class = None
 
     def __init__(self, cd, sim_api, statistical_measure, calibration_class,
-                 calibration_method='parallel', result_path=None, **kwargs):
+                 calibration_strategy='parallel', result_path=None, **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
@@ -138,11 +138,11 @@ class ModelicaCalibrator(Calibrator):
                                           self.calibration_class.stop_time)]
 
         # Choose the calibration method (only for multi-class calibration)
-        if calibration_method.lower() not in ["parallel", "sequential"]:
-            raise ValueError("Given calibration_method {} is not supported. Please choose between"
-                             "'parallel' or 'sequential'".format(calibration_method))
+        if calibration_strategy.lower() not in ["parallel", "sequential"]:
+            raise ValueError("Given calibration_strategy {} is not supported. Please choose between"
+                             "'parallel' or 'sequential'".format(calibration_strategy))
         else:
-            self.calibration_method = calibration_method
+            self.calibration_strategy = calibration_strategy
 
         # define result path
         self.result_path = result_path
@@ -179,9 +179,9 @@ class ModelicaCalibrator(Calibrator):
         self._counter += 1
         # Convert set if multiple goals of different scales are used
         xk_descaled = self.tuner_paras.descale(xk)
-        # Set initial values for modelica simulation
+        # Set initial values for modelica simulation, depending on calibration strategy
         ################################################################################################################
-        if self.calibration_method == "sequential" and self._cal_history:
+        if self.calibration_strategy == "sequential" and self._cal_history:
             already_calibrated_parameters = {}
             for cal_run in self._cal_history:
                 for parameter_name in cal_run['res']['Parameters'].index:
@@ -296,6 +296,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         time being subtracted from each start time of each calibration class.
         Please have a look at the file in \img\typeOfContinouusCalibration.pdf
         for a better visualization.
+    :param str calibration_class_order:
+        List with class names in order of which they should be calibrated.
     :keyword float fix_start_time:
         Value for the fix start time if start_time_method="fixstart". Default is zero.
     :keyword float timedelta:
@@ -314,7 +316,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     merge_multiple_classes = True
 
     def __init__(self, cd, sim_api, statistical_measure, calibration_classes,
-                 start_time_method='fixstart', **kwargs):
+                 start_time_method='fixstart', calibration_class_order=None, **kwargs):
         # Check if input is correct
         if not isinstance(calibration_classes, list):
             raise TypeError("calibration_classes is of type "
@@ -338,6 +340,11 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         if self.merge_multiple_classes:
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)
         self._cal_history = []
+
+        # Sort calibration_classes according to specified order
+        if calibration_class_order:
+            self.calibration_classes = [cal_class for x in calibration_class_order
+                                        for cal_class in self.calibration_classes if cal_class.name == x]
 
         # Choose the time-method
         if start_time_method.lower() not in ["fixstart", "timedelta"]:
@@ -395,7 +402,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             # if parameter was already calibrated and gets calibrated again, set previous result value as initial value
             ############################################################################################################
             initial_values = self.tuner_paras.get_initial_values()
-            if self.calibration_method == "sequential" and self._cal_history:
+            if self.calibration_strategy == "sequential" and self._cal_history:
                 for num, parameter_name in enumerate(self.tuner_paras.get_names()):
                     if parameter_name in already_calibrated_names:
                         # Use parameter values calibrated in previous classes as initial parameter values for this class
@@ -409,7 +416,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 self.bounds = None
             else:
                 self.bounds = [(0, 1) for i in range(len(self.x0))]
-            self.sim_api.set_sim_setup({"initialNames": already_calibrated_names + self.tuner_paras.get_names()})
+            initial_names = self.tuner_paras.get_names()
+            if self.calibration_strategy == "sequential":
+                initial_names = already_calibrated_names + self.tuner_paras.get_names()
+            self.sim_api.set_sim_setup({"initialNames": initial_names})
             # Used so that the logger prints the correct class.
             self.calibration_class = cal_class
 
