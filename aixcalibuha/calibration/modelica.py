@@ -253,6 +253,18 @@ class ModelicaCalibrator(Calibrator):
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name)
 
+        # Save calibrated parameter values in JSON (not for multi-class calibration)
+        try:
+            self.calibration_classes # check if multi-class calibration
+        except: # if not multi-class, use following to save results
+            if self.result_path:
+                parameter_values = {}
+                for parameter_name in self._current_best_iterate['Parameters'].index:
+                    parameter_values[parameter_name] = self._current_best_iterate['Parameters'][parameter_name]
+                import json
+                with open(self.result_path, 'w') as json_file:
+                    json.dump(parameter_values, json_file, indent=4)
+
     def validate(self, goals):
         if not isinstance(goals, Goals):
             raise TypeError("Given goals is of type {} but type"
