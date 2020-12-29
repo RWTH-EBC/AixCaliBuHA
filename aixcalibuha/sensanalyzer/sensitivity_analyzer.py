@@ -209,7 +209,7 @@ class SenAnalyzer:
                     # Load the result file to the goals object
                     sim_target_data = data_types.TimeSeriesData(filepath)
                 else:
-                    target_sim_names = [sim_name for meas_name, sim_name in self.goals.variable_names.values()]
+                    target_sim_names = self.goals.get_sim_var_names()
                     self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
                     df = self.simulation_api.simulate(savepath_files="")
                     # Convert it to time series data object

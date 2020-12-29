@@ -171,7 +171,7 @@ class ModelicaCalibrator(Calibrator):
                 # %% Load results and write to goals object
                 sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
             else:
-                target_sim_names = [sim_name for meas_name, sim_name in self.goals.variable_names.values()]
+                target_sim_names = self.goals.get_sim_var_names()
                 self.sim_api.set_sim_setup({"resultNames": target_sim_names})
                 df = self.sim_api.simulate(savepath_files="")
                 # Convert it to time series data object

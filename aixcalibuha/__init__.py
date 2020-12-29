@@ -247,6 +247,7 @@ class Goals:
                   "weightings": self._weightings}
         return config
 
+
 class Goals:
     """
     Class for one or multiple goals. Used to evaluate the
@@ -471,6 +472,14 @@ class Goals:
     def get_goals_data(self):
         """Get the current time-series-data object."""
         return self._tsd.copy()
+
+    def get_sim_var_names(self):
+        """Get the names of the simulation variables.
+
+        :returns list sim_var_names:
+            Names of the simulation variables as a list
+        """
+        return list(self._sim_var_matcher.values())
 
 
 class CalibrationClass:
