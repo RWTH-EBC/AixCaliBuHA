@@ -3,7 +3,9 @@ use-cases of calibration, mainly for Modelica
 Calibration."""
 
 import os
+import json
 import numpy as np
+import pandas as pd
 from ebcpy import data_types
 import aixcalibuha
 from aixcalibuha.utils import visualizer
@@ -141,8 +143,7 @@ class ModelicaCalibrator(Calibrator):
         if calibration_strategy.lower() not in ["parallel", "sequential"]:
             raise ValueError("Given calibration_strategy {} is not supported. Please choose between"
                              "'parallel' or 'sequential'".format(calibration_strategy))
-        else:
-            self.calibration_strategy = calibration_strategy
+        self.calibration_strategy = calibration_strategy
 
         # define result path
         self.result_path = result_path
@@ -186,7 +187,6 @@ class ModelicaCalibrator(Calibrator):
                 for parameter_name in cal_run['res']['Parameters'].index:
                     already_calibrated_parameters[parameter_name] = cal_run['res']['Parameters'][parameter_name]
             # Use parameter values calibrated in previous classes and new ones as initial values for this class
-            import pandas as pd
             initial_values = pd.Series(already_calibrated_parameters).append(xk_descaled)
             self.sim_api.set_initial_values(initial_values)
         else: # for "parallel" and first run of "sequential" strategy
@@ -253,17 +253,14 @@ class ModelicaCalibrator(Calibrator):
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name)
 
-        # Save calibrated parameter values in JSON (not for multi-class calibration)
-        try:
-            self.calibration_classes # check if multi-class calibration
-        except: # if not multi-class, use following to save results
-            if self.result_path:
-                parameter_values = {}
-                for parameter_name in self._current_best_iterate['Parameters'].index:
-                    parameter_values[parameter_name] = self._current_best_iterate['Parameters'][parameter_name]
-                import json
-                with open(self.result_path, 'w') as json_file:
-                    json.dump(parameter_values, json_file, indent=4)
+        # Save calibrated parameter values in JSON
+        # (not for multi-class calibration and only if path is provided)
+        if not hasattr(self, "calibration_classes") and self.result_path is not None:
+            parameter_values = {}
+            for parameter_name in self._current_best_iterate['Parameters'].index:
+                parameter_values[parameter_name] = self._current_best_iterate['Parameters'][parameter_name]
+            with open(self.result_path, 'w') as json_file:
+                json.dump(parameter_values, json_file, indent=4)
 
     def validate(self, goals):
         if not isinstance(goals, Goals):
@@ -448,10 +445,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             for cal_run in self._cal_history:
                 for parameter_name in cal_run['res']['Parameters'].index:
                     parameter_values[parameter_name] = cal_run['res']['Parameters'][parameter_name]
-            import json
             with open(self.result_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
-
 
     def _apply_start_time_method(self, start_time):
         """Method to be calculate the start_time based on the used
