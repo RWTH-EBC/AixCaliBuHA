@@ -2,9 +2,8 @@
 aixcalibuha.sensanalyzer except the modelica based SenAnalyzer, as the setup
 is more fitting inside test_modelica_cal_sen"""
 import unittest
-from ebcpy import data_types
 from aixcalibuha.sensanalyzer import sensitivity_analyzer
-
+from aixcalibuha import TunerParas
 
 class TestSenProblem(unittest.TestCase):
     """Test-class for sensitivity analysis problem class
@@ -19,8 +18,8 @@ class TestSenProblem(unittest.TestCase):
             self.assertIsInstance(sen_problem, sensitivity_analyzer.SensitivityProblem)
 
         # Test setup with tuner parameters
-        tuner_paras = data_types.TunerParas(["heatConv_a", "heatConv_b", "C", "m_flow_2"],
-                                            [130, 220, 5000, 0.04])
+        tuner_paras = TunerParas(["heatConv_a", "heatConv_b", "C", "m_flow_2"],
+                                 [130, 220, 5000, 0.04])
         sen_problem = sensitivity_analyzer.SensitivityProblem("morris", num_samples=2,
                                                               tuner_paras=tuner_paras)
         self.assertIsInstance(sen_problem.problem, dict)

@@ -3,9 +3,8 @@ Used to define Base-Classes such as Optimizer and
 Calibrator."""
 
 from abc import abstractmethod
-from ebcpy import data_types
 from ebcpy import optimization
-from aixcalibuha import Goals
+from aixcalibuha import Goals, TunerParas
 
 
 class Calibrator(optimization.Optimizer):
@@ -14,7 +13,7 @@ class Calibrator(optimization.Optimizer):
     class.
     """
 
-    tuner_paras = data_types.TunerParas
+    tuner_paras = TunerParas
     goals = Goals
 
     def __init__(self, cd, sim_api, statistical_measure, **kwargs):

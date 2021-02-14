@@ -3,10 +3,9 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from ebcpy import data_types
 from ebcpy.examples import data_types_example
 from aixcalibuha.examples import goals_example
-from aixcalibuha import CalibrationClass
+from aixcalibuha import CalibrationClass, TunerParas
 
 
 def setup_calibration_classes():
@@ -37,9 +36,9 @@ def setup_calibration_classes():
         cal_class.set_tuner_paras(tuner_paras)
         cal_class.set_goals(goals)
 
-    different_tuner_paras = data_types.TunerParas(names=["C", "heatConv_a"],
-                                                  initial_values=[5000, 200],
-                                                  bounds=[(4000, 6000), (10, 300)])
+    different_tuner_paras = TunerParas(names=["C", "heatConv_a"],
+                                       initial_values=[5000, 200],
+                                       bounds=[(4000, 6000), (10, 300)])
     calibration_classes[3].set_tuner_paras(different_tuner_paras)
 
     return calibration_classes

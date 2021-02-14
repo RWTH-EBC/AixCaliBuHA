@@ -6,7 +6,6 @@ The Visualizer Class inherits the Logger class, as logging
 will always be used as a default.
 """
 import os
-from ebcpy import data_types
 from ebcpy.utils.visualizer import Logger
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,7 +31,7 @@ class CalibrationLogger(Logger):
 
     # Instantiate dummy parameters
     calibration_class = aixcalibuha.CalibrationClass
-    tuner_paras = data_types.TunerParas
+    tuner_paras = aixcalibuha.TunerParas
     goals = aixcalibuha.Goals
     integer_prec = 4  # Number of integer parts
     decimal_prec = 6
@@ -124,9 +123,9 @@ class CalibrationLogger(Logger):
         """
         Set the currently used TunerParas object to use the information for logging.
 
-        :param tuner_paras: ebcpy.data_types.TunerParas
+        :param tuner_paras: aixcalibuha.
         """
-        if not isinstance(tuner_paras, data_types.TunerParas):
+        if not isinstance(tuner_paras, aixcalibuha.TunerParas):
             raise TypeError("Given tuner_paras is of type {} but type"
                             "TunerParas is needed.".format(type(tuner_paras).__name__))
         self.tuner_paras = tuner_paras

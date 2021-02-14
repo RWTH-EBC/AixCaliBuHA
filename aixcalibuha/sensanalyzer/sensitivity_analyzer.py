@@ -13,7 +13,7 @@ from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
 import aixcalibuha
-from aixcalibuha import CalibrationClass, Goals
+from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
 class SenAnalyzer:
@@ -52,7 +52,7 @@ class SenAnalyzer:
         If true, all simulation files for each iteration will be saved!
     """
     simulation_api = simulationapi.SimulationAPI
-    tuner_paras = data_types.TunerParas
+    tuner_paras = TunerParas
     goals = Goals
     calibration_classes = []
     analysis_variables = []
@@ -300,7 +300,7 @@ class SensitivityProblem:
         the number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of sobol and
         morris in the SALib for more information.
-    :param ebcpy.data_types.TunerParas tuner_paras:
+    :param aixcalibuha.TunerParas tuner_paras:
         Optional, are also added when instantiating the SenAnalyzer-Class.
         Based on the tuner-paras, used to create a problem used in the SenAnalyzer-Class.
 
