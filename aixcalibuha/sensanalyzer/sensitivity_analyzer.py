@@ -8,7 +8,7 @@ from SALib.sample import morris
 from SALib.sample import saltelli as sobol
 from SALib.analyze import morris as analyze_morris
 from SALib.analyze import sobol as analyze_sobol
-from ebcpy.utils import visualizer
+from ebcpy.utils import setup_logger
 from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
@@ -67,7 +67,7 @@ class SenAnalyzer:
                  calibration_classes, statistical_measure, **kwargs):
         """Instantiate class parameters"""
         # Setup the logger
-        self.logger = visualizer.Logger(cd, self.__class__.__name__)
+        self.logger = setup_logger(cd=cd, name=self.__class__.__name__)
         # Add any simulation_api, dymolapi or pyfmi
         self.simulation_api = simulation_api
         self.statistical_measure = statistical_measure
@@ -175,7 +175,7 @@ class SenAnalyzer:
         """
         Put the parameter in dymola model, run it.
 
-        :param list samples:
+        :param (list, np.ndarray) samples:
             Output variables in dymola
         :param float start_time:
             Start time of simulation
@@ -196,7 +196,7 @@ class SenAnalyzer:
                                            "stopTime": stop_time})
         for i, initial_values in enumerate(samples):
             # Simulate the current values
-            self.logger.log('Parameter variation {} of {}'.format(i+1, len(samples)))
+            self.logger.info('Parameter variation {} of {}'.format(i+1, len(samples)))
             self.simulation_api.set_initial_values(initial_values)
 
             # Simulate
@@ -242,10 +242,8 @@ class SenAnalyzer:
         """
         all_results = []
         for cal_class in self.calibration_classes:
-            self.logger.log('Start sensitivity analysis of class: {}, '
-                            'Time-Interval: {}-{} s'.format(cal_class.name,
-                                                            cal_class.start_time,
-                                                            cal_class.stop_time))
+            self.logger.info(f'Start sensitivity analysis of class: {cal_class.name}, '
+                             f'Time-Interval: {cal_class.start_time}-{cal_class.stop_time} s')
             self.tuner_paras = cal_class.tuner_paras
             self.goals = cal_class.goals
             self.problem = SensitivityProblem.create_problem(self.tuner_paras)
@@ -285,7 +283,7 @@ class SenAnalyzer:
                 if sen_value < threshold:
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
-            cal_class.set_tuner_paras(tuner_paras)
+            cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
 

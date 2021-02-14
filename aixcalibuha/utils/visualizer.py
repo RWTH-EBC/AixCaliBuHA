@@ -6,13 +6,13 @@ The Visualizer Class inherits the Logger class, as logging
 will always be used as a default.
 """
 import os
-from ebcpy.utils.visualizer import Logger
+from ebcpy.utils import setup_logger
 import matplotlib.pyplot as plt
 import numpy as np
 import aixcalibuha
 
 
-class CalibrationLogger(Logger):
+class CalibrationLogger:
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
         relevant as a log-file.
@@ -29,10 +29,7 @@ class CalibrationLogger(Logger):
             Measurement used to evaluate the objective
     """
 
-    # Instantiate dummy parameters
-    calibration_class = aixcalibuha.CalibrationClass
-    tuner_paras = aixcalibuha.TunerParas
-    goals = aixcalibuha.Goals
+    # Instantiate class parameters
     integer_prec = 4  # Number of integer parts
     decimal_prec = 6
     _counter_calibration = 0  # Number of function calls of calibration
@@ -41,9 +38,11 @@ class CalibrationLogger(Logger):
 
     def __init__(self, cd, name, calibration_class, statistical_measure):
         """Instantiate class parameters"""
-        super().__init__(cd, name)
+        self._tuner_paras = None
+        self._goals = None
+        self.logger = setup_logger(cd=cd, name=name)
+        self.cd = cd
         self.calibration_class = calibration_class
-        self.set_tuner_paras(calibration_class.tuner_paras)
         self.statistical_measure = statistical_measure
 
     def _set_prec_and_with_for_tuner_paras(self):
@@ -71,7 +70,7 @@ class CalibrationLogger(Logger):
         xk_descaled = self.tuner_paras.descale(xk)
         self._counter_calibration += 1
         info_string = self._get_tuner_para_values_as_string(xk_descaled, obj, verbose_information)
-        self.log(info_string)
+        self.logger.info(info_string)
 
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
@@ -83,17 +82,17 @@ class CalibrationLogger(Logger):
         :param str model_name:
             Name of the model being calibrated
         """
-        result_log = "\nResults for calibration of model: {}\n".format(model_name)
-        result_log += "Number of iterations: {}\n".format(self._counter_calibration)
+        result_log = f"\nResults for calibration of model: {model_name}\n"
+        result_log += f"Number of iterations: {self._counter_calibration}\n"
         result_log += "Final parameter values:\n"
         # Set the iteration counter to the actual number of the best iteration is printed
         self._counter_calibration = best_iterate["Iterate"]
-        result_log += "{}\n".format(self._get_tuner_para_names_as_string())
+        result_log += f"{self._get_tuner_para_names_as_string()}\n"
         final_values = self._get_tuner_para_values_as_string(best_iterate["Parameters"],
                                                              best_iterate["Objective"],
                                                              best_iterate["Unweighted Objective"])
-        result_log += "{}\n".format(final_values)
-        self.log(result_log)
+        result_log += f"{final_values}\n"
+        self.logger.info(result_log)
         self._counter_calibration = 0
 
     def calibrate_new_class(self, calibration_class, cd=None):
@@ -108,30 +107,46 @@ class CalibrationLogger(Logger):
         :param str,os.path.normpath cd:
             Optional change in working directory to store files
         """
-        if cd and os.path.isdir(cd):
+        if cd is not None:
             self.cd = cd
-        if not os.path.exists(self.cd):
-            os.makedirs(self.cd)
-
         self.calibration_class = calibration_class
-        self.set_tuner_paras(calibration_class.tuner_paras)
 
-        if calibration_class.goals is not None:
-            self.set_goals(calibration_class.goals)
+    @property
+    def cd(self) -> str:
+        """Get the current working directory for storing plots."""
+        return self._cd
 
-    def set_tuner_paras(self, tuner_paras):
+    @cd.setter
+    def cd(self, cd: str):
+        """Set the current working directory for storing plots."""
+        if not os.path.exists(cd):
+            os.makedirs(cd)
+        self._cd = cd
+
+    @property
+    def tuner_paras(self) -> aixcalibuha.TunerParas:
+        return self._tuner_paras
+
+    @tuner_paras.setter
+    def tuner_paras(self, tuner_paras):
         """
         Set the currently used TunerParas object to use the information for logging.
 
         :param tuner_paras: aixcalibuha.
         """
         if not isinstance(tuner_paras, aixcalibuha.TunerParas):
-            raise TypeError("Given tuner_paras is of type {} but type"
-                            "TunerParas is needed.".format(type(tuner_paras).__name__))
-        self.tuner_paras = tuner_paras
+            raise TypeError(f"Given tuner_paras is of type {type(tuner_paras).__name__} "
+                            "but type TunerParas is needed.")
+        self._tuner_paras = tuner_paras
         self._set_prec_and_with_for_tuner_paras()
 
-    def set_goals(self, goals):
+    @property
+    def goals(self) -> aixcalibuha.Goals:
+        """Get current goals instance"""
+        return self._goals
+
+    @goals.setter
+    def goals(self, goals: aixcalibuha.Goals):
         """
         Set the currently used Goals object to use the information for logging.
 
@@ -139,15 +154,36 @@ class CalibrationLogger(Logger):
             Goals to be set to the object
         """
         if not isinstance(goals, aixcalibuha.Goals):
-            raise TypeError("Given goals is of type {} but type"
-                            "Goals is needed.".format(type(goals).__name__))
-        self.goals = goals
+            raise TypeError(f"Given goals is of type {type(goals).__name__} "
+                            "but type Goals is needed.")
+        self._goals = goals
+
+    @property
+    def calibration_class(self) -> aixcalibuha.CalibrationClass:
+        """Get current calibration class object"""
+        return self._calibration_class
+
+    @calibration_class.setter
+    def calibration_class(self, calibration_class: aixcalibuha.CalibrationClass):
+        """
+        Set the current calibration class.
+
+        :param aixcalibuha.CalibrationClass calibration_class:
+            Class holding information on names, tuner_paras, goals
+            and time-intervals of calibration.
+        """
+        if not isinstance(calibration_class, aixcalibuha.CalibrationClass):
+            raise TypeError(f"Given calibration_class is of type {type(calibration_class).__name__} "
+                            "but type CalibrationClass is needed.")
+        self._calibration_class = calibration_class
+        self.tuner_paras = calibration_class.tuner_paras
+        if calibration_class.goals is not None:
+            self.goals = calibration_class.goals
 
     def log_initial_names(self):
         """Function to log the initial names and the statistical measure
         before calibration."""
-        _text_initial_names = self._get_tuner_para_names_as_string()
-        self.log(_text_initial_names)
+        self.logger.info(self._get_tuner_para_names_as_string())
 
     def log_intersection_of_tuners(self, intersected_tuner_parameters):
         """
@@ -159,10 +195,10 @@ class CalibrationLogger(Logger):
             value being the list with all the different "best" values for
             the tuner parameter.
         """
-        self.log("Multiple 'best' values for the following tuner parameters "
-                 "were identified in different "
-                 "classes:\n{}".format("\n".join(["{}: {}".format(tuner, values)
-                                                  for tuner, values in intersected_tuner_parameters.items()])))
+        _formatted_str = "\n".join([f"{tuner}: {values}"
+                                    for tuner, values in intersected_tuner_parameters.items()])
+        self.logger.info("Multiple 'best' values for the following tuner parameters "
+                         f"were identified in different classes:\n{_formatted_str}")
 
     def _get_tuner_para_names_as_string(self):
         """
@@ -188,7 +224,7 @@ class CalibrationLogger(Logger):
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
         info_string += "   {0:{width}s}".format(self.statistical_measure, width=self._width)
-        info_string += "   {}".format("Unweighted {}".format(self.statistical_measure))
+        info_string += f"   Unweighted {self.statistical_measure}"
         return info_string
 
     def _get_tuner_para_values_as_string(self, xk_descaled, obj, unweighted_objective):
@@ -218,7 +254,7 @@ class CalibrationLogger(Logger):
                                                        prec=self._prec)
         _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
                                            for weight, val in unweighted_objective.items()])
-        info_string += "   {}".format(_verbose_info)
+        info_string += f"   {_verbose_info}"
         return info_string
 
 
@@ -349,10 +385,6 @@ class CalibrationVisualizer(CalibrationLogger):
             Result object of the minimization
         :param str model_name:
             Name of the model being calibrated
-        :param str statistical_measure:
-            Statistical measure used for calibration.
-            One of the supported methods in
-            ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
         :keyword str file_type:
             svg, pdf or png
         """
@@ -394,7 +426,7 @@ class CalibrationVisualizer(CalibrationLogger):
             cur_ax.set_xticklabels([x_label])
             cur_ax.legend(loc="upper right")
 
-        # Always store in the parent diretory as this info is relevant for all classes
+        # Always store in the parent directory as this info is relevant for all classes
         fig_intersection.suptitle("Intersection of Tuner Parameters")
         fig_intersection.savefig(os.path.join(os.path.dirname(self.cd),
                                               "tuner_parameter_intersection_plot.svg"))
@@ -450,10 +482,10 @@ class CalibrationVisualizer(CalibrationLogger):
                 else:
                     cur_goal = _goals_names[goal_counter]
                     cur_ax.plot(_goals_df[cur_goal, self.goals.sim_tag_str],
-                                label=cur_goal + "_{}".format(self.goals.sim_tag_str),
+                                label=cur_goal + f"_{self.goals.sim_tag_str}",
                                 linestyle="--", color="r")
                     cur_ax.plot(_goals_df[cur_goal, self.goals.meas_tag_str],
-                                label=cur_goal + "_{}".format(self.goals.meas_tag_str),
+                                label=cur_goal + f"_{self.goals.meas_tag_str}",
                                 color="b")
                     # Mark the disregarded intervals in grey
                     _start = self.calibration_class.start_time
@@ -479,4 +511,4 @@ class CalibrationVisualizer(CalibrationLogger):
             if not os.path.exists(_savedir):
                 os.makedirs(_savedir)
             self.fig_goal.savefig(os.path.join(_savedir,
-                                               "{}_goals.svg".format(self._counter_calibration)))
+                                               f"{self._counter_calibration}_goals.svg"))

@@ -33,9 +33,9 @@ class TestDataTypes(unittest.TestCase):
         dummy_goal = "not Goals-Class"
         dummy_cal_class = CalibrationClass("dummy", 0, 10)
         with self.assertRaises(TypeError):
-            dummy_cal_class.set_tuner_paras(dummy_tuner_para)
+            dummy_cal_class.tuner_paras = dummy_tuner_para
         with self.assertRaises(TypeError):
-            dummy_cal_class.set_goals(dummy_goal)
+            dummy_cal_class.goals = dummy_goal
 
     def test_goals(self):
         """Test the class Goals"""
