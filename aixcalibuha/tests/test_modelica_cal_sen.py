@@ -95,7 +95,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         except AttributeError:
             pass
         try:
-            shutil.rmtree(self.example_cal_dir)
+            shutil.rmtree(self.example_cal_dir, ignore_errors=True)
         except FileNotFoundError:
             pass
 

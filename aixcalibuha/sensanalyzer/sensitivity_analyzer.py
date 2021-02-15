@@ -80,15 +80,13 @@ class SenAnalyzer:
         if isinstance(calibration_classes, list):
             for cal_class in calibration_classes:
                 if not isinstance(cal_class, CalibrationClass):
-                    raise TypeError("calibration_classes is of type {} but should "
-                                    "be {}".format(type(cal_class).__name__,
-                                                   type(CalibrationClass).__name__))
+                    raise TypeError(f"calibration_classes is of type {type(cal_class).__name__} "
+                                    f"but should be CalibrationClass")
         elif isinstance(calibration_classes, CalibrationClass):
             self.calibration_classes = [calibration_classes]
         else:
-            raise TypeError("calibration_classes is of type {} but should "
-                            "be {} or list".format(type(calibration_classes).__name__,
-                                                   type(CalibrationClass).__name__))
+            raise TypeError(f"calibration_classes is of type {type(calibration_classes).__name__} "
+                            f"but should be CalibrationClass or list")
 
         # Merge the classes for avoiding possible intersection of tuner-parameters
         if kwargs.pop("merge_multiple_classes", True):
@@ -196,7 +194,7 @@ class SenAnalyzer:
                                            "stopTime": stop_time})
         for i, initial_values in enumerate(samples):
             # Simulate the current values
-            self.logger.info('Parameter variation {} of {}'.format(i+1, len(samples)))
+            self.logger.info(f'Parameter variation {i+1} of {len(samples)}')
             self.simulation_api.set_initial_values(initial_values)
 
             # Simulate
@@ -204,14 +202,14 @@ class SenAnalyzer:
                 # Generate the folder name for the calibration
                 if self.save_files:
                     savepath_files = os.path.join(self.simulation_api.cd,
-                                                  "simulation_{}".format(str(i + 1)))
+                                                  f"simulation_{i + 1}")
                     filepath = self.simulation_api.simulate(savepath_files=savepath_files)
                     # Load the result file to the goals object
                     sim_target_data = data_types.TimeSeriesData(filepath)
                 else:
                     target_sim_names = self.goals.get_sim_var_names()
                     self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.simulation_api.simulate(savepath_files="")
+                    df = self.simulation_api.simulate()
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
             except Exception as e:
@@ -349,7 +347,7 @@ class SensitivityProblem:
             sampler_parameters = {'calc_second_order': self.calc_second_order,
                                   'seed': self.seed}
         else:
-            raise KeyError("Given method {} is not supported.".format(self.method))
+            raise KeyError(f"Given method {self.method} is not supported.")
         return sampler_parameters
 
     @staticmethod

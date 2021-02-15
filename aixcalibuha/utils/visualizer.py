@@ -6,6 +6,7 @@ The Visualizer Class inherits the Logger class, as logging
 will always be used as a default.
 """
 import os
+import logging
 from ebcpy.utils import setup_logger
 import matplotlib.pyplot as plt
 import numpy as np
@@ -44,6 +45,10 @@ class CalibrationLogger:
         self.cd = cd
         self.calibration_class = calibration_class
         self.statistical_measure = statistical_measure
+
+    def log(self, msg, level=logging.INFO):
+        """Wrapper function to directly log in the internal logger"""
+        self.logger.log(msg=msg, level=level)
 
     def _set_prec_and_with_for_tuner_paras(self):
         if self.tuner_paras.bounds is None:

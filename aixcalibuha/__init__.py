@@ -59,12 +59,12 @@ class Goals:
 
         # Open the meas target data:
         if not isinstance(meas_target_data, (data_types.TimeSeriesData, pd.DataFrame)):
-            raise TypeError("Given meas_target_data is of type {} but TimeSeriesData "
-                            "is required.".format(type(meas_target_data).__name__))
+            raise TypeError(f"Given meas_target_data is of type {type(meas_target_data).__name__} "
+                            "but TimeSeriesData is required.")
 
         if not isinstance(variable_names, dict):
-            raise TypeError("Given variable_names is of type {} but a dict is "
-                            "required.".format(type(variable_names).__name__))
+            raise TypeError(f"Given variable_names is of type {type(variable_names).__name__} "
+                            f"but a dict is required.")
 
         # Extract the measurement-information out of the dict.
         self.variable_names = variable_names
@@ -83,8 +83,8 @@ class Goals:
                 meas_info = meas_sim_info[0]
                 self._sim_var_matcher[var_name] = meas_sim_info[1]
             else:
-                raise TypeError("Variable {} of variable_names has a value"
-                                "neither being a dict, list or tuple.".format(var_name))
+                raise TypeError(f"Variable {var_name} of variable_names has a value"
+                                "neither being a dict, list or tuple.")
             # Now get the info to extract the values out of the given tsd
             # Convert string with into a list of tuples containing the relevant tag.
             # If mulitple tags exist, and the default tag (self.meas_tag_str)
@@ -97,8 +97,8 @@ class Goals:
                 _rename_cols_dict[meas_info] = var_name
                 if len(tags) != 1 and self.meas_tag_str not in tags:
                     raise TypeError("Not able to automatically select variables and tags. "
-                                    "Variable {} has mutliple tags, none of which "
-                                    "is specified as {}.".format(meas_info, self.meas_tag_str))
+                                    f"Variable {meas_info} has mutliple tags, none of which "
+                                    f"is specified as {self.meas_tag_str}.")
                 elif self.meas_tag_str in tags:
                     _columns.append((meas_info, self.meas_tag_str))
                 else:
@@ -107,8 +107,8 @@ class Goals:
                 _rename_cols_dict[meas_info[0]] = var_name
                 _columns.append(meas_info)
             else:
-                raise TypeError("Measurement Info on variable {} is "
-                                "neither of type string or tuple.".format(var_name))
+                raise TypeError(f"Measurement Info on variable {var_name} is "
+                                "neither of type string or tuple.")
 
         # Take the subset of the given tsd based on var_names and tags.
         self._tsd = meas_target_data[_columns].copy()
@@ -132,11 +132,11 @@ class Goals:
             self._weightings = np.array([1/self._num_goals for i in range(self._num_goals)])
         else:
             if not isinstance(weightings, (list, np.ndarray)):
-                raise TypeError("weightings is of type {} but should be of type"
-                                " list.".format(type(weightings).__name__))
+                raise TypeError(f"weightings is of type {type(weightings).__name__} "
+                                f"but should be of type list.")
             if len(weightings) != self._num_goals:
-                raise IndexError("The given number of weightings ({}) does not match the number"
-                                 " of goals ({})".format(len(weightings), self._num_goals))
+                raise IndexError(f"The given number of weightings ({len(weightings)}) does not match the number"
+                                 f" of goals ({self._num_goals})")
             self._weightings = np.array(weightings) / sum(weightings)
 
     def __str__(self):
@@ -184,11 +184,10 @@ class Goals:
             the output of a simulation, hence "sim"-target-data.
         """
         if not isinstance(sim_target_data.index, type(self._tsd_ref.index)):
-            raise IndexError("Given sim_target_data is using {} as an index, but the "
-                             "reference results (measured-data) was declared using the "
-                             "{}. Convert your measured-data index to solve this error. "
-                             "".format(type(sim_target_data.index).__name__,
-                                       type(self._tsd_ref.index).__name__))
+            raise IndexError(f"Given sim_target_data is using {type(sim_target_data.index).__name__}"
+                             f" as an index, but the reference results (measured-data) was declared"
+                             f" using the {type(self._tsd_ref.index).__name__}. Convert your"
+                             f" measured-data index to solve this error.")
 
         for goal_name in self.variable_names.keys():
             # Three critical cases may occur:
@@ -262,24 +261,24 @@ class TunerParas:
         # Check if the given input-parameters are of correct format. If not, raise an error.
         for name in names:
             if not isinstance(name, str):
-                raise TypeError("Given name is of type {} and not of "
-                                "type str.".format(type(name).__name__))
+                raise TypeError(f"Given name is of type {type(name).__name__} "
+                                "and not of type str.")
         try:
             # Calculate the sum, as this will fail if the elements are not float or int.
             sum(initial_values)
         except TypeError:
             raise TypeError("initial_values contains other instances than float or int.")
         if len(names) != len(initial_values):
-            raise ValueError("shape mismatch: names has length {} and initial_values "
-                             "{}.".format(len(names), len(initial_values)))
+            raise ValueError(f"shape mismatch: names has length {len(names)}"
+                             f" and initial_values {len(initial_values)}.")
         self.bounds = bounds
         if bounds is None:
             _bound_min = -np.inf
             _bound_max = np.inf
         else:
             if len(bounds) != len(names):
-                raise ValueError("shape mismatch: bounds has length {} "
-                                 "and names {}.".format(len(bounds), len(names)))
+                raise ValueError(f"shape mismatch: bounds has length {len(bounds)} "
+                                 f"and names {len(names)}.")
             _bound_min, _bound_max = [], []
             for bound in bounds:
                 _bound_min.append(bound[0])
@@ -353,8 +352,8 @@ class TunerParas:
     def set_value(self, name, col, value):
         """Function to set a value of a specific tuner parameter"""
         if not isinstance(value, (float, int)):
-            raise ValueError("Given value is of type {} but float or "
-                             "int is required".format(type(value).__name__))
+            raise ValueError(f"Given value is of type {type(value).__name__} "
+                             "but float or int is required")
         if col not in ["max", "min", "initial_value"]:
             raise KeyError("Can only alter max, min and initial_value")
         self._df[col][name] = value
@@ -373,7 +372,7 @@ class TunerParas:
         self._df["scale"] = self._df["max"] - self._df["min"]
         if not self._df[self._df["scale"] <= 0].empty:
             raise ValueError("The given lower bounds are greater equal than the upper bounds,"
-                             "resulting in a negative scale: \n{}".format(str(self._df["scale"])))
+                             f"resulting in a negative scale: \n{str(self._df['scale'])}")
 
 
 class CalibrationClass:
@@ -431,8 +430,8 @@ class CalibrationClass:
     def name(self, name: str):
         """Set name of calibration class"""
         if not isinstance(name, str):
-            raise TypeError("Name of CalibrationClass is {} but"
-                            " has to be of type str".format(type(name)))
+            raise TypeError(f"Name of CalibrationClass is {type(name)} "
+                            f"but has to be of type str")
         self._name = name
 
     @property
@@ -471,8 +470,8 @@ class CalibrationClass:
         :param tuner_paras: TunerParas
         """
         if not isinstance(tuner_paras, TunerParas):
-            raise TypeError("Given tuner_paras is of type {} but should be "
-                            "type TunerParas".format(type(tuner_paras).__name__))
+            raise TypeError(f"Given tuner_paras is of type {type(tuner_paras).__name__} "
+                            "but should be type TunerParas")
         self._tuner_paras = tuner_paras
 
     @property
@@ -489,8 +488,8 @@ class CalibrationClass:
             Goals-data-type
         """
         if not isinstance(goals, Goals):
-            raise TypeError("Given goals parameter is of type {} but should be "
-                            "type Goals".format(type(goals).__name__))
+            raise TypeError(f"Given goals parameter is of type {type(goals).__name__} "
+                            "but should be type Goals")
         self._goals = goals
 
     @property
