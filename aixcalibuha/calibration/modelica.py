@@ -100,16 +100,14 @@ class ModelicaCalibrator(Calibrator):
         for bool_keyword in _bool_kwargs:
             keyword_value = self.__getattribute__(bool_keyword)
             if not isinstance(keyword_value, bool):
-                raise TypeError("Given {} is of type {} but should be type "
-                                "bool".format(bool_keyword,
-                                              type(keyword_value).__name__))
+                raise TypeError(f"Given {bool_keyword} is of type "
+                                f"{type(keyword_value).__name__} but should be type bool")
 
         #%% Initialize all public parameters
         super().__init__(cd, sim_api, statistical_measure, **kwargs)
         if not isinstance(calibration_class, CalibrationClass):
-            raise TypeError("calibration_classes is of type {} but should be "
-                            "{}".format(type(calibration_class).__name__,
-                                        type(CalibrationClass).__name__))
+            raise TypeError(f"calibration_classes is of type {type(calibration_class).__name__} "
+                            f"but should be CalibrationClass")
         self.calibration_class = calibration_class
         self.goals = self.calibration_class.goals
         self.tuner_paras = self.calibration_class.tuner_paras
@@ -120,23 +118,31 @@ class ModelicaCalibrator(Calibrator):
             # As tuner-parameters are scaled between 0 and 1, the scaled bounds are always 0 and 1
             self.bounds = [(0, 1) for i in range(len(self.x0))]
         # Add the values to the simulation setup.
-        self.sim_api.set_sim_setup({"initialNames": self.tuner_paras.get_names(),
-                                    "startTime": self.calibration_class.start_time - self.timedelta,
-                                    "stopTime": self.calibration_class.stop_time})
+        self.sim_api.set_sim_setup(
+            {"initialNames": self.tuner_paras.get_names(),
+             "startTime": self.calibration_class.start_time - self.timedelta,
+             "stopTime": self.calibration_class.stop_time}
+        )
         # Set the time-interval for evaluating the objective
         self._relevant_time_intervals = [(self.calibration_class.start_time,
                                           self.calibration_class.stop_time)]
 
         #%% Setup the logger
         if self.verbose_logging:
-            self.logger = visualizer.CalibrationVisualizer(cd, "modelica_calibration",
-                                                           self.calibration_class,
-                                                           statistical_measure,
-                                                           **visualizer_kwargs)
+            self.logger = visualizer.CalibrationVisualizer(
+                cd=cd,
+                name=self.__class__.__name__,
+                calibration_class=self.calibration_class,
+                statistical_measure=statistical_measure,
+                **visualizer_kwargs
+            )
         else:
-            self.logger = visualizer.CalibrationLogger(cd, "modelica_calibration",
-                                                       self.calibration_class,
-                                                       statistical_measure)
+            self.logger = visualizer.CalibrationLogger(
+                cd=cd,
+                name=self.__class__.__name__,
+                calibration_class=self.calibration_class,
+                statistical_measure=statistical_measure
+            )
 
         self.cd_of_class = cd  # Single class does not need an extra folder
 
@@ -166,7 +172,7 @@ class ModelicaCalibrator(Calibrator):
             # Generate the folder name for the calibration
             if self.save_files:
                 savepath_files = os.path.join(self.sim_api.cd,
-                                              "simulation_{}".format(str(self._counter)))
+                                              f"simulation_{self._counter}")
                 self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
                 # %% Load results and write to goals object
                 sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
@@ -202,16 +208,13 @@ class ModelicaCalibrator(Calibrator):
 
     def calibrate(self, framework, method=None):
         #%% Start Calibration:
-        self.logger.log("Start calibration of model: {} with "
-                        "framework-class {}".format(self.sim_api.model_name,
-                                                    self.__class__.__name__))
-        self.logger.log("Class: {}, "
-                        "Start and Stop-Time of simulation: {}-{} s\n"
-                        "Time-Intervals used for "
-                        "objective: {}".format(self.calibration_class.name,
-                                               self.calibration_class.start_time,
-                                               self.calibration_class.stop_time,
-                                               self.calibration_class.relevant_intervals))
+        self.logger.log(f"Start calibration of model: {self.sim_api.model_name}"
+                        f" with framework-class {self.__class__.__name__}")
+        self.logger.log(f"Class: {self.calibration_class.name}, Start and Stop-Time "
+                        f"of simulation: {self.calibration_class.start_time}"
+                        f"-{self.calibration_class.stop_time} s\n Time-Intervals used"
+                        f" for objective: {self.calibration_class.relevant_intervals}")
+
         # Setup the visualizer for plotting and logging:
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
         self.logger.log_initial_names()
@@ -225,17 +228,16 @@ class ModelicaCalibrator(Calibrator):
 
     def validate(self, goals):
         if not isinstance(goals, Goals):
-            raise TypeError("Given goals is of type {} but type"
-                            "Goals is needed.".format(type(goals).__name__))
+            raise TypeError(f"Given goals is of type {type(goals).__name__} "
+                            f"but type Goals is needed.")
         #%% Start Validation:
-        self.logger.log("Start validation of model: {} with "
-                        "framework-class {}".format(self.sim_api.model_name,
-                                                    self.__class__.__name__))
+        self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
+                        f"framework-class {self.__class__.__name__}")
         self.goals = goals
         # Use the results parameter vector to simulate again.
         xk = self._res.x
         val_result = self.obj(xk)
-        self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
+        self.logger.log(f"{self.statistical_measure} of validation: {val_result}")
 
     def _handle_error(self, error):
         """
@@ -290,9 +292,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         for cal_class in calibration_classes:
             if not isinstance(cal_class, CalibrationClass):
-                raise TypeError("calibration_classes is of type {} but should "
-                                "be {}".format(type(cal_class).__name__,
-                                               type(CalibrationClass).__name__))
+                raise TypeError(f"calibration_classes is of type {type(cal_class).__name__} "
+                                f"but should be CalibrationClass")
         # Pop kwargs of this class:
         self.merge_multiple_classes = kwargs.pop("merge_multiple_classes", True)
         # Apply (if given) the fix_start_time. Check for correct input as-well.
@@ -309,8 +310,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         # Choose the time-method
         if start_time_method.lower() not in ["fixstart", "timedelta"]:
-            raise ValueError("Given start_time_method {} is not supported. Please choose between"
-                             "'fixstart' or 'timedelta'".format(start_time_method))
+            raise ValueError(f"Given start_time_method {start_time_method} is not supported. "
+                             "Please choose between 'fixstart' or 'timedelta'")
         else:
             self.start_time_method = start_time_method
 
@@ -323,8 +324,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             all_tuners.append(cal_class.tuner_paras.get_names())
         intersection = set(all_tuners[0]).intersection(*all_tuners)
         if intersection:
-            self.logger.log("The following tuner-parameters intersect over multiple"
-                            " classes:\n{}".format(", ".join(list(intersection))))
+            self.logger.log("The following tuner-parameters intersect over multiple "
+                            f"classes:\n{', '.join(list(intersection))}")
 
         # Iterate over the different existing classes
         for cal_class in self.calibration_classes:
@@ -338,9 +339,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Working-Directory:
             # Alter the working directory for saving the simulations-results
-            self.cd_of_class = os.path.join(self.cd, "{}_{}_{}".format(cal_class.name,
-                                                                       cal_class.start_time,
-                                                                       cal_class.stop_time))
+            self.cd_of_class = os.path.join(self.cd,
+                                            f"{cal_class.name}_"
+                                            f"{cal_class.start_time}_"
+                                            f"{cal_class.stop_time}")
             self.sim_api.set_cd(self.cd_of_class)
 
             #%% Calibration-Setup

@@ -36,6 +36,10 @@ class TestModelicaCalibrator(unittest.TestCase):
             self.dym_api = DymolaAPI(self.example_cal_dir, model_name, packages)
         except (FileNotFoundError, ImportError, ConnectionError):
             self.skipTest("Could not load the dymola interface on this machine.")
+        try:
+            import dlib
+        except ImportError:
+            self.skipTest("Tests only work with dlib installed.")
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.ModelicaCalibrator."""
@@ -95,7 +99,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         except AttributeError:
             pass
         try:
-            shutil.rmtree(self.example_cal_dir)
+            shutil.rmtree(self.example_cal_dir, ignore_errors=True)
         except FileNotFoundError:
             pass
 

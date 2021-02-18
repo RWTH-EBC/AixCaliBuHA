@@ -91,7 +91,6 @@ def run_calibration(sim_api, cal_classes, stat_measure):
             statistical_measure=stat_measure,
             calibration_classes=cal_classes,
             start_time_method="timedelta",
-            timedelta=0,
             **kwargs_calibrator)
 
     # Start the calibration process
