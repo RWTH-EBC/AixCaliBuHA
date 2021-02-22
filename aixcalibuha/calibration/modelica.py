@@ -2,6 +2,8 @@
 use-cases of calibration, mainly for Modelica
 Calibration."""
 
+
+#Import packages
 import os
 import numpy as np
 from ebcpy import data_types
@@ -105,16 +107,6 @@ class SingleClassCalibrator(Calibrator):
                              "show_plot": kwargs.pop("show_plot", None),
                              }
 
-        # # Check if types are correct:
-        # # Booleans:
-        # _bool_kwargs = ["save_files"]
-        # for bool_keyword in _bool_kwargs:
-        #     keyword_value = self.__getattribute__(bool_keyword)
-        #     if not isinstance(keyword_value, bool):
-        #         raise TypeError("Given {} is of type {} but should be type "
-        #                         "bool".format(bool_keyword,
-        #                                       type(keyword_value).__name__))
-
         #%% Initialize all public parameters
         super().__init__(cd, sim_api, statistical_measure, **kwargs)
         if not isinstance(calibration_class, CalibrationClass):
@@ -162,11 +154,12 @@ class SingleClassCalibrator(Calibrator):
         1. Convert the set to modelica-units
         2. Simulate the converted-set
         3. Get data as a dataFrame
-        4. Calculate the objective based on statistical values
+        4. Get penalty factor for the penalty function
+        5. Calculate the objective based on statistical values
 
         :param np.array xk:
         Array with normalized values for the minimizer
-        :return:
+        :return float total_res:
         Objective value based on the used quality measurement
         """
         # edit: This funktion is called by the optimizationframework (scipy, dlib, etc.)
@@ -178,15 +171,7 @@ class SingleClassCalibrator(Calibrator):
         # Set initial values for modelica simulation
         self.sim_api.set_initial_values(xk_descaled)
         # Simulate
-        try:    # Sichern der Daten selbst hinterlegt
-            # Generate the folder name for the calibration
-            # if self.save_files:
-            #     savepath_files = os.path.join(self.sim_api.cd,
-            #                                   "simulation_{}".format(str(self._counter)))
-            #     self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
-            #     # %% Load results and write to goals object
-            #     sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
-            # else:
+        try:
             target_sim_names = self.goals.get_sim_var_names()
             self.sim_api.set_sim_setup({"resultNames": target_sim_names})
             # Just specified time intervall in cal classes is simulated
@@ -205,7 +190,7 @@ class SingleClassCalibrator(Calibrator):
             self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
 
         #%% Evaluate the current objective
-        # Penalty function (get penaltyfactor)
+        # Penalty function (get penalty factor)
         if self.sim_api.count > 1 and self.sim_api.benchmark_exists and self.apply_penalty:
             current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
             penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
@@ -236,6 +221,10 @@ class SingleClassCalibrator(Calibrator):
         return total_res
 
     def calibrate(self):
+        """
+        Start the calibration process of the calibration classes, visualize and save the results.
+        """
+        
         #%% Start Calibration:
         self.logger.log("Start calibration of model: {} with "
                         "framework-class {}".format(self.sim_api.model_name,
@@ -267,20 +256,6 @@ class SingleClassCalibrator(Calibrator):
                                             self.sim_api.count)
         # Reset
         self._current_best_iterate['better_current_result'] = False
-
-    def validate(self, goals):      # currently not used
-        if not isinstance(goals, Goals):
-            raise TypeError("Given goals is of type {} but type"
-                            "Goals is needed.".format(type(goals).__name__))
-        #%% Start Validation:
-        self.logger.log("Start validation of model: {} with "
-                        "framework-class {}".format(self.sim_api.model_name,
-                                                    self.__class__.__name__))
-        self.goals = goals
-        # Use the results parameter vector to simulate again.
-        xk = self._res.x
-        val_result = self.obj(xk)
-        self.logger.log("{} of validation: {}".format(self.statistical_measure, val_result))
 
     def _handle_error(self, error):
         """
@@ -421,6 +396,16 @@ class MultipleClassCalibrator(SingleClassCalibrator):
         self.current_timestamp = current_timestamp
 
     def calibrate(self):
+        """
+        Start the calibration process for day X.
+
+        :return dict self.res_tuner:
+            Dictionary of the optimized tuner parameter names and values.
+        :return dict self._current_best_iterate:
+            Dictionary of the current best results of tuner parameter, iteration step, objective value, information
+            about the goals object and the penaltyfactor.
+        """
+
 
         # Log Start
         self.logger.log("Calibration of day {}, starting at {}. Iterationstep Digital Twin Framework: {}"
@@ -488,8 +473,17 @@ class MultipleClassCalibrator(SingleClassCalibrator):
         return self.res_tuner, self._current_best_iterate
 
     def _apply_start_time_method(self, start_time):
-        """Method to be calculate the start_time based on the used
-        start-time-method (timedelta or fix-start)."""
+        """
+        Method to be calculate the start_time based on the used
+        start-time-method (timedelta or fix-start).
+
+        :param float start_time:
+            Start time which was specified by the user in the TOML file.
+        :return float start_time - self.timedelta:
+            Calculated "timedelta", if specified in the TOML file.
+        :return float self.fix_start_time:
+            Fix start time which was specified by the user in the TOML file.
+        """
         if self.start_time_method == "timedelta":
             # Check if timedelta does not fall below the startime (start_time should not be lower then zero)
             if start_time - self.timedelta < 0:
@@ -505,7 +499,14 @@ class MultipleClassCalibrator(SingleClassCalibrator):
             # With fixed start, the _ref_time parameter is always returned
             return self.fix_start_time
 
-    def check_intersection_of_tuner_parameters(self, prior=True):
+    def check_intersection_of_tuner_parameters(self):
+        """
+        Checks intersections between tuner parameters.
+
+        :return dict res_tuner:
+            Dictionary of the optimized tuner parameter names and values.
+        """
+
         # merge all tuners (writes all values from all classes in one dictionary)
         merged_tuner_parameters = {}
         for cal_class in self._cal_history:
