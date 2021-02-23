@@ -2,7 +2,7 @@
 Python package to calibrate models created in Modelica or possible
 other simulation software.
 """
-
+import warnings
 from typing import Union
 import pandas as pd
 import numpy as np
@@ -263,6 +263,10 @@ class TunerParas:
             if not isinstance(name, str):
                 raise TypeError(f"Given name is of type {type(name).__name__} "
                                 "and not of type str.")
+        # Check if all names are unique:
+        if len(names) != len(set(names)):
+            raise ValueError(f"Given names contain duplicates. This will yield errors in later stages"
+                             f"such as calibration of sensitivity analysis.")
         try:
             # Calculate the sum, as this will fail if the elements are not float or int.
             sum(initial_values)
@@ -271,7 +275,7 @@ class TunerParas:
         if len(names) != len(initial_values):
             raise ValueError(f"shape mismatch: names has length {len(names)}"
                              f" and initial_values {len(initial_values)}.")
-        self.bounds = bounds
+        self._bounds = bounds
         if bounds is None:
             _bound_min = -np.inf
             _bound_max = np.inf
@@ -306,7 +310,7 @@ class TunerParas:
             Scaled value between 0 and 1
         """
         # If no bounds are given, scaling is not possible--> descaled = scaled
-        if self.bounds is None:
+        if self._bounds is None:
             return descaled
         _scaled = (descaled - self._df["min"])/self._df["scale"]
         if not all((_scaled >= 0) & (_scaled <= 1)):
@@ -324,7 +328,7 @@ class TunerParas:
             descaled value based on bounds.
         """
         # If no bounds are given, scaling is not possible--> descaled = scaled
-        if not self.bounds:
+        if not self._bounds:
             return scaled
         _scaled = np.array(scaled)
         if not all((_scaled >= 0-1e4) & (_scaled <= 1+1e4)):

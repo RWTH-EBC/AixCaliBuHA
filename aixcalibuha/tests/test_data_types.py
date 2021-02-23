@@ -136,6 +136,11 @@ class TestDataTypes(unittest.TestCase):
         with self.assertRaises(KeyError):
             tuner_paras.get_value("test_0", "min")
 
+        # Check if duplicate names exist:
+        with self.assertRaises(ValueError):
+            TunerParas(["duplicate", "duplicate"],
+                       [1, 1])
+
 
 if __name__ == "__main__":
     unittest.main()
