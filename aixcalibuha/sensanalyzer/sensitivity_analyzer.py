@@ -239,7 +239,7 @@ class SenAnalyzer:
         :rtype: list
         """
         all_results = []
-        for cal_class in self.calibration_classes:
+        for cal_class in self.calibration_classes:  # TODO: Input in function
             self.logger.info(f'Start sensitivity analysis of class: {cal_class.name}, '
                              f'Time-Interval: {cal_class.start_time}-{cal_class.stop_time} s')
             self.tuner_paras = cal_class.tuner_paras
@@ -254,6 +254,12 @@ class SenAnalyzer:
             salib_analyze_result = self.analysis_function(samples, output_array)
             all_results.append(salib_analyze_result)
         return all_results
+
+    def run_global(self):
+        pass  # TODO: Global
+
+    def run_local(self):
+        pass  # TODO: Local
 
     @staticmethod
     def automatic_select(calibration_classes, result, threshold, key="mu_star"):
@@ -283,6 +289,26 @@ class SenAnalyzer:
             tuner_paras.remove_names(select_names)
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
+
+    def automatic_select_2(self, global_res, local_res, calibration_classes):
+        # INPUTS
+        # 0. Preprocessing
+        # 0. Clustering
+        # Python-script
+        # 1. 1 Klasse, globale SA (mit allen TP) -> Reihenfolge TP
+        # 2. X Klassen, lokale SA (mit allen TP) -> Reihenfolge TP
+        # Funktion:
+        # 3. Vergleich: Finde TP_global[0] == TP_lokal[0]
+        # if: nur in einer Klasse -> break
+        # if: in mehreren Klassen dominant -> dann wo es ggü dem zweiten am besten ist (max(TP_lokal[0]/TP_lokal[1]))
+        # Rekursiv: if: in keiner Klasse -> TP_global[0] == TP_lokal[1]
+        # -> 1. zu kalibrierende Klasse mit TP_global[i]
+        pass
+
+    def automatic_run(self):
+        self.run_global()
+        self.run_local()
+        self.automatic_select_2()
 
 
 class SensitivityProblem:
