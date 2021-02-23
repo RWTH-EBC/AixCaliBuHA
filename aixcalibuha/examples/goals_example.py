@@ -43,6 +43,7 @@ def setup_goals():
 
     # Convert index to float to match the simulation output
     meas_target_data = preprocessing.convert_datetime_index_to_float_index(meas_target_data)
+    g = meas_target_data["measured_T_heater"]
     # Setup the goals object
     goals = Goals(meas_target_data=meas_target_data,
                   variable_names=variable_names,

@@ -4,7 +4,7 @@ Module to with configs and functions to read configs for objects in this reposit
 
 from ebcpy import data_types
 import numpy as np
-from aixcalibuha import Goals, CalibrationClass
+from aixcalibuha import Goals, CalibrationClass, TunerParas
 from ebcpy.utils.configuration import default_config, tsd_config
 
 
@@ -88,9 +88,9 @@ def get_tuner_paras_from_config(config):
     :return: TunerParas tuner_paras
         Loaded Goals object
     """
-    return data_types.TunerParas(names=config["names"],
-                                 initial_values=config["initial_values"],
-                                 bounds=config["bounds"])
+    return TunerParas(names=config["names"],
+                      initial_values=config["initial_values"],
+                      bounds=config["bounds"])
 
 
 def get_calibration_classes_from_config(config):

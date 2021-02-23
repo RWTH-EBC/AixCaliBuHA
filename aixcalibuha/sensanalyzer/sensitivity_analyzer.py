@@ -8,12 +8,12 @@ from SALib.sample import morris
 from SALib.sample import saltelli as sobol
 from SALib.analyze import morris as analyze_morris
 from SALib.analyze import sobol as analyze_sobol
-from ebcpy.utils import visualizer
+from ebcpy.utils import setup_logger
 from ebcpy import data_types
 from ebcpy import simulationapi
 import numpy as np
 import aixcalibuha
-from aixcalibuha import CalibrationClass, Goals
+from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
 class SenAnalyzer:
@@ -52,7 +52,7 @@ class SenAnalyzer:
         If true, all simulation files for each iteration will be saved!
     """
     simulation_api = simulationapi.SimulationAPI
-    tuner_paras = data_types.TunerParas
+    tuner_paras = TunerParas
     goals = Goals
     calibration_classes = []
     analysis_variables = []
@@ -67,7 +67,7 @@ class SenAnalyzer:
                  calibration_classes, statistical_measure, **kwargs):
         """Instantiate class parameters"""
         # Setup the logger
-        self.logger = visualizer.Logger(cd, self.__class__.__name__)
+        self.logger = setup_logger(cd=cd, name=self.__class__.__name__)
         # Add any simulation_api, dymolapi or pyfmi
         self.simulation_api = simulation_api
         self.statistical_measure = statistical_measure
@@ -80,15 +80,13 @@ class SenAnalyzer:
         if isinstance(calibration_classes, list):
             for cal_class in calibration_classes:
                 if not isinstance(cal_class, CalibrationClass):
-                    raise TypeError("calibration_classes is of type {} but should "
-                                    "be {}".format(type(cal_class).__name__,
-                                                   type(CalibrationClass).__name__))
+                    raise TypeError(f"calibration_classes is of type {type(cal_class).__name__} "
+                                    f"but should be CalibrationClass")
         elif isinstance(calibration_classes, CalibrationClass):
             self.calibration_classes = [calibration_classes]
         else:
-            raise TypeError("calibration_classes is of type {} but should "
-                            "be {} or list".format(type(calibration_classes).__name__,
-                                                   type(CalibrationClass).__name__))
+            raise TypeError(f"calibration_classes is of type {type(calibration_classes).__name__} "
+                            f"but should be CalibrationClass or list")
 
         # Merge the classes for avoiding possible intersection of tuner-parameters
         if kwargs.pop("merge_multiple_classes", True):
@@ -175,7 +173,7 @@ class SenAnalyzer:
         """
         Put the parameter in dymola model, run it.
 
-        :param list samples:
+        :param (list, np.ndarray) samples:
             Output variables in dymola
         :param float start_time:
             Start time of simulation
@@ -196,7 +194,7 @@ class SenAnalyzer:
                                            "stopTime": stop_time})
         for i, initial_values in enumerate(samples):
             # Simulate the current values
-            self.logger.log('Parameter variation {} of {}'.format(i+1, len(samples)))
+            self.logger.info(f'Parameter variation {i+1} of {len(samples)}')
             self.simulation_api.set_initial_values(initial_values)
 
             # Simulate
@@ -204,14 +202,14 @@ class SenAnalyzer:
                 # Generate the folder name for the calibration
                 if self.save_files:
                     savepath_files = os.path.join(self.simulation_api.cd,
-                                                  "simulation_{}".format(str(i + 1)))
+                                                  f"simulation_{i + 1}")
                     filepath = self.simulation_api.simulate(savepath_files=savepath_files)
                     # Load the result file to the goals object
                     sim_target_data = data_types.TimeSeriesData(filepath)
                 else:
                     target_sim_names = self.goals.get_sim_var_names()
                     self.simulation_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.simulation_api.simulate(savepath_files="")
+                    df = self.simulation_api.simulate()
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
             except Exception as e:
@@ -242,10 +240,8 @@ class SenAnalyzer:
         """
         all_results = []
         for cal_class in self.calibration_classes:
-            self.logger.log('Start sensitivity analysis of class: {}, '
-                            'Time-Interval: {}-{} s'.format(cal_class.name,
-                                                            cal_class.start_time,
-                                                            cal_class.stop_time))
+            self.logger.info(f'Start sensitivity analysis of class: {cal_class.name}, '
+                             f'Time-Interval: {cal_class.start_time}-{cal_class.stop_time} s')
             self.tuner_paras = cal_class.tuner_paras
             self.goals = cal_class.goals
             self.problem = SensitivityProblem.create_problem(self.tuner_paras)
@@ -285,7 +281,7 @@ class SenAnalyzer:
                 if sen_value < threshold:
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
-            cal_class.set_tuner_paras(tuner_paras)
+            cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
 
@@ -300,7 +296,7 @@ class SensitivityProblem:
         the number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of sobol and
         morris in the SALib for more information.
-    :param ebcpy.data_types.TunerParas tuner_paras:
+    :param aixcalibuha.TunerParas tuner_paras:
         Optional, are also added when instantiating the SenAnalyzer-Class.
         Based on the tuner-paras, used to create a problem used in the SenAnalyzer-Class.
 
@@ -351,7 +347,7 @@ class SensitivityProblem:
             sampler_parameters = {'calc_second_order': self.calc_second_order,
                                   'seed': self.seed}
         else:
-            raise KeyError("Given method {} is not supported.".format(self.method))
+            raise KeyError(f"Given method {self.method} is not supported.")
         return sampler_parameters
 
     @staticmethod
