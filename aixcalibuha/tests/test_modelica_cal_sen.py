@@ -86,9 +86,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         self.assertIsInstance(sen_result, list)
         self.assertIsInstance(sen_result[0], dict)
 
-        cal_classes = sen_ana.automatic_select(sen_ana.calibration_classes,
-                                               sen_result,
-                                               threshold=1)
+        cal_classes = sen_ana.select_by_threshold(sen_ana.calibration_classes,
+                                                  sen_result,
+                                                  threshold=1)
         self.assertIsInstance(cal_classes, list)
         self.assertIsInstance(cal_classes[0], CalibrationClass)
 
