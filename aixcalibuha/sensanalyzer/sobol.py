@@ -1,16 +1,27 @@
 from SALib.sample import saltelli as sobol
 from SALib.analyze import sobol as analyze_sobol
-from aixcalibuha.sensanalyzer import SensitivityProblem, SenAnalyzer
+from aixcalibuha.sensanalyzer import SenAnalyzer
 
 
 class SobolAnalyzer(SenAnalyzer):
+    """
+    Additional arguments:
 
-    def __init__(self, simulation_api, sensitivity_problem, statistical_measure, **kwargs):
-        super(SobolAnalyzer, self).__init__(
-            simulation_api=simulation_api,
-            sensitivity_problem=sensitivity_problem,
+    **Keyword-arguments:**
+    :keyword bool calc_second_order:
+        Default True, used for the sobol-method
+    :keyword seed:
+        Used for the sobol-method
+    """
+    def __init__(self, sim_api, statistical_measure, **kwargs):
+        super().__init__(
+            sim_api=sim_api,
+            sensitivity_problem=sim_api,
             statistical_measure=statistical_measure,
             **kwargs)
+        # Set additional kwargs
+        self.calc_second_order = kwargs.pop("calc_second_order", True)
+        self.seed = kwargs.pop("seed", None)
 
     @property
     def analysis_variables(self):
@@ -31,12 +42,15 @@ class SobolAnalyzer(SenAnalyzer):
             order as the parameter file. If calc_second_order is True, the dictionary also
             contains cols `S2` and `S2_conf`.)
         """
-        if 'calc_second_order' not in self.sensitivity_problem.sampler_parameters:
-            raise KeyError('sobol method requires the `calc_second_order`'
-                           ' parameter to be set (bool)')
-        calc_second_order = self.sensitivity_problem.sampler_parameters['calc_second_order']
         return analyze_sobol.analyze(self.problem, y,
-                                     calc_second_order=calc_second_order)
+                                     calc_second_order=self.calc_second_order)
+
+    def create_sampler_demand(self):
+        """
+        Function to create the sampler parameters for the morris method
+        """
+        return {'calc_second_order': self.calc_second_order,
+                'seed': self.seed}
 
     def generate_samples(self):
         """
@@ -48,37 +62,5 @@ class SobolAnalyzer(SenAnalyzer):
         :rtype: np.ndarray
         """
         return sobol.sample(self.problem,
-                            N=self.sensitivity_problem.num_samples,
-                            **self.sensitivity_problem.sampler_parameters)
-
-
-class SobolProblem(SensitivityProblem):
-    """
-    Class for defining relevant information for performing a sensitivity analysis.
-
-    See parent class for general attributes.
-
-    **Keyword-arguments:**
-    :keyword bool calc_second_order:
-        Default True, used for the sobol-method
-    :keyword seed:
-        Used for the sobol-method
-    """
-
-    def __init__(self, num_samples, tuner_paras=None, **kwargs):
-        """Instantiate instance parameters."""
-
-        self.calc_second_order = kwargs.pop("calc_second_order", True)
-        self.seed = kwargs.pop("seed", None)
-
-        super(SobolProblem, self).__init__(method="sobol",
-                                           num_samples=num_samples,
-                                           tuner_paras=tuner_paras,
-                                           **kwargs)
-
-    def create_sampler_demand(self):
-        """
-        Function to create the sampler parameters for the morris method
-        """
-        return {'calc_second_order': self.calc_second_order,
-                'seed': self.seed}
+                            N=self.num_samples,
+                            **self.create_sampler_demand())
