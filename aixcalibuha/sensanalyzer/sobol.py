@@ -16,7 +16,6 @@ class SobolAnalyzer(SenAnalyzer):
     def __init__(self, sim_api, statistical_measure, **kwargs):
         super().__init__(
             sim_api=sim_api,
-            sensitivity_problem=sim_api,
             statistical_measure=statistical_measure,
             **kwargs)
         # Set additional kwargs

@@ -76,8 +76,6 @@ class TestModelicaCalibrator(unittest.TestCase):
 
         sen_ana = sensitivity_analyzer.SenAnalyzer(self.dym_api.cd,
                                                    simulation_api=self.dym_api,
-                                                   sensitivity_problem=sen_problem,
-                                                   calibration_classes=self.calibration_classes,
                                                    statistical_measure=self.statistical_measure)
 
         # Choose initial_values and set boundaries to tuner_parameters

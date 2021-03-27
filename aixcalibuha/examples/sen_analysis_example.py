@@ -39,6 +39,7 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
         statistical_measure=stat_measure,
         num_samples=1,
         cd=sim_api.cd,
+        analysis_variable='mu_star'
     )
 
     # Choose initial_values and set boundaries to tuner_parameters

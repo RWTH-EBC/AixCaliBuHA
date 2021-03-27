@@ -4,6 +4,7 @@ import abc
 import copy
 import os
 import numpy as np
+import pandas as pd
 from ebcpy.utils import setup_logger
 from ebcpy import data_types
 from ebcpy import simulationapi
@@ -17,9 +18,6 @@ class SenAnalyzer(abc.ABC):
 
     :param simulationapi.SimulationAPI sim_api:
         Simulation-API used to simulate the samples
-    :param SensitivityProblem sensitivity_problem:
-        Parameter class for the sensitivity. it contains the demand of the sampler
-        and create the dictionary parameter Problem
     :param int num_samples:
         The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the
         the number of samples produced, but relates to the total number of samples produced in
@@ -29,6 +27,8 @@ class SenAnalyzer(abc.ABC):
         Used to evaluate the difference of simulated and measured data.
         Like "RMSE", "MAE" etc. See utils.statistics_analyzer.py for
         further info.
+    :keyword str analysis_function:
+        Used to automatically select result values.
     :keyword str,os.path.normpath cd:
         The path for the current working directory.
     :keyword boolean fail_on_error:
@@ -43,13 +43,12 @@ class SenAnalyzer(abc.ABC):
         If true, all simulation files for each iteration will be saved!
     """
 
-    def __init__(self, sim_api, sensitivity_problem, num_samples,
+    def __init__(self, sim_api, num_samples,
                  statistical_measure, **kwargs):
         """Instantiate class parameters"""
         # Setup the instance attributes
         self.sim_api = sim_api
         self.statistical_measure = statistical_measure
-        self.sensitivity_problem = sensitivity_problem
         self.num_samples = num_samples
 
         # Update kwargs
@@ -57,6 +56,12 @@ class SenAnalyzer(abc.ABC):
         self.save_files = kwargs.pop("save_files", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
+        self.analysis_variable = kwargs.pop('analysis_variable',
+                                            self.analysis_variables[0])
+        if self.analysis_variable not in self.analysis_variables:
+            raise TypeError(f'Given analysis_variable "{self.analysis_variable}" not '
+                            f'supported for class {self.__class__.__name__}. '
+                            f'Supported options are: {", ".join(self.analysis_variables)}.')
 
         # Setup the logger
         self.logger = setup_logger(cd=self.cd, name=self.__class__.__name__)
@@ -185,7 +190,7 @@ class SenAnalyzer(abc.ABC):
                 y=output_array
             )
             all_results.append(result)
-        return all_results
+        return all_results, calibration_classes
 
     @staticmethod
     def create_problem(tuner_paras) -> dict:
@@ -226,32 +231,73 @@ class SenAnalyzer(abc.ABC):
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
-    def automatic_select(self, global_res, local_res, calibration_classes):
-        # INPUTS
-        # 0. Preprocessing
-        # 0. Clustering
-        # Python-script
-        # 1. 1 Klasse, globale SA (mit allen TP) -> Reihenfolge TP
-        # 2. X Klassen, lokale SA (mit allen TP) -> Reihenfolge TP
-        # Funktion:
+    def _automatic_select(self, global_res, local_results, local_classes):
+        # Convert results to a dict containing only var_name: value
+        glo_df = self._conv_global_result(result=global_res[0])
+        loc_df = self._conv_local_results(results=local_results,
+                                          local_classes=local_classes)
+        sorted_names = self._recursive_cal_class_sorting(global_df=glo_df,
+                                                         local_df=loc_df)
+        # Sort class by name
+        sorted_classes = []
+        for class_name in sorted_names:
+            for local_class in local_classes:
+                if local_class == class_name:
+                    sorted_classes.append(local_class)
+        # Return sorted output
+        return sorted_classes
+
+    def _recursive_cal_class_sorting(self, global_df, local_df, sorted_list) -> list:
+        """
         # 3. Vergleich: Finde TP_global[0] == TP_lokal[0]
         # if: nur in einer Klasse -> break
         # if: in mehreren Klassen dominant -> dann wo es ggü dem zweiten am besten ist (max(TP_lokal[0]/TP_lokal[1]))
         # Rekursiv: if: in keiner Klasse -> TP_global[0] == TP_lokal[1]
         # -> 1. zu kalibrierende Klasse mit TP_global[i]
-        pass
+        """
+        # check if recursion is finished
+        if global_df.empty:
+            return sorted_list
+        # Get current max_var name and valu
+        var_name = global_df.idxmax(axis=1).values[0]
+        #var_value = global_df.max(axis=1).values[0]
+        loc_max = local_df.idxmax(axis=1).copy()
+        is_max = loc_max[loc_max == var_name]
+        if len(is_max) == 0:
+            # Never max
+        if len(is_max) == 1:
+            sorted_list.append(is_max)
+            return sorted_list
+        if len(is_max) > 1:
+            # Do stuff
+        sub_loc_df = local_df[var_name].copy()
+
 
     def automatic_run(self, calibration_classes):
         # Check input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Create one global class and run it
-        global_classes = calibration_classes.copy()
+        global_classes = copy.deepcopy(calibration_classes)
         # Set the name to global
         for c in global_classes:
             c.name = "global"
-        global_res = self.run(global_classes, merge_multiple_classes=True)
+        global_res, global_clas = self.run(global_classes, merge_multiple_classes=True)
         # Run the local analysis
-        local_res = self.run(calibration_classes, merge_multiple_classes=True)
-        self.automatic_select(global_res,
-                              local_res,
-                              calibration_classes)
+        local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
+        self._automatic_select(global_res=global_res,
+                               local_results=local_res,
+                               local_classes=local_classes)
+
+    def _conv_global_result(self, result: dict):
+        glo_res_dict = self._get_res_dict(res=result)
+        return pd.DataFrame(glo_res_dict, index=['global'])
+
+    def _conv_local_results(self, results: list, local_classes: list):
+        _conv_results = [self._get_res_dict(res=result) for result in results]
+        df = pd.DataFrame(_conv_results)
+        df.index = [c.name for c in local_classes]
+        return df
+
+    def _get_res_dict(self, res):
+        return {var_name: res_val for var_name, res_val in zip(res['names'],
+                                                               res[self.analysis_variable])}
