@@ -242,12 +242,12 @@ class SenAnalyzer(abc.ABC):
         sorted_classes = []
         for class_name in sorted_names:
             for local_class in local_classes:
-                if local_class == class_name:
+                if local_class.name == class_name:
                     sorted_classes.append(local_class)
         # Return sorted output
         return sorted_classes
 
-    def _recursive_cal_class_sorting(self, global_df, local_df, sorted_list) -> list:
+    def _recursive_cal_class_sorting(self, global_df, local_df, sorted_list=None) -> list:
         """
         # 3. Vergleich: Finde TP_global[0] == TP_lokal[0]
         # if: nur in einer Klasse -> break
@@ -255,23 +255,32 @@ class SenAnalyzer(abc.ABC):
         # Rekursiv: if: in keiner Klasse -> TP_global[0] == TP_lokal[1]
         # -> 1. zu kalibrierende Klasse mit TP_global[i]
         """
+        if sorted_list is None:
+            sorted_list = []
         # check if recursion is finished
-        if global_df.empty:
+        if global_df.empty or local_df.empty:
             return sorted_list
         # Get current max_var name and valu
         var_name = global_df.idxmax(axis=1).values[0]
-        #var_value = global_df.max(axis=1).values[0]
         loc_max = local_df.idxmax(axis=1).copy()
         is_max = loc_max[loc_max == var_name]
-        if len(is_max) == 0:
-            # Never max
-        if len(is_max) == 1:
-            sorted_list.append(is_max)
-            return sorted_list
-        if len(is_max) > 1:
-            # Do stuff
-        sub_loc_df = local_df[var_name].copy()
-
+        if len(is_max) <= 1:
+            # Get maximal value
+            class_name = local_df[var_name].idxmax()
+        else:
+            # Divide by max to get the maximal difference between first and second value
+            local_max_df = local_df.loc[is_max.index]
+            q_to_max = local_max_df.div(local_max_df[var_name], axis=0).copy().drop('heatConv_a', axis=1)
+            q_to_max = q_to_max[q_to_max == q_to_max.max(axis=1).min()].dropna(how='all')
+            class_name = q_to_max.index.values[0]
+        sorted_list.append(class_name)
+        local_df = local_df.drop(class_name)
+        global_df = global_df.drop(var_name, axis=1)
+        return self._recursive_cal_class_sorting(
+            global_df=global_df,
+            local_df=local_df,
+            sorted_list=sorted_list
+        )
 
     def automatic_run(self, calibration_classes):
         # Check input
@@ -284,9 +293,9 @@ class SenAnalyzer(abc.ABC):
         global_res, global_clas = self.run(global_classes, merge_multiple_classes=True)
         # Run the local analysis
         local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
-        self._automatic_select(global_res=global_res,
-                               local_results=local_res,
-                               local_classes=local_classes)
+        return self._automatic_select(global_res=global_res,
+                                      local_results=local_res,
+                                      local_classes=local_classes)
 
     def _conv_global_result(self, result: dict):
         glo_res_dict = self._get_res_dict(res=result)
