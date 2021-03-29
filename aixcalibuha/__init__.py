@@ -337,6 +337,11 @@ class TunerParas:
         _scaled = np.clip(_scaled, a_min=0, a_max=1)
         return _scaled*self._df["scale"] + self._df["min"]
 
+    @property
+    def bounds(self):
+        """Get property bounds"""
+        return self._bounds
+
     def get_names(self):
         """Return the names of the tuner parameters"""
         return list(self._df.index)

@@ -1,6 +1,8 @@
 from SALib.sample import saltelli as sobol
 from SALib.analyze import sobol as analyze_sobol
+import numpy as np
 from aixcalibuha.sensanalyzer import SenAnalyzer
+from aixcalibuha import CalibrationClass
 
 
 class SobolAnalyzer(SenAnalyzer):
@@ -24,7 +26,7 @@ class SobolAnalyzer(SenAnalyzer):
 
     @property
     def analysis_variables(self):
-        return ['S1', 'ST', 'ST_conf']
+        return ['S1', 'ST', 'S1_conf', 'ST_conf']
 
     def analysis_function(self, x, y):
         """
@@ -63,3 +65,12 @@ class SobolAnalyzer(SenAnalyzer):
         return sobol.sample(self.problem,
                             N=self.num_samples,
                             **self.create_sampler_demand())
+
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+        """Convert the result object to a dict with the key
+        being the variable name and the value being the result
+        associated to self.analysis_variable."""
+        names = self.create_problem(cal_class.tuner_paras)['names']
+        return {var_name: np.abs(res_val)
+                for var_name, res_val in zip(names,
+                                             result[self.analysis_variable])}

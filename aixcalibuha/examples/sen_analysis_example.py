@@ -5,7 +5,7 @@ If not, please raise an issue.
 """
 
 from ebcpy.examples import dymola_api_example
-from aixcalibuha.sensanalyzer import MorrisAnalyzer
+from aixcalibuha.sensanalyzer import MorrisAnalyzer, SobolAnalyzer
 from aixcalibuha.examples import cal_classes_example
 
 
@@ -33,13 +33,13 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
     """
     # Setup the class
 
-    sen_analyzer = MorrisAnalyzer(
-        sim_api=sim_api,
-        statistical_measure=stat_measure,
-        num_samples=1,
-        cd=sim_api.cd,
-        analysis_variable='mu_star'
-    )
+    sen_analyzer = SobolAnalyzer(
+            sim_api=sim_api,
+            statistical_measure=stat_measure,
+            num_samples=1,
+            cd=sim_api.cd,
+            analysis_variable='S1'
+        )
 
     print('Unsorted classes order: ')
     print(', '.join([c.name for c in cal_classes]))

@@ -9,6 +9,7 @@ from ebcpy.utils import setup_logger
 from ebcpy import data_types
 from ebcpy import simulationapi
 import aixcalibuha
+from aixcalibuha import CalibrationClass
 from aixcalibuha import utils
 
 
@@ -192,6 +193,27 @@ class SenAnalyzer(abc.ABC):
             all_results.append(result)
         return all_results, calibration_classes
 
+    def automatic_run(self, calibration_classes):
+        # Check input
+        calibration_classes = utils.validate_cal_class_input(calibration_classes)
+        # Create one global class and run it
+        global_classes = copy.deepcopy(calibration_classes)
+        # Set the name to global
+        for c in global_classes:
+            c.name = "global"
+        self.logger.info("Running global sensitivity analysis")
+        global_res, global_classes = self.run(global_classes, merge_multiple_classes=True)
+        global_class = global_classes[0]  # conver to scalar class
+        # Run the local analysis
+        self.logger.info("Running local sensitivity analysis")
+        local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
+        sorted_classes = self._automatic_ordering(global_res=global_res,
+                                                  local_results=local_res,
+                                                  unsorted_classes=local_classes,
+                                                  global_class=global_class)
+        self.logger.info("Finished automatic run.")
+        return sorted_classes
+
     @staticmethod
     def create_problem(tuner_paras) -> dict:
         """Create function for later access if multiple calibration-classes are used."""
@@ -231,11 +253,13 @@ class SenAnalyzer(abc.ABC):
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
-    def _automatic_ordering(self, global_res, local_results, unsorted_classes) -> list:
+    def _automatic_ordering(self, global_res, local_results,
+                            unsorted_classes, global_class) -> list:
         self.logger.info("Automatically ordering calibration "
                          "classes based on global and local result")
         # Convert results to a dict containing only var_name: value
-        glo_df = self._conv_global_result(result=global_res[0])
+        glo_df = self._conv_global_result(result=global_res[0],
+                                          cal_class=global_class)
         loc_df = self._conv_local_results(results=local_results,
                                           local_classes=unsorted_classes)
         self.logger.info("Starting recursive ordering of calibration classes.\n"
@@ -264,10 +288,13 @@ class SenAnalyzer(abc.ABC):
         if sorted_list is None:
             sorted_list = []
         # check if recursion is finished
-        if global_df.empty or local_df.empty:
+        if local_df.empty or global_df.empty:
+            # Remaining classes have no order
+            sorted_list.extend(local_df.index.to_list())
             self.logger.info("Stopping recursion. Ordered classes are: %s",
                              ', '.join(sorted_list))
             return sorted_list
+
         # Get current max_var name and valu
         var_name = global_df.idxmax(axis=1).values[0]
         loc_max = local_df.idxmax(axis=1).copy()
@@ -292,35 +319,20 @@ class SenAnalyzer(abc.ABC):
             sorted_list=sorted_list
         )
 
-    def automatic_run(self, calibration_classes):
-        # Check input
-        calibration_classes = utils.validate_cal_class_input(calibration_classes)
-        # Create one global class and run it
-        global_classes = copy.deepcopy(calibration_classes)
-        # Set the name to global
-        for c in global_classes:
-            c.name = "global"
-        self.logger.info("Running global sensitivity analysis")
-        global_res, global_clas = self.run(global_classes, merge_multiple_classes=True)
-        # Run the local analysis
-        self.logger.info("Running local sensitivity analysis")
-        local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
-        sorted_classes = self._automatic_ordering(global_res=global_res,
-                                                  local_results=local_res,
-                                                  unsorted_classes=local_classes)
-        self.logger.info("Finished automatic run.")
-        return sorted_classes
-
-    def _conv_global_result(self, result: dict):
-        glo_res_dict = self._get_res_dict(res=result)
+    def _conv_global_result(self, result: dict, cal_class: CalibrationClass):
+        glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class)
         return pd.DataFrame(glo_res_dict, index=['global'])
 
     def _conv_local_results(self, results: list, local_classes: list):
-        _conv_results = [self._get_res_dict(res=result) for result in results]
+        _conv_results = [self._get_res_dict(result=result, cal_class=local_class)
+                         for result, local_class in zip(results, local_classes)]
         df = pd.DataFrame(_conv_results)
         df.index = [c.name for c in local_classes]
         return df
 
-    def _get_res_dict(self, res):
-        return {var_name: res_val for var_name, res_val in zip(res['names'],
-                                                               res[self.analysis_variable])}
+    @abc.abstractmethod
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+        """Convert the result object to a dict with the key
+        being the variable name and the value being the result
+        associated to self.analysis_variable."""
+        raise NotImplementedError
