@@ -5,7 +5,6 @@ If not, please raise an issue.
 """
 
 from ebcpy.examples import dymola_api_example
-import pandas as pd
 from aixcalibuha.sensanalyzer import MorrisAnalyzer
 from aixcalibuha.examples import cal_classes_example
 
@@ -42,18 +41,13 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
         analysis_variable='mu_star'
     )
 
-    # Choose initial_values and set boundaries to tuner_parameters
-    # Evaluate which tuner_para has influence on what class
-    sen_result = sen_analyzer.automatic_run(calibration_classes=cal_classes)
+    print('Unsorted classes order: ')
+    print(', '.join([c.name for c in cal_classes]))
+    sorted_classes = sen_analyzer.automatic_run(calibration_classes=cal_classes)
+    print('Sorted classes after SA: ')
+    print(', '.join([c.name for c in sorted_classes]))
 
-    for result in sen_result:
-        print(pd.DataFrame(result))
-
-    cal_classes = sen_analyzer.select_by_threshold(calibration_classes=cal_classes,
-                                                   result=sen_result,
-                                                   threshold=1)
-
-    return cal_classes
+    return sorted_classes
 
 
 if __name__ == "__main__":

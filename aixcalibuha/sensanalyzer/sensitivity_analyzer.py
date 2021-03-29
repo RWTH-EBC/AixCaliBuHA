@@ -231,17 +231,23 @@ class SenAnalyzer(abc.ABC):
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
-    def _automatic_select(self, global_res, local_results, local_classes):
+    def _automatic_ordering(self, global_res, local_results, unsorted_classes) -> list:
+        self.logger.info("Automatically ordering calibration "
+                         "classes based on global and local result")
         # Convert results to a dict containing only var_name: value
         glo_df = self._conv_global_result(result=global_res[0])
         loc_df = self._conv_local_results(results=local_results,
-                                          local_classes=local_classes)
+                                          local_classes=unsorted_classes)
+        self.logger.info("Starting recursive ordering of calibration classes.\n"
+                         "Global results:\n %s\n"
+                         "Local results:\n %s", glo_df, loc_df)
         sorted_names = self._recursive_cal_class_sorting(global_df=glo_df,
                                                          local_df=loc_df)
         # Sort class by name
+        self.logger.info("Sort and return classes based on sorted names")
         sorted_classes = []
         for class_name in sorted_names:
-            for local_class in local_classes:
+            for local_class in unsorted_classes:
                 if local_class.name == class_name:
                     sorted_classes.append(local_class)
         # Return sorted output
@@ -259,6 +265,8 @@ class SenAnalyzer(abc.ABC):
             sorted_list = []
         # check if recursion is finished
         if global_df.empty or local_df.empty:
+            self.logger.info("Stopping recursion. Ordered classes are: %s",
+                             ', '.join(sorted_list))
             return sorted_list
         # Get current max_var name and valu
         var_name = global_df.idxmax(axis=1).values[0]
@@ -276,6 +284,8 @@ class SenAnalyzer(abc.ABC):
         sorted_list.append(class_name)
         local_df = local_df.drop(class_name)
         global_df = global_df.drop(var_name, axis=1)
+        self.logger.info("Recursively selected class '%s' as class '%s'",
+                         class_name, len(sorted_list))
         return self._recursive_cal_class_sorting(
             global_df=global_df,
             local_df=local_df,
@@ -290,12 +300,16 @@ class SenAnalyzer(abc.ABC):
         # Set the name to global
         for c in global_classes:
             c.name = "global"
+        self.logger.info("Running global sensitivity analysis")
         global_res, global_clas = self.run(global_classes, merge_multiple_classes=True)
         # Run the local analysis
+        self.logger.info("Running local sensitivity analysis")
         local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
-        return self._automatic_select(global_res=global_res,
-                                      local_results=local_res,
-                                      local_classes=local_classes)
+        sorted_classes = self._automatic_ordering(global_res=global_res,
+                                                  local_results=local_res,
+                                                  unsorted_classes=local_classes)
+        self.logger.info("Finished automatic run.")
+        return sorted_classes
 
     def _conv_global_result(self, result: dict):
         glo_res_dict = self._get_res_dict(res=result)
