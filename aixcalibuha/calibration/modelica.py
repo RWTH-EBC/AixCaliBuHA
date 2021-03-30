@@ -449,7 +449,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                     # Use already calibrated values as initial value for new calibration
                     # Delete it from fixed values and retreive the value
                     initial_values[idx] = self.fixed_parameters.pop(par_name,
-                                                                    initial_values[num])
+                                                                    initial_values[idx])
                 else:
                     self.fixed_parameters.pop(par_name)  # Just delete, don't use the value
 
