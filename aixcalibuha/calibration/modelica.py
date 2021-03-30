@@ -3,7 +3,6 @@ use-cases of calibration, mainly for Modelica
 Calibration."""
 
 import os
-import pathlib
 import json
 import numpy as np
 import pandas as pd
@@ -389,7 +388,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         if calibration_strategy.lower() not in ['parallel', 'sequential']:
             raise ValueError(f"Given calibration_strategy {calibration_strategy} is not supported. "
                              f"Please choose between 'parallel' or 'sequential'")
-        self.calibration_strategy = calibration_strategy
+        self.calibration_strategy = calibration_strategy.lower()
 
         # Choose the time-method
         if start_time_method.lower() not in ["fixstart", "timedelta"]:
