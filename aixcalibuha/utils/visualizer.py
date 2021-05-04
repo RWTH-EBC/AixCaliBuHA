@@ -87,6 +87,8 @@ class CalibrationLogger:
         :param str model_name:
             Name of the model being calibrated
         """
+         if not best_iterate:
+            self.logger.error("No best iterate. Can't save result")
         result_log = f"\nResults for calibration of model: {model_name}\n"
         result_log += f"Number of iterations: {self._counter_calibration}\n"
         result_log += "Final parameter values:\n"

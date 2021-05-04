@@ -179,8 +179,8 @@ class ModelicaCalibrator(Calibrator):
 
         # Set initial values of variable and fixed parameters
         self.sim_api.set_sim_setup({
-            'initial_values': xk_descaled.values + list(self.fixed_parameters.values()),
-            'initial_names': self.tuner_paras.get_names() + list(self.fixed_parameters.keys())
+            'initialValues': list(xk_descaled.values) + list(self.fixed_parameters.values()),
+            'initialNames': self.tuner_paras.get_names() + list(self.fixed_parameters.keys())
         })
 
         # Simulate
@@ -290,18 +290,17 @@ class ModelicaCalibrator(Calibrator):
             with open(s_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
 
-    def validate(self, goals):
-        if not isinstance(goals, Goals):
-            raise TypeError(f"Given goals is of type {type(goals).__name__} "
-                            f"but type Goals is needed.")
+    def validate(self, validation_class: CalibrationClass, xk):
         #%% Start Validation:
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
-        self.goals = goals
+        self.calibration_class = validation_class
+        self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
+        self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
-        xk = self._res.x
         val_result = self.obj(xk)
         self.logger.log(f"{self.statistical_measure} of validation: {val_result}")
+        return val_result
 
     def _handle_error(self, error):
         """
