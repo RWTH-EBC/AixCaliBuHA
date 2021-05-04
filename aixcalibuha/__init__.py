@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 from ebcpy import data_types
 from ebcpy.utils import statistics_analyzer
+from ebcpy.preprocessing import convert_datetime_index_to_float_index
 # pylint: disable=I1101
 __version__ = "0.1.5"
 
@@ -422,13 +423,19 @@ class CalibrationClass:
         will only evaluate the data between 0-100, 150-200 and 500-600.
         The given intervals may overlap. Furthermore the intervals do not need
         to be in an ascending order or be limited to the start_time and end_time parameters.
+    :param (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:
+        TimeSeriesData or DataFrame that holds
+        input data for the simulation to run.
+        The time-index should be float index and match the overall
+        ranges set by start- and stop-time.
     """
 
     def __init__(self, name, start_time, stop_time, goals=None,
-                 tuner_paras=None, relevant_intervals=None):
+                 tuner_paras=None, relevant_intervals=None, inputs=None):
         """Initialize class-objects and check correct input."""
         self._tuner_paras = None
         self._goals = None
+        self._inputs = None
         self.name = name
         self._start_time = start_time
         self.stop_time = stop_time
@@ -441,6 +448,8 @@ class CalibrationClass:
         else:
             # Then all is relevant
             self.relevant_intervals = [(start_time, stop_time)]
+        if inputs is not None:
+            self.inputs = inputs
 
     @property
     def name(self):
@@ -522,6 +531,30 @@ class CalibrationClass:
     def relevant_intervals(self, relevant_intervals: list):
         """Set current relevant_intervals"""
         self._relevant_intervals = relevant_intervals
+
+    @property
+    def inputs(self) -> Union[data_types.TimeSeriesData, pd.DataFrame]:
+        """Get the inputs for this calibration class"""
+        return self._inputs
+
+    @inputs.setter
+    def inputs(self, inputs: Union[data_types.TimeSeriesData, pd.DataFrame]):
+        """Set the inputs for this calibration class"""
+        # Check correct index:
+        if not isinstance(inputs, (data_types.TimeSeriesData, pd.DataFrame)):
+            raise TypeError(f"Inputs need to be either TimeSeriesData "
+                            f"or pd.DataFrame, but you passed {type(inputs)}")
+        if isinstance(inputs.index, pd.DatetimeIndex):
+            inputs = convert_datetime_index_to_float_index(inputs)
+        try:
+            if inputs.index.min() > self.start_time:
+                raise ValueError("Given inputs have no data for the current start_time.")
+            if inputs.index.max() < self._stop_time:
+                raise ValueError("Given inputs have no data for the current stop_time.")
+        except TypeError as err:
+            raise TypeError("Given inputs have no numeric index.") from err
+
+        self._inputs = inputs
 
 
 def merge_calibration_classes(calibration_classes):

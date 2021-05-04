@@ -127,13 +127,14 @@ class SenAnalyzer(abc.ABC):
                 if self.save_files:
                     savepath_files = os.path.join(self.cd,
                                                   f"simulation_{i + 1}")
-                    filepath = self.sim_api.simulate(savepath_files=savepath_files)
+                    filepath = self.sim_api.simulate(savepath_files=savepath_files,
+                                                     inputs=cal_class.inputs)
                     # Load the result file to the goals object
                     sim_target_data = data_types.TimeSeriesData(filepath)
                 else:
                     target_sim_names = cal_class.goals.get_sim_var_names()
                     self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.sim_api.simulate()
+                    df = self.sim_api.simulate(inputs=cal_class.inputs)
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
             except Exception as e:

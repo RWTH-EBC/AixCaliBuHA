@@ -78,8 +78,6 @@ class ModelicaCalibrator(Calibrator):
     TODO: Add missing kwargs description
     """
 
-    # Dummy variable for accessing the current simulation result
-    _filepath_dsres = ""
     # Tuple with information on what time-intervals are relevant for the objective.
     _relevant_time_intervals = []
     # Dummy variable for the result of the calibration:
@@ -195,8 +193,7 @@ class ModelicaCalibrator(Calibrator):
         target_sim_names = self.goals.get_sim_var_names()
         self.sim_api.set_sim_setup({
             'initialValues': list(xk_descaled.values) + list(self.fixed_parameters.values()),
-            'initialNames': self.tuner_paras.get_names() + list(self.fixed_parameters.keys()),
-            'resultNames': target_sim_names
+            'initialNames': self.tuner_paras.get_names() + list(self.fixed_parameters.keys())
         })
 
         # Simulate
@@ -205,13 +202,19 @@ class ModelicaCalibrator(Calibrator):
             if self.save_files:
                 savepath_files = os.path.join(self.sim_api.cd,
                                               f"simulation_{self._counter}")
-                self._filepath_dsres = self.sim_api.simulate(savepath_files=savepath_files)
+                _filepath = self.sim_api.simulate(
+                    savepath_files=savepath_files,
+                    inputs=self.calibration_class.inputs
+                )
                 # %% Load results and write to goals object
-                sim_target_data = data_types.TimeSeriesData(self._filepath_dsres)
+                sim_target_data = data_types.TimeSeriesData(_filepath)
             else:
                 target_sim_names = self.goals.get_sim_var_names()
                 self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                df = self.sim_api.simulate(savepath_files="")
+                df = self.sim_api.simulate(
+                    savepath_files="",
+                    inputs=self.calibration_class.inputs
+                )
                 # Convert it to time series data object
                 sim_target_data = data_types.TimeSeriesData(df)
         except Exception as e:
