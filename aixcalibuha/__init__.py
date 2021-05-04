@@ -144,7 +144,7 @@ class Goals:
         nicely."""
         return str(self._tsd)
 
-    def eval_difference(self, statistical_measure, verbose=False):
+    def eval_difference(self, statistical_measure, verbose=False, penaltyfactor=1):
         """
         Evaluate the difference of the measurement and simulated data based on the
         given statistical_measure.
@@ -156,6 +156,9 @@ class Goals:
             corresponding weightings is returned together with the total difference.
             This can be useful to better understand which goals is performing
             well in an optimization and which goals needs further is not performing well.
+        :param float penaltyfactor:
+            Muliplty result with this factor to account for
+            penatlies of some sort.
         :return: float total_difference
             weighted ouput for all goals.
         """
@@ -164,8 +167,15 @@ class Goals:
         _verbose_calculation = {}
 
         for i, goal_name in enumerate(self.variable_names.keys()):
+            if self._tsd.isnull().values.any():
+                raise ValueError("There are not valid values in the simulated target data. Probably the time interval"
+                                 " of measured and simulated data are not equal. \nPlease check the frequencies"
+                                 " in the toml file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])
+            # Apply penalty function
+            _diff = _diff * penaltyfactor
+
             _verbose_calculation[self._weightings[i]] = _diff
             total_difference += self._weightings[i] * _diff
 
@@ -537,6 +547,7 @@ def merge_calibration_classes(calibration_classes):
     temp_merged = {}
     for cal_class in calibration_classes:
         _name = cal_class.name
+        # First create dictionary with all calibration classes
         if _name in temp_merged:
             temp_merged[_name]["intervals"] += cal_class.relevant_intervals
         else:

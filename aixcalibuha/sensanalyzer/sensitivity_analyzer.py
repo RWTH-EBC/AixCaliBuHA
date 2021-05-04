@@ -3,6 +3,7 @@ The module contains the relevant base-classes."""
 import abc
 import copy
 import os
+import time
 import numpy as np
 import pandas as pd
 from ebcpy.utils import setup_logger
@@ -101,7 +102,7 @@ class SenAnalyzer(abc.ABC):
 
     def simulate_samples(self, samples, cal_class):
         """
-        Put the parameter in dymola model, run it.
+        Put the parameters in the model and simulate it.
 
         :param Union[list, np.ndarray] samples:
             Output variables in dymola
@@ -178,11 +179,13 @@ class SenAnalyzer(abc.ABC):
 
         all_results = []
         for cal_class in calibration_classes:
+            t_sen_start = time.time()
             self.logger.info(f'Start sensitivity analysis of class: {cal_class.name}, '
                              f'Time-Interval: {cal_class.start_time}-{cal_class.stop_time} s')
 
             self.problem = self.create_problem(cal_class.tuner_paras)
             samples = self.generate_samples()
+            # Generate list with metrics of every parameter variation
             output_array = self.simulate_samples(
                 samples=samples,
                 cal_class=cal_class)
@@ -190,6 +193,8 @@ class SenAnalyzer(abc.ABC):
                 x=samples,
                 y=output_array
             )
+            t_sen_stop = time.time()
+            salib_analyze_result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(result)
         return all_results, calibration_classes
 
@@ -250,6 +255,11 @@ class SenAnalyzer(abc.ABC):
                 if sen_value < threshold:
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
+            if not tuner_paras.get_names():
+                raise ValueError('Automatic selection removed all tuner parameter from class {} after Sensitivityanalysis was done.'
+                                 ' Please adjust the threshold in json or manually chose tuner parameters for '
+                                 'the calibration.'.format(cal_class.name))
+            # cal_class.set_tuner_paras(tuner_paras)
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
