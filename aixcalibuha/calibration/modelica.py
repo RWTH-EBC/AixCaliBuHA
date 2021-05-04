@@ -354,8 +354,10 @@ class ModelicaCalibrator(Calibrator):
         Also save the plots if an error occurs.
         See ebcpy.optimization.Optimizer._handle_error for more info.
         """
-        self.logger.save_calibration_result(self._current_best_iterate,
-                                            self.sim_api.model_name)
+        self.logger.save_calibration_result(best_iterate=self._current_best_iterate,
+                                            model_name=self.sim_api.model_name,
+                                            duration=0,
+                                            itercount=0)
         super()._handle_error(error)
 
     def get_penalty(self, current_tuners, current_tuners_scaled):
