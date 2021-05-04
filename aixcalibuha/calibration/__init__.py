@@ -1,4 +1,4 @@
-"""Base-module for the whole calibration pacakge.
+"""Base-module for the whole calibration package.
 Used to define Base-Classes such as Optimizer and
 Calibrator."""
 
