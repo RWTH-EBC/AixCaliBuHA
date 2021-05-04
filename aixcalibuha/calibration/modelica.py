@@ -139,6 +139,7 @@ class ModelicaCalibrator(Calibrator):
                                           self.calibration_class.stop_time)]
 
         #%% Setup the logger
+        # De-register the logger setup in the optimization class:
         if self.verbose_logging:
             self.logger = visualizer.CalibrationVisualizer(
                 cd=cd,
@@ -434,7 +435,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 for par_name in cal_run['res']['Parameters'].index:
                     already_calibrated_parameters[par_name] = cal_run['res']['Parameters'][par_name]
             # Set fixed names:
-            self.fixed_parameters.update({already_calibrated_parameters})
+            self.fixed_parameters.update(already_calibrated_parameters)
 
             # Reset best iterate for new class
             self._current_best_iterate = {"Objective": np.inf}
@@ -450,7 +451,10 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                     initial_values[idx] = self.fixed_parameters.pop(par_name,
                                                                     initial_values[idx])
                 else:
-                    self.fixed_parameters.pop(par_name)  # Just delete, don't use the value
+                    try:
+                        self.fixed_parameters.pop(par_name)  # Just delete, don't use the value
+                    except KeyError:
+                        pass  # Faster than checking if is in dict.
 
             self.x0 = self.tuner_paras.scale(initial_values)
             # Either bounds are present or not.
