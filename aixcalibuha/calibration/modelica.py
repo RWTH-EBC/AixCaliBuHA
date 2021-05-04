@@ -106,6 +106,7 @@ class ModelicaCalibrator(Calibrator):
         self.fixed_parameters = kwargs.pop("fixed_parameters", {})
         self.apply_penalty = kwargs.pop("apply_penalty", True)
         self.penalty_factor = kwargs.pop("penalty_factor", 0)
+        self.recalibration_count = kwargs.pop("recalibration_count", 0)
         self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.result_path = kwargs.pop('result_path', None)
         # Extract kwargs for the visualizer
@@ -224,7 +225,7 @@ class ModelicaCalibrator(Calibrator):
 
         #%% Evaluate the current objective
         # Penalty function (get penalty factor)
-        if self.sim_api.count > 1 and self.sim_api.benchmark_exists and self.apply_penalty:
+        if self.recalibration_count > 1 and self.apply_penalty:
             current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
             penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
             # Evaluate with penalty
@@ -282,7 +283,7 @@ class ModelicaCalibrator(Calibrator):
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
                                             self.t_cal,
-                                            self.sim_api.count)
+                                            self.recalibration_count)
         # Reset
         self._current_best_iterate['better_current_result'] = False
 
@@ -380,7 +381,7 @@ class ModelicaCalibrator(Calibrator):
 
         # Apply penalty function
         penalty = 1
-        for key,value in current_scaled.items():
+        for key, value in current_scaled.items():
             # Add corresponding function for penaltyfactor here
             if self.perform_square_deviation:
                 # Apply quadratic deviation
@@ -396,19 +397,7 @@ class ModelicaCalibrator(Calibrator):
                     dev = abs(current[key] - previous[key]) / abs(previous[key])
                     penalty += self.penalty_factor * dev
                 except:
-                    print('Exception here for Bugfix.')
-                # # add 0% to penaltyfactor
-                # if dev < 0.2:
-                #     continue
-                # # add 2% to penaltyfactor
-                # elif dev < 0.4:
-                #     penalty += 0.02
-                # # add 4% to penaltyfactor
-                # elif dev < 0.6:
-                #     penalty += 0.04
-                # # add 8% to penaltyfactor
-                # else:
-                #     penalty += 0.08
+                    pass
 
         return penalty
 
@@ -654,7 +643,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         # Handle tuner intersections
         if intersected_tuners.keys():
             # Plot or log the information, depending on which logger you are using:
-            self.logger.log_intersection_of_tuners(intersected_tuners, self.sim_api.count)
+            self.logger.log_intersection_of_tuners(intersected_tuners, self.recalibration_count)
 
             # Return average value of ALL tuner parameters (not only intersected). Reason: if there is an intersection
             # of a tuner parameter, but the results of both calibration classes are exactly the same, there is no
