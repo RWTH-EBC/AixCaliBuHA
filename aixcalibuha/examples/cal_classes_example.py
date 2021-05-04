@@ -3,7 +3,6 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from ebcpy.examples import data_types_example
 from aixcalibuha.examples import goals_example, tuner_paras_example
 from aixcalibuha import CalibrationClass, TunerParas
 
