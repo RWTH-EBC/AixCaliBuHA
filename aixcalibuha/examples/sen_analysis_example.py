@@ -5,7 +5,7 @@ If not, please raise an issue.
 """
 
 from ebcpy.examples import dymola_api_example
-from aixcalibuha.sensanalyzer import MorrisAnalyzer, SobolAnalyzer
+from aixcalibuha.sensanalyzer import SobolAnalyzer
 from aixcalibuha.examples import cal_classes_example
 
 

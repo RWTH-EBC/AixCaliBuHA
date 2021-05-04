@@ -6,10 +6,10 @@ Calibration."""
 import os
 import json
 import time
-import numpy as np
-import pandas as pd
 from typing import List
+import numpy as np
 from ebcpy import data_types
+from ebcpy.simulationapi import SimulationAPI
 import aixcalibuha
 from aixcalibuha.utils import visualizer
 from aixcalibuha.calibration import Calibrator
@@ -89,7 +89,12 @@ class ModelicaCalibrator(Calibrator):
     # Working directory for class
     cd_of_class = None
 
-    def __init__(self, cd: str, sim_api, statistical_measure: str, calibration_class: CalibrationClass, **kwargs):
+    def __init__(self,
+                 cd: str,
+                 sim_api: SimulationAPI,
+                 statistical_measure: str,
+                 calibration_class: CalibrationClass,
+                 **kwargs):
         """Instantiate instance attributes"""
         #%% Kwargs
         # Initialize supported keywords with default value
@@ -234,27 +239,40 @@ class ModelicaCalibrator(Calibrator):
             current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
             penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
             # Evaluate with penalty
-            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,
-                                                                     verbose=True, penaltyfactor=penalty)
-            self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
+            total_res, unweighted_objective = self.goals.eval_difference(
+                self.statistical_measure,
+                verbose=True,
+                penaltyfactor=penalty
+            )
+            self.logger.calibration_callback_func(
+                xk,
+                total_res,
+                unweighted_objective,
+                penalty=penalty
+            )
         # There is no benchmark in the first iteration or first iterations were skipped, so no penalty is applied
         else:
             penalty = None
             # Evaluate without penalty
-            total_res, unweighted_objective = self.goals.eval_difference(self.statistical_measure,verbose=True)
+            total_res, unweighted_objective = self.goals.eval_difference(
+                self.statistical_measure,
+                verbose=True)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
 
         # current best iteration step of current calibration class
         if total_res < self._current_best_iterate["Objective"]:
             #self.best_goals = self.goals
-            self._current_best_iterate = {"Iterate": self._counter,
-                                          "Objective": total_res,
-                                          "Unweighted Objective": unweighted_objective,
-                                          "Parameters": xk_descaled,
-                                          "Goals": self.goals,
-                                          "better_current_result": True,     # For penalty function and for saving goals as csv
-                                          "Penaltyfactor": penalty                # Changed to false in this script after calling function "save_calibration_results"
-                                          }
+            self._current_best_iterate = {
+                "Iterate": self._counter,
+                "Objective": total_res,
+                "Unweighted Objective": unweighted_objective,
+                "Parameters": xk_descaled,
+                "Goals": self.goals,
+                # For penalty function and for saving goals as csv
+                "better_current_result": True,
+                # Changed to false in this script after calling function "save_calibration_results"
+                "Penaltyfactor": penalty
+            }
 
         self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
         return total_res
@@ -410,7 +428,7 @@ class ModelicaCalibrator(Calibrator):
 
 
 class MultipleClassCalibrator(ModelicaCalibrator):
-    """
+    r"""
     Class for calibration of multiple calibration classes.
     When passing multiple classes of the same name, all names
     are merged into one class with so called relevant time intervals.
@@ -652,16 +670,20 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             # Plot or log the information, depending on which logger you are using:
             self.logger.log_intersection_of_tuners(intersected_tuners, self.recalibration_count)
 
-            # Return average value of ALL tuner parameters (not only intersected). Reason: if there is an intersection
-            # of a tuner parameter, but the results of both calibration classes are exactly the same, there is no
-            # intersection and the affected parameter will not be delivered to "res_tuner" if one of the other tuners
+            # Return average value of ALL tuner parameters (not only intersected).
+            # Reason: if there is an intersection of a tuner parameter, but
+            # the results of both calibration classes are exactly the same, there
+            # is no intersection and the affected parameter will not be
+            # delivered to "res_tuner" if one of the other tuners
             # intersect and "intersected_tuners.keys()" is true.
             average_tuner_parameter = {}
             for tuner_para, values in merged_tuner_parameters.items():
                 average_tuner_parameter[tuner_para] = sum(values) / len(values)
 
-            self.logger.log("The tuner parameters used for evaluation are averaged as follows:\n {}"
-                            .format(tuner, values) for tuner, values in average_tuner_parameter)
+            self.logger.log("The tuner parameters used for evaluation"
+                            " are averaged as follows:\n "
+                            "{}".format(tuner, values)
+                            for tuner, values in average_tuner_parameter)
 
             # Create result-dictonary
             res_tuner = average_tuner_parameter

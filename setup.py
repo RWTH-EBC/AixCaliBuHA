@@ -9,13 +9,13 @@ INSTALL_REQUIRES = ['numpy',
                     'h5py',
                     'SALib',
                     'cmake',
-                    'ebcpy>=0.1.5',
+                    'ebcpy>=0.1.7',
                     ]
 SETUP_REQUIRES = INSTALL_REQUIRES.copy()  # Add all open-source packages to setup-requires
 #INSTALL_REQUIRES.append('dlib')
 
 setuptools.setup(name='aixcalibuha',
-                 version='0.1.5',
+                 version='0.1.6',
                  description='Framework used for sensitivity-analysis'
                              'and calibration for models of HVAC '
                              'components.',

@@ -43,7 +43,6 @@ def setup_goals():
 
     # Convert index to float to match the simulation output
     meas_target_data = preprocessing.convert_datetime_index_to_float_index(meas_target_data)
-    g = meas_target_data["measured_T_heater"]
     # Setup the goals object
     goals = Goals(meas_target_data=meas_target_data,
                   variable_names=variable_names,
@@ -52,8 +51,8 @@ def setup_goals():
     return goals
 
 
-if __name__=="__main__":
-    goals = setup_goals()
-    goals.set_relevant_time_intervals([(0, 100)])
-    goals.eval_difference("RMSE")
-    print(goals)
+if __name__ == "__main__":
+    GOALS = setup_goals()
+    GOALS.set_relevant_time_intervals([(0, 100)])
+    GOALS.eval_difference("RMSE")
+    print(GOALS)

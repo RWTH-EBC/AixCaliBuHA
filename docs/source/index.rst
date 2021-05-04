@@ -66,6 +66,14 @@ Version History
    - Issue 51: Refactor reference_start_time to fix_start_time
    - Issue 23: Model Wrapper for MoCaTe files.
 
+- **v0.1.6**
+   - Add Re-Calibration code from master thesis of Sebastian Borges
+   - Add fixed_parameters to calibration
+   - Re-add tunerParas from ebcpy
+   - Make changes based on ebcpy v.0.1.7
+   - Split SensivitiyAnalyzer class and use object oriented programming
+
+
 Indices and tables
 ==================
 

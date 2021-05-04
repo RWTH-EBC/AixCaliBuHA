@@ -2,12 +2,12 @@
 Module to with configs and functions to read configs for objects in this repository.
 """
 
-from ebcpy import data_types
 import numpy as np
-from aixcalibuha import Goals, CalibrationClass, TunerParas
+from ebcpy import data_types
 from ebcpy.utils.configuration import default_config, tsd_config
+from aixcalibuha import Goals, CalibrationClass, TunerParas
 
-
+# pylint: disable=line-too-long
 kwargs_calibrator = {"timedelta": 0,
                      "save_files": False,
                      "verbose_logging": True,

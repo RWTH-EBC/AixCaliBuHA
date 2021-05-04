@@ -2,12 +2,13 @@
 Package containing utility functions used in different packages.
 Contains a statistics analyzer and a visualizer.
 """
-from aixcalibuha import CalibrationClass
 from typing import Union, List
+from aixcalibuha import CalibrationClass
 
 
-def validate_cal_class_input(calibration_classes: Union[CalibrationClass,
-                                                        List[CalibrationClass]]) -> List[CalibrationClass]:
+def validate_cal_class_input(
+        calibration_classes: Union[CalibrationClass, List[CalibrationClass]]
+) -> List[CalibrationClass]:
     """Check if given list contains only CalibrationClass objects or is one
     and return a list in both cases. Else raise an error"""
     if isinstance(calibration_classes, list):

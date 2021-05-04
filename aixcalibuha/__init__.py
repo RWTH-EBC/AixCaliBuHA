@@ -10,7 +10,7 @@ from ebcpy import data_types
 from ebcpy.utils import statistics_analyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
 # pylint: disable=I1101
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 
 class Goals:
@@ -130,14 +130,16 @@ class Goals:
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
         if weightings is None:
-            self._weightings = np.array([1/self._num_goals for i in range(self._num_goals)])
+            self._weightings = np.array([1/self._num_goals
+                                         for i in range(self._num_goals)])
         else:
             if not isinstance(weightings, (list, np.ndarray)):
                 raise TypeError(f"weightings is of type {type(weightings).__name__} "
                                 f"but should be of type list.")
             if len(weightings) != self._num_goals:
-                raise IndexError(f"The given number of weightings ({len(weightings)}) does not match the number"
-                                 f" of goals ({self._num_goals})")
+                raise IndexError(f"The given number of weightings ({len(weightings)}) "
+                                 f"does not match the number of "
+                                 f"goals ({self._num_goals})")
             self._weightings = np.array(weightings) / sum(weightings)
 
     def __str__(self):
@@ -169,9 +171,11 @@ class Goals:
 
         for i, goal_name in enumerate(self.variable_names.keys()):
             if self._tsd.isnull().values.any():
-                raise ValueError("There are not valid values in the simulated target data. Probably the time interval"
-                                 " of measured and simulated data are not equal. \nPlease check the frequencies"
-                                 " in the toml file (outputInterval & frequency).")
+                raise ValueError("There are not valid values in the "
+                                 "simulated target data. Probably the time "
+                                 "interval of measured and simulated data "
+                                 "are not equal. \nPlease check the frequencies "
+                                 "in the toml file (outputInterval & frequency).")
             _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
                                        sim=self._tsd[(goal_name, self.sim_tag_str)])
             # Apply penalty function
@@ -182,8 +186,7 @@ class Goals:
 
         if verbose:
             return total_difference, _verbose_calculation
-        else:
-            return total_difference
+        return total_difference
 
     def set_sim_target_data(self, sim_target_data):
         """Alter the object with new simulation data
@@ -195,10 +198,12 @@ class Goals:
             the output of a simulation, hence "sim"-target-data.
         """
         if not isinstance(sim_target_data.index, type(self._tsd_ref.index)):
-            raise IndexError(f"Given sim_target_data is using {type(sim_target_data.index).__name__}"
-                             f" as an index, but the reference results (measured-data) was declared"
-                             f" using the {type(self._tsd_ref.index).__name__}. Convert your"
-                             f" measured-data index to solve this error.")
+            raise IndexError(
+                f"Given sim_target_data is using {type(sim_target_data.index).__name__}"
+                f" as an index, but the reference results (measured-data) was declared"
+                f" using the {type(self._tsd_ref.index).__name__}. Convert your"
+                f" measured-data index to solve this error."
+            )
 
         for goal_name in self.variable_names.keys():
             # Three critical cases may occur:
@@ -236,7 +241,8 @@ class Goals:
         # Dynamically make mask for multiple possible time-intervals
         for _start_time, _end_time in intervals:
             _mask = _mask | ((_df_ref.index >= _start_time) & (_df_ref.index <= _end_time))
-        # TODO: Is the data temporarly deleted if a segment is applied? Maybe we need a base-tsd and a current-tsd like _curr_tsd
+        # TODO: Is the data temporarly deleted if a segment is applied?
+        #  Maybe we need a base-tsd and a current-tsd like _curr_tsd
         self._tsd = _df_ref.loc[_mask]
 
     def get_goals_list(self):
@@ -276,13 +282,15 @@ class TunerParas:
                                 "and not of type str.")
         # Check if all names are unique:
         if len(names) != len(set(names)):
-            raise ValueError(f"Given names contain duplicates. This will yield errors in later stages"
-                             f"such as calibration of sensitivity analysis.")
+            raise ValueError("Given names contain duplicates. "
+                             "This will yield errors in later stages"
+                             "such as calibration of sensitivity analysis.")
         try:
             # Calculate the sum, as this will fail if the elements are not float or int.
             sum(initial_values)
-        except TypeError:
-            raise TypeError("initial_values contains other instances than float or int.")
+        except TypeError as err:
+            raise TypeError("initial_values contains other "
+                            "instances than float or int.") from err
         if len(names) != len(initial_values):
             raise ValueError(f"shape mismatch: names has length {len(names)}"
                              f" and initial_values {len(initial_values)}.")
@@ -325,8 +333,9 @@ class TunerParas:
             return descaled
         _scaled = (descaled - self._df["min"])/self._df["scale"]
         if not all((_scaled >= 0) & (_scaled <= 1)):
-            warnings.warn("Given descaled values are outside of bounds."
-                          "Automatically limiting the values with respect to the bounds.")
+            warnings.warn("Given descaled values are outside "
+                          "of bounds. Automatically limiting "
+                          "the values with respect to the bounds.")
         return np.clip(_scaled, a_min=0, a_max=1)
 
     def descale(self, scaled):
@@ -344,7 +353,8 @@ class TunerParas:
         _scaled = np.array(scaled)
         if not all((_scaled >= 0-1e4) & (_scaled <= 1+1e4)):
             warnings.warn("Given scaled values are outside of bounds. "
-                          "Automatically limiting the values with respect to the bounds.")
+                          "Automatically limiting the values with "
+                          "respect to the bounds.")
         _scaled = np.clip(_scaled, a_min=0, a_max=1)
         return _scaled*self._df["scale"] + self._df["min"]
 
@@ -391,8 +401,11 @@ class TunerParas:
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]
         if not self._df[self._df["scale"] <= 0].empty:
-            raise ValueError("The given lower bounds are greater equal than the upper bounds,"
-                             f"resulting in a negative scale: \n{str(self._df['scale'])}")
+            raise ValueError(
+                "The given lower bounds are greater equal "
+                "than the upper bounds, resulting in a "
+                f"negative scale: \n{str(self._df['scale'])}"
+            )
 
 
 class CalibrationClass:
@@ -422,7 +435,8 @@ class CalibrationClass:
         [(0, 100), [150, 200), (500, 600)]
         will only evaluate the data between 0-100, 150-200 and 500-600.
         The given intervals may overlap. Furthermore the intervals do not need
-        to be in an ascending order or be limited to the start_time and end_time parameters.
+        to be in an ascending order or be limited to
+        the start_time and end_time parameters.
     :param (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:
         TimeSeriesData or DataFrame that holds
         input data for the simulation to run.
@@ -473,7 +487,8 @@ class CalibrationClass:
     def start_time(self, start_time: Union[float, int]):
         """Set start time of calibration class"""
         if not start_time <= self.stop_time:
-            raise ValueError("The given start-time is higher than the stop-time.")
+            raise ValueError("The given start-time is "
+                             "higher than the stop-time.")
         self._start_time = start_time
 
     @property
@@ -485,11 +500,13 @@ class CalibrationClass:
     def stop_time(self, stop_time: Union[float, int]):
         """Set stop time of calibration class"""
         if not self.start_time <= stop_time:
-            raise ValueError("The given stop-time is lower than the start-time.")
+            raise ValueError("The given stop-time is "
+                             "lower than the start-time.")
         self._stop_time = stop_time
 
     @property
     def tuner_paras(self) -> TunerParas:
+        """Get the tuner parameters of the calibration-class"""
         return self._tuner_paras
 
     @tuner_paras.setter
@@ -588,7 +605,8 @@ def merge_calibration_classes(calibration_classes):
         else:
             temp_merged[_name] = {"goals": cal_class.goals,
                                   "tuner_paras": cal_class.tuner_paras,
-                                  "intervals": cal_class.relevant_intervals
+                                  "intervals": cal_class.relevant_intervals,
+                                  "inputs": cal_class.inputs
                                   }
     # Convert dict to actual calibration-classes
     cal_classes_merged = []
@@ -596,9 +614,12 @@ def merge_calibration_classes(calibration_classes):
         # Flatten the list of tuples and get the start- and stop-values
         start_time = min(sum(values["intervals"], ()))
         stop_time = max(sum(values["intervals"], ()))
-        cal_classes_merged.append(CalibrationClass(_name, start_time, stop_time,
-                                                   goals=values["goals"],
-                                                   tuner_paras=values["tuner_paras"],
-                                                   relevant_intervals=values["intervals"]))
+        cal_classes_merged.append(CalibrationClass(
+            _name, start_time, stop_time,
+            goals=values["goals"],
+            tuner_paras=values["tuner_paras"],
+            relevant_intervals=values["intervals"],
+            inputs=values["inputs"])
+        )
 
     return cal_classes_merged

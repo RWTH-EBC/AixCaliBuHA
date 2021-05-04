@@ -118,10 +118,12 @@ class SenAnalyzer(abc.ABC):
                                            "stopTime": cal_class.stop_time})
         for i, initial_values in enumerate(samples):
             # Simulate the current values
-            self.logger.info(f'Parameter variation {i+1} of {len(samples)}')
+            self.logger.info('Parameter variation %s of %s',
+                             i+1, len(samples))
             self.sim_api.set_initial_values(initial_values)
 
             # Simulate
+            # pylint: disable=broad-except
             try:
                 # Generate the folder name for the calibration
                 if self.save_files:
@@ -137,11 +139,10 @@ class SenAnalyzer(abc.ABC):
                     df = self.sim_api.simulate(inputs=cal_class.inputs)
                     # Convert it to time series data object
                     sim_target_data = data_types.TimeSeriesData(df)
-            except Exception as e:
+            except Exception as err:
                 if self.fail_on_error:
-                    raise e
-                else:
-                    return self.ret_val_on_error
+                    raise err
+                return self.ret_val_on_error
 
             cal_class.goals.set_sim_target_data(sim_target_data)
             cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
@@ -181,8 +182,9 @@ class SenAnalyzer(abc.ABC):
         all_results = []
         for cal_class in calibration_classes:
             t_sen_start = time.time()
-            self.logger.info(f'Start sensitivity analysis of class: {cal_class.name}, '
-                             f'Time-Interval: {cal_class.start_time}-{cal_class.stop_time} s')
+            self.logger.info('Start sensitivity analysis of class: %s, '
+                             'Time-Interval: %s-%s s', cal_class.name,
+                             cal_class.start_time,cal_class.stop_time)
 
             self.problem = self.create_problem(cal_class.tuner_paras)
             samples = self.generate_samples()
@@ -205,11 +207,11 @@ class SenAnalyzer(abc.ABC):
         # Create one global class and run it
         global_classes = copy.deepcopy(calibration_classes)
         # Set the name to global
-        for c in global_classes:
-            c.name = "global"
+        for _class in global_classes:
+            _class.name = "global"
         self.logger.info("Running global sensitivity analysis")
         global_res, global_classes = self.run(global_classes, merge_multiple_classes=True)
-        global_class = global_classes[0]  # conver to scalar class
+        global_class = global_classes[0]  # convert to scalar class
         # Run the local analysis
         self.logger.info("Running local sensitivity analysis")
         local_res, local_classes = self.run(calibration_classes, merge_multiple_classes=True)
@@ -257,9 +259,12 @@ class SenAnalyzer(abc.ABC):
                     select_names.append(class_result["names"][i])
             tuner_paras.remove_names(select_names)
             if not tuner_paras.get_names():
-                raise ValueError('Automatic selection removed all tuner parameter from class {} after Sensitivityanalysis was done.'
-                                 ' Please adjust the threshold in json or manually chose tuner parameters for '
-                                 'the calibration.'.format(cal_class.name))
+                raise ValueError(
+                    'Automatic selection removed all tuner parameter '
+                    f'from class {cal_class.name} after '
+                    'SensitivityAnalysis was done. Please adjust the '
+                    'threshold in json or manually chose tuner '
+                    'parameters for the calibration.')
             # cal_class.set_tuner_paras(tuner_paras)
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
@@ -292,7 +297,8 @@ class SenAnalyzer(abc.ABC):
         """
         # 3. Vergleich: Finde TP_global[0] == TP_lokal[0]
         # if: nur in einer Klasse -> break
-        # if: in mehreren Klassen dominant -> dann wo es ggü dem zweiten am besten ist (max(TP_lokal[0]/TP_lokal[1]))
+        # if: in mehreren Klassen dominant -> dann wo es ggü dem
+        zweiten am besten ist (max(TP_lokal[0]/TP_lokal[1]))
         # Rekursiv: if: in keiner Klasse -> TP_global[0] == TP_lokal[1]
         # -> 1. zu kalibrierende Klasse mit TP_global[i]
         """
@@ -316,7 +322,8 @@ class SenAnalyzer(abc.ABC):
         else:
             # Divide by max to get the maximal difference between first and second value
             local_max_df = local_df.loc[is_max.index]
-            q_to_max = local_max_df.div(local_max_df[var_name], axis=0).copy().drop('heatConv_a', axis=1)
+            q_to_max = local_max_df.div(local_max_df[var_name],
+                                        axis=0).copy().drop('heatConv_a', axis=1)
             q_to_max = q_to_max[q_to_max == q_to_max.max(axis=1).min()].dropna(how='all')
             class_name = q_to_max.index.values[0]
         sorted_list.append(class_name)

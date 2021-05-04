@@ -1,3 +1,7 @@
+"""
+Adds the MorrisAnalyzer to the available
+classes of sensitivity analysis.
+"""
 from SALib.sample import morris
 from SALib.analyze import morris as analyze_morris
 from aixcalibuha.sensanalyzer import SenAnalyzer
@@ -72,5 +76,4 @@ class MorrisAnalyzer(SenAnalyzer):
         """Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to self.analysis_variable."""
-        return {var_name: res_val for var_name, res_val in zip(result['names'],
-                                                               result[self.analysis_variable])}
+        return dict(zip(result['names'], result[self.analysis_variable]))
