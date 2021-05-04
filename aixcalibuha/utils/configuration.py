@@ -35,12 +35,10 @@ default_cal_class_config = {"name": "TODO: Specify the name of the calibration c
                                       "variable_names": "TODO: Specify variable names",
                                       "weightings": "TODO: Insert null if you don´t need special weightings. "
                                                     "Else specify which goal get´s which weighting through a list"},
-                            "tuner_paras": {"names":
-                                             "TODO: Specify the names of the tuner parameters list",
-                                             "initial_values":
-                                             "TODO: Specify the inital values of the tuner parameters list",
-                                             "bounds":
-                                             "TODO: Specify the boundaries of the tuner parameters as a list of tuples"}}
+                            "tuner_paras": {
+                                "names": "TODO: Specify the names of the tuner parameters list",
+                                "initial_values": "TODO: Specify the inital values of the tuner parameters list",
+                                "bounds": "TODO: Specify the boundaries of the tuner parameters as a list of tuples"}}
 
 default_calibration_config = {
                     "statistical_measure": "TODO: Specify the statistical "

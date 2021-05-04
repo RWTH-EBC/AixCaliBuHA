@@ -427,6 +427,8 @@ class CalibrationClass:
     def __init__(self, name, start_time, stop_time, goals=None,
                  tuner_paras=None, relevant_intervals=None):
         """Initialize class-objects and check correct input."""
+        self._tuner_paras = None
+        self._goals = None
         self.name = name
         self._start_time = start_time
         self.stop_time = stop_time
