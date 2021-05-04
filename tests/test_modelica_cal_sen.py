@@ -4,6 +4,7 @@ aixcalibuha.sensanalyzer.sensitivity_analyzer.SenAnalyzer"""
 
 import unittest
 import os
+import pathlib
 import shutil
 from ebcpy.simulationapi.dymola_api import DymolaAPI
 from aixcalibuha.calibration import modelica
@@ -19,8 +20,8 @@ class TestModelicaCalibrator(unittest.TestCase):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""
         #%% Define relevant paths
-        framework_dir = os.path.dirname(os.path.dirname(__file__))
-        example_dir = os.path.join(framework_dir, "examples")
+        framework_dir = pathlib.Path(__file__).parents[1]
+        example_dir = os.path.join(framework_dir, "aixcalibuha", "examples")
         self.example_cal_dir = os.path.join(example_dir, "test_calibration")
 
         # As the examples should work, and the cal_class example uses the other examples,
@@ -33,8 +34,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         model_name = "AixCalTest.TestModel"
         try:
             self.dym_api = DymolaAPI(self.example_cal_dir, model_name, packages)
-        except (FileNotFoundError, ImportError, ConnectionError):
-            self.skipTest("Could not load the dymola interface on this machine.")
+        except (FileNotFoundError, ImportError, ConnectionError) as err:
+            self.skipTest(f"Could not load the dymola "
+                          f"interface on this machine: {err}")
         try:
             import dlib
         except ImportError:
