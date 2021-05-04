@@ -1,6 +1,6 @@
 """Test-module for all classes inside aixcalibuha.__init__.py"""
 
-import os
+import pathlib
 import unittest
 import numpy as np
 from ebcpy import data_types
@@ -14,9 +14,9 @@ class TestDataTypes(unittest.TestCase):
         """Called before every test.
         Define example paths and parameters used in all test-functions.
         """
-        self.framework_dir = os.path.dirname(os.path.dirname(__file__))
-        self.example_dir = os.path.join(self.framework_dir, "examples", "data")
-        self.example_data_hdf_path = os.path.join(self.example_dir, "ref_result.hdf")
+        self.framework_dir = pathlib.Path(__file__).parents[1]
+        self.example_dir = self.framework_dir.joinpath("aixcalibuha", "examples", "data")
+        self.example_data_hdf_path = self.example_dir.joinpath("ref_result.hdf")
 
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
@@ -40,8 +40,7 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(os.path.join(self.example_dir,
-                                                                 "simTargetData.mat"))
+        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("simTargetData.mat"))
 
         meas_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="FloatIndex")
 

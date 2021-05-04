@@ -566,7 +566,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             #%% Execution
             # Run the single ModelicaCalibration
-            super().calibrate()
+            super().calibrate(framework=framework, method=method)
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
@@ -575,9 +575,6 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
         self.res_tuner = self.check_intersection_of_tuner_parameters()
 
-        # self._current_best_iterate are allways the results from last class which was calibrated
-        return self.res_tuner, self._current_best_iterate
-
         # Save calibrated parameter values in JSON
         parameter_values = {}
         for cal_run in self._cal_history:
@@ -585,6 +582,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
                 parameter_values[p_name] = cal_run['res']['Parameters'][p_name]
         self.save_results(parameter_values=parameter_values,
                           filename='MultiClassCalibrationResult')
+
+        # self._current_best_iterate are allways the results from last class which was calibrated
+        return self.res_tuner, self._current_best_iterate
 
     def _apply_start_time_method(self, start_time):
         """

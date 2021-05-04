@@ -194,7 +194,7 @@ class SenAnalyzer(abc.ABC):
                 y=output_array
             )
             t_sen_stop = time.time()
-            salib_analyze_result['duration[s]'] = t_sen_stop - t_sen_start
+            result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(result)
         return all_results, calibration_classes
 
