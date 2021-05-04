@@ -30,6 +30,9 @@ class CalibrationLogger:
             Calibration class used in the calibration-process.
         :param str statistical_measure:
             Measurement used to evaluate the objective
+        :param logging.Logger logger:
+            If given, this logger is used to print and or save the messsages.
+            Else, a new one is set up.
     """
 
     # Instantiate class parameters
@@ -39,11 +42,17 @@ class CalibrationLogger:
     _prec = decimal_prec
     _width = integer_prec + decimal_prec + 1  # Calculate the actual width
 
-    def __init__(self, cd, name, calibration_class, statistical_measure):
+    def __init__(self, cd, name, calibration_class, statistical_measure, logger=None):
         """Instantiate class parameters"""
         self._tuner_paras = None
         self._goals = None
-        self.logger = setup_logger(cd=cd, name=name)
+        if logger is None:
+            self.logger = setup_logger(cd=cd, name=name)
+        else:
+            if not isinstance(logger, logging.Logger):
+                raise TypeError(f"Given logger is of type {type(logger)} "
+                                f"but should be type logging.Logger")
+            self.logger = logger
         self.cd = cd
         self.calibration_class = calibration_class
         self.statistical_measure = statistical_measure
@@ -312,11 +321,20 @@ class CalibrationVisualizer(CalibrationLogger):
     create_tsd_plot = True
     show_plot = True
 
-    def __init__(self, cd, name, calibration_class, statistical_measure, **kwargs):
+    def __init__(self, cd,
+                 name,
+                 calibration_class,
+                 statistical_measure,
+                 logger=None,
+                 **kwargs):
         """Instantiate class parameters"""
 
         # Instantiate the logger:
-        super().__init__(cd, name, calibration_class, statistical_measure)
+        super().__init__(cd=cd,
+                         name=name,
+                         calibration_class=calibration_class,
+                         statistical_measure=statistical_measure,
+                         logger=logger)
         # Set supported kwargs:
         if isinstance(kwargs.get("save_tsd_plot"), bool):
             self.save_tsd_plot = kwargs.get("save_tsd_plot")

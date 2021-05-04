@@ -155,6 +155,7 @@ class ModelicaCalibrator(Calibrator):
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
                 statistical_measure=statistical_measure,
+                logger=self.logger,
                 **visualizer_kwargs
             )
         else:
@@ -162,7 +163,8 @@ class ModelicaCalibrator(Calibrator):
                 cd=cd,
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
-                statistical_measure=statistical_measure
+                statistical_measure=statistical_measure,
+                logger=self.logger
             )
 
         self.cd_of_class = cd  # Single class does not need an extra folder
