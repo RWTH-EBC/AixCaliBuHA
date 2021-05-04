@@ -42,3 +42,8 @@ def setup_calibration_classes():
     calibration_classes[3].tuner_paras = different_tuner_paras
 
     return calibration_classes
+
+
+if __name__ == "__main__":
+    CAL_CLASSES = setup_calibration_classes()
+    print(CAL_CLASSES)
