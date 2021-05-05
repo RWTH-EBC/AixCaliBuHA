@@ -55,7 +55,7 @@ default_config.update({
     })
 
 
-def get_goals_from_config(config):
+def get_goals_from_config(config: dict):
     """
     Read the data for a Goals object.
 
@@ -74,7 +74,7 @@ def get_goals_from_config(config):
                  weightings=config.get("weightings", None))
 
 
-def get_tuner_paras_from_config(config):
+def get_tuner_paras_from_config(config: dict):
     """
     Read the data for a TunerParas object.
 
@@ -91,11 +91,11 @@ def get_tuner_paras_from_config(config):
                       bounds=config["bounds"])
 
 
-def get_calibration_classes_from_config(config):
+def get_calibration_classes_from_config(configs: list):
     """
     Read the data for a CalibrationClass object.
 
-    :param list config:
+    :param list configs:
         List of dicts with configs holding the following cols for
         - names
         - start_time
@@ -105,7 +105,7 @@ def get_calibration_classes_from_config(config):
         Loaded Goals object
     """
     cal_classes = []
-    for cal_class_config in config:
+    for cal_class_config in configs:
         goals, tuner_paras = None, None
         if "goals" in cal_class_config:
             goals = get_goals_from_config(cal_class_config["goals"])
