@@ -37,6 +37,10 @@ class TestModelicaCalibrator(unittest.TestCase):
         except (FileNotFoundError, ImportError, ConnectionError) as err:
             self.skipTest(f"Could not load the dymola "
                           f"interface on this machine: {err}")
+        try:
+            import dlib
+        except ImportError:
+            self.skipTest("Tests only work with dlib installed.")
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.ModelicaCalibrator."""
@@ -55,10 +59,6 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        try:
-            import dlib
-        except ImportError:
-            self.skipTest("Tests only work with dlib installed.")
         modelica_calibrator = modelica.MultipleClassCalibrator(self.example_cal_dir,
                                                                self.dym_api,
                                                                self.statistical_measure,
