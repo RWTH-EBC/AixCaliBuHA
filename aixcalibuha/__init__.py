@@ -100,7 +100,7 @@ class Goals:
                     raise TypeError("Not able to automatically select variables and tags. "
                                     f"Variable {meas_info} has mutliple tags, none of which "
                                     f"is specified as {self.meas_tag_str}.")
-                elif self.meas_tag_str in tags:
+                if self.meas_tag_str in tags:
                     _columns.append((meas_info, self.meas_tag_str))
                 else:
                     _columns.append((meas_info, tags[0]))
@@ -118,9 +118,9 @@ class Goals:
         self._tsd = self._tsd.rename(columns=_rename_cols_dict, level=0)
 
         # Rename all tags to the default measurement name for consistency.
-        d = dict(zip(self._tsd.columns.levels[1],
-                     [self.meas_tag_str for _ in range(len(_columns))]))
-        self._tsd = self._tsd.rename(columns=d, level=1)
+        tags = dict(zip(self._tsd.columns.levels[1],
+                        [self.meas_tag_str for _ in range(len(_columns))]))
+        self._tsd = self._tsd.rename(columns=tags, level=1)
 
         # Save the tsd to a tsd_ref object
         # Used to never lose the original dataframe.

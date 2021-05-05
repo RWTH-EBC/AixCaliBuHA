@@ -38,13 +38,10 @@ class Calibrator(optimization.Optimizer):
         raise NotImplementedError(f'{self.__class__.__name__}.calibrate function is not defined')
 
     @abstractmethod
-    def validate(self, goals):
+    def validate(self, **kwargs):
         """
         Function to use different measurement data and run the objective function
         again to validate the calibration. The final parameter vector of the
         calibration is used.
-
-        :param aixcalibuha.Goals goals:
-            Goals with data to be validated
         """
         raise NotImplementedError('{self.__class__.__name__}.validate function is not defined')

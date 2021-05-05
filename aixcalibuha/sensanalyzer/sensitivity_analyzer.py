@@ -4,11 +4,12 @@ import abc
 import copy
 import os
 import time
+from typing import List
 import numpy as np
 import pandas as pd
 from ebcpy.utils import setup_logger
 from ebcpy import data_types
-from ebcpy import simulationapi
+from ebcpy.simulationapi import SimulationAPI
 import aixcalibuha
 from aixcalibuha import CalibrationClass
 from aixcalibuha import utils
@@ -18,7 +19,7 @@ class SenAnalyzer(abc.ABC):
     """
     Class to perform a Sensitivity Analysis.
 
-    :param simulationapi.SimulationAPI sim_api:
+    :param SimulationAPI sim_api:
         Simulation-API used to simulate the samples
     :param int num_samples:
         The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the
@@ -45,8 +46,11 @@ class SenAnalyzer(abc.ABC):
         If true, all simulation files for each iteration will be saved!
     """
 
-    def __init__(self, sim_api, num_samples,
-                 statistical_measure, **kwargs):
+    def __init__(self,
+                 sim_api: SimulationAPI,
+                 num_samples: int,
+                 statistical_measure: str,
+                 **kwargs):
         """Instantiate class parameters"""
         # Setup the instance attributes
         self.sim_api = sim_api
@@ -73,17 +77,37 @@ class SenAnalyzer(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def analysis_variables(self):
+    def analysis_variables(self) -> List[str]:
+        """
+        Indicate which variables are
+        able to be selected for analysis
+        Returns:
+            List[str]: A list of strings
+        """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_variables '
                                   f'property is not defined yet')
 
     @abc.abstractmethod
     def analysis_function(self, x, y):
+        """
+        Use the method to analyze the simulation results.
+
+        :param np.array x:
+            the `X` parameter of the method (The NumPy matrix containing the model inputs)
+        :param np.array y:
+            The NumPy array containing the model outputs
+        """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_function '
                                   f'function is not defined yet')
 
     @abc.abstractmethod
-    def create_sampler_demand(self):
+    def create_sampler_demand(self) -> dict:
+        """
+        Return the sampler parameters
+
+        :return:
+            dict: A dict with the sampler demand
+        """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_function '
                                   f'function is not defined yet')
 
@@ -202,6 +226,12 @@ class SenAnalyzer(abc.ABC):
         return all_results, calibration_classes
 
     def automatic_run(self, calibration_classes):
+        """
+        Automated run according to (currently unpublished) method
+        of Thomas Storek.
+        Idea and concept will follow in future versions.
+        Core is to first run a global SA and then a local SA.
+        """
         # Check input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Create one global class and run it

@@ -97,7 +97,7 @@ class CalibrationLogger:
             )
         self.logger.info(info_string)
 
-    def save_calibration_result(self, best_iterate, model_name, duration, itercount, **kwargs):
+    def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
@@ -216,7 +216,7 @@ class CalibrationLogger:
         before calibration."""
         self.logger.info(self._get_tuner_para_names_as_string())
 
-    def log_intersection_of_tuners(self, intersected_tuner_parameters, itercount):
+    def log_intersection_of_tuners(self, intersected_tuner_parameters, **kwargs):
         """
         If an intersection for multiple classes occurs, an information about
         the statistics of the dataset has to be provided.
@@ -229,7 +229,7 @@ class CalibrationLogger:
         _formatted_str = "\n".join([f"{tuner}: {values}"
                                     for tuner, values in intersected_tuner_parameters.items()])
         self.logger.info("Multiple 'best' values for the following tuner parameters "
-                         f"were identified in different classes:\n{_formatted_str}")
+                         "were identified in different classes:\n%s", _formatted_str)
 
     def _get_tuner_para_names_as_string(self):
         """
@@ -332,6 +332,7 @@ class CalibrationVisualizer(CalibrationLogger):
     save_tsd_plot = False
     create_tsd_plot = True
     show_plot = True
+    goals_dir = "TimeSeriesPlot"
 
     def __init__(self, cd,
                  name,
@@ -433,7 +434,7 @@ class CalibrationVisualizer(CalibrationLogger):
             plt.draw()
             plt.pause(1e-5)
 
-    def save_calibration_result(self, res, model_name, duration, itercount, **kwargs):
+    def save_calibration_result(self, res, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
@@ -448,7 +449,9 @@ class CalibrationVisualizer(CalibrationLogger):
         file_type = "svg"
         if isinstance(kwargs.get("file_type"), str):
             file_type = kwargs.get("file_type")
-        super().save_calibration_result(res, model_name, duration, itercount)
+        super().save_calibration_result(res, model_name, **kwargs)
+        itercount = kwargs["itercount"]
+        duration = kwargs["duration"]
 
         # Extract filepathes
         iterpath = os.path.join(self.cd, f'Iteration_{itercount}')
@@ -475,13 +478,12 @@ class CalibrationVisualizer(CalibrationLogger):
             writer.writeheader()
             writer.writerow(res_dict)
 
-
         # Save figures & close plots
         self.fig_tuner.savefig(filepath_tuner)
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
 
-        if res['better_current_result'] == True and self.save_tsd_plot:
+        if res['better_current_result'] and self.save_tsd_plot:
             # save improvement of recalibration ("best goals df" as csv)
             res['Goals'].get_goals_data().to_csv(
                 os.path.join(iterpath, 'goals_df.csv'),
@@ -489,8 +491,7 @@ class CalibrationVisualizer(CalibrationLogger):
                 decimal="."
             )
 
-
-    def log_intersection_of_tuners(self, intersected_tuner_parameters, itercount):
+    def log_intersection_of_tuners(self, intersected_tuner_parameters, **kwargs):
         """
         If an intersection for multiple classes occurs, an information about
         the statistics of the dataset has to be provided.
@@ -500,7 +501,7 @@ class CalibrationVisualizer(CalibrationLogger):
             value being the list with all the different "best" values for
             the tuner parameter.
         """
-        super().log_intersection_of_tuners(intersected_tuner_parameters, itercount)
+        super().log_intersection_of_tuners(intersected_tuner_parameters, **kwargs)
         x_labels = intersected_tuner_parameters.keys()
         data = list(intersected_tuner_parameters.values())
         fig_intersection, ax_intersection = plt.subplots(1, len(x_labels), squeeze=False)
@@ -526,10 +527,17 @@ class CalibrationVisualizer(CalibrationLogger):
         path_intersections = os.path.join(os.path.dirname(self.cd), "tunerintersections")
         if not os.path.exists(path_intersections):
             os.makedirs(path_intersections)
-        fig_intersection.savefig(
-            os.path.join(path_intersections,
-                         f'tuner_parameter_intersection_plot_it{itercount}.svg')
-        )
+        if "itercount" in kwargs:
+            fig_intersection.savefig(
+                os.path.join(path_intersections,
+                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.svg')
+            )
+        else:
+            fig_intersection.savefig(
+                os.path.join(path_intersections,
+                             f'tuner_parameter_intersection_plot.svg')
+            )
+
         if self.show_plot:
             plt.draw()
             plt.pause(15)
@@ -618,7 +626,6 @@ class CalibrationVisualizer(CalibrationLogger):
                 goal_counter += 1
 
         if self.save_tsd_plot:
-            self.goals_dir = "TimeSeriesPlot"
             _savedir = os.path.join(self.cd, self.goals_dir)
             if not os.path.exists(_savedir):
                 os.makedirs(_savedir)

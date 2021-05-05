@@ -202,6 +202,7 @@ class ModelicaCalibrator(Calibrator):
         })
 
         # Simulate
+        # pylint: disable=broad-except
         try:
             # Generate the folder name for the calibration
             if self.save_files:
@@ -222,11 +223,10 @@ class ModelicaCalibrator(Calibrator):
                 )
                 # Convert it to time series data object
                 sim_target_data = data_types.TimeSeriesData(df)
-        except Exception as e:
+        except Exception as err:
             if self.fail_on_error:
-                raise e
-            else:
-                return self.ret_val_on_error
+                raise err
+            return self.ret_val_on_error
 
         self.goals.set_sim_target_data(sim_target_data)
         if self._relevant_time_intervals:
@@ -250,7 +250,8 @@ class ModelicaCalibrator(Calibrator):
                 unweighted_objective,
                 penalty=penalty
             )
-        # There is no benchmark in the first iteration or first iterations were skipped, so no penalty is applied
+        # There is no benchmark in the first iteration or
+        # first iterations were skipped, so no penalty is applied
         else:
             penalty = None
             # Evaluate without penalty
@@ -300,12 +301,12 @@ class ModelicaCalibrator(Calibrator):
         self._res = self.optimize(framework, method)
 
         t_cal_stop = time.time()
-        self.t_cal = t_cal_stop - t_cal_start
+        t_cal = t_cal_stop - t_cal_start
 
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
-                                            self.t_cal,
+                                            t_cal,
                                             self.recalibration_count)
         # Reset
         self._current_best_iterate['better_current_result'] = False
@@ -319,34 +320,42 @@ class ModelicaCalibrator(Calibrator):
 
     @property
     def calibration_class(self) -> CalibrationClass:
+        """Get the current calibration class"""
         return self._cal_class
 
     @calibration_class.setter
     def calibration_class(self, calibration_class: CalibrationClass):
+        """Set the current calibration class"""
         self._cal_class = calibration_class
 
     @property
     def tuner_paras(self) -> TunerParas:
+        """Get the current tuner parameters of the calibration class"""
         return self.calibration_class.tuner_paras
 
     @tuner_paras.setter
     def tuner_paras(self, tuner_paras: TunerParas):
+        """Set the current tuner parameters of the calibration class"""
         self.calibration_class.tuner_paras = tuner_paras
 
     @property
     def goals(self) -> Goals:
+        """Get the current goals of the calibration class"""
         return self.calibration_class.goals
 
     @goals.setter
     def goals(self, goals: Goals):
+        """Set the current goals of the calibration class"""
         self.calibration_class.goals = goals
 
     @property
     def fixed_parameters(self) -> dict:
+        """Get the currently fixed parameters during calibration"""
         return self._fixed_pars
 
     @fixed_parameters.setter
     def fixed_parameters(self, fixed_parameters: dict):
+        """Set the currently fixed parameters during calibration"""
         self._fixed_pars = fixed_parameters
 
     def save_results(self, parameter_values: dict, filename: str):
@@ -358,7 +367,11 @@ class ModelicaCalibrator(Calibrator):
             with open(s_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
 
-    def validate(self, validation_class: CalibrationClass, xk):
+    def validate(self, validation_class: CalibrationClass, tuner_parameter_values: List):
+        """
+        Validate the given calibration class based on the given
+        values for tuner_parameters.
+        """
         #%% Start Validation:
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
@@ -366,7 +379,7 @@ class ModelicaCalibrator(Calibrator):
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
         self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
-        val_result = self.obj(xk)
+        val_result = self.obj(xk=tuner_parameter_values)
         self.logger.log(f"{self.statistical_measure} of validation: {val_result}")
         return val_result
 
@@ -410,7 +423,7 @@ class ModelicaCalibrator(Calibrator):
             # Add corresponding function for penaltyfactor here
             if self.perform_square_deviation:
                 # Apply quadratic deviation
-                dev_square = (current_scaled[key] - previous_scaled[key]) ** 2
+                dev_square = (value - previous_scaled[key]) ** 2
                 penalty += self.penalty_factor * dev_square
             else:
                 # Apply relative deviation
@@ -421,7 +434,7 @@ class ModelicaCalibrator(Calibrator):
                 try:
                     dev = abs(current[key] - previous[key]) / abs(previous[key])
                     penalty += self.penalty_factor * dev
-                except:
+                except ZeroDivisionError:
                     pass
 
         return penalty
@@ -508,8 +521,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         if start_time_method.lower() not in ["fixstart", "timedelta"]:
             raise ValueError(f"Given start_time_method {start_time_method} is not supported. "
                              "Please choose between 'fixstart' or 'timedelta'")
-        else:
-            self.start_time_method = start_time_method
+        self.start_time_method = start_time_method
 
     def calibrate(self, framework, method=None):
         """
@@ -518,7 +530,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         :return dict self.res_tuner:
             Dictionary of the optimized tuner parameter names and values.
         :return dict self._current_best_iterate:
-            Dictionary of the current best results of tuner parameter, iteration step, objective value, information
+            Dictionary of the current best results of tuner parameter,
+            iteration step, objective value, information
             about the goals object and the penaltyfactor.
         """
         # First check possible intersection of tuner-parameteres
@@ -596,7 +609,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             self._cal_history.append({"res": self._current_best_iterate,
                                       "cal_class": cal_class})
 
-        self.res_tuner = self.check_intersection_of_tuner_parameters()
+        res_tuner = self.check_intersection_of_tuner_parameters()
 
         # Save calibrated parameter values in JSON
         parameter_values = {}
@@ -606,8 +619,9 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.save_results(parameter_values=parameter_values,
                           filename='MultiClassCalibrationResult')
 
-        # self._current_best_iterate are allways the results from last class which was calibrated
-        return self.res_tuner, self._current_best_iterate
+        # self._current_best_iterate are always
+        # the results from last class which was calibrated
+        return res_tuner, self._current_best_iterate
 
     def _apply_start_time_method(self, start_time):
         """
@@ -622,16 +636,19 @@ class MultipleClassCalibrator(ModelicaCalibrator):
             Fix start time which was specified by the user in the TOML file.
         """
         if self.start_time_method == "timedelta":
-            # Check if timedelta does not fall below the startime (start_time should not be lower then zero)
+            # Check if timedelta does not fall below the
+            # starttime (start_time should not be lower then zero)
             if start_time - self.timedelta < 0:
+                # pylint: disable=import-outside-toplevel
                 import warnings
-                warnings.warn('Simulation start time current calibration class \n falls below 0, because'
-                              ' of the chosen timedelta. The start time will be set to 0 seconds.'
-                              )
+                warnings.warn(
+                    'Simulation start time current calibration class \n'
+                    ' falls below 0, because of the chosen timedelta. '
+                    'The start time will be set to 0 seconds.'
+                )
                 return 0
-            else:
-                # Using timedelta, _ref_time is subtracted of the given start-time
-                return start_time - self.timedelta
+            # Using timedelta, _ref_time is subtracted of the given start-time
+            return start_time - self.timedelta
         else:
             # With fixed start, the _ref_time parameter is always returned
             return self.fix_start_time
@@ -682,8 +699,8 @@ class MultipleClassCalibrator(ModelicaCalibrator):
 
             self.logger.log("The tuner parameters used for evaluation"
                             " are averaged as follows:\n "
-                            "{}".format(tuner, values)
-                            for tuner, values in average_tuner_parameter)
+                            "{}".format(' ,'.join([tuner + "=" + values
+                            for tuner, values in average_tuner_parameter.items()])))
 
             # Create result-dictonary
             res_tuner = average_tuner_parameter
