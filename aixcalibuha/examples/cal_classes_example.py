@@ -3,10 +3,8 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from ebcpy import data_types
-from ebcpy.examples import data_types_example
-from aixcalibuha.examples import goals_example
-from aixcalibuha import CalibrationClass
+from aixcalibuha.examples import goals_example, tuner_paras_example
+from aixcalibuha import CalibrationClass, TunerParas
 
 
 def setup_calibration_classes():
@@ -30,16 +28,21 @@ def setup_calibration_classes():
         CalibrationClass(name="stationary", start_time=500, stop_time=600),
     ]
     # Load the tuner parameters and goals
-    tuner_paras = data_types_example.setup_tuner_paras()
+    tuner_paras = tuner_paras_example.setup_tuner_paras()
     goals = goals_example.setup_goals()
     # Set the tuner parameters and goals to all classes:
     for cal_class in calibration_classes:
-        cal_class.set_tuner_paras(tuner_paras)
-        cal_class.set_goals(goals)
+        cal_class.tuner_paras = tuner_paras
+        cal_class.goals = goals
 
-    different_tuner_paras = data_types.TunerParas(names=["C", "heatConv_a"],
-                                                  initial_values=[5000, 200],
-                                                  bounds=[(4000, 6000), (10, 300)])
-    calibration_classes[3].set_tuner_paras(different_tuner_paras)
+    different_tuner_paras = TunerParas(names=["C", "heatConv_a"],
+                                       initial_values=[5000, 200],
+                                       bounds=[(4000, 6000), (10, 300)])
+    calibration_classes[3].tuner_paras = different_tuner_paras
 
     return calibration_classes
+
+
+if __name__ == "__main__":
+    CAL_CLASSES = setup_calibration_classes()
+    print(CAL_CLASSES)

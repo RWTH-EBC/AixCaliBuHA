@@ -23,9 +23,9 @@ def setup_goals():
     Example:
 
     >>> goals = setup_goals()
-    >>> dif = goals.eval_difference(statistical_measure="RMSE")
-    >>> print(round(dif, 3))
-    1.055
+    >>> goals.set_relevant_time_intervals([(0, 100)])
+    >>> print(round(goals.eval_difference("RMSE"), 3))
+    1.095
     """
 
     # Load example simTargetData and measTargetData:
@@ -51,8 +51,8 @@ def setup_goals():
     return goals
 
 
-if __name__=="__main__":
-    goals = setup_goals()
-    goals.set_relevant_time_intervals([(0, 100)])
-    goals.eval_difference("RMSE")
-    print(goals)
+if __name__ == "__main__":
+    GOALS = setup_goals()
+    GOALS.set_relevant_time_intervals([(0, 100)])
+    GOALS.eval_difference("RMSE")
+    print(GOALS)

@@ -5,8 +5,7 @@ If not, please raise an issue.
 """
 
 from ebcpy.examples import dymola_api_example
-import pandas as pd
-from aixcalibuha.sensanalyzer import sensitivity_analyzer
+from aixcalibuha.sensanalyzer import SobolAnalyzer
 from aixcalibuha.examples import cal_classes_example
 
 
@@ -33,27 +32,22 @@ def example_sensitivity_analysis(sim_api, cal_classes, stat_measure):
     :rtype: list
     """
     # Setup the class
-    sen_problem = sensitivity_analyzer.SensitivityProblem("morris",
-                                                          num_samples=2)
 
-    sen_analyzer = sensitivity_analyzer.SenAnalyzer(sim_api.cd,
-                                                    simulation_api=sim_api,
-                                                    sensitivity_problem=sen_problem,
-                                                    calibration_classes=cal_classes,
-                                                    statistical_measure=stat_measure)
+    sen_analyzer = SobolAnalyzer(
+            sim_api=sim_api,
+            statistical_measure=stat_measure,
+            num_samples=1,
+            cd=sim_api.cd,
+            analysis_variable='S1'
+        )
 
-    # Choose initial_values and set boundaries to tuner_parameters
-    # Evaluate which tuner_para has influence on what class
-    sen_result = sen_analyzer.run()
+    print('Unsorted classes order: ')
+    print(', '.join([c.name for c in cal_classes]))
+    sorted_classes = sen_analyzer.automatic_run(calibration_classes=cal_classes)
+    print('Sorted classes after SA: ')
+    print(', '.join([c.name for c in sorted_classes]))
 
-    for result in sen_result:
-        print(pd.DataFrame(result))
-
-    cal_classes = sen_analyzer.automatic_select(sen_analyzer.calibration_classes,
-                                                sen_result,
-                                                threshold=1)
-
-    return cal_classes
+    return sorted_classes
 
 
 if __name__ == "__main__":
@@ -63,7 +57,7 @@ if __name__ == "__main__":
     DYM_API = dymola_api_example.setup_dymola_api()
     CALIBRATION_CLASSES = cal_classes_example.setup_calibration_classes()
 
-    # %% Sensitivity analysis:
+    # Sensitivity analysis:
     CALIBRATION_CLASSES = example_sensitivity_analysis(DYM_API,
                                                        CALIBRATION_CLASSES,
                                                        STATISTICAL_MEASURE)

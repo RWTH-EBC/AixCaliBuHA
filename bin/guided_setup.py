@@ -34,7 +34,7 @@ def _handle_tsd_input():
         finally:
             break
 
-    return {"filepath": fpath,
+    return {"data": fpath,
             "key": key,
             "sheet_name": sheet_name}
 
@@ -491,5 +491,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.argv = ["", r"--config=D:\pme-fwu\00_testzone\test_wrapper\guided_setup_config.yml"]
+    sys.argv = [""]
     main()

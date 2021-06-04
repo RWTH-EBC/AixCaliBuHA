@@ -1,11 +1,10 @@
-"""Base-module for the whole calibration pacakge.
+"""Base-module for the whole calibration package.
 Used to define Base-Classes such as Optimizer and
 Calibrator."""
 
 from abc import abstractmethod
-from ebcpy import data_types
 from ebcpy import optimization
-from aixcalibuha import Goals
+from aixcalibuha import Goals, TunerParas
 
 
 class Calibrator(optimization.Optimizer):
@@ -14,7 +13,7 @@ class Calibrator(optimization.Optimizer):
     class.
     """
 
-    tuner_paras = data_types.TunerParas
+    tuner_paras = TunerParas
     goals = Goals
 
     def __init__(self, cd, sim_api, statistical_measure, **kwargs):
@@ -28,7 +27,7 @@ class Calibrator(optimization.Optimizer):
         Base objective function for any kind of calibration. This function has to
         be overwritten.
         """
-        raise NotImplementedError('{}.obj function is not defined'.format(self.__class__.__name__))
+        raise NotImplementedError(f'{self.__class__.__name__}.obj function is not defined')
 
     @abstractmethod
     def calibrate(self, framework, method=None):
@@ -36,18 +35,13 @@ class Calibrator(optimization.Optimizer):
         Base calibration function. The idea is to call this function and start the
         calibration-process. This function has to be overwritten.
         """
-        raise NotImplementedError('{}.calibrate function is not'
-                                  ' defined'.format(self.__class__.__name__))
+        raise NotImplementedError(f'{self.__class__.__name__}.calibrate function is not defined')
 
     @abstractmethod
-    def validate(self, goals):
+    def validate(self, **kwargs):
         """
         Function to use different measurement data and run the objective function
         again to validate the calibration. The final parameter vector of the
         calibration is used.
-
-        :param aixcalibuha.Goals goals:
-            Goals with data to be validated
         """
-        raise NotImplementedError('{}.validate function is not'
-                                  ' defined'.format(self.__class__.__name__))
+        raise NotImplementedError('{self.__class__.__name__}.validate function is not defined')
