@@ -1,12 +1,18 @@
 """
 Module to with configs and functions to read configs for objects in this repository.
 """
-
-from ebcpy import data_types
+import os
+import collections
+import yaml
 import numpy as np
+from ebcpy import data_types
 from aixcalibuha import Goals, CalibrationClass
-from ebcpy.utils.configuration import default_config, tsd_config
 
+
+tsd_config = {"data": "TODO: Specify the path to the target values measured",
+              "key": None,
+              "sheet_name": None,
+              "sep": ","}
 
 kwargs_calibrator = {"timedelta": 0,
                      "save_files": False,
@@ -36,11 +42,11 @@ default_cal_class_config = {"name": "TODO: Specify the name of the calibration c
                                       "weightings": "TODO: Insert null if you don´t need special weightings. "
                                                     "Else specify which goal get´s which weighting through a list"},
                             "tuner_paras": {"names":
-                                             "TODO: Specify the names of the tuner parameters list",
-                                             "initial_values":
-                                             "TODO: Specify the inital values of the tuner parameters list",
-                                             "bounds":
-                                             "TODO: Specify the boundaries of the tuner parameters as a list of tuples"}}
+                                                "TODO: Specify the names of the tuner parameters list",
+                                            "initial_values":
+                                                "TODO: Specify the inital values of the tuner parameters list",
+                                            "bounds":
+                                                "TODO: Specify the boundaries of the tuner parameters as a list of tuples"}}
 
 default_calibration_config = {
                     "statistical_measure": "TODO: Specify the statistical "
@@ -51,10 +57,50 @@ default_calibration_config = {
                     "settings multiple classes": kwargs_multiple_classes
                     }
 
-default_config.update({
+kwargs_scipy_dif_evo = {"maxiter": 30,
+                        "popsize": 5,
+                        "mutation": (0.5, 1),
+                        "recombination": 0.7,
+                        "seed": None,
+                        "polish": True,
+                        "init": 'latinhypercube',
+                        "atol": 0}
+
+kwargs_dlib_min = {"num_function_calls": int(1e9),
+                   "solver_epsilon": 0}
+
+kwargs_scipy_min = {"tol": None,
+                    "options": {"maxfun": 1},
+                    "constraints": None,
+                    "jac": None,
+                    "hess": None,
+                    "hessp": None}
+
+default_optimization_config = {"framework": "TODO: Choose the framework for calibration",
+                               "method": "TODO: Choose the method of the framework",
+                               "settings": {
+                                   "scipy_differential_evolution": kwargs_scipy_dif_evo,
+                                   "dlib_minimize": kwargs_dlib_min,
+                                   "scipy_minimize": kwargs_scipy_min}
+                               }
+
+default_sim_config = {"packages": None,
+                      "model_name": None,
+                      "type": "DymolaAPI",
+                      "dymola_path": None,
+                      "dymola_interface_path": None,
+                      "equidistant_output": True,
+                      "show_window": False,
+                      "get_structural_parameters": True
+                      }
+
+default_config = {
+    "Working Directory": "TODO: Add the path where you want to work here",
+    "SimulationAPI": default_sim_config,
+    "Optimization": default_optimization_config,
     "Input Data": default_input_config,
-    "Calibration": default_calibration_config,
-    })
+    "Calibration": default_calibration_config
+    }
 
 
 def get_goals_from_config(config):
@@ -121,3 +167,49 @@ def get_calibration_classes_from_config(config):
                              tuner_paras=tuner_paras,
                              relevant_intervals=cal_class_config.get("relevant_intervals", None)))
     return cal_classes
+
+
+def write_config(filepath, config):
+    """
+    Write the given config to the filepath.
+    If the file already exists, the data is recursively
+    updated.
+
+    :param str,os.path.normpath filepath:
+        Filepath with the config.
+    :param: dict config:
+        Config to be saved
+    """
+    if os.path.exists(filepath):
+        existing_config = read_config(filepath)
+        if existing_config:
+            config = _update(existing_config, config)
+
+    with open(filepath, "a+") as file:
+        file.seek(0)
+        file.truncate()
+        yaml.dump(config, file)
+
+
+def read_config(filepath):
+    """
+    Read the given file and return the yaml-config
+
+    :param str,os.path.normpath filepath:
+        Filepath with the config.
+    :return: dict config:
+        Loaded config
+    """
+    with open(filepath, "r") as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    return config
+
+
+def _update(dic, new_dic):
+    """Recursively update a given dictionary with a new one"""
+    for key, val in new_dic.items():
+        if isinstance(val, collections.abc.Mapping):
+            dic[key] = _update(dic.get(key, {}), val)
+        else:
+            dic[key] = val
+    return dic

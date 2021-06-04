@@ -9,7 +9,7 @@ from ebcpy.data_types import TimeSeriesData
 from ebcpy.simulationapi.dymola_api import DymolaAPI
 from ebcpy.modelica import get_names_and_values_of_lines, get_expressions
 from ebcpy.utils import configuration
-from aixcalibuha.utils import configuration as defaultsettings
+from aixcalibuha.utils import configuration
 
 
 def _handle_tsd_input():
@@ -421,9 +421,9 @@ def main():
 
         # First generate default config:
         savepath = os.path.join(cd, "calibration_config.yml")
-        configuration.write_config(savepath, defaultsettings.default_config)
+        configuration.write_config(savepath, configuration.default_config)
 
-        cal_class_config = defaultsettings.default_cal_class_config
+        cal_class_config = configuration.default_cal_class_config
         cal_class_config["tuner_paras"] = {
             "names": tuner_paras_names,
             "initial_values": tuner_paras_values,
