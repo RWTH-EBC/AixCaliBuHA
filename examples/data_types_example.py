@@ -3,7 +3,7 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from aixcalibuha.examples import goals_example, tuner_paras_example
+from examples import goals_example
 from aixcalibuha import CalibrationClass, TunerParas
 
 
@@ -27,8 +27,10 @@ def setup_calibration_classes():
         CalibrationClass(name="cool down", start_time=400, stop_time=500),
         CalibrationClass(name="stationary", start_time=500, stop_time=600),
     ]
-    # Load the tuner parameters and goals
-    tuner_paras = tuner_paras_example.setup_tuner_paras()
+    # Specify the tuner parameters and goals
+    tuner_paras = TunerParas(names=["C", "m_flow_2", "heatConv_a"],
+                             initial_values=[5000, 0.02, 200],
+                             bounds=[(4000, 6000), (0.01, 0.1), (10, 300)])
     goals = goals_example.setup_goals()
     # Set the tuner parameters and goals to all classes:
     for cal_class in calibration_classes:

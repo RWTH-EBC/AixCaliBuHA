@@ -3,7 +3,7 @@ Module to with configs and functions to read configs for objects in this reposit
 """
 import os
 import collections
-import yaml
+import toml
 import numpy as np
 from ebcpy import data_types
 from aixcalibuha import Goals, CalibrationClass, TunerParas
@@ -189,7 +189,7 @@ def write_config(filepath, config):
     with open(filepath, "a+") as file:
         file.seek(0)
         file.truncate()
-        yaml.dump(config, file)
+        toml.dump(config, file)
 
 
 def read_config(filepath):
@@ -202,7 +202,7 @@ def read_config(filepath):
         Loaded config
     """
     with open(filepath, "r") as file:
-        config = yaml.load(file, Loader=yaml.FullLoader)
+        config = toml.load(file)
     return config
 
 

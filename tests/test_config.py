@@ -1,4 +1,4 @@
-"""Test-module for all classes inside aixcalibuha.calibration.py"""
+"""Test-module for all classes inside aixcalibuha.calibration"""
 
 import unittest
 import pathlib

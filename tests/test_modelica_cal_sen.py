@@ -1,6 +1,6 @@
 """Test-module for all classes inside
 aixcalibuha.optimization.calibration and the class
-aixcalibuha.sensanalyzer.sensitivity_analyzer.SenAnalyzer"""
+aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"""
 
 import unittest
 import os
@@ -10,7 +10,7 @@ from ebcpy.simulationapi.dymola_api import DymolaAPI
 from aixcalibuha.calibration import MultipleClassCalibrator, Calibrator
 from aixcalibuha.sensanalyzer import MorrisAnalyzer, SobolAnalyzer
 from aixcalibuha import CalibrationClass
-from aixcalibuha.examples import cal_classes_example
+from examples import data_types_example
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestModelicaCalibrator(unittest.TestCase):
 
         # As the examples should work, and the cal_class example uses the other examples,
         # we will test it here:
-        self.calibration_classes = cal_classes_example.setup_calibration_classes()
+        self.calibration_classes = data_types_example.setup_calibration_classes()
 
         for cal_class in self.calibration_classes:
             cal_class.goals.statistical_measure = "NRMSE"

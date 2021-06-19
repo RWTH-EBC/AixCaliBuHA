@@ -4,7 +4,7 @@ classes of sensitivity analysis.
 """
 from SALib.sample import morris
 from SALib.analyze import morris as analyze_morris
-from aixcalibuha.sensanalyzer import SenAnalyzer
+from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
 
 

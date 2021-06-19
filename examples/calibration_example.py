@@ -8,7 +8,7 @@ import os
 import numpy as np
 from ebcpy.examples import dymola_api_example
 from aixcalibuha.calibration import modelica
-from aixcalibuha.examples import cal_classes_example
+from examples import data_types_example
 from aixcalibuha import CalibrationClass
 
 
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     CD = os.path.normpath(os.getcwd())
 
     DYM_API = dymola_api_example.setup_dymola_api(cd=CD)
-    CAL_CLASSES = cal_classes_example.setup_calibration_classes()
+    CAL_CLASSES = data_types_example.setup_calibration_classes()
 
     # %%Calibration:
     run_calibration(DYM_API,

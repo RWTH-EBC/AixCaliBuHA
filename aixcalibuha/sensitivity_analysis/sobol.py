@@ -5,7 +5,7 @@ classes of sensitivity analysis.
 from SALib.sample import saltelli as sobol
 from SALib.analyze import sobol as analyze_sobol
 import numpy as np
-from aixcalibuha.sensanalyzer import SenAnalyzer
+from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
 
 
