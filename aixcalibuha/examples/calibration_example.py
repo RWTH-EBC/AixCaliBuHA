@@ -12,7 +12,7 @@ from aixcalibuha.examples import cal_classes_example
 from aixcalibuha import CalibrationClass
 
 
-def run_calibration(sim_api, cal_classes, stat_measure):
+def run_calibration(sim_api, cal_classes):
     """
     Run an example for a calibration. Make sure you have Dymola installed
     on your device and a working licence. All output data will be stored in
@@ -28,9 +28,6 @@ def run_calibration(sim_api, cal_classes, stat_measure):
         TunerParameters have to be set. If only one class is provided (either
         a list with one entry or a CalibrationClass object) the single-class
         Calibrator is used.
-    :param str stat_measure:
-        Statistical measurement to evaluate the difference between simulated
-        and real data.
     """
     # %% Settings:
     framework = "scipy_differential_evolution"
@@ -79,7 +76,6 @@ def run_calibration(sim_api, cal_classes, stat_measure):
         modelica_calibrator = modelica.MultipleClassCalibrator(
             cd=sim_api.cd,
             sim_api=sim_api,
-            statistical_measure=stat_measure,
             calibration_class=cal_classes,
             **kwargs_calibrator)
     else:
@@ -88,7 +84,6 @@ def run_calibration(sim_api, cal_classes, stat_measure):
         modelica_calibrator = modelica.MultipleClassCalibrator(
             cd=sim_api.cd,
             sim_api=sim_api,
-            statistical_measure=stat_measure,
             calibration_classes=cal_classes,
             start_time_method="timedelta",
             **kwargs_calibrator)

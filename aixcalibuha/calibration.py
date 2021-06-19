@@ -1,6 +1,8 @@
-"""Module containing classes for different
+"""
+Module containing classes for different
 use-cases of calibration, mainly for Modelica
-Calibration."""
+Calibration.
+"""
 
 #Import packages
 import os
@@ -8,31 +10,22 @@ import json
 import time
 from typing import List
 import numpy as np
-from ebcpy import data_types
+from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
 import aixcalibuha
 from aixcalibuha.utils import visualizer
-from aixcalibuha.calibration import Calibrator
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
-class ModelicaCalibrator(Calibrator):
-    # TODO: Better fitting name
+class Calibrator(Optimizer):
     """
-    Calibrator for Modelica simulation methods. This class can
-    be used for single time-intervals of calibration. The objective
-    function is the standard-objective function for all calibration
-    processes of modelica-models.
+    This class can Calibrator be used for single
+    time-intervals of calibration.
 
     :param str,os.path.normpath cd:
         Working directory
     :param ebcpy.simulationapi.SimulationAPI sim_api:
         Simulation-API for running the models
-    :param str statistical_measure:
-        Measure to calculate the scalar of the objective,
-        One of the supported methods in
-        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
-        e.g. RMSE, MAE, NRMSE
     :param CalibrationClass calibration_class:
         Class with information on Goals and tuner-parameters for calibration
     :keyword str result_path:
@@ -92,7 +85,6 @@ class ModelicaCalibrator(Calibrator):
     def __init__(self,
                  cd: str,
                  sim_api: SimulationAPI,
-                 statistical_measure: str,
                  calibration_class: CalibrationClass,
                  **kwargs):
         """Instantiate instance attributes"""
@@ -128,7 +120,10 @@ class ModelicaCalibrator(Calibrator):
                                 f"{type(keyword_value).__name__} but should be type bool")
 
         #%% Initialize all public parameters
-        super().__init__(cd, sim_api, statistical_measure, **kwargs)
+        super().__init__(cd, **kwargs)
+        # Set sim_api
+        self.sim_api = sim_api
+
         if not isinstance(calibration_class, CalibrationClass):
             raise TypeError(f"calibration_classes is of type {type(calibration_class).__name__} "
                             f"but should be CalibrationClass")
@@ -157,7 +152,6 @@ class ModelicaCalibrator(Calibrator):
                 cd=cd,
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
-                statistical_measure=statistical_measure,
                 logger=self.logger,
                 **visualizer_kwargs
             )
@@ -166,7 +160,6 @@ class ModelicaCalibrator(Calibrator):
                 cd=cd,
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
-                statistical_measure=statistical_measure,
                 logger=self.logger
             )
 
@@ -240,7 +233,6 @@ class ModelicaCalibrator(Calibrator):
             penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
             # Evaluate with penalty
             total_res, unweighted_objective = self.goals.eval_difference(
-                self.statistical_measure,
                 verbose=True,
                 penaltyfactor=penalty
             )
@@ -256,7 +248,6 @@ class ModelicaCalibrator(Calibrator):
             penalty = None
             # Evaluate without penalty
             total_res, unweighted_objective = self.goals.eval_difference(
-                self.statistical_measure,
                 verbose=True)
             self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
 
@@ -380,7 +371,7 @@ class ModelicaCalibrator(Calibrator):
         self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
         val_result = self.obj(xk=tuner_parameter_values)
-        self.logger.log(f"{self.statistical_measure} of validation: {val_result}")
+        self.logger.log(f"{self.goals.statistical_measure} of validation: {val_result}")
         return val_result
 
     def _handle_error(self, error):
@@ -440,7 +431,7 @@ class ModelicaCalibrator(Calibrator):
         return penalty
 
 
-class MultipleClassCalibrator(ModelicaCalibrator):
+class MultipleClassCalibrator(Calibrator):
     r"""
     Class for calibration of multiple calibration classes.
     When passing multiple classes of the same name, all names
@@ -483,7 +474,6 @@ class MultipleClassCalibrator(ModelicaCalibrator):
     def __init__(self,
                  cd: str,
                  sim_api,
-                 statistical_measure: str,
                  calibration_classes: List[CalibrationClass],
                  start_time_method: str = 'fixstart',
                  calibration_strategy: str = 'parallel',
@@ -504,8 +494,7 @@ class MultipleClassCalibrator(ModelicaCalibrator):
         self.timedelta = kwargs.pop("timedelta", 0)
 
         # Instantiate parent-class
-        super().__init__(cd, sim_api, statistical_measure,
-                         calibration_classes[0], **kwargs)
+        super().__init__(cd, sim_api, calibration_classes[0], **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
             self.calibration_classes = aixcalibuha.merge_calibration_classes(calibration_classes)

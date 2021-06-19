@@ -7,14 +7,14 @@ import os
 import pathlib
 import shutil
 from ebcpy.simulationapi.dymola_api import DymolaAPI
-from aixcalibuha.calibration import modelica
+from aixcalibuha.calibration import MultipleClassCalibrator, Calibrator
 from aixcalibuha.sensanalyzer import MorrisAnalyzer, SobolAnalyzer
 from aixcalibuha import CalibrationClass
 from aixcalibuha.examples import cal_classes_example
 
 
 class TestModelicaCalibrator(unittest.TestCase):
-    """Test-class for the ModelicaCalibrator-class."""
+    """Test-class for the Calibrator-class."""
 
     def setUp(self):
         """Called before every test.
@@ -28,7 +28,8 @@ class TestModelicaCalibrator(unittest.TestCase):
         # we will test it here:
         self.calibration_classes = cal_classes_example.setup_calibration_classes()
 
-        self.statistical_measure = "NRMSE"
+        for cal_class in self.calibration_classes:
+            cal_class.goals.statistical_measure = "NRMSE"
         # %% Instantiate dymola-api
         packages = [os.path.join(example_dir, "AixCalTest", "package.mo")]
         model_name = "AixCalTest.TestModel"
@@ -43,30 +44,28 @@ class TestModelicaCalibrator(unittest.TestCase):
             self.skipTest("Tests only work with dlib installed.")
 
     def test_modelica_calibrator(self):
-        """Function for testing of class calibration.ModelicaCalibrator."""
+        """Function for testing of class calibration.Calibrator."""
         try:
             import dlib
         except ImportError:
             self.skipTest("Tests only work with dlib installed.")
-        modelica_calibrator = modelica.ModelicaCalibrator(self.example_cal_dir,
-                                                          self.dym_api,
-                                                          self.statistical_measure,
-                                                          self.calibration_classes[0],
-                                                          num_function_calls=5,
-                                                          show_plot=False)
+        modelica_calibrator = Calibrator(self.example_cal_dir,
+                                         self.dym_api,
+                                         self.calibration_classes[0],
+                                         num_function_calls=5,
+                                         show_plot=False)
         # Test run for scipy and L-BFGS-B
         modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        modelica_calibrator = modelica.MultipleClassCalibrator(self.example_cal_dir,
-                                                               self.dym_api,
-                                                               self.statistical_measure,
-                                                               self.calibration_classes,
-                                                               start_time_method='fixstart',
-                                                               fix_start_time=0,
-                                                               num_function_calls=5,
-                                                               show_plot=False)
+        modelica_calibrator = MultipleClassCalibrator(self.example_cal_dir,
+                                                      self.dym_api,
+                                                      self.calibration_classes,
+                                                      start_time_method='fixstart',
+                                                      fix_start_time=0,
+                                                      num_function_calls=5,
+                                                      show_plot=False)
 
         modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
 
@@ -77,7 +76,6 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Setup the problem
         sen_ana = MorrisAnalyzer(
             sim_api=self.dym_api,
-            statistical_measure=self.statistical_measure,
             num_samples=1,
             cd=self.dym_api.cd,
             analysis_variable='mu_star'
@@ -91,7 +89,6 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Setup the problem
         sen_ana = SobolAnalyzer(
             sim_api=self.dym_api,
-            statistical_measure=self.statistical_measure,
             num_samples=1,
             cd=self.dym_api.cd,
             analysis_variable='S1'

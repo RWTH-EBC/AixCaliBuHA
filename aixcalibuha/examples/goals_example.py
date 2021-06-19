@@ -24,7 +24,7 @@ def setup_goals():
 
     >>> goals = setup_goals()
     >>> goals.set_relevant_time_intervals([(0, 100)])
-    >>> print(round(goals.eval_difference("RMSE"), 3))
+    >>> print(round(goals.eval_difference(), 3))
     1.095
     """
 
@@ -46,6 +46,7 @@ def setup_goals():
     # Setup the goals object
     goals = Goals(meas_target_data=meas_target_data,
                   variable_names=variable_names,
+                  statistical_measure="RMSE",
                   weightings=[0.7, 0.3])
     goals.set_sim_target_data(sim_target_data)
     return goals
@@ -54,5 +55,5 @@ def setup_goals():
 if __name__ == "__main__":
     GOALS = setup_goals()
     GOALS.set_relevant_time_intervals([(0, 100)])
-    GOALS.eval_difference("RMSE")
+    GOALS.eval_difference()
     print(GOALS)

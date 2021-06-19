@@ -28,8 +28,6 @@ class CalibrationLogger:
             Name of the reason of logging, e.g. classification, processing etc.
         :param aixcalibuha.CalibrationClass calibration_class:
             Calibration class used in the calibration-process.
-        :param str statistical_measure:
-            Measurement used to evaluate the objective
         :param logging.Logger logger:
             If given, this logger is used to print and or save the messsages.
             Else, a new one is set up.
@@ -42,7 +40,7 @@ class CalibrationLogger:
     _prec = decimal_prec
     _width = integer_prec + decimal_prec + 1  # Calculate the actual width
 
-    def __init__(self, cd, name, calibration_class, statistical_measure, logger=None):
+    def __init__(self, cd, name, calibration_class, logger=None):
         """Instantiate class parameters"""
         self._tuner_paras = None
         self._goals = None
@@ -55,7 +53,6 @@ class CalibrationLogger:
             self.logger = logger
         self.cd = cd
         self.calibration_class = calibration_class
-        self.statistical_measure = statistical_measure
 
     def log(self, msg, level=logging.INFO):
         """Wrapper function to directly log in the internal logger"""
@@ -255,9 +252,9 @@ class CalibrationLogger:
                 formatted_name = ini_name
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
-        info_string += "     {0:{width}s}".format(self.statistical_measure, width=self._width)
+        info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
         info_string += "penaltyfactor"
-        info_string += f"   Unweighted {self.statistical_measure}"
+        info_string += f"   Unweighted {self.goals.statistical_measure}"
         return info_string
 
     def _get_tuner_para_values_as_string(self,
@@ -337,7 +334,6 @@ class CalibrationVisualizer(CalibrationLogger):
     def __init__(self, cd,
                  name,
                  calibration_class,
-                 statistical_measure,
                  logger=None,
                  **kwargs):
         """Instantiate class parameters"""
@@ -346,7 +342,6 @@ class CalibrationVisualizer(CalibrationLogger):
         super().__init__(cd=cd,
                          name=name,
                          calibration_class=calibration_class,
-                         statistical_measure=statistical_measure,
                          logger=logger)
         # Set supported kwargs:
         if isinstance(kwargs.get("save_tsd_plot"), bool):
@@ -378,7 +373,7 @@ class CalibrationVisualizer(CalibrationLogger):
         # %% Set-up figure for objective-plotting
         self.fig_obj, self.ax_obj = plt.subplots(1, 1)
         self.fig_obj.suptitle(name + ": Objective")
-        self.ax_obj.set_ylabel(self.statistical_measure)
+        self.ax_obj.set_ylabel(self.goals.statistical_measure)
         self.ax_obj.set_xlabel("Number iterations")
         # If the changes are small, it seems like the plot does
         # not fit the printed values. This boolean assures that no offset is used.

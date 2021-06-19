@@ -19,10 +19,9 @@ class SobolAnalyzer(SenAnalyzer):
     :keyword seed:
         Used for the sobol-method
     """
-    def __init__(self, sim_api, statistical_measure, **kwargs):
+    def __init__(self, sim_api, **kwargs):
         super().__init__(
             sim_api=sim_api,
-            statistical_measure=statistical_measure,
             **kwargs)
         # Set additional kwargs
         self.calc_second_order = kwargs.pop("calc_second_order", True)

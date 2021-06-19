@@ -6,8 +6,8 @@ import warnings
 from typing import Union
 import pandas as pd
 import numpy as np
-from ebcpy import data_types
-from ebcpy.utils import statistics_analyzer
+from ebcpy import TimeSeriesData
+from ebcpy.utils.statistics_analyzer import StatisticsAnalyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
 # pylint: disable=I1101
 __version__ = "0.1.6"
@@ -43,7 +43,11 @@ class Goals:
         relevant for your own code readability.
         E.g. variable_names = {VARIABLE_NAME: {"meas":MEASUREMENT_NAME,
                                                "sim": SIMULATION_NAME}}
-
+    :param str statistical_measure:
+        Measure to calculate the scalar of the objective,
+        One of the supported methods in
+        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
+        e.g. RMSE, MAE, NRMSE
     :param list weightings:
         Values between 0 and 1 to account for multiple Goals to be evaluated.
         If multiple goals are selected, and weightings is None, each
@@ -55,11 +59,15 @@ class Goals:
     meas_tag_str = "meas"
     sim_tag_str = "sim"
 
-    def __init__(self, meas_target_data, variable_names, weightings=None):
+    def __init__(self,
+                 meas_target_data: Union[TimeSeriesData, pd.DataFrame],
+                 variable_names: dict,
+                 statistical_measure: str,
+                 weightings: list = None):
         """Initialize class-objects and check correct input."""
 
         # Open the meas target data:
-        if not isinstance(meas_target_data, (data_types.TimeSeriesData, pd.DataFrame)):
+        if not isinstance(meas_target_data, (TimeSeriesData, pd.DataFrame)):
             raise TypeError(f"Given meas_target_data is of type {type(meas_target_data).__name__} "
                             "but TimeSeriesData is required.")
 
@@ -127,6 +135,9 @@ class Goals:
         # _tsd may be altered by relevant intervals, this object never!
         self._tsd_ref = self._tsd.copy()
 
+        # Set the statistical analyzer:
+        self.statistical_measure = statistical_measure
+
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
         if weightings is None:
@@ -147,13 +158,21 @@ class Goals:
         nicely."""
         return str(self._tsd)
 
-    def eval_difference(self, statistical_measure, verbose=False, penaltyfactor=1):
+    @property
+    def statistical_measure(self) -> str:
+        """The statistical measure of this Goal instance"""
+        return self._stat_meas
+
+    @statistical_measure.setter
+    def statistical_measure(self, statistical_measure: str):
+        self._stat_analyzer = StatisticsAnalyzer(method=statistical_measure)
+        self._stat_meas = statistical_measure
+
+    def eval_difference(self, verbose=False, penaltyfactor=1):
         """
         Evaluate the difference of the measurement and simulated data based on the
-        given statistical_measure.
+        chosen statistical_measure.
 
-        :param str statistical_measure:
-            Method supported by statistics_analyzer.StatisticsAnalyzer, e.g. RMSE
         :param boolean verbose:
             If True, a dict with difference-values of for all goals and the
             corresponding weightings is returned together with the total difference.
@@ -165,7 +184,6 @@ class Goals:
         :return: float total_difference
             weighted ouput for all goals.
         """
-        stat_analyzer = statistics_analyzer.StatisticsAnalyzer(statistical_measure)
         total_difference = 0
         _verbose_calculation = {}
 
@@ -176,8 +194,10 @@ class Goals:
                                  "interval of measured and simulated data "
                                  "are not equal. \nPlease check the frequencies "
                                  "in the toml file (outputInterval & frequency).")
-            _diff = stat_analyzer.calc(meas=self._tsd[(goal_name, self.meas_tag_str)],
-                                       sim=self._tsd[(goal_name, self.sim_tag_str)])
+            _diff = self._stat_analyzer.calc(
+                meas=self._tsd[(goal_name, self.meas_tag_str)],
+                sim=self._tsd[(goal_name, self.sim_tag_str)]
+            )
             # Apply penalty function
             _diff = _diff * penaltyfactor
 
@@ -550,15 +570,15 @@ class CalibrationClass:
         self._relevant_intervals = relevant_intervals
 
     @property
-    def inputs(self) -> Union[data_types.TimeSeriesData, pd.DataFrame]:
+    def inputs(self) -> Union[TimeSeriesData, pd.DataFrame]:
         """Get the inputs for this calibration class"""
         return self._inputs
 
     @inputs.setter
-    def inputs(self, inputs: Union[data_types.TimeSeriesData, pd.DataFrame]):
+    def inputs(self, inputs: Union[TimeSeriesData, pd.DataFrame]):
         """Set the inputs for this calibration class"""
         # Check correct index:
-        if not isinstance(inputs, (data_types.TimeSeriesData, pd.DataFrame)):
+        if not isinstance(inputs, (TimeSeriesData, pd.DataFrame)):
             raise TypeError(f"Inputs need to be either TimeSeriesData "
                             f"or pd.DataFrame, but you passed {type(inputs)}")
         if isinstance(inputs.index, pd.DatetimeIndex):

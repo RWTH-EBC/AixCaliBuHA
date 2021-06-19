@@ -52,7 +52,6 @@ def main():
         cd = config["Working Directory"]
         # Read calibration settings
         config_calibration = config["Calibration"]
-        statistical_measure = config_calibration["statistical_measure"]
         cal_classes_config = config_calibration["calibration_classes"]
         start_time_method = config_calibration.get("start_time_method", None)
 
@@ -130,10 +129,9 @@ def main():
     cal_classes = get_calibration_classes_from_config(cal_classes_config)
 
     if len(cal_classes) == 1:
-        modelica_calibrator = modelica.ModelicaCalibrator(
+        modelica_calibrator = modelica.Calibrator(
             cd=cd,
             sim_api=sim_api,
-            statistical_measure=statistical_measure,
             calibration_class=cal_classes[0],
             **kwargs_calibrator)
     else:
@@ -141,7 +139,6 @@ def main():
         modelica_calibrator = modelica.MultipleClassCalibrator(
             cd=cd,
             sim_api=sim_api,
-            statistical_measure=statistical_measure,
             calibration_classes=cal_classes,
             start_time_method=start_time_method
             **kwargs_calibrator)

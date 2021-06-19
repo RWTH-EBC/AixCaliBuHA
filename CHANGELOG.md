@@ -18,7 +18,7 @@
 - **v0.1.5**
    - Add new scripts in bin folder to ease the setup of the calibration for new users
    - Add configuration files and save/load classes
-   - Issue 54: Skip failed simulations using two new kwargs in ModelicaCalibrator class
+   - Issue 54: Skip failed simulations using two new kwargs in Calibrator class
    - Issue 53: Save final plots despite abortion of calibration process via STRG+C
    - Issue 51: Refactor reference_start_time to fix_start_time
    - Issue 23: Model Wrapper for MoCaTe files.

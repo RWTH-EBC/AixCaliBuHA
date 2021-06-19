@@ -23,15 +23,16 @@ class TestConfiguration(unittest.TestCase):
                      "Var_2": {"meas": "measured_T_heater", "sim": "heater.heatPorts[1].T"}}
 
         cal_class = configuration.get_calibration_classes_from_config(
-            configs=[{"tuner_paras": {"names": ["test"],
-                                      "initial_values": [10],
-                                      "bounds": [(0, 20)]},
-                      "goals": {"variable_names": var_names,
-                                "meas_target_data": {"data": example_hdf,
-                                                     "key": "test"}},
-                      "name": "test",
-                      "start_time": 0,
-                      "stop_time": 10}]
+            config=[{"tuner_paras": {"names": ["test"],
+                                     "initial_values": [10],
+                                     "bounds": [(0, 20)]},
+                     "goals": {"variable_names": var_names,
+                               "statistical_measure": "RMSE",
+                               "meas_target_data": {"data": example_hdf,
+                                                    "key": "test"}},
+                     "name": "test",
+                     "start_time": 0,
+                     "stop_time": 10}]
         )[0]
 
         self.assertIsInstance(cal_class, aixcalibuha.CalibrationClass)

@@ -26,10 +26,6 @@ class SenAnalyzer(abc.ABC):
         the number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of sobol and
         morris in the SALib for more information.
-    :param str statistical_measure:
-        Used to evaluate the difference of simulated and measured data.
-        Like "RMSE", "MAE" etc. See utils.statistics_analyzer.py for
-        further info.
     :keyword str analysis_function:
         Used to automatically select result values.
     :keyword str,os.path.normpath cd:
@@ -49,12 +45,10 @@ class SenAnalyzer(abc.ABC):
     def __init__(self,
                  sim_api: SimulationAPI,
                  num_samples: int,
-                 statistical_measure: str,
                  **kwargs):
         """Instantiate class parameters"""
         # Setup the instance attributes
         self.sim_api = sim_api
-        self.statistical_measure = statistical_measure
         self.num_samples = num_samples
 
         # Update kwargs
@@ -172,7 +166,7 @@ class SenAnalyzer(abc.ABC):
             cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
 
             # Evaluate the current objective
-            total_res = cal_class.goals.eval_difference(self.statistical_measure)
+            total_res = cal_class.goals.eval_difference()
             output.append(total_res)
 
         return np.asarray(output)

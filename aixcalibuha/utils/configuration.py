@@ -6,7 +6,7 @@ import collections
 import yaml
 import numpy as np
 from ebcpy import data_types
-from aixcalibuha import Goals, CalibrationClass
+from aixcalibuha import Goals, CalibrationClass, TunerParas
 
 
 tsd_config = {"data": "TODO: Specify the path to the target values measured",
@@ -119,6 +119,7 @@ def get_goals_from_config(config):
     mtd = data_types.TimeSeriesData(**config_mtd)
     return Goals(meas_target_data=mtd,
                  variable_names=config["variable_names"],
+                 statistical_measure=config["statistical_measure"],
                  weightings=config.get("weightings", None))
 
 
@@ -134,9 +135,9 @@ def get_tuner_paras_from_config(config):
     :return: TunerParas tuner_paras
         Loaded Goals object
     """
-    return data_types.TunerParas(names=config["names"],
-                                 initial_values=config["initial_values"],
-                                 bounds=config["bounds"])
+    return TunerParas(names=config["names"],
+                      initial_values=config["initial_values"],
+                      bounds=config["bounds"])
 
 
 def get_calibration_classes_from_config(config):

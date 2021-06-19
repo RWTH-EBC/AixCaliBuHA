@@ -20,10 +20,9 @@ class MorrisAnalyzer(SenAnalyzer):
     :keyword bool local_optimization:
         Default True, used for the morris-method
     """
-    def __init__(self, sim_api, statistical_measure, **kwargs):
+    def __init__(self, sim_api, **kwargs):
         super().__init__(
             sim_api=sim_api,
-            statistical_measure=statistical_measure,
             **kwargs)
         # Set additional kwargs
         self.num_levels = kwargs.pop("num_levels", 4)

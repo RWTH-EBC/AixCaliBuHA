@@ -50,7 +50,8 @@ class TestDataTypes(unittest.TestCase):
 
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
-                      variable_names=var_names)
+                      variable_names=var_names,
+                      statistical_measure="RMSE")
 
         # Check set_sim_target_data:
         goals.set_sim_target_data(sim_target_data)
@@ -59,7 +60,7 @@ class TestDataTypes(unittest.TestCase):
         goals.set_relevant_time_intervals([(0, 100)])
 
         # Check the eval_difference function:
-        self.assertIsInstance(goals.eval_difference("RMSE"), float)
+        self.assertIsInstance(goals.eval_difference(), float)
         # Try to alter the sim_target_data object with something wrong
         with self.assertRaises(IndexError):
             goals.set_sim_target_data([])
@@ -68,11 +69,13 @@ class TestDataTypes(unittest.TestCase):
             weightings = [1, 2, 4, 5, 6]
             Goals(meas_target_data=meas_target_data,
                   variable_names=var_names,
+                  statistical_measure="RMSE",
                   weightings=weightings)
         with self.assertRaises(IndexError):
             weightings = np.ones(100)/100
             Goals(meas_target_data=meas_target_data,
                   variable_names=var_names,
+                  statistical_measure="RMSE",
                   weightings=weightings)
 
     def test_tuner_paras(self):
