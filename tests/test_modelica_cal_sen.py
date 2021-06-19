@@ -49,25 +49,27 @@ class TestModelicaCalibrator(unittest.TestCase):
             import dlib
         except ImportError:
             self.skipTest("Tests only work with dlib installed.")
-        modelica_calibrator = Calibrator(self.example_cal_dir,
-                                         self.dym_api,
-                                         self.calibration_classes[0],
-                                         num_function_calls=5,
-                                         show_plot=False)
+        calibrator = Calibrator(self.example_cal_dir,
+                                self.dym_api,
+                                self.calibration_classes[0],
+                                show_plot=False)
         # Test run for scipy and L-BFGS-B
-        modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
+        calibrator.calibrate(framework="dlib_minimize",
+                             method=None,
+                             num_function_calls=5)
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        modelica_calibrator = MultipleClassCalibrator(self.example_cal_dir,
-                                                      self.dym_api,
-                                                      self.calibration_classes,
-                                                      start_time_method='fixstart',
-                                                      fix_start_time=0,
-                                                      num_function_calls=5,
-                                                      show_plot=False)
+        calibrator = MultipleClassCalibrator(self.example_cal_dir,
+                                             self.dym_api,
+                                             self.calibration_classes,
+                                             start_time_method='fixstart',
+                                             fix_start_time=0,
+                                             show_plot=False)
 
-        modelica_calibrator.calibrate(framework="dlib_minimize", method=None)
+        calibrator.calibrate(framework="dlib_minimize",
+                             method=None,
+                             num_function_calls=5)
 
     def test_sa_morris(self):
         """

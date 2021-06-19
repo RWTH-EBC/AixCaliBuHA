@@ -269,9 +269,13 @@ class Calibrator(Optimizer):
         self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
         return total_res
 
-    def calibrate(self, framework, method=None):
+    def calibrate(self, framework, method=None, **kwargs):
         """
         Start the calibration process of the calibration classes, visualize and save the results.
+
+        The arguments of this function are equal to the
+        arguments in Optimizer.optimize(). Look at the docstring
+        in ebcpy to know which options are available.
         """
         #%% Start Calibration:
         self.logger.log(f"Start calibration of model: {self.sim_api.model_name}"
@@ -289,7 +293,7 @@ class Calibrator(Optimizer):
         t_cal_start = time.time()
 
         # Run optimization
-        self._res = self.optimize(framework, method)
+        self._res = self.optimize(framework, method, **kwargs)
 
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
@@ -297,8 +301,8 @@ class Calibrator(Optimizer):
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
-                                            t_cal,
-                                            self.recalibration_count)
+                                            duration=t_cal,
+                                            itercount=self.recalibration_count)
         # Reset
         self._current_best_iterate['better_current_result'] = False
 
@@ -512,7 +516,7 @@ class MultipleClassCalibrator(Calibrator):
                              "Please choose between 'fixstart' or 'timedelta'")
         self.start_time_method = start_time_method
 
-    def calibrate(self, framework, method=None):
+    def calibrate(self, framework, method=None, **kwargs):
         """
         Start the calibration process.
 
@@ -591,7 +595,7 @@ class MultipleClassCalibrator(Calibrator):
 
             #%% Execution
             # Run the single ModelicaCalibration
-            super().calibrate(framework=framework, method=method)
+            super().calibrate(framework=framework, method=method, **kwargs)
 
             #%% Post-processing
             # Append result to list for future perturbation based on older results.
@@ -674,7 +678,8 @@ class MultipleClassCalibrator(Calibrator):
         # Handle tuner intersections
         if intersected_tuners.keys():
             # Plot or log the information, depending on which logger you are using:
-            self.logger.log_intersection_of_tuners(intersected_tuners, self.recalibration_count)
+            self.logger.log_intersection_of_tuners(intersected_tuners,
+                                                   itercount=self.recalibration_count)
 
             # Return average value of ALL tuner parameters (not only intersected).
             # Reason: if there is an intersection of a tuner parameter, but
@@ -686,12 +691,12 @@ class MultipleClassCalibrator(Calibrator):
             for tuner_para, values in merged_tuner_parameters.items():
                 average_tuner_parameter[tuner_para] = sum(values) / len(values)
 
-            self.logger.log("The tuner parameters used for evaluation"
-                            " are averaged as follows:\n "
-                            "{}".format(' ,'.join([tuner + "=" + values
-                            for tuner, values in average_tuner_parameter.items()])))
+            self.logger.log("The tuner parameters used for evaluation "
+                            "are averaged as follows:\n "
+                            "{}".format(' ,'.join([f"{tuner}={value}"
+                            for tuner, value in average_tuner_parameter.items()])))
 
-            # Create result-dictonary
+            # Create result-dictionary
             res_tuner = average_tuner_parameter
 
         return res_tuner
