@@ -3,8 +3,46 @@ Example file for the data_types module. The usage of classes inside
 the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
-from examples import goals_example
-from aixcalibuha import CalibrationClass, TunerParas
+import os
+from ebcpy import data_types, preprocessing
+from aixcalibuha import CalibrationClass, TunerParas, Goals
+
+
+def setup_goals():
+    """
+    Example setup of the Goals object.
+    First, some simulated and measured target data is loaded from the
+    example data.
+    Then the goals object is instantiated. Please refer to the
+    Goals documentation on the meaning of the parameters.
+
+
+    :return: Goals object
+    :rtype: aixcalibuha.Goals
+    """
+
+    # Load example simTargetData and measTargetData:
+    _filepath = os.path.dirname(__file__)
+    sim_target_data = data_types.TimeSeriesData(os.path.join(_filepath,
+                                                             "data",
+                                                             "simTargetData.mat"))
+    meas_target_data = data_types.TimeSeriesData(os.path.join(_filepath,
+                                                              "data",
+                                                              "ref_result.hdf"),
+                                                 key="test")
+    # Format: variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}
+    variable_names = {"T_heater": ["measured_T_heater", "heater.heatPorts[1].T"],
+                      "T_heater_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"]}
+
+    # Convert index to float to match the simulation output
+    meas_target_data = preprocessing.convert_datetime_index_to_float_index(meas_target_data)
+    # Setup the goals object
+    goals = Goals(meas_target_data=meas_target_data,
+                  variable_names=variable_names,
+                  statistical_measure="RMSE",
+                  weightings=[0.7, 0.3])
+    goals.set_sim_target_data(sim_target_data)
+    return goals
 
 
 def setup_calibration_classes():
@@ -31,7 +69,7 @@ def setup_calibration_classes():
     tuner_paras = TunerParas(names=["C", "m_flow_2", "heatConv_a"],
                              initial_values=[5000, 0.02, 200],
                              bounds=[(4000, 6000), (0.01, 0.1), (10, 300)])
-    goals = goals_example.setup_goals()
+    goals = setup_goals()
     # Set the tuner parameters and goals to all classes:
     for cal_class in calibration_classes:
         cal_class.tuner_paras = tuner_paras

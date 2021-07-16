@@ -10,7 +10,7 @@ from typing import List
 import numpy as np
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
-from aixcalibuha.utils import visualizer
+from aixcalibuha.utils import visualizer, MaxIterationsReached
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -65,6 +65,11 @@ class Calibrator(Optimizer):
         to the simulation which are not tuned / variable during calibration.
         Such parameters may be used if the default values in the model don't
         represent the parameter values you want to use.
+    :keyword int max_itercount:
+        Default is Infinity.
+        Maximum number of iterations of calibration.
+        This may be useful to explicitly limit the calibration
+        time.
     TODO: Add missing kwargs description
     """
 
@@ -101,6 +106,7 @@ class Calibrator(Optimizer):
         self.recalibration_count = kwargs.pop("recalibration_count", 0)
         self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.result_path = kwargs.pop('result_path', None)
+        self.max_itercount = kwargs.pop('max_itercount', np.inf)
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
@@ -264,6 +270,11 @@ class Calibrator(Optimizer):
             }
 
         self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
+        if self._counter >= self.max_itercount:
+            raise MaxIterationsReached(
+                "Terminating calibration as the maximum number "
+                f"of iterations {self.max_itercount} has been reached."
+            )
         return total_res
 
     def calibrate(self, framework, method=None, **kwargs):

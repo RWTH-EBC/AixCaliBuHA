@@ -7,9 +7,7 @@ import os
 import pathlib
 import shutil
 from ebcpy.simulationapi.dymola_api import DymolaAPI
-from aixcalibuha.calibration import MultipleClassCalibrator, Calibrator
-from aixcalibuha.sensanalyzer import MorrisAnalyzer, SobolAnalyzer
-from aixcalibuha import CalibrationClass
+from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, MultipleClassCalibrator, Calibrator, CalibrationClass
 from examples import data_types_example
 
 
@@ -31,7 +29,6 @@ class TestModelicaCalibrator(unittest.TestCase):
         for cal_class in self.calibration_classes:
             cal_class.goals.statistical_measure = "NRMSE"
         # %% Instantiate dymola-api
-        packages = [os.path.join(example_dir, "AixCalTest", "package.mo")]
         model_name = "AixCalTest.TestModel"
         try:
             self.dym_api = DymolaAPI(self.example_cal_dir, model_name, packages)
@@ -45,18 +42,14 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
-        try:
-            import dlib
-        except ImportError:
-            self.skipTest("Tests only work with dlib installed.")
         calibrator = Calibrator(self.example_cal_dir,
                                 self.dym_api,
                                 self.calibration_classes[0],
-                                show_plot=False)
+                                show_plot=False,
+                                max_itercount=5)
         # Test run for scipy and L-BFGS-B
-        calibrator.calibrate(framework="dlib_minimize",
-                             method=None,
-                             num_function_calls=5)
+        calibrator.calibrate(framework="scipy_differential_evolution",
+                             method="best1bin")
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""

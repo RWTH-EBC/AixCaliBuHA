@@ -7,9 +7,8 @@ If not, please raise an issue.
 import os
 import numpy as np
 from ebcpy.examples import dymola_api_example
-from aixcalibuha.calibration import modelica
 from examples import data_types_example
-from aixcalibuha import CalibrationClass
+from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
 def run_calibration(sim_api, cal_classes):
@@ -23,7 +22,7 @@ def run_calibration(sim_api, cal_classes):
 
     :param ebcy.simulationapi.SimulationAPI sim_api:
         Simulation API to simulate the models
-    :param list,CalibrationClass cal_classes:
+    :param list[CalibrationClass] cal_classes:
         List with multiple CalibrationClass objects for calibration. Goals and
         TunerParameters have to be set. If only one class is provided (either
         a list with one entry or a CalibrationClass object) the single-class
@@ -40,7 +39,8 @@ def run_calibration(sim_api, cal_classes):
                          "create_tsd_plot": True,
                          "save_tsd_plot": True,
                          "fail_on_error": False,
-                         "ret_val_on_error": np.NAN}
+                         "ret_val_on_error": np.NAN,
+                         "max_itercount": np.inf}
     # Specify kwargs for multiple-class-calibration
     kwargs_multiple_classes = {"merge_multiple_classes": True}
 
@@ -65,23 +65,23 @@ def run_calibration(sim_api, cal_classes):
     # Merge the dictionaries into one.
     # If you change the solver, also change the solver-kwargs-dict in the line below
     if framework == "scipy_differential_evolution":
-        kwargs_calibrator.update(kwargs_scipy_dif_evo)
+        kwargs_optimization = kwargs_scipy_dif_evo
     if framework == "scipy_minimize":
-        kwargs_calibrator.update(kwargs_scipy_min)
+        kwargs_optimization = kwargs_scipy_min
     if framework == "dlib_minimize":
-        kwargs_calibrator.update(kwargs_dlib_min)
+        kwargs_optimization = kwargs_dlib_min
 
     # Select between single or multiple class calibration
-    if isinstance(cal_classes, CalibrationClass) or len(cal_classes)==1:
-        modelica_calibrator = modelica.MultipleClassCalibrator(
+    if len(cal_classes) == 1:
+        modelica_calibrator = Calibrator(
             cd=sim_api.cd,
             sim_api=sim_api,
-            calibration_class=cal_classes,
+            calibration_class=cal_classes[0],
             **kwargs_calibrator)
     else:
         kwargs_calibrator.update(kwargs_multiple_classes)
         # Setup the class
-        modelica_calibrator = modelica.MultipleClassCalibrator(
+        modelica_calibrator = MultipleClassCalibrator(
             cd=sim_api.cd,
             sim_api=sim_api,
             calibration_classes=cal_classes,
@@ -89,7 +89,9 @@ def run_calibration(sim_api, cal_classes):
             **kwargs_calibrator)
 
     # Start the calibration process
-    modelica_calibrator.calibrate(framework=framework, method=method)
+    modelica_calibrator.calibrate(framework=framework,
+                                  method=method,
+                                  **kwargs_optimization)
 
 
 if __name__ == "__main__":
@@ -103,5 +105,4 @@ if __name__ == "__main__":
 
     # %%Calibration:
     run_calibration(DYM_API,
-                    CAL_CLASSES[2:4],
-                    STATISTICAL_MEASURE)
+                    CAL_CLASSES[2:4])

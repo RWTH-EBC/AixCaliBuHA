@@ -22,3 +22,11 @@ def validate_cal_class_input(
         raise TypeError(f"calibration_classes is of type {type(calibration_classes).__name__} "
                         f"but should be CalibrationClass or list")
     return calibration_classes
+
+
+class MaxIterationsReached(Exception):
+    """
+    Exception raised for when the calibration
+    ends because the maximum number of
+    allowed iterations is reached.
+    """
