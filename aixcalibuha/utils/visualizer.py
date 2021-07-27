@@ -429,12 +429,12 @@ class CalibrationVisualizer(CalibrationLogger):
             plt.draw()
             plt.pause(1e-5)
 
-    def save_calibration_result(self, res, model_name, **kwargs):
+    def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
 
-        :param scipy.optimize.minimize.result res:
+        :param scipy.optimize.minimize.result best_iterate:
             Result object of the minimization
         :param str model_name:
             Name of the model being calibrated
@@ -444,7 +444,7 @@ class CalibrationVisualizer(CalibrationLogger):
         file_type = "svg"
         if isinstance(kwargs.get("file_type"), str):
             file_type = kwargs.get("file_type")
-        super().save_calibration_result(res, model_name, **kwargs)
+        super().save_calibration_result(best_iterate, model_name, **kwargs)
         itercount = kwargs["itercount"]
         duration = kwargs["duration"]
 
@@ -458,13 +458,13 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.save_tsd_plot:
             bestgoal = os.path.join(self.cd,
                                     self.goals_dir,
-                                    str(res["Iterate"]) + f"_goals.{file_type}")
+                                    str(best_iterate["Iterate"]) + f"_goals.{file_type}")
             # Copy best goals figure
             copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
 
         # Save calibration results as csv
-        res_dict = dict(res['Parameters'])
-        res_dict['Objective'] = res["Objective"]
+        res_dict = dict(best_iterate['Parameters'])
+        res_dict['Objective'] = best_iterate["Objective"]
         res_dict['Duration'] = duration
         res_csv = f'{self.cd}\\Iteration_{itercount}\\RESUL' \
                   f'TS_{self.calibration_class.name}_iteration{itercount}.csv'
@@ -478,9 +478,9 @@ class CalibrationVisualizer(CalibrationLogger):
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
 
-        if res['better_current_result'] and self.save_tsd_plot:
+        if best_iterate['better_current_result'] and self.save_tsd_plot:
             # save improvement of recalibration ("best goals df" as csv)
-            res['Goals'].get_goals_data().to_csv(
+            best_iterate['Goals'].get_goals_data().to_csv(
                 os.path.join(iterpath, 'goals_df.csv'),
                 sep=",",
                 decimal="."

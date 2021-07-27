@@ -15,8 +15,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_funcs(self):
         """Test functions"""
-        example_hdf = pathlib.Path(__file__).parents[1].joinpath("aixcalibuha",
-                                                                 "examples",
+        example_hdf = pathlib.Path(__file__).parents[1].joinpath("examples",
                                                                  "data",
                                                                  "ref_result.hdf")
         var_names = {"Var_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"],

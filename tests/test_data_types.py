@@ -15,7 +15,7 @@ class TestDataTypes(unittest.TestCase):
         Define example paths and parameters used in all test-functions.
         """
         self.framework_dir = pathlib.Path(__file__).parents[1]
-        self.example_dir = self.framework_dir.joinpath("aixcalibuha", "examples", "data")
+        self.example_dir = self.framework_dir.joinpath("examples", "data")
         self.example_data_hdf_path = self.example_dir.joinpath("ref_result.hdf")
 
     def test_calibration_class(self):
