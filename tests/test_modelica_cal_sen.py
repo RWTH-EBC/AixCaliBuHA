@@ -3,12 +3,13 @@ aixcalibuha.optimization.calibration and the class
 aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"""
 
 import unittest
-import os
+import sys
 import pathlib
 import shutil
-from ebcpy.simulationapi.dymola_api import DymolaAPI
-from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, MultipleClassCalibrator, Calibrator, CalibrationClass
-from examples import data_types_example
+from ebcpy import FMU_API, TimeSeriesData
+from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, MultipleClassCalibrator, \
+    Calibrator, CalibrationClass, TunerParas, Goals
+
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -18,33 +19,49 @@ class TestModelicaCalibrator(unittest.TestCase):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""
         #%% Define relevant paths
-        framework_dir = pathlib.Path(__file__).parents[1]
-        example_dir = os.path.join(framework_dir, "aixcalibuha", "examples")
-        self.example_cal_dir = os.path.join(example_dir, "test_calibration")
+        test_dir = pathlib.Path(__file__).parent
+        self.data_dir = test_dir.joinpath("data")
+        self.example_cal_dir = test_dir.joinpath("testzone")
 
         # As the examples should work, and the cal_class example uses the other examples,
         # we will test it here:
-        self.calibration_classes = data_types_example.setup_calibration_classes()
+        meas_target_data = TimeSeriesData(self.data_dir.joinpath("PumpAndValve.hdf"), key="test")
 
-        for cal_class in self.calibration_classes:
-            cal_class.goals.statistical_measure = "NRMSE"
+        # Setup three variables for different format of setup
+        var_names = {"T": ["heatCapacitor.T", "heatCapacitor.T"],
+                     "m_flow": {"meas": "valve.flowPort_a.m_flow", "sim": "valve.flowPort_a.m_flow"}}
+
+        tuner_paras = TunerParas(names=["speedRamp.duration", "valveRamp.duration"],
+                                 initial_values=[0.1, 0.1],
+                                 bounds=[(0.1, 10), (0.1, 10)])
+        # Real "best" values: speedRamp.duration=0.432 and valveRamp.duration=2.5423
+        # Check setup the goals class:
+        goals = Goals(meas_target_data=meas_target_data,
+                      variable_names=var_names,
+                      statistical_measure="NRMSE")
+        self.calibration_classes = [
+            CalibrationClass(name="First", start_time=0, stop_time=1,
+                             goals=goals, tuner_paras=tuner_paras),
+            CalibrationClass(name="Second", start_time=1, stop_time=10,
+                             goals=goals, tuner_paras=tuner_paras)
+        ]
+
         # %% Instantiate dymola-api
-        model_name = "AixCalTest.TestModel"
-        try:
-            self.dym_api = DymolaAPI(self.example_cal_dir, model_name, packages)
-        except (FileNotFoundError, ImportError, ConnectionError) as err:
-            self.skipTest(f"Could not load the dymola "
-                          f"interface on this machine: {err}")
-        try:
-            import dlib
-        except ImportError:
-            self.skipTest("Tests only work with dlib installed.")
+        if "win" in sys.platform:
+            model_name = self.data_dir.joinpath("PumpAndValve_windows.fmu")
+        else:
+            model_name = self.data_dir.joinpath("PumpAndValve_linux.fmu")
+
+        self.sim_api = FMU_API(cd=self.example_cal_dir,
+                               model_name=model_name)
+        self.sim_api.output_interval = 0.01
+        print(self.sim_api)
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
-        calibrator = Calibrator(self.example_cal_dir,
-                                self.dym_api,
-                                self.calibration_classes[0],
+        calibrator = Calibrator(cd=self.sim_api.cd,
+                                sim_api=self.sim_api,
+                                calibration_class=self.calibration_classes[0],
                                 show_plot=False,
                                 max_itercount=5)
         # Test run for scipy and L-BFGS-B
@@ -54,7 +71,7 @@ class TestModelicaCalibrator(unittest.TestCase):
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
         calibrator = MultipleClassCalibrator(self.example_cal_dir,
-                                             self.dym_api,
+                                             self.sim_api,
                                              self.calibration_classes,
                                              start_time_method='fixstart',
                                              fix_start_time=0,
@@ -70,9 +87,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         """
         # Setup the problem
         sen_ana = MorrisAnalyzer(
-            sim_api=self.dym_api,
+            sim_api=self.sim_api,
             num_samples=1,
-            cd=self.dym_api.cd,
+            cd=self.sim_api.cd,
             analysis_variable='mu_star'
         )
         self._run_sen_ana(sen_ana)
@@ -83,9 +100,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         """
         # Setup the problem
         sen_ana = SobolAnalyzer(
-            sim_api=self.dym_api,
+            sim_api=self.sim_api,
             num_samples=1,
-            cd=self.dym_api.cd,
+            cd=self.sim_api.cd,
             analysis_variable='S1'
         )
         self._run_sen_ana(sen_ana)
@@ -105,7 +122,7 @@ class TestModelicaCalibrator(unittest.TestCase):
     def tearDown(self):
         """Remove all created folders while calibrating."""
         try:
-            self.dym_api.close()
+            self.sim_api.close()
         except AttributeError:
             pass
         try:

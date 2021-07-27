@@ -110,6 +110,8 @@ class CalibrationLogger:
         result_log += f"Number of iterations: {self._counter_calibration}\n"
         result_log += "Final parameter values:\n"
         # Set the iteration counter to the actual number of the best iteration is printed
+        if "Iterate" not in best_iterate:
+            return
         self._counter_calibration = best_iterate["Iterate"]
         result_log += f"{self._get_tuner_para_names_as_string()}\n"
         final_values = self._get_tuner_para_values_as_string(
