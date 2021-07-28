@@ -4,10 +4,8 @@ the calibration package should be clear when looking at the examples.
 If not, please raise an issue.
 """
 
-import os
 import numpy as np
-from ebcpy.examples import dymola_api_example
-from examples import data_types_example
+from examples import data_types_example, setup_fmu
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
@@ -38,9 +36,12 @@ def run_calibration(sim_api, cal_classes):
                          "show_plot": True,
                          "create_tsd_plot": True,
                          "save_tsd_plot": True,
+                         "plot_file_type": "png",
                          "fail_on_error": False,
                          "ret_val_on_error": np.NAN,
-                         "max_itercount": np.inf}
+                         # For this example, let's keep the runtime low
+                         "max_itercount": 100
+                         }
     # Specify kwargs for multiple-class-calibration
     kwargs_multiple_classes = {"merge_multiple_classes": True}
 
@@ -66,17 +67,18 @@ def run_calibration(sim_api, cal_classes):
     # If you change the solver, also change the solver-kwargs-dict in the line below
     if framework == "scipy_differential_evolution":
         kwargs_optimization = kwargs_scipy_dif_evo
-    if framework == "scipy_minimize":
+    elif framework == "scipy_minimize":
         kwargs_optimization = kwargs_scipy_min
-    if framework == "dlib_minimize":
+    elif framework == "dlib_minimize":
         kwargs_optimization = kwargs_dlib_min
-
+    else:
+        kwargs_optimization = {}
     # Select between single or multiple class calibration
-    if len(cal_classes) == 1:
+    if isinstance(cal_classes, CalibrationClass):
         modelica_calibrator = Calibrator(
             cd=sim_api.cd,
             sim_api=sim_api,
-            calibration_class=cal_classes[0],
+            calibration_class=cal_classes,
             **kwargs_calibrator)
     else:
         kwargs_calibrator.update(kwargs_multiple_classes)
@@ -92,17 +94,17 @@ def run_calibration(sim_api, cal_classes):
     modelica_calibrator.calibrate(framework=framework,
                                   method=method,
                                   **kwargs_optimization)
+    # Don't forget to close the simulation api
+    sim_api.close()
 
 
 if __name__ == "__main__":
     # Parameters for calibration:
-    STATISTICAL_MEASURE = "RMSE"
-
-    CD = os.path.normpath(os.getcwd())
-
-    DYM_API = dymola_api_example.setup_dymola_api(cd=CD)
+    SIM_API = setup_fmu()
     CAL_CLASSES = data_types_example.setup_calibration_classes()
+    # If you only want to calibrate one class as an example, enable the following line
+    # CAL_CLASSES = CAL_CLASSES[0]
 
-    # %%Calibration:
-    run_calibration(DYM_API,
-                    CAL_CLASSES[2:4])
+    # Run the calibration:
+    run_calibration(sim_api=SIM_API,
+                    cal_classes=CAL_CLASSES)

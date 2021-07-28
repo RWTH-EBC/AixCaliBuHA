@@ -3,10 +3,8 @@ Example file for the senanalyzer package. The usage of modules and classes insid
 the senanalyzer package should be clear when looking at the examples.
 If not, please raise an issue.
 """
-import os
-from ebcpy import DymolaAPI
 from aixcalibuha import SobolAnalyzer
-from examples import data_types_example
+from examples import data_types_example, setup_fmu
 
 
 def example_sensitivity_analysis(sim_api, cal_classes):
@@ -37,21 +35,18 @@ def example_sensitivity_analysis(sim_api, cal_classes):
             analysis_variable='S1'
         )
 
-    print('Unsorted classes order: ')
-    print(', '.join([c.name for c in cal_classes]))
-    sorted_classes = sen_analyzer.automatic_run(calibration_classes=cal_classes)
-    print('Sorted classes after SA: ')
-    print(', '.join([c.name for c in sorted_classes]))
+    result, classes = sen_analyzer.run(calibration_classes=cal_classes)
+    print("Result of the sensitivity analysis")
+    print(result)
 
-    return sorted_classes
+    return result, classes
 
 
 if __name__ == "__main__":
     # Parameters for sen-analysis:
-    DYM_API = DymolaAPI(model_name="",
-                        cd=os.getcwd())
+    SIM_API = setup_fmu()
     CALIBRATION_CLASSES = data_types_example.setup_calibration_classes()
 
     # Sensitivity analysis:
-    CALIBRATION_CLASSES = example_sensitivity_analysis(DYM_API,
-                                                       CALIBRATION_CLASSES)
+    CALIBRATION_CLASSES = example_sensitivity_analysis(sim_api=SIM_API,
+                                                       cal_classes=CALIBRATION_CLASSES)

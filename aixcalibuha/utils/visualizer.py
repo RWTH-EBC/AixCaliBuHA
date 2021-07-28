@@ -108,21 +108,19 @@ class CalibrationLogger:
         :param str model_name:
             Name of the model being calibrated
         """
-        if not best_iterate:
+        if "Iterate" not in best_iterate:
             self.logger.error("No best iterate. Can't save result")
         result_log = f"\nResults for calibration of model: {model_name}\n"
         result_log += f"Number of iterations: {self._counter_calibration}\n"
         result_log += "Final parameter values:\n"
         # Set the iteration counter to the actual number of the best iteration is printed
-        if "Iterate" not in best_iterate:
-            return
         self._counter_calibration = best_iterate["Iterate"]
         result_log += f"{self._get_tuner_para_names_as_string()}\n"
         final_values = self._get_tuner_para_values_as_string(
-            best_iterate["Parameters"],
-            best_iterate["Objective"],
-            best_iterate["Unweighted Objective"],
-            best_iterate["Penaltyfactor"])
+            xk_descaled=best_iterate["Parameters"],
+            obj=best_iterate["Objective"],
+            unweighted_objective=best_iterate["Unweighted Objective"],
+            penalty=best_iterate["Penaltyfactor"])
         result_log += f"{final_values}\n"
         self.logger.info(result_log)
         self._counter_calibration = 0
@@ -335,6 +333,7 @@ class CalibrationVisualizer(CalibrationLogger):
     save_tsd_plot = False
     create_tsd_plot = True
     show_plot = True
+    file_type = "svg"
     goals_dir = "TimeSeriesPlot"
 
     def __init__(self, cd,
@@ -356,6 +355,8 @@ class CalibrationVisualizer(CalibrationLogger):
             self.create_tsd_plot = kwargs.get("create_tsd_plot")
         if isinstance(kwargs.get("show_plot"), bool):
             self.show_plot = kwargs.get("show_plot")
+        if isinstance(kwargs.get("file_type"), str):
+            self.file_type = kwargs.get("file_type")
 
     def calibrate_new_class(self, calibration_class, cd=None):
         """Function to setup the figures for a new class of calibration.
@@ -444,12 +445,7 @@ class CalibrationVisualizer(CalibrationLogger):
             Result object of the minimization
         :param str model_name:
             Name of the model being calibrated
-        :keyword str file_type:
-            svg, pdf or png
         """
-        file_type = "svg"
-        if isinstance(kwargs.get("file_type"), str):
-            file_type = kwargs.get("file_type")
         super().save_calibration_result(best_iterate, model_name, **kwargs)
         itercount = kwargs["itercount"]
         duration = kwargs["duration"]
@@ -459,14 +455,14 @@ class CalibrationVisualizer(CalibrationLogger):
         if not os.path.exists(iterpath):
             os.mkdir(iterpath)
 
-        filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % file_type)
-        filepath_obj = os.path.join(iterpath, "objective_plot.%s" % file_type)
+        filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % self.file_type)
+        filepath_obj = os.path.join(iterpath, "objective_plot.%s" % self.file_type)
         if self.save_tsd_plot:
             bestgoal = os.path.join(self.cd,
                                     self.goals_dir,
-                                    str(best_iterate["Iterate"]) + f"_goals.{file_type}")
+                                    str(best_iterate["Iterate"]) + f"_goals.{self.file_type}")
             # Copy best goals figure
-            copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
+            copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % self.file_type)
 
         # Save calibration results as csv
         res_dict = dict(best_iterate['Parameters'])
@@ -531,12 +527,12 @@ class CalibrationVisualizer(CalibrationLogger):
         if "itercount" in kwargs:
             fig_intersection.savefig(
                 os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.svg')
+                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
             )
         else:
             fig_intersection.savefig(
                 os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot.svg')
+                             f'tuner_parameter_intersection_plot.{self.file_type}')
             )
 
         if self.show_plot:
@@ -632,4 +628,4 @@ class CalibrationVisualizer(CalibrationLogger):
                 os.makedirs(_savedir)
             self.fig_goal.savefig(
                 os.path.join(_savedir,
-                             f"{self._counter_calibration}_goals.svg"))
+                             f"{self._counter_calibration}_goals.{self.file_type}"))

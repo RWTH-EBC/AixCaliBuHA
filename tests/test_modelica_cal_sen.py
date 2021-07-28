@@ -73,11 +73,11 @@ class TestModelicaCalibrator(unittest.TestCase):
                                              self.calibration_classes,
                                              start_time_method='fixstart',
                                              fix_start_time=0,
-                                             show_plot=False)
+                                             show_plot=False,
+                                             max_itercount=5)
 
-        calibrator.calibrate(framework="dlib_minimize",
-                             method=None,
-                             num_function_calls=5)
+        calibrator.calibrate(framework="scipy_differential_evolution",
+                             method="best1bin")
 
     def test_sa_morris(self):
         """

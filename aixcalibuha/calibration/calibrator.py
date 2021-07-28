@@ -71,6 +71,10 @@ class Calibrator(Optimizer):
         Maximum number of iterations of calibration.
         This may be useful to explicitly limit the calibration
         time.
+    :keyword str plot_file_type:
+        File ending of created plots.
+        Any supported option in matplotlib, e.g. svg, png, pdf ...
+        Default is png
     TODO: Add missing kwargs description
     """
 
@@ -112,6 +116,7 @@ class Calibrator(Optimizer):
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
                              "show_plot": kwargs.pop("show_plot", None),
+                             "file_type": kwargs.pop("plot_file_type", "png")
                              }
 
         # Check if types are correct:
@@ -276,7 +281,6 @@ class Calibrator(Optimizer):
                 "Penaltyfactor": penalty
             }
 
-        self.logger.calibration_callback_func(xk, total_res, unweighted_objective, penalty=penalty)
         if self._counter >= self.max_itercount:
             raise MaxIterationsReached(
                 "Terminating calibration as the maximum number "
