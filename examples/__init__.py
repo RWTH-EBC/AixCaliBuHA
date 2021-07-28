@@ -13,7 +13,7 @@ def setup_fmu():
     if "win" in sys.platform:
         model_name = example_dir.joinpath("model", "PumpAndValve_windows.fmu")
     else:
-        model_name = data_dir.joinpath("model", "PumpAndValve_linux.fmu")
+        model_name = example_dir.joinpath("model", "PumpAndValve_linux.fmu")
 
     return FMU_API(cd=example_dir.joinpath("testzone"),
                    model_name=model_name)
