@@ -28,7 +28,7 @@ class TestConfiguration(unittest.TestCase):
                      "goals": {"variable_names": var_names,
                                "statistical_measure": "RMSE",
                                "meas_target_data": {"data": example_hdf,
-                                                    "key": "example"}},
+                                                    "key": "examples"}},
                      "name": "test",
                      "start_time": 0,
                      "stop_time": 10}]
