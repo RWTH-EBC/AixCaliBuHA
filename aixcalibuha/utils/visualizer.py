@@ -447,6 +447,9 @@ class CalibrationVisualizer(CalibrationLogger):
         :param str model_name:
             Name of the model being calibrated
         """
+        if "Iterate" not in best_iterate:
+            self.logger.error("No best iterate. Can't save result")
+            return
         super().save_calibration_result(best_iterate, model_name, **kwargs)
         itercount = kwargs["itercount"]
         duration = kwargs["duration"]
