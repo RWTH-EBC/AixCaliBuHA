@@ -58,6 +58,10 @@ class CalibrationLogger:
         """Wrapper function to directly log in the internal logger"""
         self.logger.log(msg=msg, level=level)
 
+    def error(self, msg):
+        """Wrapper function to directly log an error"""
+        self.logger.error(msg=msg)
+
     def _set_prec_and_with_for_tuner_paras(self):
         if self.tuner_paras.bounds is None:
             self.integer_prec = 4  # Number of integer parts

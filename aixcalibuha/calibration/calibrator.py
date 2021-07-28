@@ -6,6 +6,7 @@ a dynamic model, e.g. a modelica model.
 import os
 import json
 import time
+import logging
 from typing import List
 import numpy as np
 from ebcpy import data_types, Optimizer
@@ -168,6 +169,12 @@ class Calibrator(Optimizer):
 
         self.cd_of_class = cd  # Single class does not need an extra folder
 
+        # Set the output interval according the the given Goals
+        mean_freq = self.goals.get_meas_frequency()
+        self.logger.log("Setting output_interval of simulation according "
+                        f"to measurement target data frequency: {mean_freq}")
+        self.sim_api.output_interval = mean_freq
+
     def obj(self, xk, *args):
         """
         Default objective function.
@@ -301,8 +308,11 @@ class Calibrator(Optimizer):
         t_cal_start = time.time()
 
         # Run optimization
-        self._res = self.optimize(framework, method, **kwargs)
-
+        try:
+            self._res = self.optimize(framework, method, **kwargs)
+        except MaxIterationsReached:
+            self.logger.error("Maximum number of iterations reached. "
+                              "Stopping and saving the result.")
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
 

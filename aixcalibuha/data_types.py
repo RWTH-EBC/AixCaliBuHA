@@ -3,6 +3,7 @@ Module containing data types to enable an automatic usage of
 different other modules in the Python package.
 """
 import warnings
+import logging
 from typing import Union
 import pandas as pd
 import numpy as np
@@ -11,6 +12,8 @@ from ebcpy.utils.statistics_analyzer import StatisticsAnalyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
 # pylint: disable=I1101
 __version__ = "0.1.6"
+
+logger = logging.getLogger(__name__)
 
 
 class Goals:
@@ -280,6 +283,24 @@ class Goals:
             Names of the simulation variables as a list
         """
         return list(self._sim_var_matcher.values())
+
+    def get_meas_frequency(self):
+        """
+        Get the frequency of the measurement data.
+
+        :returns:
+            float: Mean frequency of the index
+        """
+        freq = []
+        for i in range(len(self._tsd.index) - 1):
+            freq.append(self._tsd.index[i + 1] - self._tsd.index[i])
+        freq = np.array(freq)
+        if freq.std() >= 1e-8:
+            logger.critical("The index of your measurement data is not "
+                            f"equally sampled. The standard deviation is {freq.std()}."
+                            "The may lead to errors when mapping measurements to simulation "
+                            "results.")
+        return freq.mean()
 
 
 class TunerParas:

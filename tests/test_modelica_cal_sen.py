@@ -6,10 +6,10 @@ import unittest
 import sys
 import pathlib
 import shutil
+import pandas as pd
 from ebcpy import FMU_API, TimeSeriesData
 from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, MultipleClassCalibrator, \
     Calibrator, CalibrationClass, TunerParas, Goals
-
 
 
 class TestModelicaCalibrator(unittest.TestCase):
@@ -19,8 +19,8 @@ class TestModelicaCalibrator(unittest.TestCase):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""
         #%% Define relevant paths
-        test_dir = pathlib.Path(__file__).parent
-        self.data_dir = test_dir.joinpath("data")
+        test_dir = pathlib.Path(__file__).parents[1]
+        self.data_dir = test_dir.joinpath("examples", "data")
         self.example_cal_dir = test_dir.joinpath("testzone")
 
         # As the examples should work, and the cal_class example uses the other examples,
@@ -54,8 +54,6 @@ class TestModelicaCalibrator(unittest.TestCase):
 
         self.sim_api = FMU_API(cd=self.example_cal_dir,
                                model_name=model_name)
-        self.sim_api.output_interval = 0.01
-        print(self.sim_api)
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
@@ -111,13 +109,15 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Choose initial_values and set boundaries to tuner_parameters
         # Evaluate which tuner_para has influence on what class
         sen_result, classes = sen_ana.run(self.calibration_classes)
-        self.assertIsInstance(sen_result, list)
-        self.assertIsInstance(sen_result[0], dict)
+        self.assertIsInstance(sen_result, pd.DataFrame)
+        self.assertIsInstance(classes, list)
+        for _cls in classes:
+            self.assertIsInstance(_cls, CalibrationClass)
 
         # Test automatic run:
-        cal_classes = sen_ana.automatic_run(self.calibration_classes)
-        self.assertIsInstance(cal_classes, list)
-        self.assertIsInstance(cal_classes[0], CalibrationClass)
+        #cal_classes = sen_ana.automatic_run(self.calibration_classes)
+        #self.assertIsInstance(cal_classes, list)
+        #self.assertIsInstance(cal_classes[0], CalibrationClass)
 
     def tearDown(self):
         """Remove all created folders while calibrating."""
