@@ -50,7 +50,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         if "win" in sys.platform:
             model_name = aixcalibuha_dir.joinpath("examples", "model", "PumpAndValve_windows.fmu")
         else:
-            model_name = self.data_dir.joinpath("examples", "model", "PumpAndValve_linux.fmu")
+            model_name = aixcalibuha_dir.joinpath("examples", "model", "PumpAndValve_linux.fmu")
 
         self.sim_api = FMU_API(cd=self.example_cal_dir,
                                model_name=model_name)
