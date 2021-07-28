@@ -53,8 +53,7 @@ class SobolAnalyzer(SenAnalyzer):
         """
         Function to create the sampler parameters for the morris method
         """
-        return {'calc_second_order': self.calc_second_order,
-                'seed': self.seed}
+        return {'calc_second_order': self.calc_second_order}
 
     def generate_samples(self):
         """
