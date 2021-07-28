@@ -220,30 +220,49 @@ class Goals:
             Object with simulation target data. This data should be
             the output of a simulation, hence "sim"-target-data.
         """
-        if not isinstance(sim_target_data.index, type(self._tsd_ref.index)):
+        # Start with the base
+        self._tsd = self._tsd_ref.copy()
+        # Check index type
+        if not isinstance(sim_target_data.index, type(self._tsd.index)):
             raise IndexError(
                 f"Given sim_target_data is using {type(sim_target_data.index).__name__}"
                 f" as an index, but the reference results (measured-data) was declared"
                 f" using the {type(self._tsd_ref.index).__name__}. Convert your"
                 f" measured-data index to solve this error."
             )
-        print(self._sim_var_matcher)
-        print(sim_target_data)
+        # Three critical cases may occur:
+        # 1. sim_target_data is bigger (in len) than _tsd
+        #   --> Only the first part is accepted
+        # 2. sim_target_data is smaller than _tsd
+        #   --> Missing values become NaN, which is fine. If no other function eliminates
+        #       the NaNs, an error is raised when doing eval_difference().
+        # 3. The index differs:
+        #   --> All new values are NaN. However, this should raise an error, as an error
+        #   in eval_difference would not lead back to this function.
+        # Check if index matches in relevant intersection:
+        sta = max(self._tsd.index[0], sim_target_data.index[0])
+        sto = min(self._tsd.index[-1], sim_target_data.index[-1])
+        mask = self._tsd.loc[sta:sto].index != sim_target_data.loc[sta:sto].index
+        if np.any(mask):
+            diff = self._tsd.loc[sta:sto].index - sim_target_data.loc[sta:sto].index
+            raise IndexError(f"Measured and simulated data differ on {np.count_nonzero(mask)}"
+                             f" index points. Affected index part: {diff[mask]}. "
+                             f"This will lead to errors in evaluation, "
+                             f"hence we raise the error already here. "
+                             f"Check output_interval, equidistant_output and "
+                             f"frequency of measured data to find the reason for "
+                             f"this error. The have to match.")
+
+        # Resize simulation data to match to meas data
         for goal_name in self.variable_names.keys():
-            # Three critical cases may occur:
-            # 1. sim_target_data is bigger (in len) than _tsd_ref
-            #   --> Only the first part is accepted
-            # 2. sim_target_data is smaller than _tsd_ref
-            #   --> Missing values become NaN, which is fine. If no other function eliminates
-            #       the NaNs, an error is raised when doing eval_difference().
-            # 3. The index differs:
-            #   --> All new values are NaN. However, this should raise an error, as an error
-            #   in eval_difference would not lead back to this function.
-            _tsd_sim = sim_target_data[self._sim_var_matcher[goal_name]]
-            self._tsd_ref[(goal_name, self.sim_tag_str)] = _tsd_sim
+            _tsd_sim = sim_target_data.loc[sta:sto, self._sim_var_matcher[goal_name]]
+            if len(_tsd_sim.columns) > 1:
+                raise ValueError("Given sim_target_data contains multiple tags for variable "
+                                 f"{self._sim_var_matcher[goal_name]}. "
+                                 "Can't select one automatically.")
+            self._tsd.loc[sta:sto, (goal_name, self.sim_tag_str)] = _tsd_sim.values
         # Sort the index for better visualisation
-        self._tsd_ref = self._tsd_ref.sort_index(axis=1)
-        self._tsd = self._tsd_ref.copy()
+        self._tsd = self._tsd.sort_index(axis=1)
 
     def set_relevant_time_intervals(self, intervals):
         """
@@ -259,14 +278,12 @@ class Goals:
             E.g:
             [(0, 100), [150, 200), (500, 600)]
         """
-        _df_ref = self._tsd_ref.copy()
+        _df_ref = self._tsd.copy()
         # Create initial False mask
         _mask = np.full(_df_ref.index.shape, False)
         # Dynamically make mask for multiple possible time-intervals
         for _start_time, _end_time in intervals:
             _mask = _mask | ((_df_ref.index >= _start_time) & (_df_ref.index <= _end_time))
-        # TODO: Is the data temporarly deleted if a segment is applied?
-        #  Maybe we need a base-tsd and a current-tsd like _curr_tsd
         self._tsd = _df_ref.loc[_mask]
 
     def get_goals_list(self):

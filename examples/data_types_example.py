@@ -37,7 +37,7 @@ def setup_goals():
                   variable_names=variable_names,
                   statistical_measure="NRMSE",
                   weightings=[0.7, 0.3])
-    goals.set_sim_target_data(sim_target_data)
+    #goals.set_sim_target_data(sim_target_data)
     return goals
 
 
