@@ -227,7 +227,8 @@ class Goals:
                 f" using the {type(self._tsd_ref.index).__name__}. Convert your"
                 f" measured-data index to solve this error."
             )
-
+        print(self._sim_var_matcher)
+        print(sim_target_data)
         for goal_name in self.variable_names.keys():
             # Three critical cases may occur:
             # 1. sim_target_data is bigger (in len) than _tsd_ref
@@ -239,8 +240,6 @@ class Goals:
             #   --> All new values are NaN. However, this should raise an error, as an error
             #   in eval_difference would not lead back to this function.
             _tsd_sim = sim_target_data[self._sim_var_matcher[goal_name]]
-            print((goal_name, self.sim_tag_str))
-            print(_tsd_sim)
             self._tsd_ref[(goal_name, self.sim_tag_str)] = _tsd_sim
         # Sort the index for better visualisation
         self._tsd_ref = self._tsd_ref.sort_index(axis=1)
