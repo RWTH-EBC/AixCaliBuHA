@@ -1,11 +1,7 @@
 numpy
 scipy
-pandas>=0.25
+pandas
 matplotlib
-modelicares
-tables
-h5py
-xlrd
 SALib
 ebcpy @ git+https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy@development
 toml
