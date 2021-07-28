@@ -238,8 +238,10 @@ class Goals:
             # 3. The index differs:
             #   --> All new values are NaN. However, this should raise an error, as an error
             #   in eval_difference would not lead back to this function.
-            self._tsd_ref[(goal_name, self.sim_tag_str)] = \
-                sim_target_data[self._sim_var_matcher[goal_name]]
+            _tsd_sim = sim_target_data[self._sim_var_matcher[goal_name]]
+            print((goal_name, self.sim_tag_str))
+            print(_tsd_sim.columns)
+            self._tsd_ref[(goal_name, self.sim_tag_str)] = _tsd_sim
         # Sort the index for better visualisation
         self._tsd_ref = self._tsd_ref.sort_index(axis=1)
         self._tsd = self._tsd_ref.copy()
