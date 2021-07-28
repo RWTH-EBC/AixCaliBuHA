@@ -18,8 +18,8 @@ class TestConfiguration(unittest.TestCase):
         example_hdf = pathlib.Path(__file__).parents[1].joinpath("examples",
                                                                  "data",
                                                                  "PumpAndValve.hdf")
-        var_names = {"T": ["TCapacity", "heatCapacitor.T"],
-                     "m_flow": {"meas": "m_flow_valve", "sim": "valve.flowPort_a.m_flow"}}
+        var_names = {"TCap": ["TCapacity", "heatCapacitor.T"],
+                     "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
 
         cal_class = configuration.get_calibration_classes_from_config(
             config=[{"tuner_paras": {"names": ["test"],

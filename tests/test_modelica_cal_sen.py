@@ -28,8 +28,8 @@ class TestModelicaCalibrator(unittest.TestCase):
         meas_target_data = TimeSeriesData(self.data_dir.joinpath("PumpAndValve.hdf"), key="test")
 
         # Setup three variables for different format of setup
-        var_names = {"T": ["heatCapacitor.T", "heatCapacitor.T"],
-                     "m_flow": {"meas": "valve.flowPort_a.m_flow", "sim": "valve.flowPort_a.m_flow"}}
+        var_names = {"TCap": ["heatCapacitor.T", "heatCapacitor.T"],
+                     "TPipe": {"meas": "pipe.T", "sim": "pipe.T"}}
 
         tuner_paras = TunerParas(names=["speedRamp.duration", "valveRamp.duration"],
                                  initial_values=[0.1, 0.1],

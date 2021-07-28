@@ -24,11 +24,11 @@ def setup_goals():
     # we will test it here:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
     sim_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValveSimulation.mat"))
-    meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"), key="example")
+    meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"), key="examples")
 
     # Setup three variables for different format of setup
-    variable_names = {"T": ["TCapacity", "heatCapacitor.T"],
-                      "m_flow": {"meas": "m_flow_valve", "sim": "valve.flowPort_a.m_flow"}}
+    variable_names = {"TCap": ["TCapacity", "heatCapacitor.T"],
+                      "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
 
     # Convert index to float to match the simulation output
     meas_target_data.to_float_index()

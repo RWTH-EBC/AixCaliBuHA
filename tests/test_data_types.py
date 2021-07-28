@@ -43,11 +43,11 @@ class TestDataTypes(unittest.TestCase):
         sim_target_data.to_datetime_index()
         sim_target_data.clean_and_space_equally(desired_freq="10ms")
         sim_target_data.to_float_index()
-        meas_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValve.hdf"), key="example")
+        meas_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValve.hdf"), key="examples")
 
         # Setup three variables for different format of setup
         var_names = {"T": ["TCapacity", "heatCapacitor.T"],
-                     "m_flow": {"meas": "m_flow_valve", "sim": "valve.flowPort_a.m_flow"}}
+                     "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
         meas_target_data.to_float_index()
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
