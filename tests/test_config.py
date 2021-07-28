@@ -17,9 +17,9 @@ class TestConfiguration(unittest.TestCase):
         """Test functions"""
         example_hdf = pathlib.Path(__file__).parents[1].joinpath("examples",
                                                                  "data",
-                                                                 "ref_result.hdf")
-        var_names = {"Var_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"],
-                     "Var_2": {"meas": "measured_T_heater", "sim": "heater.heatPorts[1].T"}}
+                                                                 "PumpAndValve.hdf")
+        var_names = {"T": ["TCapacity", "heatCapacitor.T"],
+                     "m_flow": {"meas": "m_flow_valve", "sim": "valve.flowPort_a.m_flow"}}
 
         cal_class = configuration.get_calibration_classes_from_config(
             config=[{"tuner_paras": {"names": ["test"],
@@ -28,7 +28,7 @@ class TestConfiguration(unittest.TestCase):
                      "goals": {"variable_names": var_names,
                                "statistical_measure": "RMSE",
                                "meas_target_data": {"data": example_hdf,
-                                                    "key": "test"}},
+                                                    "key": "example"}},
                      "name": "test",
                      "start_time": 0,
                      "stop_time": 10}]

@@ -16,7 +16,6 @@ class TestDataTypes(unittest.TestCase):
         """
         self.framework_dir = pathlib.Path(__file__).parents[1]
         self.example_dir = self.framework_dir.joinpath("examples", "data")
-        self.example_data_hdf_path = self.example_dir.joinpath("ref_result.hdf")
 
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
@@ -40,14 +39,16 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("simTargetData.mat"))
-
-        meas_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="FloatIndex")
+        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValveSimulation.mat"))
+        sim_target_data.to_datetime_index()
+        sim_target_data.clean_and_space_equally(desired_freq="10ms")
+        sim_target_data.to_float_index()
+        meas_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValve.hdf"), key="example")
 
         # Setup three variables for different format of setup
-        var_names = {"Var_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"],
-                     "Var_2": {"meas": "measured_T_heater", "sim": "heater.heatPorts[1].T"}}
-
+        var_names = {"T": ["TCapacity", "heatCapacitor.T"],
+                     "m_flow": {"meas": "m_flow_valve", "sim": "valve.flowPort_a.m_flow"}}
+        meas_target_data.to_float_index()
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
                       variable_names=var_names,

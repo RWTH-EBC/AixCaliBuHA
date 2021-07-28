@@ -19,9 +19,9 @@ class TestModelicaCalibrator(unittest.TestCase):
         """Called before every test.
         Used to setup relevant paths and APIs etc."""
         #%% Define relevant paths
-        test_dir = pathlib.Path(__file__).parents[1]
-        self.data_dir = test_dir.joinpath("examples", "data")
-        self.example_cal_dir = test_dir.joinpath("testzone")
+        aixcalibuha_dir = pathlib.Path(__file__).parents[1]
+        self.data_dir = aixcalibuha_dir.joinpath("examples", "data")
+        self.example_cal_dir = aixcalibuha_dir.joinpath("tests", "testzone")
 
         # As the examples should work, and the cal_class example uses the other examples,
         # we will test it here:
@@ -48,9 +48,9 @@ class TestModelicaCalibrator(unittest.TestCase):
 
         # %% Instantiate dymola-api
         if "win" in sys.platform:
-            model_name = self.data_dir.joinpath("PumpAndValve_windows.fmu")
+            model_name = aixcalibuha_dir.joinpath("examples", "model", "PumpAndValve_windows.fmu")
         else:
-            model_name = self.data_dir.joinpath("PumpAndValve_linux.fmu")
+            model_name = self.data_dir.joinpath("examples", "model", "PumpAndValve_linux.fmu")
 
         self.sim_api = FMU_API(cd=self.example_cal_dir,
                                model_name=model_name)
