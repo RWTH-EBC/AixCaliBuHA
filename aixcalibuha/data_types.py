@@ -240,7 +240,7 @@ class Goals:
             #   in eval_difference would not lead back to this function.
             _tsd_sim = sim_target_data[self._sim_var_matcher[goal_name]]
             print((goal_name, self.sim_tag_str))
-            print(_tsd_sim.columns)
+            print(_tsd_sim)
             self._tsd_ref[(goal_name, self.sim_tag_str)] = _tsd_sim
         # Sort the index for better visualisation
         self._tsd_ref = self._tsd_ref.sort_index(axis=1)
