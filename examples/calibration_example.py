@@ -87,7 +87,7 @@ def run_calibration(sim_api, cal_classes):
             cd=sim_api.cd,
             sim_api=sim_api,
             calibration_classes=cal_classes,
-            start_time_method="timedelta",
+            start_time_method="fixstart",
             **kwargs_calibrator)
 
     # Start the calibration process
