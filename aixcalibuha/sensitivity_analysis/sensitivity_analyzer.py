@@ -237,7 +237,7 @@ class SenAnalyzer(abc.ABC):
         return problem
 
     @staticmethod
-    def select_by_threshold(calibration_classes, result, threshold, key="mu_star"):
+    def select_by_threshold(calibration_classes, result, threshold):
         """
         Automatically select sensitive tuner parameters based on a given threshold
         and a key-word of the result.
@@ -245,22 +245,16 @@ class SenAnalyzer(abc.ABC):
         :param list calibration_classes:
             List of aixcalibuha.data_types.CalibrationClass objects that you want to
             automatically select sensitive tuner-parameters.
-        :param list result:
-            List of dicts (Sensitivity results)
+        :param pd.DataFrame result:
+            Result object of sensitivity analysis run
         :param float threshold:
             Minimal required value of given key
-        :param str key: Value that is used to define the sensitivity.
-            Default is mu_star, "the absolute mean elementary effect"
-            Choose between: mu, mu_star, sigma, mu_star_conf
         :return: list calibration_classes
         """
         for num_class, cal_class in enumerate(calibration_classes):
-            class_result = result[num_class]
+            class_result = result.loc[cal_class.name]
             tuner_paras = copy.deepcopy(cal_class.tuner_paras)
-            select_names = []
-            for i, sen_value in enumerate(class_result[key]):
-                if sen_value < threshold:
-                    select_names.append(class_result["names"][i])
+            select_names = class_result[class_result < threshold].index.values
             tuner_paras.remove_names(select_names)
             if not tuner_paras.get_names():
                 raise ValueError(

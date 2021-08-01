@@ -6,6 +6,7 @@ import unittest
 import sys
 import pathlib
 import shutil
+import numpy as np
 import pandas as pd
 from ebcpy import FMU_API, TimeSeriesData
 from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, MultipleClassCalibrator, \
@@ -113,9 +114,17 @@ class TestModelicaCalibrator(unittest.TestCase):
         self.assertIsInstance(classes, list)
         for _cls in classes:
             self.assertIsInstance(_cls, CalibrationClass)
-
+        classes = sen_ana.select_by_threshold(calibration_classes=classes,
+                                              result=sen_result,
+                                              threshold=0)
+        self.assertIsInstance(classes, list)
+        with self.assertRaises(ValueError):
+            sen_ana.select_by_threshold(
+                calibration_classes=classes,
+                result=sen_result,
+                threshold=np.inf)
         # Test automatic run:
-        #cal_classes = sen_ana.automatic_run(self.calibration_classes)
+        # cal_classes = sen_ana.automatic_run(self.calibration_classes)
         #self.assertIsInstance(cal_classes, list)
         #self.assertIsInstance(cal_classes[0], CalibrationClass)
 

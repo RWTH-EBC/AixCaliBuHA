@@ -38,7 +38,12 @@ def example_sensitivity_analysis(sim_api, cal_classes):
     result, classes = sen_analyzer.run(calibration_classes=cal_classes)
     print("Result of the sensitivity analysis")
     print(result)
-
+    print("Selecting relevant tuner-parameters using a fixed threshold:")
+    sen_analyzer.select_by_threshold(calibration_classes=cal_classes,
+                                     result=result,
+                                     threshold=0.1)
+    for cal_class in cal_classes:
+        print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
     return result, classes
 
 

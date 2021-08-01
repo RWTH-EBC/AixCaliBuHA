@@ -460,7 +460,7 @@ class TunerParas:
 
     def get_value(self, name, col):
         """Function to get a value of a specific tuner parameter"""
-        return self._df[col][name]
+        return self._df.loc[name, col]
 
     def set_value(self, name, col, value):
         """Function to set a value of a specific tuner parameter"""
@@ -469,7 +469,7 @@ class TunerParas:
                              "but float or int is required")
         if col not in ["max", "min", "initial_value"]:
             raise KeyError("Can only alter max, min and initial_value")
-        self._df[col][name] = value
+        self._df.loc[name, col] = value
         self._set_scale()
 
     def remove_names(self, names):
@@ -479,7 +479,7 @@ class TunerParas:
         :param list names:
             List with names inside of the TunerParas-dataframe
         """
-        self._df = self._df.loc[~self._df.index.isin(names)]
+        self._df = self._df.drop(names)
 
     def _set_scale(self):
         self._df["scale"] = self._df["max"] - self._df["min"]
