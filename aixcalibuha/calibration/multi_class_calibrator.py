@@ -72,12 +72,11 @@ class MultipleClassCalibrator(Calibrator):
         self.fix_start_time = kwargs.pop("fix_start_time", 0)
         self.timedelta = kwargs.pop("timedelta", 0)
 
-        # Instantiate parent-class
-        super().__init__(cd, sim_api, calibration_classes[0], **kwargs)
-        # Merge the multiple calibration_classes
-        if self.merge_multiple_classes:
-            self.calibration_classes = data_types.merge_calibration_classes(calibration_classes)
-        self._cal_history = []
+        # Choose the time-method
+        if start_time_method.lower() not in ["fixstart", "timedelta"]:
+            raise ValueError(f"Given start_time_method {start_time_method} is not supported. "
+                             "Please choose between 'fixstart' or 'timedelta'")
+        self.start_time_method = start_time_method
 
         # Choose the calibration method
         if calibration_strategy.lower() not in ['parallel', 'sequential']:
@@ -85,11 +84,12 @@ class MultipleClassCalibrator(Calibrator):
                              f"Please choose between 'parallel' or 'sequential'")
         self.calibration_strategy = calibration_strategy.lower()
 
-        # Choose the time-method
-        if start_time_method.lower() not in ["fixstart", "timedelta"]:
-            raise ValueError(f"Given start_time_method {start_time_method} is not supported. "
-                             "Please choose between 'fixstart' or 'timedelta'")
-        self.start_time_method = start_time_method
+        # Instantiate parent-class
+        super().__init__(cd, sim_api, calibration_classes[0], **kwargs)
+        # Merge the multiple calibration_classes
+        if self.merge_multiple_classes:
+            self.calibration_classes = data_types.merge_calibration_classes(calibration_classes)
+        self._cal_history = []
 
     def calibrate(self, framework, method=None, **kwargs) -> dict:
         """
@@ -114,13 +114,6 @@ class MultipleClassCalibrator(Calibrator):
 
         # Iterate over the different existing classes
         for cal_class in self.calibration_classes:
-            #%% Simulation-Time:
-            # Alter the simulation time.
-            # The fix-start time or timedelta approach is applied
-            start_time = self._apply_start_time_method(cal_class.start_time)
-            self.sim_api.set_sim_setup({"start_time": start_time,
-                                        "stop_time": cal_class.stop_time})
-
             #%% Working-Directory:
             # Alter the working directory for saving the simulations-results
             self.cd_of_class = os.path.join(self.cd,
@@ -142,7 +135,6 @@ class MultipleClassCalibrator(Calibrator):
 
             # Reset best iterate for new class
             self._current_best_iterate = {"Objective": np.inf}
-            self._relevant_time_intervals = cal_class.relevant_intervals
             self.calibration_class = cal_class
 
             # Set initial values

@@ -138,11 +138,6 @@ class Calibrator(Optimizer):
             {"start_time": self.calibration_class.start_time - self.timedelta,
              "stop_time": self.calibration_class.stop_time}
         )
-        # Set the time-interval for evaluating the objective
-        # Tuple with information on what
-        # time-intervals are relevant for the objective.
-        self._relevant_time_intervals = [(self.calibration_class.start_time,
-                                          self.calibration_class.stop_time)]
 
         #%% Setup the logger
         # De-register the logger setup in the optimization class:
@@ -225,9 +220,8 @@ class Calibrator(Optimizer):
             return self.ret_val_on_error
 
         self.goals.set_sim_target_data(sim_target_data)
-        if self._relevant_time_intervals:
-            # Trim results based on start and end-time of cal class
-            self.goals.set_relevant_time_intervals(self._relevant_time_intervals)
+        # Trim results based on start and end-time of cal class
+        self.goals.set_relevant_time_intervals(self.calibration_class.relevant_intervals)
 
         #%% Evaluate the current objective
         # Penalty function (get penalty factor)
@@ -332,6 +326,10 @@ class Calibrator(Optimizer):
     @calibration_class.setter
     def calibration_class(self, calibration_class: CalibrationClass):
         """Set the current calibration class"""
+        self.sim_api.set_sim_setup(
+            {"start_time": self._apply_start_time_method(start_time=calibration_class.start_time),
+             "stop_time": calibration_class.stop_time}
+        )
         self._cal_class = calibration_class
 
     @property
@@ -382,6 +380,7 @@ class Calibrator(Optimizer):
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
         self.calibration_class = validation_class
+
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
         self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
@@ -448,3 +447,15 @@ class Calibrator(Optimizer):
                     pass
 
         return penalty
+
+    def _apply_start_time_method(self, start_time):
+        """
+        Method to be calculate the start_time based on the used
+        timedelta method.
+
+        :param float start_time:
+            Start time which was specified by the user in the TOML file.
+        :return float start_time - self.timedelta:
+            Calculated "timedelta", if specified in the TOML file.
+        """
+        return start_time - self.timedelta
