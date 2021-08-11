@@ -691,8 +691,8 @@ def merge_calibration_classes(calibration_classes):
         else:
             temp_merged[_name] = {"goals": cal_class.goals,
                                   "tuner_paras": cal_class.tuner_paras,
-                                  "intervals": cal_class.relevant_intervals,
-                                  "inputs": cal_class.inputs
+                                  "intervals": deepcopy(cal_class.relevant_intervals),
+                                  "inputs": deepcopy(cal_class.inputs)
                                   }
     # Convert dict to actual calibration-classes
     cal_classes_merged = []
