@@ -1,3 +1,9 @@
+"""
+Goals of this part of the examples:
+
+1. Learn how to run everything in one script
+"""
+
 from examples import setup_fmu, setup_calibration_classes
 from examples.C_sensitivity_analysis_example import run_sensitivity_analysis
 from examples.D_calibration_example import run_calibration

@@ -2,6 +2,11 @@
 Example file for the calibration package. The usage of modules and classes inside
 the calibration package should be clear when looking at the examples.
 If not, please raise an issue.
+
+Goals of this part of the examples:
+1. Learn the settings for a calibration
+2. Learn how to use both Single- and MultiClassCalibration
+3. Learn how to validate your calibration
 """
 
 import numpy as np

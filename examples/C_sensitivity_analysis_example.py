@@ -2,6 +2,10 @@
 Example file for the senstivity_analyzer package. The usage of modules and classes inside
 the senanalyzer package should be clear when looking at the examples.
 If not, please raise an issue.
+
+Goals of this part of the examples:
+1. Learn how to execute a sensitivity analysis
+2. Learn how to automatically select sensitive tuner parameters
 """
 from aixcalibuha import SobolAnalyzer
 
@@ -43,7 +47,7 @@ def run_sensitivity_analysis(sim_api, cal_classes):
                                      threshold=0.01)
     for cal_class in cal_classes:
         print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
-    return result, classes
+    return classes
 
 
 if __name__ == "__main__":
@@ -55,4 +59,4 @@ if __name__ == "__main__":
 
     # Sensitivity analysis:
     CALIBRATION_CLASSES = run_sensitivity_analysis(sim_api=SIM_API,
-                                                       cal_classes=CALIBRATION_CLASSES)
+                                                   cal_classes=CALIBRATION_CLASSES)

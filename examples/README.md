@@ -22,24 +22,29 @@ Before being able to run these examples, be sure to:
 2. Improve your `DymolaAPI` knowledge
 3. Improve your skill-set on `TimeSeriesData`
 
-## `A_B_optimization_problem_definition.py`
+## `B_A_optimization_problem_definition.py`
 
-1. Learn how to use the `FMU_API`
-2. Understand model variables
-3. Learn how to change variables to store (`result_names`)
-4. Learn how to change parameters of a simulation
-5. Learn how to change inputs of a simulation
-6. Learn how to run simulations in parallel
+1. Learn how to formulate your calibration problem using our data_types
+2. Get to know `TunerParas`
+3. Get to know `Goals`
+4. Get to know `CalibrationClass`
+5. Learn how to merge multiple classes
 
-## `3_dymola_example.py`
+## `B_A_optimization_problem_definition.py`
 
-1. Learn how to use the `DymolaAPI`
-2. Learn the different result options of the simulation
-3. Learn how to convert inputs into the Dymola format
+1. Deepen your understanding of data_types in AixCaliBuHA
 
-## `4_optimization_example.py`
+## `.py`
 
-1. Learn how to create a custom `Optimizer` class
-2. Learn the different optimizer frameworks
-3. Learn the usage of `StatisticsAnalyzer`
-4. Understand the motivation behing `AixCaliBuHA`
+1. Learn how to execute a sensitivity analysis
+2. Learn how to automatically select sensitive tuner parameters
+
+## `.py`
+
+1. Learn the settings for a calibration
+2. Learn how to use both Single- and MultiClassCalibration
+3. Learn how to validate your calibration
+
+## `.py`
+
+1. Learn how to run everything in one script
