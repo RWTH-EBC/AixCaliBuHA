@@ -13,7 +13,8 @@ from ebcpy import DymolaAPI, TimeSeriesData
 
 def main(
         aixlib_mo,
-        cd=None
+        cd=None,
+        with_plot=True
 ):
     """
     Arguments of this example:
@@ -66,7 +67,7 @@ def main(
     # For further simulation help, check out the ebcpy examples.
     dym_api.set_sim_setup({
         "stop_time": 3600,
-        "output_interval": 1
+        "output_interval": 10
     })
     file_path = dym_api.simulate(
         return_option="savepath"
@@ -94,18 +95,19 @@ def main(
     # Save a copy to check if our resampling induces data loss:
     tsd_reference = tsd.copy()
     # Apply function
-    tsd.clean_and_space_equally(desired_freq="1s")
+    tsd.clean_and_space_equally(desired_freq="10s")
     print("Simulation now has index-frequency of %s with "
           "standard deviation of %s" % tsd.frequency)
     # Let's check if the sampling changed our measured data:
     plt.plot(tsd_reference['TAir'], color="blue", label="Reference")
     plt.plot(tsd['TAir'], color="red", label="Resampled")
     plt.legend()
-    plt.show()
+    if with_plot:
+        plt.show()
 
     # ######################### Data saving ##########################
     # In order to use this data in the other examples, we have to save it.
-    tsd_inputs = tsd["TDryBulSource.y"]
+    tsd_inputs = tsd[["TDryBulSource.y"]]
     tsd_measurements = tsd[["Pel", "TAir"]]
     tsd_inputs.save(example_path.joinpath("data", "measured_input_data.hdf"), key="example")
     tsd_measurements.save(example_path.joinpath("data", "measured_target_data.hdf"), key="example")

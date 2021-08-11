@@ -1,12 +1,11 @@
 ﻿within ;
 package AixCaliBuHAExamples
   model HeatPumpSystemCalibration
-    HeatPumpSystemWithInputs heatPumpSystemWithInputs(heatPumpSystem(
-        dTEva=3.43,
-        dTCon=4.58,
-        dTPinchEva=5.7,
-        dTPinchCon=4.3,
-        percHeatLoss=0.05), theCon(G=356))
+    HeatPumpSystemWithInputs heatPumpSystemWithInputs(
+                            theCon(G=356),
+      rad(n=1.7),
+      heaCap(C=90000),
+      vol(V=56))
       annotation (Placement(transformation(extent={{-18,-18},{18,18}})));
     Modelica.Blocks.Sources.Sine TDryBulSource(
       amplitude=10,

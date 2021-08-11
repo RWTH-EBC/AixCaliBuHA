@@ -276,7 +276,7 @@ class Calibrator(Optimizer):
             )
         return total_res
 
-    def calibrate(self, framework, method=None, **kwargs):
+    def calibrate(self, framework, method=None, **kwargs) -> dict:
         """
         Start the calibration process of the calibration classes, visualize and save the results.
 
@@ -322,6 +322,7 @@ class Calibrator(Optimizer):
             parameter_values[p_name] = self._current_best_iterate['Parameters'][p_name]
         self.save_results(parameter_values=parameter_values,
                           filename=self.calibration_class.name)
+        return parameter_values
 
     @property
     def calibration_class(self) -> CalibrationClass:

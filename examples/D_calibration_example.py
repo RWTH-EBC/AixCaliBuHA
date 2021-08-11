@@ -5,11 +5,10 @@ If not, please raise an issue.
 """
 
 import numpy as np
-from examples import data_types_example, setup_fmu
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
-def run_calibration(sim_api, cal_classes):
+def run_calibration(sim_api, cal_classes, validation_class):
     """
     Run an example for a calibration. Make sure you have Dymola installed
     on your device and a working licence. All output data will be stored in
@@ -25,6 +24,8 @@ def run_calibration(sim_api, cal_classes):
         TunerParameters have to be set. If only one class is provided (either
         a list with one entry or a CalibrationClass object) the single-class
         Calibrator is used.
+    :param CalibrationClass validation_class:
+        Class used to validate the findings.
     """
     # %% Settings:
     framework = "scipy_differential_evolution"
@@ -91,20 +92,29 @@ def run_calibration(sim_api, cal_classes):
             **kwargs_calibrator)
 
     # Start the calibration process
-    modelica_calibrator.calibrate(framework=framework,
-                                  method=method,
-                                  **kwargs_optimization)
+    result = modelica_calibrator.calibrate(
+        framework=framework,
+        method=method,
+        **kwargs_optimization
+    )
+    modelica_calibrator.validate(
+        validation_class=validation_class,
+        tuner_parameter_values=parameter_values.values()
+    )
     # Don't forget to close the simulation api
     sim_api.close()
 
 
 if __name__ == "__main__":
-    # Parameters for calibration:
-    SIM_API = setup_fmu()
-    CAL_CLASSES = data_types_example.setup_calibration_classes()
-    # If you only want to calibrate one class as an example, enable the following line
-    # CAL_CLASSES = CAL_CLASSES[0]
+    from examples import setup_fmu, setup_calibration_classes
+    # Parameters for sen-analysis:
+    EXAMPLE = "A"  # Or choose B
+    SIM_API = setup_fmu(example=EXAMPLE)
+    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(example=EXAMPLE)[0]
 
-    # Run the calibration:
-    run_calibration(sim_api=SIM_API,
-                    cal_classes=CAL_CLASSES)
+    # Sensitivity analysis:
+    run_calibration(
+        sim_api=SIM_API,
+        cal_classes=CALIBRATION_CLASSES,
+        validation_class=VALIDATION_CLASS
+    )

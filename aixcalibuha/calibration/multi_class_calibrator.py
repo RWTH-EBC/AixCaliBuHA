@@ -91,7 +91,7 @@ class MultipleClassCalibrator(Calibrator):
                              "Please choose between 'fixstart' or 'timedelta'")
         self.start_time_method = start_time_method
 
-    def calibrate(self, framework, method=None, **kwargs):
+    def calibrate(self, framework, method=None, **kwargs) -> dict:
         """
         Start the calibration process.
 
@@ -187,9 +187,7 @@ class MultipleClassCalibrator(Calibrator):
         self.save_results(parameter_values=parameter_values,
                           filename='MultiClassCalibrationResult')
 
-        # self._current_best_iterate are always
-        # the results from last class which was calibrated
-        return res_tuner, self._current_best_iterate
+        return parameter_values
 
     def _apply_start_time_method(self, start_time):
         """

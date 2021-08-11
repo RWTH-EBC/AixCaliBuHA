@@ -1,10 +1,9 @@
 """
-Example file for the senanalyzer package. The usage of modules and classes inside
+Example file for the senstivity_analyzer package. The usage of modules and classes inside
 the senanalyzer package should be clear when looking at the examples.
 If not, please raise an issue.
 """
 from aixcalibuha import SobolAnalyzer
-from examples import data_types_example, setup_fmu
 
 
 def example_sensitivity_analysis(sim_api, cal_classes):
@@ -30,7 +29,7 @@ def example_sensitivity_analysis(sim_api, cal_classes):
 
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
-            num_samples=1,
+            num_samples=10,
             cd=sim_api.cd,
             analysis_variable='S1'
         )
@@ -48,9 +47,11 @@ def example_sensitivity_analysis(sim_api, cal_classes):
 
 
 if __name__ == "__main__":
+    from examples import setup_fmu, setup_calibration_classes
     # Parameters for sen-analysis:
-    SIM_API = setup_fmu()
-    CALIBRATION_CLASSES = data_types_example.setup_calibration_classes()
+    EXAMPLE = "A"  # Or choose B
+    SIM_API = setup_fmu(example=EXAMPLE)
+    CALIBRATION_CLASSES = setup_calibration_classes(example=EXAMPLE)[0]
 
     # Sensitivity analysis:
     CALIBRATION_CLASSES = example_sensitivity_analysis(sim_api=SIM_API,

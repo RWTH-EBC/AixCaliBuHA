@@ -242,6 +242,11 @@ class Goals:
         # Check if index matches in relevant intersection:
         sta = max(self._tsd.index[0], sim_target_data.index[0])
         sto = min(self._tsd.index[-1], sim_target_data.index[-1])
+        if len(self._tsd.loc[sta:sto].index) != len(sim_target_data.loc[sta:sto].index):
+            raise ValueError(f"Given indexes have different lengths "
+                             f"({len(self._tsd.loc[sta:sto].index)} vs "
+                             f"{len(sim_target_data.loc[sta:sto].index)}). "
+                             f"Can't compare them. ")
         mask = self._tsd.loc[sta:sto].index != sim_target_data.loc[sta:sto].index
         if np.any(mask):
             diff = self._tsd.loc[sta:sto].index - sim_target_data.loc[sta:sto].index
@@ -309,7 +314,7 @@ class Goals:
         :returns:
             float: Mean frequency of the index
         """
-        mean, std = self._tsd.frequency()
+        mean, std = self._tsd.frequency
         if std >= 1e-8:
             logger.critical("The index of your measurement data is not "
                             f"equally sampled. The standard deviation is {mean.std()}."

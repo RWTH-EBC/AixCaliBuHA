@@ -73,8 +73,11 @@ def setup_calibration_classes():
         CalibrationClass(name="stationary", start_time=2, stop_time=10,
                          goals=goals, tuner_paras=different_tuner_paras)
     ]
+    validation_class = CalibrationClass(name="validation", stop_time=10,
+                                        start_time=0, goals=goals,
+                                        tuner_paras=tuner_paras)
 
-    return calibration_classes
+    return calibration_classes, validation_class
 
 
 if __name__ == "__main__":
