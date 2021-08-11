@@ -5,6 +5,7 @@ different other modules in the Python package.
 import warnings
 import logging
 from typing import Union
+from copy import deepcopy
 import pandas as pd
 import numpy as np
 from ebcpy import TimeSeriesData
@@ -611,7 +612,7 @@ class CalibrationClass:
         if not isinstance(tuner_paras, TunerParas):
             raise TypeError(f"Given tuner_paras is of type {type(tuner_paras).__name__} "
                             "but should be type TunerParas")
-        self._tuner_paras = tuner_paras
+        self._tuner_paras = deepcopy(tuner_paras)
 
     @property
     def goals(self) -> Goals:
@@ -629,7 +630,7 @@ class CalibrationClass:
         if not isinstance(goals, Goals):
             raise TypeError(f"Given goals parameter is of type {type(goals).__name__} "
                             "but should be type Goals")
-        self._goals = goals
+        self._goals = deepcopy(goals)
 
     @property
     def relevant_intervals(self) -> list:
