@@ -99,7 +99,7 @@ def run_calibration(sim_api, cal_classes, validation_class):
     )
     modelica_calibrator.validate(
         validation_class=validation_class,
-        tuner_parameter_values=parameter_values.values()
+        tuner_parameter_values=list(result.values())
     )
     # Don't forget to close the simulation api
     sim_api.close()
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
     SIM_API = setup_fmu(example=EXAMPLE)
-    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(example=EXAMPLE)[0]
+    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(example=EXAMPLE)
 
     # Sensitivity analysis:
     run_calibration(

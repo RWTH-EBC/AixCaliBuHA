@@ -124,27 +124,27 @@ def main(
         CalibrationClass(
             name="On",
             start_time=0,
-            stop_time=300
+            stop_time=290
         ),
         CalibrationClass(
             name="Off",
-            start_time=300,
-            stop_time=1173.65
+            start_time=290,
+            stop_time=1280
         ),
         CalibrationClass(
             name="On",
-            start_time=1173.65,
-            stop_time=1473.65
+            start_time=1280,
+            stop_time=1570
         ),
         CalibrationClass(
             name="Off",
-            start_time=1473.65,
-            stop_time=1967.99
+            start_time=1570,
+            stop_time=2080
         ),
         CalibrationClass(
             name="On",
-            start_time=1967.99,
-            stop_time=2267.99
+            start_time=2080,
+            stop_time=2360
         )
     ]
     # Set the latter three for all classes.
@@ -172,8 +172,10 @@ def main(
     # Let's also create an object to later validate our calibration:
     validation_class = CalibrationClass(
         name="Validation",
-        start_time=2267.99,
-        stop_time=3600
+        start_time=2360,
+        stop_time=3600,
+        goals=goals,
+        tuner_paras=tuner_paras
     )
 
     return calibration_classes, validation_class

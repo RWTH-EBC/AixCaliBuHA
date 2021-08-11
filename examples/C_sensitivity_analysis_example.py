@@ -6,7 +6,7 @@ If not, please raise an issue.
 from aixcalibuha import SobolAnalyzer
 
 
-def example_sensitivity_analysis(sim_api, cal_classes):
+def run_sensitivity_analysis(sim_api, cal_classes):
     """
     Example process of a sensitivity analysis.
     First, the sensitivity problem is constructed, in this example
@@ -40,7 +40,7 @@ def example_sensitivity_analysis(sim_api, cal_classes):
     print("Selecting relevant tuner-parameters using a fixed threshold:")
     sen_analyzer.select_by_threshold(calibration_classes=cal_classes,
                                      result=result,
-                                     threshold=0.1)
+                                     threshold=0.01)
     for cal_class in cal_classes:
         print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
     return result, classes
@@ -54,5 +54,5 @@ if __name__ == "__main__":
     CALIBRATION_CLASSES = setup_calibration_classes(example=EXAMPLE)[0]
 
     # Sensitivity analysis:
-    CALIBRATION_CLASSES = example_sensitivity_analysis(sim_api=SIM_API,
+    CALIBRATION_CLASSES = run_sensitivity_analysis(sim_api=SIM_API,
                                                        cal_classes=CALIBRATION_CLASSES)
