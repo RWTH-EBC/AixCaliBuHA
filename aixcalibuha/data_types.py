@@ -309,16 +309,13 @@ class Goals:
         :returns:
             float: Mean frequency of the index
         """
-        freq = []
-        for i in range(len(self._tsd.index) - 1):
-            freq.append(self._tsd.index[i + 1] - self._tsd.index[i])
-        freq = np.array(freq)
-        if freq.std() >= 1e-8:
+        mean, std = self._tsd.frequency()
+        if std >= 1e-8:
             logger.critical("The index of your measurement data is not "
-                            f"equally sampled. The standard deviation is {freq.std()}."
+                            f"equally sampled. The standard deviation is {mean.std()}."
                             "The may lead to errors when mapping measurements to simulation "
                             "results.")
-        return freq.mean()
+        return mean
 
 
 class TunerParas:
