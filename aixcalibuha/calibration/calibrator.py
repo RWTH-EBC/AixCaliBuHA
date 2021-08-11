@@ -385,7 +385,11 @@ class Calibrator(Optimizer):
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
         self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
-        val_result = self.obj(xk=tuner_parameter_values)
+        self._counter = 0  # Reset to one
+        # Scale the tuner parameters
+        xk = self.tuner_paras.scale(tuner_parameter_values)
+        # Evaluate objective
+        val_result = self.obj(xk=xk)
         self.logger.log(f"{self.goals.statistical_measure} of validation: {val_result}")
         return val_result
 
