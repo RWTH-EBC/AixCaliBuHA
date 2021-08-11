@@ -75,19 +75,8 @@ class Calibrator(Optimizer):
         File ending of created plots.
         Any supported option in matplotlib, e.g. svg, png, pdf ...
         Default is png
-    TODO: Add missing kwargs description
     """
-
-    # Tuple with information on what time-intervals are relevant for the objective.
-    _relevant_time_intervals = []
-    # Dummy variable for the result of the calibration:
-    _res = None
-    # Timedelta before each simulation to initialize the model. Default is zero
-    timedelta = 0
-    # Verbose Logging (True: with plots)
-    verbose_logging = True
-    # Working directory for class
-    cd_of_class = None
+    # TODO: Add missing kwargs description for recalibration
 
     def __init__(self,
                  cd: str,
@@ -146,11 +135,12 @@ class Calibrator(Optimizer):
             self.bounds = [(0, 1) for i in range(len(self.x0))]
         # Add the values to the simulation setup.
         self.sim_api.set_sim_setup(
-            {"initialNames": self.tuner_paras.get_names(),
-             "startTime": self.calibration_class.start_time - self.timedelta,
-             "stopTime": self.calibration_class.stop_time}
+            {"start_time": self.calibration_class.start_time - self.timedelta,
+             "stop_time": self.calibration_class.stop_time}
         )
         # Set the time-interval for evaluating the objective
+        # Tuple with information on what
+        # time-intervals are relevant for the objective.
         self._relevant_time_intervals = [(self.calibration_class.start_time,
                                           self.calibration_class.stop_time)]
 
@@ -178,7 +168,7 @@ class Calibrator(Optimizer):
         mean_freq = self.goals.get_meas_frequency()
         self.logger.log("Setting output_interval of simulation according "
                         f"to measurement target data frequency: {mean_freq}")
-        self.sim_api.output_interval = mean_freq
+        self.sim_api.sim_setup.output_interval = mean_freq
 
     def obj(self, xk, *args):
         """
@@ -195,7 +185,7 @@ class Calibrator(Optimizer):
         :return float total_res:
         Objective value based on the used quality measurement
         """
-        # edit: This function is called by the optimizationframework (scipy, dlib, etc.)
+        # Info: This function is called by the optimization framework (scipy, dlib, etc.)
         #%% Initialize class objects
         self._current_iterate = xk
         self._counter += 1
@@ -203,12 +193,10 @@ class Calibrator(Optimizer):
         xk_descaled = self.tuner_paras.descale(xk)
 
         # Set initial values of variable and fixed parameters
-        target_sim_names = self.goals.get_sim_var_names()
-        self.sim_api.set_sim_setup({
-            'initialValues': list(xk_descaled.values) + list(self.fixed_parameters.values()),
-            'initialNames': self.tuner_paras.get_names() + list(self.fixed_parameters.keys())
-        })
-
+        self.sim_api.result_names = self.goals.get_sim_var_names()
+        initial_names = self.tuner_paras.get_names()
+        parameters = self.fixed_parameters.copy()
+        parameters.update({name: value for name, value in zip(initial_names, xk_descaled.values)})
         # Simulate
         # pylint: disable=broad-except
         try:
@@ -217,20 +205,20 @@ class Calibrator(Optimizer):
                 savepath_files = os.path.join(self.sim_api.cd,
                                               f"simulation_{self._counter}")
                 _filepath = self.sim_api.simulate(
-                    savepath_files=savepath_files,
-                    inputs=self.calibration_class.inputs
+                    parameters=parameters,
+                    return_option="savepath",
+                    savepath=savepath_files,
+                    inputs=self.calibration_class.inputs,
+                    **self.calibration_class.input_kwargs
                 )
                 # %% Load results and write to goals object
                 sim_target_data = data_types.TimeSeriesData(_filepath)
             else:
-                target_sim_names = self.goals.get_sim_var_names()
-                self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                df = self.sim_api.simulate(
-                    savepath_files="",
-                    inputs=self.calibration_class.inputs
+                sim_target_data = self.sim_api.simulate(
+                    parameters=parameters,
+                    inputs=self.calibration_class.inputs,
+                    **self.calibration_class.input_kwargs
                 )
-                # Convert it to time series data object
-                sim_target_data = data_types.TimeSeriesData(df)
         except Exception as err:
             if self.fail_on_error:
                 raise err
@@ -313,7 +301,7 @@ class Calibrator(Optimizer):
 
         # Run optimization
         try:
-            self._res = self.optimize(framework, method, **kwargs)
+            _res = self.optimize(framework, method, **kwargs)
         except MaxIterationsReached:
             self.logger.error("Maximum number of iterations reached. "
                               "Stopping and saving the result.")

@@ -196,7 +196,7 @@ class Goals:
                                  "simulated target data. Probably the time "
                                  "interval of measured and simulated data "
                                  "are not equal. \nPlease check the frequencies "
-                                 "in the toml file (outputInterval & frequency).")
+                                 "in the toml file (output_interval & frequency).")
             _diff = self._stat_analyzer.calc(
                 meas=self._tsd[(goal_name, self.meas_tag_str)],
                 sim=self._tsd[(goal_name, self.sim_tag_str)]
@@ -520,22 +520,26 @@ class CalibrationClass:
         The given intervals may overlap. Furthermore the intervals do not need
         to be in an ascending order or be limited to
         the start_time and end_time parameters.
-    :param (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:
+    :keyword (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:
         TimeSeriesData or DataFrame that holds
         input data for the simulation to run.
         The time-index should be float index and match the overall
         ranges set by start- and stop-time.
+    :keyword dict input_kwargs:
+        If inputs are provided, additional input keyword-args passed to the
+        simulation API can be specified.
+        Using FMUs, you don't need to specify anything.
+        Using DymolaAPI, you have to specify 'table_name' and 'file_name'
     """
 
     def __init__(self, name, start_time, stop_time, goals=None,
-                 tuner_paras=None, relevant_intervals=None, inputs=None):
+                 tuner_paras=None, relevant_intervals=None, **kwargs):
         """Initialize class-objects and check correct input."""
-        self._tuner_paras = None
-        self._goals = None
-        self._inputs = None
         self.name = name
         self._start_time = start_time
         self.stop_time = stop_time
+        self._goals = None
+        self._tuner_paras = None
         if goals is not None:
             self.goals = goals
         if tuner_paras is not None:
@@ -545,8 +549,11 @@ class CalibrationClass:
         else:
             # Then all is relevant
             self.relevant_intervals = [(start_time, stop_time)]
+        self._inputs = None
+        inputs = kwargs.get('inputs', None)
         if inputs is not None:
-            self.inputs = inputs
+            self.inputs = inputs  # Trigger the property setter
+        self.input_kwargs = kwargs.get('input_kwargs', {})
 
     @property
     def name(self):
@@ -646,13 +653,6 @@ class CalibrationClass:
                             f"or pd.DataFrame, but you passed {type(inputs)}")
         if isinstance(inputs.index, pd.DatetimeIndex):
             inputs = convert_datetime_index_to_float_index(inputs)
-        try:
-            if inputs.index.min() > self.start_time:
-                raise ValueError("Given inputs have no data for the current start_time.")
-            if inputs.index.max() < self._stop_time:
-                raise ValueError("Given inputs have no data for the current stop_time.")
-        except TypeError as err:
-            raise TypeError("Given inputs have no numeric index.") from err
 
         self._inputs = inputs
 

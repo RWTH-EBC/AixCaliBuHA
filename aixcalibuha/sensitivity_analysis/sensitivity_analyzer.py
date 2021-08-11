@@ -134,17 +134,16 @@ class SenAnalyzer(abc.ABC):
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
                          "to measurement target data frequency: %s", mean_freq)
-        self.sim_api.output_interval = mean_freq
+        self.sim_api.sim_setup.output_interval = mean_freq
         initial_names = cal_class.tuner_paras.get_names()
-        self.sim_api.set_sim_setup({"initialNames": initial_names,
-                                    "startTime": cal_class.start_time,
-                                    "stopTime": cal_class.stop_time})
+        self.sim_api.set_sim_setup({"start_time": cal_class.start_time,
+                                    "stop_time": cal_class.stop_time})
+        self.sim_api.result_names = cal_class.goals.get_sim_var_names()
         for i, initial_values in enumerate(samples):
             # Simulate the current values
             self.logger.info('Parameter variation %s of %s',
                              i+1, len(samples))
-            self.sim_api.set_initial_values(initial_values)
-
+            parameters = {name: value for name, value in zip(initial_names, initial_values)}
             # Simulate
             # pylint: disable=broad-except
             try:
@@ -152,16 +151,21 @@ class SenAnalyzer(abc.ABC):
                 if self.save_files:
                     savepath_files = os.path.join(self.cd,
                                                   f"simulation_{i + 1}")
-                    filepath = self.sim_api.simulate(savepath_files=savepath_files,
-                                                     inputs=cal_class.inputs)
+                    filepath = self.sim_api.simulate(
+                        parameters=parameters,
+                        return_option="savepath",
+                        savepath=savepath_files,
+                        inputs=cal_class.inputs,
+                        **cal_class.input_kwargs
+                    )
                     # Load the result file to the goals object
                     sim_target_data = data_types.TimeSeriesData(filepath)
                 else:
-                    target_sim_names = cal_class.goals.get_sim_var_names()
-                    self.sim_api.set_sim_setup({"resultNames": target_sim_names})
-                    df = self.sim_api.simulate(inputs=cal_class.inputs)
-                    # Convert it to time series data object
-                    sim_target_data = data_types.TimeSeriesData(df)
+                    sim_target_data = self.sim_api.simulate(
+                        parameters=parameters,
+                        inputs=cal_class.inputs,
+                        **cal_class.input_kwargs
+                    )
             except Exception as err:
                 if self.fail_on_error:
                     raise err

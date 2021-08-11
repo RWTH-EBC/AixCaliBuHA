@@ -118,8 +118,8 @@ class MultipleClassCalibrator(Calibrator):
             # Alter the simulation time.
             # The fix-start time or timedelta approach is applied
             start_time = self._apply_start_time_method(cal_class.start_time)
-            self.sim_api.set_sim_setup({"startTime": start_time,
-                                        "stopTime": cal_class.stop_time})
+            self.sim_api.set_sim_setup({"start_time": start_time,
+                                        "stop_time": cal_class.stop_time})
 
             #%% Working-Directory:
             # Alter the working directory for saving the simulations-results
@@ -205,7 +205,7 @@ class MultipleClassCalibrator(Calibrator):
         """
         if self.start_time_method == "timedelta":
             # Check if timedelta does not fall below the
-            # starttime (start_time should not be lower then zero)
+            # start_time (start_time should not be lower then zero)
             if start_time - self.timedelta < 0:
                 # pylint: disable=import-outside-toplevel
                 import warnings
