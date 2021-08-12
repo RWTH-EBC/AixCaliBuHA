@@ -20,11 +20,10 @@ and HVAC Systems easier. Different sub-packages help with the underlying tasks o
 Basic knowlege about **git** and **python** are required to understand the following simple steps.  
 We tested this with `cmd` on a *Windows* 10 machine.
 
-Until this is not publicly available, you have to install it (and [`ebcpy`](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/blob/master/README.md)) via:
+Until this is not publicly available, you have to install it (and [`ebcpy`](https://github.com/RWTH-EBC/ebcpy)) via:
 ```
-git clone https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy
-pip install -e ebcpy
-git clone --recurse-submodules https://git.rwth-aachen.de/EBC/EBC_all/Optimization-and-Calibration/AixCaliBuHA
+git clone --recurse-submodules https://github.com/RWTH-EBC/AixCaliBuHA
+pip install -e AixCaliBuHA/ebcpy
 pip install -e AixCaliBuHA
 ```
 
@@ -82,7 +81,7 @@ To give you an idea of what you have to do and where to click, here is a little 
 Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
 
 # Problems?
-Please [raise an issue here](https://git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy/-/issues/new?issue%5Bassignee_id%5D=&issue%5Bmilestone_id%5D=).
+Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues).
 
 
 ## Wiki on Calibration
