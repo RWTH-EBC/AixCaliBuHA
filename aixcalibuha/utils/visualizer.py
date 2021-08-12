@@ -98,6 +98,15 @@ class CalibrationLogger:
             )
         self.logger.info(info_string)
 
+    def validation_callback_func(self, obj):
+        """
+        Log the validation result information
+
+        :param float obj:
+            Objective value of validation.
+        """
+        self.log(f"{self.goals.statistical_measure} of validation: {obj}")
+
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
@@ -429,6 +438,23 @@ class CalibrationVisualizer(CalibrationLogger):
         # Plot the tuner parameters
         self._plot_tuner_parameters(xk=xk)
 
+        # Plot the measured and simulated data
+        if self.goals is not None and self.create_tsd_plot:
+            self._plot_goals()
+
+        if self.show_plot:
+            plt.draw()
+            plt.pause(1e-5)
+
+    def validation_callback_func(self, obj):
+        """
+        Log the validation result information.
+        Also plot if selected.
+
+        :param float obj:
+            Objective value of validation.
+        """
+        super().validation_callback_func(obj=obj)
         # Plot the measured and simulated data
         if self.goals is not None and self.create_tsd_plot:
             self._plot_goals()

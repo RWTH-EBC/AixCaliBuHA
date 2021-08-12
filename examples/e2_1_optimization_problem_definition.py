@@ -179,7 +179,8 @@ def main(
         start_time=2360,
         stop_time=3600,
         goals=goals,
-        tuner_paras=tuner_paras
+        tuner_paras=tuner_paras,
+        inputs=meas_inputs_data
     )
 
     return calibration_classes, validation_class

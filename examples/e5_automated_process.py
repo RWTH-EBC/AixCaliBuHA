@@ -5,8 +5,8 @@ Goals of this part of the examples:
 """
 
 from examples import setup_fmu, setup_calibration_classes
-from examples.C_sensitivity_analysis_example import run_sensitivity_analysis
-from examples.D_calibration_example import run_calibration
+from examples.e3_sensitivity_analysis_example import run_sensitivity_analysis
+from examples.e4_calibration_example import run_calibration
 
 
 def main(example="A"):

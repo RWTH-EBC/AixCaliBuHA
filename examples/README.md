@@ -16,13 +16,13 @@ Before being able to run these examples, be sure to:
 
 # What can I learn in the examples?
 
-## `A_energy_system_analysis.py`
+## `e1_energy_system_analysis.py`
 
 1. Learn how to analyze your energy system
 2. Improve your `DymolaAPI` knowledge
 3. Improve your skill-set on `TimeSeriesData`
 
-## `B_A_optimization_problem_definition.py`
+## `e2_1_optimization_problem_definition.py`
 
 1. Learn how to formulate your calibration problem using our data_types
 2. Get to know `TunerParas`
@@ -30,21 +30,21 @@ Before being able to run these examples, be sure to:
 4. Get to know `CalibrationClass`
 5. Learn how to merge multiple classes
 
-## `B_A_optimization_problem_definition.py`
+## `e2_2_optimization_problem_definition.py`
 
 1. Deepen your understanding of data_types in AixCaliBuHA
 
-## `.py`
+## `e3_sensitivity_analysis_example.py`
 
 1. Learn how to execute a sensitivity analysis
 2. Learn how to automatically select sensitive tuner parameters
 
-## `.py`
+## `e4_calibration_example.py`
 
 1. Learn the settings for a calibration
 2. Learn how to use both Single- and MultiClassCalibration
 3. Learn how to validate your calibration
 
-## `.py`
+## `e5_automated_process.py`
 
 1. Learn how to run everything in one script

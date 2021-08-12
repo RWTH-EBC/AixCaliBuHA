@@ -101,6 +101,7 @@ class Calibrator(Optimizer):
         self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.result_path = kwargs.pop('result_path', None)
         self.max_itercount = kwargs.pop('max_itercount', np.inf)
+        self.at_calibration = True  # Boolean to indicate if validating or calibrating
         # Extract kwargs for the visualizer
         visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
                              "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
@@ -226,28 +227,27 @@ class Calibrator(Optimizer):
         #%% Evaluate the current objective
         # Penalty function (get penalty factor)
         if self.recalibration_count > 1 and self.apply_penalty:
+            # There is no benchmark in the first iteration or
+            # first iterations were skipped, so no penalty is applied
             current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
-            penalty = self.get_penalty(xk_descaled, current_tuner_scaled)
+            penaltyfactor = self.get_penalty(xk_descaled, current_tuner_scaled)
             # Evaluate with penalty
-            total_res, unweighted_objective = self.goals.eval_difference(
-                verbose=True,
-                penaltyfactor=penalty
-            )
+            penalty = penaltyfactor
+        else:
+            # Evaluate without penalty
+            penaltyfactor = 1
+            penalty = None
+        total_res, unweighted_objective = self.goals.eval_difference(
+            verbose=True,
+            penaltyfactor=penaltyfactor
+        )
+        if self.at_calibration:  # Only plot if at_calibration
             self.logger.calibration_callback_func(
-                xk,
-                total_res,
-                unweighted_objective,
+                xk=xk,
+                obj=total_res,
+                verbose_information=unweighted_objective,
                 penalty=penalty
             )
-        # There is no benchmark in the first iteration or
-        # first iterations were skipped, so no penalty is applied
-        else:
-            penalty = None
-            # Evaluate without penalty
-            total_res, unweighted_objective = self.goals.eval_difference(
-                verbose=True)
-            self.logger.calibration_callback_func(xk, total_res, unweighted_objective)
-
         # current best iteration step of current calibration class
         if total_res < self._current_best_iterate["Objective"]:
             #self.best_goals = self.goals
@@ -279,6 +279,7 @@ class Calibrator(Optimizer):
         in ebcpy to know which options are available.
         """
         #%% Start Calibration:
+        self.at_calibration = True
         self.logger.log(f"Start calibration of model: {self.sim_api.model_name}"
                         f" with framework-class {self.__class__.__name__}")
         self.logger.log(f"Class: {self.calibration_class.name}, Start and Stop-Time "
@@ -377,20 +378,28 @@ class Calibrator(Optimizer):
         values for tuner_parameters.
         """
         #%% Start Validation:
+        self.at_calibration = False
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
+        # Use start-time of calibration class
+        start_time = self._apply_start_time_method(
+            start_time=self.calibration_class.start_time
+        )
         self.calibration_class = validation_class
+        # Set the start-time for the simulation
+        self.sim_api.sim_setup.start_time = start_time
 
         self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
-        self.logger.log_initial_names()
         # Use the results parameter vector to simulate again.
         self._counter = 0  # Reset to one
         # Scale the tuner parameters
         xk = self.tuner_paras.scale(tuner_parameter_values)
         # Evaluate objective
-        val_result = self.obj(xk=xk)
-        self.logger.log(f"{self.goals.statistical_measure} of validation: {val_result}")
-        return val_result
+        obj = self.obj(xk=xk)
+        self.logger.validation_callback_func(
+            obj=obj
+        )
+        return obj
 
     def _handle_error(self, error):
         """
