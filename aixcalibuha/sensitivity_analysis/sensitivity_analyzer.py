@@ -211,7 +211,7 @@ class SenAnalyzer(abc.ABC):
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
                              'Time-Interval: %s-%s s', cal_class.name,
-                             cal_class.start_time,cal_class.stop_time)
+                             cal_class.start_time, cal_class.stop_time)
 
             self.problem = self.create_problem(cal_class.tuner_paras)
             samples = self.generate_samples()
