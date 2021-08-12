@@ -288,7 +288,9 @@ class Calibrator(Optimizer):
                         f" for objective: {self.calibration_class.relevant_intervals}")
 
         # Setup the visualizer for plotting and logging:
-        self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
+        self.logger.calibrate_new_class(self.calibration_class,
+                                        cd=self.cd_of_class,
+                                        for_validation=False)
         self.logger.log_initial_names()
 
         # Duration of Calibration
@@ -389,7 +391,9 @@ class Calibrator(Optimizer):
         # Set the start-time for the simulation
         self.sim_api.sim_setup.start_time = start_time
 
-        self.logger.calibrate_new_class(self.calibration_class, cd=self.cd_of_class)
+        self.logger.calibrate_new_class(self.calibration_class,
+                                        cd=self.cd_of_class,
+                                        for_validation=True)
         # Use the results parameter vector to simulate again.
         self._counter = 0  # Reset to one
         # Scale the tuner parameters
