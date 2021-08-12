@@ -115,7 +115,10 @@ if __name__ == "__main__":
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
     SIM_API = setup_fmu(example=EXAMPLE)
-    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(example=EXAMPLE)
+    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(
+        example=EXAMPLE,
+        multiple_classes=False
+    )
 
     # Sensitivity analysis:
     run_calibration(

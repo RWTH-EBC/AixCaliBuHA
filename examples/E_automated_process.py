@@ -12,7 +12,10 @@ from examples.D_calibration_example import run_calibration
 def main(example="A"):
     # Parameters for sen-analysis:
     sim_api = setup_fmu(example=example)
-    calibration_classes, validation_class = setup_calibration_classes(example=example)
+    calibration_classes, validation_class = setup_calibration_classes(
+        example=example,
+        multiple_classes=True
+    )
 
     # Sensitivity analysis:
     calibration_classes = run_sensitivity_analysis(sim_api=sim_api,

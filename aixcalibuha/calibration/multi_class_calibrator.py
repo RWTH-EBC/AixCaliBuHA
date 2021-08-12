@@ -16,7 +16,7 @@ class MultipleClassCalibrator(Calibrator):
     When passing multiple classes of the same name, all names
     are merged into one class with so called relevant time intervals.
     These time intervals are used for the evaluation of the objective
-    function. Please have a look at the file in \img\typeOfContinouusCalibration.pdf
+    function. Please have a look at the file in docs\img\typeOfContinouusCalibration.pdf
     for a better understanding on how this class works.
 
     :param str start_time_method:
@@ -25,7 +25,7 @@ class MultipleClassCalibrator(Calibrator):
         the keyword argument fixstart is used for all classes (Default is 0).
         If 'timedelta' is used, the keyword argument timedelta specifies the
         time being subtracted from each start time of each calibration class.
-        Please have a look at the file in \img\typeOfContinouusCalibration.pdf
+        Please have a look at the file in docs\img\typeOfContinouusCalibration.pdf
         for a better visualization.
     :param str calibration_strategy:
         Default is 'parallel'. Strategy you want to use for multi-class calibration.

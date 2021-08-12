@@ -18,7 +18,8 @@ from aixcalibuha.data_types import merge_calibration_classes
 
 
 def main(
-        statistical_measure="NRMSE"
+        statistical_measure="NRMSE",
+        multiple_classes=True
 ):
     """
     Arguments of this example:
@@ -28,6 +29,9 @@ def main(
         One of the supported methods in
         ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
         e.g. RMSE, MAE, NRMSE
+    :param bool multiple_classes:
+        If False, all CalibrationClasses will have the
+        same name
     """
     # ######################### Tuner Parameter ##########################
     data = [
@@ -127,7 +131,7 @@ def main(
             stop_time=290
         ),
         CalibrationClass(
-            name="Off",
+            name="Off" if multiple_classes else "On",
             start_time=290,
             stop_time=1280
         ),
@@ -137,7 +141,7 @@ def main(
             stop_time=1570
         ),
         CalibrationClass(
-            name="Off",
+            name="Off" if multiple_classes else "On",
             start_time=1570,
             stop_time=2080
         ),
@@ -182,4 +186,4 @@ def main(
 
 
 if __name__ == '__main__':
-    main()
+    main(multiple_classes=True)

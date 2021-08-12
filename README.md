@@ -70,7 +70,7 @@ run_modelica_calibration --config=my_generated_config.yaml
 To give you an idea of what you have to do and where to click, here is a little example.
 
 
-![Sample Video](img/guided_setup.mp4)
+![Sample Video](docs/img/guided_setup.mp4)
 
 
 ### TimeSeriesData

@@ -27,9 +27,9 @@ def setup_fmu(example="B"):
                    log_fmu=False)
 
 
-def setup_calibration_classes(example="B"):
+def setup_calibration_classes(example="B", multiple_classes=True):
     """Setup the CalibrationClasses used in all examples and tests."""
     if example == "A":
-        return B_A_optimization_problem_definition.main()
+        return B_A_optimization_problem_definition.main(multiple_classes=multiple_classes)
     else:
         return B_B_another_data_types_example.setup_calibration_classes()
