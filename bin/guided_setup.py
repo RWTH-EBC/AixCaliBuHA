@@ -8,7 +8,6 @@ import sys
 from ebcpy.data_types import TimeSeriesData
 from ebcpy.simulationapi.dymola_api import DymolaAPI
 from ebcpy.modelica import get_names_and_values_of_lines, get_expressions
-from ebcpy.utils import configuration
 from aixcalibuha.utils import configuration
 
 
@@ -59,7 +58,7 @@ def _handle_argv(argv):
     Supported argument are:
 
     Configuration of settings for the setup:
-    --config="Path_to_a_.yml_config_file"
+    --config="Path_to_a_config_file.toml"
 
     """
     # List of supported config options
@@ -229,6 +228,7 @@ def main():
     How does this look?
     :return:
     """
+    raise NotImplementedError("guided_setup does not work at the moment")
     print("----------------------Setup of Dymola--------------------")
     if sys.argv[1:]:
         settings = _handle_argv(sys.argv)
@@ -420,14 +420,14 @@ def main():
             variable_name_config[target_name_sim] = [target_name_meas, target_name_sim]
 
         # First generate default config:
-        savepath = os.path.join(cd, "calibration_config.yml")
+        savepath = os.path.join(cd, "calibration_config.toml")
         configuration.write_config(savepath, configuration.default_config)
 
         cal_class_config = configuration.default_cal_class_config
         cal_class_config["tuner_paras"] = {
             "names": tuner_paras_names,
             "initial_values": tuner_paras_values,
-            # Assume a range of min and max values to make the start with the calibration more easier
+            # Assume a range of min and max values to make the start with the calibration easier
             "bounds": [[val * 0.1, val * 2] for val in tuner_paras_values]}
         cal_class_config["goals"] = {
             "variable_names": variable_name_config,
@@ -482,7 +482,7 @@ def main():
               f"After you made the adjustments, you can run your calibration via:\n"
               f"    'modelica_calibration --config={savepath}'")
     except Exception as e:
-        _temp_savepath = os.path.join(cd, "guided_setup_config.yml")
+        _temp_savepath = os.path.join(cd, "guided_setup_config.toml")
         configuration.write_config(_temp_savepath, setup_config)
         print("An error occured in the process.\n"
               f"{e}"

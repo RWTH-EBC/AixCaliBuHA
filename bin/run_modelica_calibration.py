@@ -2,7 +2,7 @@
 """
 Module to automatically run a calibration process
 using modelica models.
-You may use yml config files to alter the settings
+You may use toml config files to alter the settings
 in this file. The rest is done automatically.
 Run the calibration after install of aixcalibuha using:
 'modelica_calibration'
@@ -11,17 +11,16 @@ import sys
 import os
 from ebcpy.utils import conversion
 from ebcpy import data_types
-from ebcpy.utils import configuration
-from aixcalibuha.calibration import modelica
-import aixcalibuha.utils.configuration as default_settings
-from aixcalibuha.utils.configuration import get_calibration_classes_from_config
+from aixcalibuha.calibration import MultipleClassCalibrator, Calibrator
+from aixcalibuha.utils import configuration
+
 
 def _handle_argv(argv):
     """
     Supported argument are:
 
     Configuration of settings used in calibration:
-    --config="Path_to_a_.yml_config_file"
+    --config="Path_to_a_config_file.toml"
 
     """
     # List of supported config options
@@ -43,6 +42,7 @@ def _handle_argv(argv):
 
 
 def main():
+    raise NotImplementedError("run_modelica_calibration does not work at the moment")
     settings = _handle_argv(sys.argv)
     # Load config:
     config = configuration.read_config(settings["--config"])
@@ -81,10 +81,12 @@ def main():
                        f"You need to specify this value in order to run the calibration.")
 
     # Now set redundant parameters. If they are not in the settings it's ok.
-    kwargs_calibrator = config_calibration.get("settings", default_settings.kwargs_calibrator)
+    kwargs_calibrator = config_calibration.get("settings",
+                                               configuration.kwargs_calibrator)
     if len(cal_classes_config) > 1:
         config_cal_mul = config_calibration.get("settings", {})
-        kwargs_multiple_classes = config_cal_mul.get("Multiple Classes", default_settings.kwargs_multiple_classes)
+        kwargs_multiple_classes = config_cal_mul.get("Multiple Classes",
+                                                     configuration.kwargs_multiple_classes)
         kwargs_calibrator.update(kwargs_multiple_classes)
 
     # Specify solver-specific keyword-arguments depending on the solver and method you will use
@@ -126,17 +128,17 @@ def main():
         os.remove(_temp_path)
 
     # Load CalibrationClass Settings.
-    cal_classes = get_calibration_classes_from_config(cal_classes_config)
+    cal_classes = configuration.get_calibration_classes_from_config(cal_classes_config)
 
     if len(cal_classes) == 1:
-        modelica_calibrator = modelica.Calibrator(
+        modelica_calibrator = Calibrator(
             cd=cd,
             sim_api=sim_api,
             calibration_class=cal_classes[0],
             **kwargs_calibrator)
     else:
         # Setup the class
-        modelica_calibrator = modelica.MultipleClassCalibrator(
+        modelica_calibrator = MultipleClassCalibrator(
             cd=cd,
             sim_api=sim_api,
             calibration_classes=cal_classes,
@@ -148,5 +150,5 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.argv = ["", r"--config=D:\pme-fwu\00_testzone\test_wrapper\calibration_config.yml"]
+    sys.argv = ["", r"--config=D:\pme-fwu\00_testzone\test_wrapper\calibration_config.toml"]
     main()
