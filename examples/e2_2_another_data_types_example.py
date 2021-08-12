@@ -23,7 +23,7 @@ def setup_goals():
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
-    sim_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValveSimulation.mat"))
+    sim_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValveSimulation.hdf"), key="examples")
     meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"), key="examples")
 
     # Setup three variables for different format of setup
@@ -37,7 +37,7 @@ def setup_goals():
                   variable_names=variable_names,
                   statistical_measure="NRMSE",
                   weightings=[0.7, 0.3])
-    #goals.set_sim_target_data(sim_target_data)
+    goals.set_sim_target_data(sim_target_data)
     return goals
 
 
