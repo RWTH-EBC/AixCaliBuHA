@@ -118,6 +118,7 @@ class TestModelicaCalibrator(unittest.TestCase):
                                               result=sen_result,
                                               threshold=0)
         self.assertIsInstance(classes, list)
+        self.assertTrue(len(classes) >= 1)
         with self.assertRaises(ValueError):
             sen_ana.select_by_threshold(
                 calibration_classes=classes,
