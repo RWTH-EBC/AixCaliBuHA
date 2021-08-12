@@ -15,8 +15,7 @@ class TestDataTypes(unittest.TestCase):
         Define example paths and parameters used in all test-functions.
         """
         self.framework_dir = pathlib.Path(__file__).parents[1]
-        self.example_dir = self.framework_dir.joinpath("aixcalibuha", "examples", "data")
-        self.example_data_hdf_path = self.example_dir.joinpath("ref_result.hdf")
+        self.example_dir = self.framework_dir.joinpath("examples", "data")
 
     def test_calibration_class(self):
         """Test the class CalibrationClass"""
@@ -40,17 +39,22 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("simTargetData.mat"))
-
-        meas_target_data = data_types.TimeSeriesData(self.example_data_hdf_path, key="FloatIndex")
+        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
+                                                    key="examples")
+        sim_target_data.to_datetime_index()
+        sim_target_data.clean_and_space_equally(desired_freq="10ms")
+        sim_target_data.to_float_index()
+        meas_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValve.hdf"),
+                                                     key="examples")
 
         # Setup three variables for different format of setup
-        var_names = {"Var_1": ["measured_T_heater_1", "heater1.heatPorts[1].T"],
-                     "Var_2": {"meas": "measured_T_heater", "sim": "heater.heatPorts[1].T"}}
-
+        var_names = {"T": ["TCapacity", "heatCapacitor.T"],
+                     "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
+        meas_target_data.to_float_index()
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
-                      variable_names=var_names)
+                      variable_names=var_names,
+                      statistical_measure="RMSE")
 
         # Check set_sim_target_data:
         goals.set_sim_target_data(sim_target_data)
@@ -59,7 +63,7 @@ class TestDataTypes(unittest.TestCase):
         goals.set_relevant_time_intervals([(0, 100)])
 
         # Check the eval_difference function:
-        self.assertIsInstance(goals.eval_difference("RMSE"), float)
+        self.assertIsInstance(goals.eval_difference(), float)
         # Try to alter the sim_target_data object with something wrong
         with self.assertRaises(IndexError):
             goals.set_sim_target_data([])
@@ -68,11 +72,13 @@ class TestDataTypes(unittest.TestCase):
             weightings = [1, 2, 4, 5, 6]
             Goals(meas_target_data=meas_target_data,
                   variable_names=var_names,
+                  statistical_measure="RMSE",
                   weightings=weightings)
         with self.assertRaises(IndexError):
             weightings = np.ones(100)/100
             Goals(meas_target_data=meas_target_data,
                   variable_names=var_names,
+                  statistical_measure="RMSE",
                   weightings=weightings)
 
     def test_tuner_paras(self):

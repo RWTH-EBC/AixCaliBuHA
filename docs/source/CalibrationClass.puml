@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Goals {
+TimeSeriesData: meas_target_data
+Dict: variable_names
+str: statistical_measure
+list: weightings
+eval()
+}
+
+class CalibrationClass {
+str: name
+Goals: goals
+TunerParameter: tuner_paras
+float: start_time
+float: stop_time
+list: relevant_time_intervals
+TimeSeriesData: inputs
+}
+
+class TunerParas {
+list: names
+list: initial_values
+list: bounds
+}
+
+Goals -> CalibrationClass
+CalibrationClass <-- TunerParas
+
+@enduml

@@ -18,7 +18,7 @@
 - **v0.1.5**
    - Add new scripts in bin folder to ease the setup of the calibration for new users
    - Add configuration files and save/load classes
-   - Issue 54: Skip failed simulations using two new kwargs in ModelicaCalibrator class
+   - Issue 54: Skip failed simulations using two new kwargs in Calibrator class
    - Issue 53: Save final plots despite abortion of calibration process via STRG+C
    - Issue 51: Refactor reference_start_time to fix_start_time
    - Issue 23: Model Wrapper for MoCaTe files.
@@ -29,3 +29,9 @@
    - Re-add tunerParas from ebcpy
    - Make changes based on ebcpy v.0.1.7
    - Split SensivitiyAnalyzer class and use object oriented programming
+  
+- **v0.2.0**
+   - Adjust based on ebcpy v 0.2.0
+   - Add examples and fix tutorial
+   - Improve validation output
+   - Fix version of SALib as 1.4 is not working

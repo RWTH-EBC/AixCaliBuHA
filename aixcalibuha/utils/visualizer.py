@@ -28,8 +28,6 @@ class CalibrationLogger:
             Name of the reason of logging, e.g. classification, processing etc.
         :param aixcalibuha.CalibrationClass calibration_class:
             Calibration class used in the calibration-process.
-        :param str statistical_measure:
-            Measurement used to evaluate the objective
         :param logging.Logger logger:
             If given, this logger is used to print and or save the messsages.
             Else, a new one is set up.
@@ -42,7 +40,7 @@ class CalibrationLogger:
     _prec = decimal_prec
     _width = integer_prec + decimal_prec + 1  # Calculate the actual width
 
-    def __init__(self, cd, name, calibration_class, statistical_measure, logger=None):
+    def __init__(self, cd, name, calibration_class, logger=None):
         """Instantiate class parameters"""
         self._tuner_paras = None
         self._goals = None
@@ -55,11 +53,14 @@ class CalibrationLogger:
             self.logger = logger
         self.cd = cd
         self.calibration_class = calibration_class
-        self.statistical_measure = statistical_measure
 
     def log(self, msg, level=logging.INFO):
         """Wrapper function to directly log in the internal logger"""
         self.logger.log(msg=msg, level=level)
+
+    def error(self, msg):
+        """Wrapper function to directly log an error"""
+        self.logger.error(msg=msg)
 
     def _set_prec_and_with_for_tuner_paras(self):
         if self.tuner_paras.bounds is None:
@@ -97,6 +98,15 @@ class CalibrationLogger:
             )
         self.logger.info(info_string)
 
+    def validation_callback_func(self, obj):
+        """
+        Log the validation result information
+
+        :param float obj:
+            Objective value of validation.
+        """
+        self.log(f"{self.goals.statistical_measure} of validation: {obj}")
+
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
@@ -107,8 +117,9 @@ class CalibrationLogger:
         :param str model_name:
             Name of the model being calibrated
         """
-        if not best_iterate:
+        if "Iterate" not in best_iterate:
             self.logger.error("No best iterate. Can't save result")
+            return
         result_log = f"\nResults for calibration of model: {model_name}\n"
         result_log += f"Number of iterations: {self._counter_calibration}\n"
         result_log += "Final parameter values:\n"
@@ -116,15 +127,15 @@ class CalibrationLogger:
         self._counter_calibration = best_iterate["Iterate"]
         result_log += f"{self._get_tuner_para_names_as_string()}\n"
         final_values = self._get_tuner_para_values_as_string(
-            best_iterate["Parameters"],
-            best_iterate["Objective"],
-            best_iterate["Unweighted Objective"],
-            best_iterate["Penaltyfactor"])
+            xk_descaled=best_iterate["Parameters"],
+            obj=best_iterate["Objective"],
+            unweighted_objective=best_iterate["Unweighted Objective"],
+            penalty=best_iterate["Penaltyfactor"])
         result_log += f"{final_values}\n"
         self.logger.info(result_log)
         self._counter_calibration = 0
 
-    def calibrate_new_class(self, calibration_class, cd=None):
+    def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
         This function is called when instantiating this Class. If you
         uses continuuos calibration classes, call this function before
@@ -135,6 +146,8 @@ class CalibrationLogger:
             and time-intervals of calibration.
         :param str,os.path.normpath cd:
             Optional change in working directory to store files
+        :param bool for_validation:
+            If it's only for validation, only plot the goals
         """
         if cd is not None:
             self.cd = cd
@@ -255,9 +268,9 @@ class CalibrationLogger:
                 formatted_name = ini_name
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
-        info_string += "     {0:{width}s}".format(self.statistical_measure, width=self._width)
+        info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
         info_string += "penaltyfactor"
-        info_string += f"   Unweighted {self.statistical_measure}"
+        info_string += f"   Unweighted {self.goals.statistical_measure}"
         return info_string
 
     def _get_tuner_para_values_as_string(self,
@@ -332,12 +345,12 @@ class CalibrationVisualizer(CalibrationLogger):
     save_tsd_plot = False
     create_tsd_plot = True
     show_plot = True
+    file_type = "svg"
     goals_dir = "TimeSeriesPlot"
 
     def __init__(self, cd,
                  name,
                  calibration_class,
-                 statistical_measure,
                  logger=None,
                  **kwargs):
         """Instantiate class parameters"""
@@ -346,7 +359,6 @@ class CalibrationVisualizer(CalibrationLogger):
         super().__init__(cd=cd,
                          name=name,
                          calibration_class=calibration_class,
-                         statistical_measure=statistical_measure,
                          logger=logger)
         # Set supported kwargs:
         if isinstance(kwargs.get("save_tsd_plot"), bool):
@@ -355,8 +367,10 @@ class CalibrationVisualizer(CalibrationLogger):
             self.create_tsd_plot = kwargs.get("create_tsd_plot")
         if isinstance(kwargs.get("show_plot"), bool):
             self.show_plot = kwargs.get("show_plot")
+        if isinstance(kwargs.get("file_type"), str):
+            self.file_type = kwargs.get("file_type")
 
-    def calibrate_new_class(self, calibration_class, cd=None):
+    def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
         This function is called when instantiating this Class. If you
         uses continuuos calibration classes, call this function before
@@ -367,6 +381,8 @@ class CalibrationVisualizer(CalibrationLogger):
             and time-intervals of calibration.
         :param str,os.path.normpath cd:
             Optional change in working directory to store files
+        :param bool for_validation:
+            If it's only for validation, only plot the goals
         """
         super().calibrate_new_class(calibration_class, cd)
 
@@ -375,24 +391,25 @@ class CalibrationVisualizer(CalibrationLogger):
         # Close all old figures to create new ones.
         plt.close("all")
 
-        # %% Set-up figure for objective-plotting
-        self.fig_obj, self.ax_obj = plt.subplots(1, 1)
-        self.fig_obj.suptitle(name + ": Objective")
-        self.ax_obj.set_ylabel(self.statistical_measure)
-        self.ax_obj.set_xlabel("Number iterations")
-        # If the changes are small, it seems like the plot does
-        # not fit the printed values. This boolean assures that no offset is used.
-        self.ax_obj.ticklabel_format(useOffset=False)
+        if not for_validation:
+            # %% Set-up figure for objective-plotting
+            self.fig_obj, self.ax_obj = plt.subplots(1, 1)
+            self.fig_obj.suptitle(name + ": Objective")
+            self.ax_obj.set_ylabel(self.goals.statistical_measure)
+            self.ax_obj.set_xlabel("Number iterations")
+            # If the changes are small, it seems like the plot does
+            # not fit the printed values. This boolean assures that no offset is used.
+            self.ax_obj.ticklabel_format(useOffset=False)
 
-        # %% Setup Tuner-Paras figure
-        # Make a almost quadratic layout based on the number of tuner-parameters evolved.
-        num_tuners = len(self.tuner_paras.get_names())
-        self._n_cols_tuner = int(np.floor(np.sqrt(num_tuners)))
-        self._n_rows_tuner = int(np.ceil(num_tuners / self._n_cols_tuner))
-        self.fig_tuner, self.ax_tuner = plt.subplots(self._n_rows_tuner, self._n_cols_tuner,
-                                                     squeeze=False, sharex=True)
-        self.fig_tuner.suptitle(name + ": Tuner Parameters")
-        self._plot_tuner_parameters(for_setup=True)
+            # %% Setup Tuner-Paras figure
+            # Make a almost quadratic layout based on the number of tuner-parameters evolved.
+            num_tuners = len(self.tuner_paras.get_names())
+            self._n_cols_tuner = int(np.floor(np.sqrt(num_tuners)))
+            self._n_rows_tuner = int(np.ceil(num_tuners / self._n_cols_tuner))
+            self.fig_tuner, self.ax_tuner = plt.subplots(self._n_rows_tuner, self._n_cols_tuner,
+                                                         squeeze=False, sharex=True)
+            self.fig_tuner.suptitle(name + ": Tuner Parameters")
+            self._plot_tuner_parameters(for_setup=True)
 
         # %% Setup Goals figure
         # Only a dummy, as the figure is recreated at every iteration
@@ -434,22 +451,37 @@ class CalibrationVisualizer(CalibrationLogger):
             plt.draw()
             plt.pause(1e-5)
 
-    def save_calibration_result(self, res, model_name, **kwargs):
+    def validation_callback_func(self, obj):
+        """
+        Log the validation result information.
+        Also plot if selected.
+
+        :param float obj:
+            Objective value of validation.
+        """
+        super().validation_callback_func(obj=obj)
+        # Plot the measured and simulated data
+        if self.goals is not None and self.create_tsd_plot:
+            self._plot_goals(at_validation=True)
+
+        if self.show_plot:
+            plt.draw()
+            plt.pause(1e-5)
+
+    def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
         Process the result, re-run the simulation and generate
         a logFile for the minimal quality measurement
 
-        :param scipy.optimize.minimize.result res:
+        :param scipy.optimize.minimize.result best_iterate:
             Result object of the minimization
         :param str model_name:
             Name of the model being calibrated
-        :keyword str file_type:
-            svg, pdf or png
         """
-        file_type = "svg"
-        if isinstance(kwargs.get("file_type"), str):
-            file_type = kwargs.get("file_type")
-        super().save_calibration_result(res, model_name, **kwargs)
+        if "Iterate" not in best_iterate:
+            self.logger.error("No best iterate. Can't save result")
+            return
+        super().save_calibration_result(best_iterate, model_name, **kwargs)
         itercount = kwargs["itercount"]
         duration = kwargs["duration"]
 
@@ -458,18 +490,18 @@ class CalibrationVisualizer(CalibrationLogger):
         if not os.path.exists(iterpath):
             os.mkdir(iterpath)
 
-        filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % file_type)
-        filepath_obj = os.path.join(iterpath, "objective_plot.%s" % file_type)
+        filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % self.file_type)
+        filepath_obj = os.path.join(iterpath, "objective_plot.%s" % self.file_type)
         if self.save_tsd_plot:
             bestgoal = os.path.join(self.cd,
                                     self.goals_dir,
-                                    str(res["Iterate"]) + f"_goals.{file_type}")
+                                    str(best_iterate["Iterate"]) + f"_goals.{self.file_type}")
             # Copy best goals figure
-            copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % file_type)
+            copyfile(bestgoal, f'{iterpath}\\best_goals.%s' % self.file_type)
 
         # Save calibration results as csv
-        res_dict = dict(res['Parameters'])
-        res_dict['Objective'] = res["Objective"]
+        res_dict = dict(best_iterate['Parameters'])
+        res_dict['Objective'] = best_iterate["Objective"]
         res_dict['Duration'] = duration
         res_csv = f'{self.cd}\\Iteration_{itercount}\\RESUL' \
                   f'TS_{self.calibration_class.name}_iteration{itercount}.csv'
@@ -483,9 +515,9 @@ class CalibrationVisualizer(CalibrationLogger):
         self.fig_obj.savefig(filepath_obj)
         plt.close("all")
 
-        if res['better_current_result'] and self.save_tsd_plot:
+        if best_iterate['better_current_result'] and self.save_tsd_plot:
             # save improvement of recalibration ("best goals df" as csv)
-            res['Goals'].get_goals_data().to_csv(
+            best_iterate['Goals'].get_goals_data().to_csv(
                 os.path.join(iterpath, 'goals_df.csv'),
                 sep=",",
                 decimal="."
@@ -530,12 +562,12 @@ class CalibrationVisualizer(CalibrationLogger):
         if "itercount" in kwargs:
             fig_intersection.savefig(
                 os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.svg')
+                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
             )
         else:
             fig_intersection.savefig(
                 os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot.svg')
+                             f'tuner_parameter_intersection_plot.{self.file_type}')
             )
 
         if self.show_plot:
@@ -576,7 +608,7 @@ class CalibrationVisualizer(CalibrationLogger):
                         cur_ax.plot(self._counter_calibration, cur_val, "bo")
                     tuner_counter += 1
 
-    def _plot_goals(self):
+    def _plot_goals(self, at_validation=False):
         """Plot the measured and simulated data for the current iterate"""
 
         # Get information on the relevant-intervals of the calibration:
@@ -625,10 +657,15 @@ class CalibrationVisualizer(CalibrationLogger):
                     cur_ax.set_xlabel("Time / s")
                 goal_counter += 1
 
+        if at_validation:
+            name_id = "Validation"
+        else:
+            name_id = self._counter_calibration
+
         if self.save_tsd_plot:
             _savedir = os.path.join(self.cd, self.goals_dir)
             if not os.path.exists(_savedir):
                 os.makedirs(_savedir)
             self.fig_goal.savefig(
                 os.path.join(_savedir,
-                             f"{self._counter_calibration}_goals.svg"))
+                             f"{name_id}_goals.{self.file_type}"))
