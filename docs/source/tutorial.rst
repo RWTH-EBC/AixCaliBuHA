@@ -46,7 +46,7 @@ Afterwards, you can run
 
 .. code-block::
 
-    run_modelica_calibration --config=my_generated_config.yaml
+    run_modelica_calibration --config=my_generated_config.toml
 
 TimeSeriesData
 ---------------
