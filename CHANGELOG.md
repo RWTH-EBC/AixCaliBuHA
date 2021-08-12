@@ -29,3 +29,9 @@
    - Re-add tunerParas from ebcpy
    - Make changes based on ebcpy v.0.1.7
    - Split SensivitiyAnalyzer class and use object oriented programming
+  
+- **v0.2.0**
+   - Adjust based on ebcpy v 0.2.0
+   - Add examples and fix tutorial
+   - Improve validation output
+   - Fix version of SALib as 1.4 is not working

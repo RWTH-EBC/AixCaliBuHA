@@ -2,6 +2,6 @@ numpy
 scipy
 pandas
 matplotlib
-SALib
+SALib==1.3.12
 ebcpy @ git+https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/EBC/EBC_all/Python/ebcpy@development
 toml

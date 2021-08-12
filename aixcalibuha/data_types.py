@@ -12,7 +12,6 @@ from ebcpy import TimeSeriesData
 from ebcpy.utils.statistics_analyzer import StatisticsAnalyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
 # pylint: disable=I1101
-__version__ = "0.1.6"
 
 logger = logging.getLogger(__name__)
 

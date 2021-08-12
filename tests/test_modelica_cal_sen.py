@@ -124,10 +124,6 @@ class TestModelicaCalibrator(unittest.TestCase):
                 calibration_classes=classes,
                 result=sen_result,
                 threshold=np.inf)
-        # Test automatic run:
-        # cal_classes = sen_ana.automatic_run(self.calibration_classes)
-        #self.assertIsInstance(cal_classes, list)
-        #self.assertIsInstance(cal_classes[0], CalibrationClass)
 
     def tearDown(self):
         """Remove all created folders while calibrating."""
