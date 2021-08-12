@@ -1,6 +1,6 @@
-[![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/pylint/pylint.html)
-[![documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs/doc.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs/index.html)
-[![coverage](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage/badge.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/coverage)
+[![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.html)
+[![documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/doc.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/index.html)
+[![coverage](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/coverage/badge.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/coverage)
 
 
 # AixCaliBuHA
@@ -78,7 +78,7 @@ To give you an idea of what you have to do and where to click, here is a little 
 ![Sample Video](docs/img/guided_setup.mp4)
 
 # Documentation
-Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/Optimization-and-Calibration/AixCaliBuHA/master/docs).
+Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/development/docs).
 
 # Problems?
 Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues).
