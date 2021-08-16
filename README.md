@@ -78,7 +78,7 @@ To give you an idea of what you have to do and where to click, here is a little 
 ![Sample Video](docs/img/guided_setup.mp4)
 
 # Documentation
-Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/development/docs).
+Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
 
 # Problems?
 Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues).
