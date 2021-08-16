@@ -90,11 +90,7 @@ Please see our [Wiki]() for that.
 
 
 ## Associates
+- Fabian Wüllhorst, fabian.wuellhorst@eonerc.rwth-aachen.de
 - Philipp Mehrfeld, pmehrfeld@eonerc.rwth-aachen.de
 - Thomas Storek, tstorek@eonerc.rwth-aachen.de
-- David Wackerbauer, david.wackerbauer@eonerc.rwth-aachen.de
 - Martin Rätz, mraetz@eonerc.rwth-aachen.de
-- Fabian Wüllhorst, fabian.wuellhorst@eonerc.rwth-aachen.de
-- Zhiyu Pan, zhiyu.pan@eonerc.rwth-aachen.de
-
-
