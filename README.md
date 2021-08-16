@@ -78,7 +78,7 @@ To give you an idea of what you have to do and where to click, here is a little 
 ![Sample Video](docs/img/guided_setup.mp4)
 
 # Documentation
-Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/development/docs).
+Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
 
 # Problems?
 Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues).
@@ -90,11 +90,7 @@ Please see our [Wiki]() for that.
 
 
 ## Associates
+- Fabian Wüllhorst, fabian.wuellhorst@eonerc.rwth-aachen.de
 - Philipp Mehrfeld, pmehrfeld@eonerc.rwth-aachen.de
 - Thomas Storek, tstorek@eonerc.rwth-aachen.de
-- David Wackerbauer, david.wackerbauer@eonerc.rwth-aachen.de
 - Martin Rätz, mraetz@eonerc.rwth-aachen.de
-- Fabian Wüllhorst, fabian.wuellhorst@eonerc.rwth-aachen.de
-- Zhiyu Pan, zhiyu.pan@eonerc.rwth-aachen.de
-
-
