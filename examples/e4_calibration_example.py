@@ -106,7 +106,7 @@ def run_calibration(sim_api, cal_classes, validation_class):
         validation_class=validation_class,
         tuner_parameter_values=list(result.values())
     )
-    # Don't forget to close the simulation api
+    # Don't forget to close the simulation api:
     sim_api.close()
 
 
