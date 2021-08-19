@@ -45,7 +45,8 @@ This repository aims to collect modules commonly used to analyze and optimize en
 Lastly, the coupling between Modelica and python is standardized using the small Modelica Library `MoCaTe` (Modelica Calibration Templates).
 However, it's usage is optional. 
 
-![Steps to perform in order to calibrate a dynamic energy system model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png)
+![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=20% }
+
 
 # Statement of need
 
@@ -85,6 +86,9 @@ Additionally, the simulated data $y(t)$ is output of the simulation model $\math
 This mathematical formulation is transformed into python using a `CalibrationClass`. 
 This class contains the goal of the calibration (mathematically speaking the objective), the parameters to tune (the optimization variables) and further information like simulation time and inputs. 
 Lastly, the simulation model $\mathbf{F}$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
+The overall link is displayed in \autoref{fig:link_problem}.
+
+![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=20% }
 
 Once these classes are set up, the execution of calibration can be fully automized.
 While the automated extraction of model outputs and parameters and thus a full automation can be used, we let the degree of automation in the hands of the user.
