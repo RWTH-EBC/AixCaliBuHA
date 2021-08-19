@@ -32,7 +32,7 @@ Currently, we support the calibration of Modelica models through FMU and Dymola.
 As the former enables a software-independent simulation, our framework is applicable to any time variant simulation software that supports the FMU-standard.
 The overall flowchart automized by `AixCaliBuHA` is depicted in \autoref{fig:flowshart}.
 At the heart of `AixCaliBuHA` lays the definition of data types, which link the python objects to the underlying optimization problem and are used for all subsequent steps.
-This definition is explained in \autoref{sec:problem_def}.
+This definition is explained in this \autoref{sec:problem_def}.
 
 Before executing the calibration, an automated sensitivity analysis can be performed to identify relevant parameters using the `SALib` [@Herman2017].
 In the calibration itself, the optimization is solved by using already published gradient-free solvers (e.g. [@2020SciPy-NMeth; @dlib09; @pymoo]).
@@ -45,7 +45,7 @@ This repository aims to collect modules commonly used to analyze and optimize en
 Lastly, the coupling between Modelica and python is standardized using the small Modelica Library `MoCaTe` (Modelica Calibration Templates).
 However, it's usage is optional. 
 
-![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=20% }
+![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=60% }
 
 
 # Statement of need
@@ -88,7 +88,7 @@ This class contains the goal of the calibration (mathematically speaking the obj
 Lastly, the simulation model $\mathbf{F}$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
 The overall link is displayed in \autoref{fig:link_problem}.
 
-![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=20% }
+![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=80% }
 
 Once these classes are set up, the execution of calibration can be fully automized.
 While the automated extraction of model outputs and parameters and thus a full automation can be used, we let the degree of automation in the hands of the user.
