@@ -88,7 +88,7 @@ This class contains the goal of the calibration (mathematically speaking the obj
 Lastly, the simulation model $F$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
 The overall link is displayed in \autoref{fig:link_problem}.
 
-![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=60% }
+![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=80% }
 
 Once these classes are set up, the execution of calibration can be fully automized.
 While the automated extraction of model outputs and parameters and thus a full automation can be used, we let the degree of automation in the hands of the user.
