@@ -42,7 +42,7 @@ This repository aims to collect modules commonly used to analyze and optimize en
 Lastly, the coupling between Modelica and python is standardized using the small Modelica Library `MoCaTe` (Modelica Calibration Templates).
 However, it's usage is optional. 
 
-![Steps to perform in order to calibrate a dynamic energy system model using `AixCaliBuHA`.\label{fig:flowshart}](docs\img\paper_fig_1.png)
+![Steps to perform in order to calibrate a dynamic energy system model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png)
 
 # Statement of need
 
