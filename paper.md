@@ -30,12 +30,15 @@ bibliography: paper.bib
 `AixCaliBuHA` enables the automated calibration of dynamic building and HVAC (heating, ventilation and air conditioning) simulation models.
 Currently, we support the calibration of Modelica models through FMU and Dymola.
 As the former enables a software-independent simulation, our framework is applicable to any time variant simulation software that supports the FMU-standard.
-The overall flowchart `AixCaliBuHA` automizes is depicted in Figure~\autoref{fig:flowshart}.
+The overall flowchart automized by `AixCaliBuHA` is depicted in \autoref{fig:flowshart}.
 At the heart of `AixCaliBuHA` lays the definition of data types, which link the python objects to the underlying optimization problem and are used for all subsequent steps.
+This definition is explained in \autoref{sec:problem_def}.
+
 Before executing the calibration, an automated sensitivity analysis can be performed to identify relevant parameters using the `SALib` [@Herman2017].
 In the calibration itself, the optimization is solved by using already published gradient-free solvers (e.g. [@2020SciPy-NMeth; @dlib09; @pymoo]).
 The whole process is visualized to inform the user about convergence and design space exploration.
 While the process chain can be fully automated, users can also perform semi-automatic calibration using their expert knowledge.
+
 Furthermore, most classes created for `AixCaliBuHA` are relevant to other research topics. 
 All such classes are lumped in the new repository `ebcpy`.
 This repository aims to collect modules commonly used to analyze and optimize energy systems and building climate conditions.
@@ -60,10 +63,10 @@ Current simulation APIs and gradient-free optimization methods lack a common int
 Switching between different frameworks requires substantial effort and programming knowledge.
 We thus created wrapper classes and extracted them into `ebcpy`.
 `ebcpy` can be used to optimize dynamic simulations and analyze time series data.
-It was already used for the design optimization of heat pump systems in recent publications [@vering_wullhorst_ecm].
+It was already used for the design optimization of heat pump systems in a recent publication [@vering_wullhorst_ecm].
 
 # Link between optimization and class definition
-
+\label{sec:problem_def}
 Before any automated calibration of models can take place, the underlying optimization problem has to be formulated.
 The goal of any calibration is to minimize the deviation between some measured data $\hat{y}(t)$ and simulated data $y(t)$ by varying the model parameters $p$:
 
@@ -75,16 +78,16 @@ The goal of any calibration is to minimize the deviation between some measured d
 &     &&y(t) = \mathbf{F}(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
 \end{alignat*}
 
-In this formulation, $N$ is the number of variables to be matched by the simulation, $w$ is the weighing of the $i$-th measurement and $f$ is some function to evaluate the difference betwenn $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
-As constraints, the parameter have some upper (UB) and lower boundarises (LB).
-Additionally, the simulated data $y(t)$ is output of the simulation model $\mathbf{F}$ which depends on the time $t$, $p$ and time variant input data $u(t)$. 
+In this formulation, $N$ is the number of variables to be matched by the simulation, $w$ is the weighing of the $i$-th measurement and $f$ is some function to evaluate the difference between $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
+As constraints, the parameter have some upper (UB) and lower boundaries (LB).
+Additionally, the simulated data $y(t)$ is output of the simulation model $\mathbf{F}$ which depends on the time $t$, model parameters $p$ and time variant input data $u(t)$. 
 
 This mathematical formulation is transformed into python using a `CalibrationClass`. 
 This class contains the goal of the calibration (mathematically speaking the objective), the parameters to tune (the optimization variables) and further information like simulation time and inputs. 
 Lastly, the simulation model $\mathbf{F}$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
 
 Once these classes are set up, the execution of calibration can be fully automized.
-While the automated extraction of model outputs and parameters and thus a full automation would work, we let the degree of automation in the hands of the user.
+While the automated extraction of model outputs and parameters and thus a full automation can be used, we let the degree of automation in the hands of the user.
 
 Using `CalibrationClass` objects is foundation of the method initially described in [@storek_applying_2019].
 While this method will be submitted to a corresponding journal shortly, the focus lays in the time series analysis, clustering and classification.
