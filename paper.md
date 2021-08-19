@@ -76,16 +76,16 @@ The goal of any calibration is to minimize the deviation between some measured d
 \label{eq:problem}
 &\min_p \quad &&\sum_{i=0}^N w_i\cdot f(y_i(t), \hat{y}_i(t))\\
 &s.t. &&p_\mathrm{LB} \leq p \leq p_\mathrm{UB},\\
-&     &&y(t) = \mathbf{F}(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
+&     &&y(t) = F(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
 \end{alignat*}
 
 In this formulation, $N$ is the number of variables to be matched by the simulation, $w$ is the weighing of the $i$-th measurement and $f$ is some function to evaluate the difference between $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
 As constraints, the parameter have some upper (UB) and lower boundaries (LB).
-Additionally, the simulated data $y(t)$ is output of the simulation model $\mathbf{F}$ which depends on the time $t$, model parameters $p$ and time variant input data $u(t)$. 
+Additionally, the simulated data $y(t)$ is output of the simulation model $F$ which depends on the time $t$, model parameters $p$ and time variant input data $u(t)$. 
 
 This mathematical formulation is transformed into python using a `CalibrationClass`. 
 This class contains the goal of the calibration (mathematically speaking the objective), the parameters to tune (the optimization variables) and further information like simulation time and inputs. 
-Lastly, the simulation model $\mathbf{F}$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
+Lastly, the simulation model $F$ is included by calling one of the `SimulationAPI` childs of `ebcpy`.
 The overall link is displayed in \autoref{fig:link_problem}.
 
 ![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=60% }
