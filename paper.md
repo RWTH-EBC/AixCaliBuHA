@@ -28,7 +28,7 @@ bibliography: paper.bib
 # Summary
 
 `AixCaliBuHA` enables the automated calibration of dynamic building and HVAC (heating, ventilation and air conditioning) simulation models.
-Currently, we support the calibration of Modelica models through FMU and Dymola.
+Currently, we support the calibration of Functional Mock-up Units (FMUs) through the Functional Mock-up Interface (FMI) as well as Modelica models through the `python_interface` of the Software Dymola.
 As the former enables a software-independent simulation, our framework is applicable to any time-variant simulation software that supports the FM standard.
 The overall toolchain automated by `AixCaliBuHA` is depicted in \autoref{fig:flowshart}.
 At the heart of `AixCaliBuHA` lays the definition of data types, which link the python objects to the underlying optimization problem and are used for all subsequent steps.
@@ -39,10 +39,10 @@ In the calibration itself, the optimization is solved by using already published
 The whole process is visualized with optional progress plots to inform the user about convergence and design space exploration.
 While the process chain can be fully automated, users can also perform semi-automatic calibration using their expert knowledge.
 
-Furthermore, most classes created for `AixCaliBuHA` are relevant to other research topics. 
-All such classes are lumped in the new repository `ebcpy`.
+Furthermore, most classes created for `AixCaliBuHA` can be used to automate tasks in simulation based research topics. 
+All such classes are lumped in the new repository \href{https://github.com/RWTH-EBC/ebcpy}{ebcpy}.
 This repository aims to collect modules commonly used to analyze and optimize building energy systems and building indoor environments.
-Lastly, the coupling between Modelica and python is standardized using the small Modelica library `MoCaTe` (Modelica Calibration Templates).
+Lastly, the coupling between Modelica and python is standardized using the small Modelica library \href{https://github.com/RWTH-EBC/Modelica_Calibration_Templates}{Modelica Calibration Templates} (`MoCaTe`).
 However, it's usage is optional. 
 
 ![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=60% }
@@ -69,13 +69,13 @@ It was already used for the design optimization of heat pump systems in a recent
 # Link between optimization and class definition
 \label{sec:problem_def}
 Before any automated calibration of models can take place, the underlying optimization problem has to be formulated.
-The goal of any calibration is to minimize the deviation between some measured data $\hat{y}(t)$ and simulated data $y(t)$ by varying the model parameters $p$:
+The goal of any calibration is to minimize the deviation between some measured data $y(t)$ and simulated data $\hat{y}(t)$ by varying the model parameters $p$:
 
 \begin{alignat*}{2}
 \label{eq:problem}
 &\min_p \quad &&\sum_{i=0}^N w_i\cdot f(y_i(t), \hat{y}_i(t))\\
 &s.t. &&p_\mathrm{LB} \leq p \leq p_\mathrm{UB},\\
-&     &&y(t) = F(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
+&     &&hat{y}(t) = F(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
 \end{alignat*}
 
 In this formulation, $N$ is the number of variables to be matched by the simulation, $w_i$ is the weighing of the $i$-th target variable and $f$ is some function to evaluate the difference between $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
