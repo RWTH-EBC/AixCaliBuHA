@@ -317,9 +317,9 @@ class Goals:
         mean, std = self._tsd_ref.frequency
         if std >= 1e-8:
             logger.critical("The index of your measurement data is not "
-                            f"equally sampled. The standard deviation is {mean.std()}."
+                            "equally sampled. The standard deviation is %s."
                             "The may lead to errors when mapping measurements to simulation "
-                            "results.")
+                            "results.", mean.std())
         return mean
 
 

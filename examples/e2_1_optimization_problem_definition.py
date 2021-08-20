@@ -8,7 +8,6 @@ Goals of this part of the examples:
 """
 # Start by importing all relevant packages
 import pathlib
-import matplotlib.pyplot as plt
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
 # Imports from aixcalibuha

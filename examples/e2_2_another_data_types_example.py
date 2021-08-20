@@ -4,7 +4,7 @@ the data_types module should be clear when looking at the examples.
 If not, please raise an issue.
 """
 import pathlib
-from ebcpy import data_types, preprocessing, TimeSeriesData
+from ebcpy import TimeSeriesData
 from aixcalibuha import CalibrationClass, TunerParas, Goals
 
 
@@ -23,8 +23,10 @@ def setup_goals():
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
-    sim_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValveSimulation.hdf"), key="examples")
-    meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"), key="examples")
+    sim_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValveSimulation.hdf"),
+                                     key="examples")
+    meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"),
+                                      key="examples")
 
     # Setup three variables for different format of setup
     variable_names = {"TCap": ["TCapacity", "heatCapacitor.T"],

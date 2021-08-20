@@ -10,6 +10,13 @@ from examples.e4_calibration_example import run_calibration
 
 
 def main(example="A"):
+    """
+    Arguments of this example:
+
+    :param str example:
+        Whether to use example A (requires windows) or B
+    """
+
     # Parameters for sen-analysis:
     sim_api = setup_fmu(example=example)
     calibration_classes, validation_class = setup_calibration_classes(
