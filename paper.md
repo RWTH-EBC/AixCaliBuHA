@@ -35,7 +35,7 @@ At the heart of `AixCaliBuHA` lays the definition of data types, which link the 
 This definition is explained in this \autoref{sec:problem_def}.
 
 Before executing the calibration, an automated sensitivity analysis can be performed to identify relevant parameters using the `SALib` [@Herman2017].
-In the calibration itself, the optimization is solved by using already published gradient-free solvers (e.g. [@2020SciPy-NMeth; @dlib09; @pymoo]).
+As the derivative of simulations is typically not available, the optimization behind the calibration is solved by using already published gradient-free solvers (e.g. [@2020SciPy-NMeth; @dlib09; @pymoo]).
 The whole process is visualized with optional progress plots to inform the user about convergence and design space exploration.
 While the process chain can be fully automated, users can also perform semi-automatic calibration using their expert knowledge.
 
@@ -75,7 +75,7 @@ The goal of any calibration is to minimize the deviation between some measured d
 \label{eq:problem}
 &\min_p \quad &&\sum_{i=0}^N w_i\cdot f(y_i(t), \hat{y}_i(t))\\
 &s.t. &&p_\mathrm{LB} \leq p \leq p_\mathrm{UB},\\
-&     &&hat{y}(t) = F(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
+&     &&\hat{y}(t) = F(t, p, u(t)) \quad \forall t\in [t_\mathrm{start}, t_\mathrm{end}]
 \end{alignat*}
 
 In this formulation, $N$ is the number of variables to be matched by the simulation, $w_i$ is the weighing of the $i$-th target variable and $f$ is some function to evaluate the difference between $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
