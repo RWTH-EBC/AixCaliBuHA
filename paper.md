@@ -96,8 +96,5 @@ Using `CalibrationClass` objects is the foundation of the method initially descr
 While this method will be submitted to a corresponding journal shortly, the focus lays in the time series analysis, clustering and classification.
 The focus is not, unlike the present paper, the automation of the calibration itself.
 
-# Acknowledgements
-
-TBD
 
 # References
