@@ -30,22 +30,24 @@ class Goals:
     :param dict variable_names:
         A dictionary to construct the goals-DataFrame using pandas MultiIndex-Functionality.
         The dict has to follow the structure.
-        variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}
-            - VARIABLE_NAME: A string which holds the actual name
-                of the variable you use as a goal.
-                E.g.: VARIABLE_NAME="Temperature_Condenser_Outflow"
-            - MEASUREMENT_NAME: Is either a string or a tuple. Hold the name the variable
-                has inside the given meas_target_data. If you want to specify a tag you have
-                to pass a tuple, like: (MEASUREMENT_NAME, TAG_NAME). Else just pass a string.
-                E.g.: MEASUREMENT_NAME="HydraulicBench[4].T_Out" or
-                      MEASUREMENT_NAME=("HydraulicBench[4].T_Out", "preprocessed")
-            - SIMULATION_NAME is either a string or a tuple, just like MEASUREMENT_NAME.
-                E.g. (for Modelica): SIMULATION_NAME="HeatPump.Condenser.Vol.T"
+        ``variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}``
+
+        - VARIABLE_NAME: A string which holds the actual name
+          of the variable you use as a goal.
+          E.g.: ``VARIABLE_NAME="Temperature_Condenser_Outflow"``
+        - MEASUREMENT_NAME: Is either a string or a tuple. Hold the name the variable
+          has inside the given meas_target_data. If you want to specify a tag you have
+          to pass a tuple, like: ``(MEASUREMENT_NAME, TAG_NAME)``. Else just pass a string.
+          E.g.: ``MEASUREMENT_NAME="HydraulicBench[4].T_Out"`` or
+          ``MEASUREMENT_NAME=("HydraulicBench[4].T_Out", "preprocessed")``
+        - SIMULATION_NAME is either a string or a tuple, just like MEASUREMENT_NAME.
+          E.g. (for Modelica): ``SIMULATION_NAME="HeatPump.Condenser.Vol.T"``
+
         You may use a tuple instead of a list OR a dict
         with key "meas" for measurement and key "sim" for simulation. These options may be
         relevant for your own code readability.
-        E.g. variable_names = {VARIABLE_NAME: {"meas":MEASUREMENT_NAME,
-                                               "sim": SIMULATION_NAME}}
+        E.g. ``variable_names =
+        {VARIABLE_NAME: {"meas":MEASUREMENT_NAME, "sim": SIMULATION_NAME}}``
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
         One of the supported methods in
@@ -664,6 +666,7 @@ def merge_calibration_classes(calibration_classes):
     Given a list of multiple calibration-classes, this function merges given
     objects by the "name" attribute. Relevant intervals are set, in order
     to maintain the start and stop-time info.
+
     :param list calibration_classes:
         List containing multiple CalibrationClass-Objects
     :return: list cal_classes_merged:
@@ -679,6 +682,7 @@ def merge_calibration_classes(calibration_classes):
     >>> merged_classes = [CalibrationClass("on", 0, 300,
     >>>                                    relevant_intervals=[(0,100), (200,300)]),
     >>>                   CalibrationClass("off", 100, 200)]
+
     """
     # Use a dict for easy name-access
     temp_merged = {}

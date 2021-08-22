@@ -11,9 +11,7 @@ Welcome to AixCaliBuHa's documentation!
 .. toctree::
    :maxdepth: 2
 
-   tutorial
-   senanalyzer
-   calibration
+   aixcalibuha
 
 Version History
 -------------------

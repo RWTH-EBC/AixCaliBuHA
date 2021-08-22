@@ -55,9 +55,9 @@ class Calibrator(Optimizer):
         time-series is saved. This may make the process much slower
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
-        the simulation fails. See also: ret_val_on_error
-    :keyword float,np.NAN ret_val_on_error
-        Default is np.NAN. If fail_on_error is false, you can specify here
+        the simulation fails. See also: ``ret_val_on_error``
+    :keyword float,np.NAN ret_val_on_error:
+        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
         options are np.NaN, np.inf or some other high numbers. be aware that this
         max influence the solver.
@@ -75,6 +75,7 @@ class Calibrator(Optimizer):
         File ending of created plots.
         Any supported option in matplotlib, e.g. svg, png, pdf ...
         Default is png
+
     """
     # TODO: Add missing kwargs description for recalibration
 
@@ -170,6 +171,7 @@ class Calibrator(Optimizer):
         """
         Default objective function.
         The usual function will be implemented here:
+
         1. Convert the set to modelica-units
         2. Simulate the converted-set
         3. Get data as a dataFrame
@@ -177,9 +179,10 @@ class Calibrator(Optimizer):
         5. Calculate the objective based on statistical values
 
         :param np.array xk:
-        Array with normalized values for the minimizer
-        :return float total_res:
-        Objective value based on the used quality measurement
+            Array with normalized values for the minimizer
+        :return:
+            Objective value based on the used quality measurement
+        :rtype: float
         """
         # Info: This function is called by the optimization framework (scipy, dlib, etc.)
         #%% Initialize class objects
