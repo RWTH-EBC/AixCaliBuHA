@@ -11,13 +11,10 @@ Welcome to AixCaliBuHa's documentation!
 .. toctree::
    :maxdepth: 2
 
+   examples
    aixcalibuha
-
-Version History
--------------------
-
-.. mdinclude::  ../../CHANGELOG.md
-
+   contribution
+   version_his
 
 Indices and tables
 ==================

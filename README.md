@@ -61,4 +61,4 @@ Here you will find several examples to execute.
 Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
 
 # Problems?
-Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues).
+Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues/new).
