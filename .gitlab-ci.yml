@@ -7,7 +7,7 @@ stages:
 
 variables:
   COVERAGE_TYPE: "FMU"
-   PAGES_BRANCH: master
+  PAGES_BRANCH: master
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
