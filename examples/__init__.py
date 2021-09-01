@@ -31,5 +31,4 @@ def setup_calibration_classes(example="B", multiple_classes=True):
     """Setup the CalibrationClasses used in all examples and tests."""
     if example == "A":
         return e2_1_optimization_problem_definition.main(multiple_classes=multiple_classes)
-    else:
-        return e2_2_another_data_types_example.setup_calibration_classes()
+    return e2_2_another_data_types_example.setup_calibration_classes()

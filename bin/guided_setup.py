@@ -23,8 +23,8 @@ def _handle_tsd_input():
             continue
         try:
             TimeSeriesData(fpath, key=key, sheet_name=sheet_name)
-        except KeyError as e:
-            print(e)
+        except KeyError as err:
+            print(err)
             if fpath.endswith(".hdf"):
                 key = input("Pass the key of the hdf and press ENTER:")
             elif fpath.endswith(".xlsx"):
@@ -481,11 +481,11 @@ def main():
               "\n----------------------Run Calibration--------------------\n"
               f"After you made the adjustments, you can run your calibration via:\n"
               f"    'modelica_calibration --config={savepath}'")
-    except Exception as e:
+    except Exception as err:
         _temp_savepath = os.path.join(cd, "guided_setup_config.toml")
         configuration.write_config(_temp_savepath, setup_config)
         print("An error occured in the process.\n"
-              f"{e}"
+              f"{err}"
               "\nRestart the setup with the same values you entered via:\n"
               f"    'guided_setup --config={_temp_savepath}'")
 

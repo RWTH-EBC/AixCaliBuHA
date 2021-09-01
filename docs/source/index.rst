@@ -11,15 +11,10 @@ Welcome to AixCaliBuHa's documentation!
 .. toctree::
    :maxdepth: 2
 
-   tutorial
-   senanalyzer
-   calibration
-
-Version History
--------------------
-
-.. mdinclude::  ../../CHANGELOG.md
-
+   examples
+   aixcalibuha
+   contribution
+   version_his
 
 Indices and tables
 ==================

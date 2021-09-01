@@ -15,7 +15,6 @@ from aixcalibuha import utils
 
 
 class SenAnalyzer(abc.ABC):
-
     """
     Class to perform a Sensitivity Analysis.
 
@@ -32,14 +31,15 @@ class SenAnalyzer(abc.ABC):
         The path for the current working directory.
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
-        the simulation fails. See also: ret_val_on_error
-    :keyword float,np.NAN ret_val_on_error
-        Default is np.NAN. If fail_on_error is false, you can specify here
+        the simulation fails. See also: ``ret_val_on_error``
+    :keyword float,np.NAN ret_val_on_error:
+        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
         options are np.NaN, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
+
     """
 
     def __init__(self,
@@ -75,8 +75,10 @@ class SenAnalyzer(abc.ABC):
         """
         Indicate which variables are
         able to be selected for analysis
-        Returns:
-            List[str]: A list of strings
+
+        :return:
+            A list of strings
+        :rtype: List[str]
         """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_variables '
                                   f'property is not defined yet')
@@ -126,7 +128,8 @@ class SenAnalyzer(abc.ABC):
             Output variables in dymola
         :param cal_class:
             One class for calibration. Goals and tuner_paras have to be set
-        :return np.array
+
+        :returns: np.array
             An array containing the evaluated differences for each sample
         """
         output = []

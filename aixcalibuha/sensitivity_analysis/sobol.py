@@ -13,7 +13,6 @@ class SobolAnalyzer(SenAnalyzer):
     """
     Additional arguments:
 
-    **Keyword-arguments:**
     :keyword bool calc_second_order:
         Default True, used for the sobol-method
     :keyword seed:
@@ -29,6 +28,7 @@ class SobolAnalyzer(SenAnalyzer):
 
     @property
     def analysis_variables(self):
+        """The analysis variables of the sobol method"""
         return ['S1', 'ST', 'S1_conf', 'ST_conf']
 
     def analysis_function(self, x, y):
@@ -69,9 +69,11 @@ class SobolAnalyzer(SenAnalyzer):
                             **self.create_sampler_demand())
 
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
-        """Convert the result object to a dict with the key
+        """
+        Convert the result object to a dict with the key
         being the variable name and the value being the result
-        associated to self.analysis_variable."""
+        associated to self.analysis_variable.
+        """
         names = self.create_problem(cal_class.tuner_paras)['names']
         return {var_name: np.abs(res_val)
                 for var_name, res_val in zip(names,

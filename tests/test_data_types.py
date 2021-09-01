@@ -39,13 +39,15 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
-                                                    key="examples")
+        sim_target_data = data_types.TimeSeriesData(
+            self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
+            key="examples")
         sim_target_data.to_datetime_index()
         sim_target_data.clean_and_space_equally(desired_freq="10ms")
         sim_target_data.to_float_index()
-        meas_target_data = data_types.TimeSeriesData(self.example_dir.joinpath("PumpAndValve.hdf"),
-                                                     key="examples")
+        meas_target_data = data_types.TimeSeriesData(
+            self.example_dir.joinpath("PumpAndValve.hdf"),
+            key="examples")
 
         # Setup three variables for different format of setup
         var_names = {"T": ["TCapacity", "heatCapacitor.T"],
