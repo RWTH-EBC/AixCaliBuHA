@@ -12,8 +12,7 @@ Before being able to run these examples, be sure to:
 3. Clone the library using `git clone --recurse-submodules https://github.com/RWTH-EBC/AixCaliBuHA`
 4. Clone the AixLib in order to use the models: `git clone https://github.com/RWTH-EBC/AixLib`
    Also check if you're on development using `cd AixLib && git status && cd ..`
-5. Install ebcpy using `pip install -e AixCaliBuHA/ebcpy`
-6. Install the library using `pip install -e AixCaliBuHA`
+5. Install the library using `pip install -e AixCaliBuHA`
    
 # What can I learn in the examples?
 
