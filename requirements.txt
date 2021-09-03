@@ -1,6 +1,5 @@
 numpy>=1.19.5
 matplotlib>=3.3.4
-scipy>=1.5.4
 pandas>=1.1.5
 SALib==1.3.12
 ebcpy>=0.2.1
