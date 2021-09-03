@@ -18,10 +18,23 @@ and HVAC Systems easier.
 - **Calibration** of a given model based on the tuner parameters, the calibration classes and specified goals to evaluate the objective function of the underlying optimization
 
 # Installation
-Basic knowlege about **git** and **python** are required to understand the following simple steps.  
-We tested this with `cmd` on a *Windows* 10 machine.
 
-Until this is not publicly available, you have to install it (and [ebcpy](https://github.com/RWTH-EBC/ebcpy)) via:
+To install, simply run
+```
+pip install aixcalibuha
+```
+
+If you encounter an error with the installation of `scikit-learn`, first install `scikit-learn` separatly and then install `ebcpy`:
+
+```
+pip install scikit-learn
+pip install aixcalibuha
+```
+
+If this still does not work, we refer to the troubleshooting section of `scikit-learn`: https://scikit-learn.org/stable/install.html#troubleshooting. Also check [issue 23](https://github.com/RWTH-EBC/ebcpy/issues/23) for updates.
+
+In order to help development, install it as an egg:
+
 ```
 git clone --recurse-submodules https://github.com/RWTH-EBC/AixCaliBuHA
 pip install -e AixCaliBuHA
