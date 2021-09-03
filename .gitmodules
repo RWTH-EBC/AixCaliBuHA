@@ -1,6 +1,3 @@
 [submodule "modelica_calibration_templates"]
 	path = modelica_calibration_templates
 	url = https://github.com/RWTH-EBC/calibration_templates_modelica
-[submodule "ebcpy"]
-	path = ebcpy
-	url = https://github.com/RWTH-EBC/ebcpy

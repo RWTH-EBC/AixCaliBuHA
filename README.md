@@ -24,7 +24,6 @@ We tested this with `cmd` on a *Windows* 10 machine.
 Until this is not publicly available, you have to install it (and [ebcpy](https://github.com/RWTH-EBC/ebcpy)) via:
 ```
 git clone --recurse-submodules https://github.com/RWTH-EBC/AixCaliBuHA
-pip install -e AixCaliBuHA/ebcpy
 pip install -e AixCaliBuHA
 ```
 
