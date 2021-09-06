@@ -142,6 +142,12 @@ class Goals:
 
         # Set the statistical analyzer:
         self.statistical_measure = statistical_measure
+        if not type(statistical_measure) == str:
+            # double check if it is a callable function
+            if callable(statistical_measure):
+                self.statistical_measure_str = statistical_measure.__name__
+        else:
+            self.statistical_measure_str = statistical_measure
 
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
@@ -164,12 +170,12 @@ class Goals:
         return str(self._tsd)
 
     @property
-    def statistical_measure(self) -> str:
+    def statistical_measure(self):
         """The statistical measure of this Goal instance"""
         return self._stat_meas
 
     @statistical_measure.setter
-    def statistical_measure(self, statistical_measure: str):
+    def statistical_measure(self, statistical_measure):
         self._stat_analyzer = StatisticsAnalyzer(method=statistical_measure)
         self._stat_meas = statistical_measure
 
