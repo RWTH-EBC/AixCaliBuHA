@@ -105,7 +105,7 @@ class CalibrationLogger:
         :param float obj:
             Objective value of validation.
         """
-        self.log(f"{self.goals.statistical_measure_str} of validation: {obj}")
+        self.log(f"{self.goals.statistical_measure} of validation: {obj}")
 
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
@@ -268,9 +268,9 @@ class CalibrationLogger:
                 formatted_name = ini_name
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
-        info_string += "     {0:{width}s}".format(self.goals.statistical_measure_str, width=self._width)
+        info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
         info_string += "penaltyfactor"
-        info_string += f"   Unweighted {self.goals.statistical_measure_str}"
+        info_string += f"   Unweighted {self.goals.statistical_measure}"
         return info_string
 
     def _get_tuner_para_values_as_string(self,
@@ -395,7 +395,7 @@ class CalibrationVisualizer(CalibrationLogger):
             # %% Set-up figure for objective-plotting
             self.fig_obj, self.ax_obj = plt.subplots(1, 1)
             self.fig_obj.suptitle(name + ": Objective")
-            self.ax_obj.set_ylabel(self.goals.statistical_measure_str)
+            self.ax_obj.set_ylabel(self.goals.statistical_measure)
             self.ax_obj.set_xlabel("Number iterations")
             # If the changes are small, it seems like the plot does
             # not fit the printed values. This boolean assures that no offset is used.
