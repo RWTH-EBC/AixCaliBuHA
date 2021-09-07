@@ -4,7 +4,7 @@ different other modules in the Python package.
 """
 import warnings
 import logging
-from typing import Union
+from typing import Union, Callable
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -142,12 +142,6 @@ class Goals:
 
         # Set the statistical analyzer:
         self.statistical_measure = statistical_measure
-        if not type(statistical_measure) == str:
-            # double check if it is a callable function
-            if callable(statistical_measure):
-                self.statistical_measure_str = statistical_measure.__name__
-        else:
-            self.statistical_measure_str = statistical_measure
 
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
@@ -175,9 +169,17 @@ class Goals:
         return self._stat_meas
 
     @statistical_measure.setter
-    def statistical_measure(self, statistical_measure):
+    def statistical_measure(self, statistical_measure: Union[str, Callable]):
+        """
+        Set the new statistical measure. The value must be
+        supported by the method argument in the
+        ``StatisticsAnalyzer`` class of ``ebcpy``.
+        """
         self._stat_analyzer = StatisticsAnalyzer(method=statistical_measure)
-        self._stat_meas = statistical_measure
+        if callable(statistical_measure):
+            self._stat_meas = statistical_measure.__name__
+        else:
+            self._stat_meas = statistical_measure
 
     def eval_difference(self, verbose=False, penaltyfactor=1):
         """
