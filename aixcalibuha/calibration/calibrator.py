@@ -66,6 +66,16 @@ class Calibrator(Optimizer):
         to the simulation which are not tuned / variable during calibration.
         Such parameters may be used if the default values in the model don't
         represent the parameter values you want to use.
+    :keyword boolean apply_penalty:
+        Default is true. Specifies if a penalty function should be applied or not.
+    :keyword boolean penalty_factor:
+        Default is 0. Quantifies the impact of the penalty term on the objective function.
+        The penalty factor is added to the objective function.
+    :keyword boolean recalibration_count:
+        Default is 0. Works as a counter and specifies the current cycle of recalibration.
+    :keyword boolean perform_square_deviation:
+        Default is false.
+        If true the penalty function will evaluate the penalty factor with a quadratic approach.
     :keyword int max_itercount:
         Default is Infinity.
         Maximum number of iterations of calibration.
@@ -77,7 +87,6 @@ class Calibrator(Optimizer):
         Default is png
 
     """
-    # TODO: Add missing kwargs description for recalibration
 
     def __init__(self,
                  cd: str,
