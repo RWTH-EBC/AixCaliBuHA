@@ -35,3 +35,6 @@
    - Add examples and fix tutorial
    - Improve validation output
    - Fix version of SALib as 1.4 is not working
+  
+- **v0.2.1**
+   - Unfix version of SALib as 1.4.0.2 and 1.4.4 are not working
