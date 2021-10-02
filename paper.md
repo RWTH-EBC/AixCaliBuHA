@@ -40,7 +40,7 @@ Although the toolchain can be fully automated, users are free to perform semi-au
 
 As most of the classes originally created for `AixCaliBuHA` can be used to automate other tasks in simulation based research, 
 we collect them in the separated project \href{https://github.com/RWTH-EBC/ebcpy}{ebcpy}.
-`ebcpy` aims to collect aims to collect modules commonly used to analyze and optimize building energy systems and building indoor environments.
+`ebcpy` aims to collect modules commonly used to analyze and optimize building energy systems and building indoor environments.
 Last but not least the lightweight Modelica Library \href{https://github.com/RWTH-EBC/Modelica_Calibration_Templates}{Modelica Calibration Templates} (`MoCaTe`) provides a standardized interface for coupling of Modelica models to the calibration toolchain.
 However, it's usage is optional. 
 
@@ -79,7 +79,7 @@ The goal of any calibration is to minimize the deviation between some measured d
 
 Inhere, $N$ is the number of variables to be matched by the simulation, $w_i$ is the weighing of the $i$-th target data and $f$ is some function to evaluate the deviation between $y$ and $\hat{y}$, e.g. the root mean square error (RMSE).
 As constraints, the parameter may have some upper (UB) and lower boundaries (LB).
-Additionally, the $\hat{y}(t)$ is output of the simulation model $F$ taking the time $t$, tuneable model parameters $p$ and time-variant input data $u(t)$ as an inputs. 
+Additionally, $\hat{y}(t)$ is output of the simulation model $F$ taking the time $t$, tuneable model parameters $p$ and time-variant input data $u(t)$ as inputs. 
 
 This mathematical formulation is transformed into python using a `CalibrationClass`. 
 This class contains the goal of the calibration (mathematically speaking the objective), the parameters to tune (the optimization variables) and further information like simulation time and inputs. 
