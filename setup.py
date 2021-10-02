@@ -2,6 +2,11 @@
 
 import setuptools
 
+# read the contents of your README file
+from pathlib import Path
+readme_path = Path(__file__).parent.joinpath("README.md")
+long_description = readme_path.read_text()
+
 INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
@@ -17,6 +22,8 @@ setuptools.setup(
     description='Framework used for sensitivity-analysis'
                 'and calibration for models of HVAC '
                 'components.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
     download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.1.tar.gz',
     license='MIT',
