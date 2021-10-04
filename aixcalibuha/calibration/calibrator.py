@@ -229,7 +229,12 @@ class Calibrator(Optimizer):
                 )
         except Exception as err:
             if self.fail_on_error:
+                self.logger.error("Simulation failed. Raising the error.")
                 raise err
+            self.logger.error(
+                f"Simulation failed. Returning {self.ret_val_on_error}."
+                f"Error message: {err}"
+            )
             return self.ret_val_on_error
 
         self.goals.set_sim_target_data(sim_target_data)
