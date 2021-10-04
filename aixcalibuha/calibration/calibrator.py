@@ -232,8 +232,8 @@ class Calibrator(Optimizer):
                 self.logger.error("Simulation failed. Raising the error.")
                 raise err
             self.logger.error(
-                f"Simulation failed. Returning {self.ret_val_on_error}."
-                f"Error message: {err}"
+                f"Simulation failed. Returning '{self.ret_val_on_error}' "
+                f"for the optimization. Error message: {err}"
             )
             return self.ret_val_on_error
 
