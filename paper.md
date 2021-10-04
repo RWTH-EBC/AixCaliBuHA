@@ -7,16 +7,16 @@ tags:
   - Dynamic models
 authors:
   - name: Fabian Wüllhorst
-    orcid: TODO
+    orcid: 0000-0003-3325-5707
     affiliation: 1
   - name: Thomas Storek
-    orcid: TODO
+    orcid: 0000-0002-2652-1686
     affiliation: 1
   - name: Philipp Mehrfeld
-    orcid: TODO
+    orcid: 0000-0002-9777-9166
     affiliation: 1
   - name: Dirk Müller
-    orcid: TODO
+    orcid: 0000-0002-6106-6607
     affiliation: 1
 affiliations:
  - name: Institute for Energy Efficient Buildings and Indoor Climate, RWTH Aachen University
