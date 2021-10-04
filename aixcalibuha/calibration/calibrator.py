@@ -322,6 +322,13 @@ class Calibrator(Optimizer):
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
 
+        # Check if optimization worked correctly
+        if "Iterate" not in self._current_best_iterate:
+            raise Exception(
+                "Some error during calibration yielded no successful iteration. "
+                "Can't save or return any results."
+            )
+
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
