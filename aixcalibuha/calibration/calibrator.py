@@ -229,7 +229,12 @@ class Calibrator(Optimizer):
                 )
         except Exception as err:
             if self.fail_on_error:
+                self.logger.error("Simulation failed. Raising the error.")
                 raise err
+            self.logger.error(
+                f"Simulation failed. Returning '{self.ret_val_on_error}' "
+                f"for the optimization. Error message: {err}"
+            )
             return self.ret_val_on_error
 
         self.goals.set_sim_target_data(sim_target_data)
@@ -316,6 +321,13 @@ class Calibrator(Optimizer):
                               "Stopping and saving the result.")
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
+
+        # Check if optimization worked correctly
+        if "Iterate" not in self._current_best_iterate:
+            raise Exception(
+                "Some error during calibration yielded no successful iteration. "
+                "Can't save or return any results."
+            )
 
         #%% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
