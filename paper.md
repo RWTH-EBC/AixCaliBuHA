@@ -34,7 +34,7 @@ As the former enables a software-independent simulation, our framework is applic
 At the core of `AixCaliBuHA` lays the definition of data types, that link the python data types to the underlying optimization problem and are used for all subsequent steps.
 
 Before executing the calibration, an automated sensitivity analysis can be performed to identify relevant parameters using the `SALib` [@Herman2017].
-As the derivative of simulations is typically not available, the optimization behind the calibration is solved by using already published gradient-free solvers (e.g. [@2020SciPy-NMeth; @dlib09; @pymoo]).
+As the derivative of simulations is typically not available, the optimization behind the calibration is solved by using already published gradient-free solvers (e.g. @2020SciPy-NMeth; @dlib09; @pymoo).
 The whole process is visualized by optional progress plots to inform the user about convergence and design space exploration.
 Although the toolchain can be fully automated, users are free to perform semi-automatic calibration based on their expert knowledge.
 
@@ -42,7 +42,7 @@ As most of the classes originally created for `AixCaliBuHA` can be used to autom
 we collect them in the separated project \href{https://github.com/RWTH-EBC/ebcpy}{ebcpy}.
 `ebcpy` aims to collect modules commonly used to analyze and optimize building energy systems and building indoor environments.
 Last but not least the lightweight Modelica Library \href{https://github.com/RWTH-EBC/Modelica_Calibration_Templates}{Modelica Calibration Templates} (`MoCaTe`) provides a standardized interface for coupling of Modelica models to the calibration toolchain.
-However, it's usage is optional. 
+However, its usage is optional. 
 
 ![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=60% }
 
@@ -55,7 +55,7 @@ As 74 % of calibrations are performed manually [@coakley2014review], there is a 
 Therefore, we developed `AixCaliBuHA` to automate the calibration process of energy-related building and HVAC system models.
 As such models are inherently time dependent and Modelica is quite popular in the context of building performance simulation, we focus the development onto such use cases.
 However, the code can also be extended to static calibration or other simulation languages.
-`AixCaliBuHA` was already used in various contributions concerning calibration and digital twins. [@vering_borges; @Mehrfeld.HPC.2020; @storek_applying_2019; @ModelicaConferenceWullhorst].
+`AixCaliBuHA` was already used in various contributions concerning calibration and digital twins [@vering_borges; @Mehrfeld.HPC.2020; @storek_applying_2019; @ModelicaConferenceWullhorst].
 We hope to extend the circle of users and developers by making the code fully open-source.
 
 While implementing `AixCaliBuHA`, we identified a secondary need. 
