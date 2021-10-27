@@ -18,14 +18,14 @@ INSTALL_REQUIRES = [
 
 setuptools.setup(
     name='aixcalibuha',
-    version='0.2.1',
+    version='0.2.2',
     description='Framework used for sensitivity-analysis'
                 'and calibration for models of HVAC '
                 'components.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
-    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.1.tar.gz',
+    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.2.tar.gz',
     license='MIT',
     author='RWTH Aachen University, E.ON Energy Research Center, Institute '
            'of Energy Efficient Buildings and Indoor Climate',
@@ -44,6 +44,6 @@ setuptools.setup(
         'calibration', 'building', 'energy',
         'black-box optimization', 'sensitivity_analysis'
     ],
-    packages=setuptools.find_packages(exclude=['img']),
+    packages=setuptools.find_packages(exclude=['tests', 'tests.*', 'img']),
     install_requires=INSTALL_REQUIRES
 )
