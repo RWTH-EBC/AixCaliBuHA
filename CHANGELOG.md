@@ -38,3 +38,6 @@
   
 - **v0.2.1**
    - Unfix version of SALib as 1.4.0.2 and 1.4.4 are not working
+
+- **v0.2.2**
+   - Issue 21: Fix setup.py by removing the tests packages 
