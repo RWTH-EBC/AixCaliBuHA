@@ -8,6 +8,7 @@ stages:
 variables:
   COVERAGE_TYPE: "FMU"
   PAGES_BRANCH: master
+  EXLUDE_PYTHON: 39
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
