@@ -32,6 +32,7 @@ The examples 3-5 are written for both, so just alter the parameter in the `if __
 1. Learn how to analyze the model of your energy system
 2. Improve your `SimulationAPI` knowledge
 3. Improve your skill-set on `TimeSeriesData`
+4. Generate some measured data to later use in a calibration
 
 ## `e2_A_optimization_problem_definition.py` and `e2_B_optimization_problem_definition.py`
 
