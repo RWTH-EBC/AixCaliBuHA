@@ -34,4 +34,4 @@ def main(example="A"):
 
 
 if __name__ == '__main__':
-    main(example="A")
+    main(example="B")
