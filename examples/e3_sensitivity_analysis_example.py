@@ -53,7 +53,7 @@ def run_sensitivity_analysis(sim_api, cal_classes):
 if __name__ == "__main__":
     from examples import setup_fmu, setup_calibration_classes
     # Parameters for sen-analysis:
-    EXAMPLE = "A"  # Or choose B
+    EXAMPLE = "B"  # Or choose A
     SIM_API = setup_fmu(example=EXAMPLE)
     CALIBRATION_CLASSES = setup_calibration_classes(example=EXAMPLE)[0]
 

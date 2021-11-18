@@ -1,8 +1,9 @@
 """
 Goals of this part of the examples:
-1. Learn how to analyze your energy system
-2. Improve your `DymolaAPI` knowledge
+1. Learn how to analyze the model of your energy system
+2. Improve your `SimulationAPI` knowledge
 3. Improve your skill-set on `TimeSeriesData`
+4. Generate some measured data to later use in a calibration
 """
 # Start by importing all relevant packages
 import pathlib
@@ -74,7 +75,7 @@ def main(
     )
 
     # ######################### Data analysis ##########################
-    # Now let's anaylze the data we've generated.
+    # Now let's analyze the data we've generated.
     # Open the file first and extract variables of interest.
     # We want to match electrical power consumption (Pel) and room comfort (TAir)
     # in this example.

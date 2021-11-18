@@ -26,11 +26,16 @@ class TestModelicaCalibrator(unittest.TestCase):
 
         # As the examples should work, and the cal_class example uses the other examples,
         # we will test it here:
-        meas_target_data = TimeSeriesData(self.data_dir.joinpath("PumpAndValve.hdf"), key="test")
+        meas_target_data = TimeSeriesData(
+            self.data_dir.joinpath("PumpAndValve.hdf"), key="examples"
+        )
+        meas_target_data.to_float_index()
 
         # Setup three variables for different format of setup
-        var_names = {"TCap": ["heatCapacitor.T", "heatCapacitor.T"],
-                     "TPipe": {"meas": "pipe.T", "sim": "pipe.T"}}
+        variable_names = {
+            "TCap": ["TCapacity", "heatCapacitor.T"],
+            "TPipe": {"meas": "TPipe", "sim": "pipe.T"}
+        }
 
         tuner_paras = TunerParas(names=["speedRamp.duration", "valveRamp.duration"],
                                  initial_values=[0.1, 0.1],
@@ -38,7 +43,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Real "best" values: speedRamp.duration=0.432 and valveRamp.duration=2.5423
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
-                      variable_names=var_names,
+                      variable_names=variable_names,
                       statistical_measure="NRMSE")
         self.calibration_classes = [
             CalibrationClass(name="First", start_time=0, stop_time=1,
