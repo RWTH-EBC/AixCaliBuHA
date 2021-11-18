@@ -74,7 +74,7 @@ def main(
     )
 
     # ######################### Data analysis ##########################
-    # Now let's anaylze the data we've generated.
+    # Now let's analyze the data we've generated.
     # Open the file first and extract variables of interest.
     # We want to match electrical power consumption (Pel) and room comfort (TAir)
     # in this example.
