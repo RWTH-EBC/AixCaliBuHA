@@ -14,8 +14,12 @@ To execute these examples, be sure to:
 
 We have two models to show the calibration process for different components inside typical building and HVAC systems.
 
-- Example model A: This model is of a heat pump system supplying heat to a room using a radiator. The models are based on the `AixLib`.
-- Example model B: This model is of a pump and a valve from the Modelica Standard Library. 
+- **Example model A**: This model is of a heat pump system supplying heat to a room using a radiator. The models are based on the `AixLib`.
+![img.png](./data/img_A.png)
+  
+- **Example model B**: This model is of a pump and a valve from the Modelica Standard Library. 
+![img.png](./data/img_B.png)
+  
 
 Currently, example A runs only on windows. Example B runs on both linux and windows.
 To follow a specific example A or B, execute the first and second example for the case, for instance `e1_A`.
