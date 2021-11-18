@@ -57,7 +57,7 @@ def main(
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
 
-    # Start by loading the measured data generated in 1_energy_system_analysis.py:
+    # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
 
