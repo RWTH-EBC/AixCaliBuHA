@@ -22,6 +22,7 @@ We have two models to show the calibration process for different components insi
   
 
 Currently, example A runs only on windows. Example B runs on both linux and windows.
+Additionally, you need Dymola installed for the first example of model A. If you don't have Dymola, just follow example B or skip the first example. It's not vital to understand this framework, it just helps to understand the energy system analysis prior to calibration.
 To follow a specific example A or B, execute the first and second example for the case, for instance `e1_A`.
 The examples 3-5 are written for both, so just alter the parameter in the `if __name__ == '__main__'` section, for instance `EXAMPLE = A` to `EXAMPLE = B`.
 
