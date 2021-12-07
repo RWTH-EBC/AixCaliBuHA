@@ -13,6 +13,7 @@ from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha.utils import visualizer, MaxIterationsReached
 from aixcalibuha import CalibrationClass, Goals, TunerParas
+import multiprocessing as mp
 
 
 class Calibrator(Optimizer):
@@ -176,7 +177,7 @@ class Calibrator(Optimizer):
                         f"to measurement target data frequency: {mean_freq}")
         self.sim_api.sim_setup.output_interval = mean_freq
 
-    def obj(self, xk, *args):
+    def obj(self, xk, work_id, *args):
         """
         Default objective function.
         The usual function will be implemented here:
@@ -189,6 +190,8 @@ class Calibrator(Optimizer):
 
         :param np.array xk:
             Array with normalized values for the minimizer
+        :param int work_id:
+            id for worker in Multiprocessing
         :return:
             Objective value based on the used quality measurement
         :rtype: float
@@ -223,6 +226,7 @@ class Calibrator(Optimizer):
                 sim_target_data = data_types.TimeSeriesData(_filepath)
             else:
                 sim_target_data = self.sim_api.simulate(
+                    work_id=work_id,
                     parameters=parameters,
                     inputs=self.calibration_class.inputs,
                     **self.calibration_class.input_kwargs
@@ -285,6 +289,19 @@ class Calibrator(Optimizer):
                 "Terminating calibration as the maximum number "
                 f"of iterations {self.max_itercount} has been reached."
             )
+        return total_res
+
+    def mp_obj(self, x, *args):
+        n_cpu = 2
+        pool = mp.Pool(n_cpu)
+        total_res = []
+        i = 0
+        for i in range(0, len(x), n_cpu):
+            x_cpu = []
+            for j in range(n_cpu):
+                x_cpu.append(x[i+j])
+            results = pool.starmap(self.obj, [(_x, counter+3, *args) for counter, _x in enumerate(x_cpu)])
+            total_res.append(results)
         return total_res
 
     def calibrate(self, framework, method=None, **kwargs) -> dict:
