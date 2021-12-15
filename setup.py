@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
     'toml>=0.10.2'
 ]
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 
 setuptools.setup(
@@ -28,7 +28,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
-    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.2.tar.gz',
+    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.3.tar.gz',
     license='MIT',
     author='RWTH Aachen University, E.ON Energy Research Center, Institute '
            'of Energy Efficient Buildings and Indoor Climate',
