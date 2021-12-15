@@ -44,3 +44,5 @@
 
 - **v0.2.3**
    - Add semantic release and workflows 
+
+<!--next-version-placeholder-->

@@ -28,7 +28,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
-    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.3.tar.gz',
+    download_url=f'https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/{__version__}.tar.gz',
     license='MIT',
     author='RWTH Aachen University, E.ON Energy Research Center, Institute '
            'of Energy Efficient Buildings and Indoor Climate',
