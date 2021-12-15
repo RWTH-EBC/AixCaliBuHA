@@ -16,9 +16,12 @@ INSTALL_REQUIRES = [
     'toml>=0.10.2'
 ]
 
+__version__ = "0.2.2"
+
+
 setuptools.setup(
     name='aixcalibuha',
-    version='0.2.2',
+    version=__version__,
     description='Framework used for sensitivity-analysis'
                 'and calibration for models of HVAC '
                 'components.',
