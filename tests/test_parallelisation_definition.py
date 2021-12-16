@@ -82,23 +82,23 @@ def main(
         CalibrationClass(  # Exp1: Frosting
             name="On",
             start_time=100,
-            stop_time=4700
-        ),
-        CalibrationClass(
-            name="On",  # Exp1: Defrosting
-            start_time=4850,
-            stop_time=9460
-        ),
-        CalibrationClass(
-            name="On",  # Exp1: Defrosting
-            start_time=9560,
-            stop_time=11890
-        ),
-        CalibrationClass(
-            name="On",  # Exp1: Defrosting
-            start_time=12100,
-            stop_time=14000
+            stop_time=1000
         )
+        # CalibrationClass(
+        #     name="On",  # Exp1: Defrosting
+        #     start_time=4850,
+        #     stop_time=9460
+        # ),
+        # CalibrationClass(
+        #     name="On",  # Exp1: Defrosting
+        #     start_time=9560,
+        #     stop_time=11890
+        # ),
+        # CalibrationClass(
+        #     name="On",  # Exp1: Defrosting
+        #     start_time=12100,
+        #     stop_time=14000
+        # )
     ]
     # Set the latter three for all classes.
     # First load the inputs of the calibration:
