@@ -3,7 +3,6 @@ stages:
   - doc
   - code_quality
   - build
-  - semantic_release
   - deploy
 
 variables:
@@ -24,7 +23,5 @@ include:
     file: 'python/unit-tests/unittest.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/coverage.gitlab-ci.yml'
-  - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: 'python/semantic-release/semantic-release.gitlab-ci.yml'
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml
