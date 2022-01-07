@@ -14,6 +14,8 @@ from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha.utils import visualizer, MaxIterationsReached
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 import multiprocessing as mp
+import ray
+from ray.util.multiprocessing import Pool
 import multiprocessing_logging
 
 
@@ -330,14 +332,13 @@ class Calibrator(Optimizer):
                 )
                 return self.ret_val_on_error
 
-            return sim_target_data, xk
+            return sim_target_data
 
     def mp_obj(self, x, *args):
         #TODO: Check if x can be divided by n_cpu
-        n_cpu = 2
+        n_cpu = 10
 
-        # Initialize Pool
-        pool = mp.Pool(n_cpu)
+
 
         total_res_list = []
 
@@ -352,27 +353,31 @@ class Calibrator(Optimizer):
             x_cpu = []
             results = []
             xk = []
+            xk_descaled = []
             parameter_list = []
             for j in range(n_cpu):
                 x_cpu.append(x[i+j])
 
-            for _x in range(len(x_cpu)):
+            for number, _x in enumerate(x_cpu):
                 # Convert set if multiple goals of different scales are used
-                xk_descaled = self.tuner_paras.descale(_x)
+                xk_descaled.append(self.tuner_paras.descale(_x))
 
                 # Update Parameters
-                parameters.update({name: value for name, value in zip(initial_names, xk_descaled.values)})
+                parameters.update({name: value for name, value in zip(initial_names, xk_descaled[number].values)})
                 parameter_list.append(parameters)
 
             # Start simultaneous Simulation
-            results, xk = pool.starmap(self.obj, [(_x, parameter_list[counter], counter, *args) for counter, _x in enumerate(x_cpu)])
+            # Initialize Pool
+            pool = mp.Pool(n_cpu)
+            results = pool.starmap(self.obj, [(_x, parameter_list[counter], counter, *args) for counter, _x in enumerate(x_cpu)])
+            pool.close()
 
             for single_log in range(len(results)):
                 self._counter += 1
                 self._current_iterate = results[single_log]
-                xk_descaled = self.tuner_paras.descale(xk[single_log])
+                xk = self.tuner_paras.scale(xk_descaled[single_log])
 
-                self.goals.set_sim_target_data(results)
+                self.goals.set_sim_target_data(results[single_log])
                 # Trim results based on start and end-time of cal class
                 self.goals.set_relevant_time_intervals(self.calibration_class.relevant_intervals)
 
@@ -393,13 +398,13 @@ class Calibrator(Optimizer):
                     verbose=True,
                     penaltyfactor=penaltyfactor
                 )
-                # if self.at_calibration:  # Only plot if at_calibration
-                #     self.logger.calibration_callback_func(
-                #         xk=xk,
-                #         obj=total_res,
-                #         verbose_information=unweighted_objective,
-                #         penalty=penalty
-                #     )
+                if self.at_calibration:  # Only plot if at_calibration
+                    self.logger.calibration_callback_func(
+                        xk=xk,
+                        obj=total_res,
+                        verbose_information=unweighted_objective,
+                        penalty=penalty
+                    )
                 # current best iteration step of current calibration class
                 if total_res < self._current_best_iterate["Objective"]:
                     # self.best_goals = self.goals
