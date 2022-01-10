@@ -30,6 +30,7 @@ bibliography: paper.bib
 `AixCaliBuHA` enables an automated calibration of dynamic building and HVAC (heating, ventilation and air conditioning) simulation models.
 Currently, the package supports the calibration of Functional Mock-up Units (FMUs) based on the Functional Mock-up Interface (FMI) standard [@fmi_standard] as well as Modelica models through the `python_interface` of the Software Dymola [@dymola_software].
 As the former enables a software-independent simulation, our framework is applicable to any time-variant simulation software that supports the FMI standard.
+Using these interfaces, we enable the automated calibration of state-of-the-art building performance simulation libraries such as the `Buildings` [@buildings] or the `AixLib` [@muller_aixlib_2016] library. 
 \autoref{fig:flowshart} illustrates the overall toolchain automated by `AixCaliBuHA`.
 At the core of `AixCaliBuHA` lays the definition of data types, that link the python data types to the underlying optimization problem and are used for all subsequent steps.
 
@@ -55,15 +56,19 @@ As 74 % of calibrations are performed manually [@coakley2014review], there is a 
 Therefore, we developed `AixCaliBuHA` to automate the calibration process of energy-related building and HVAC system models.
 As such models are inherently time dependent and Modelica is quite popular in the context of building performance simulation, we focus the development onto such use cases.
 However, the code can also be extended to static calibration or other simulation languages.
+For the underlying optimization, we build upon various existing gradient-free frameworks.
+Currently, switching between different frameworks requires substantial implementation effort and programming knowledge.
+We thus created a wrapper class to handle different available frameworks.
 `AixCaliBuHA` was already used in various contributions concerning calibration and digital twins [@vering_borges; @Mehrfeld.HPC.2020; @storek_applying_2019; @ModelicaConferenceWullhorst].
 We hope to extend the circle of users and developers by making the code fully open-source.
 
-While implementing `AixCaliBuHA`, we identified a secondary need. 
-Current simulation APIs and gradient-free optimization methods lack a common interface.
-Switching between different frameworks requires substantial implementation effort and programming knowledge.
-Thus, we created wrapper classes and bundled them into `ebcpy`.
-`ebcpy` can be used to optimize dynamic simulation models and analyze time series data.
-It has been already used for the design optimization of heat pump systems in a recent publication [@vering_wullhorst_ecm].
+While implementing `AixCaliBuHA`, we found that some classes and functions may be useful for other research questions. 
+First, the class `SimulationAPI` can be used to automate any simulation based task. 
+Second, the gradient-free `Optimizer` is able to optimize any model parameter of a dynamic simulation model.
+Third, the custom `TimeSeriesData` may be useful for tasks encompassing energy system analysis.
+Thus, we bundled these three features into `ebcpy`.
+Using the library as a base, various tools for the analysis and optimization of dynamic simulation models may be derived.
+For instance, it has already been used for the design optimization of heat pump systems in a recent publication [@vering_wullhorst_ecm].
 
 # Link between optimization and class definition
 \label{sec:problem_def}
