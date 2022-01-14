@@ -336,7 +336,7 @@ class Calibrator(Optimizer):
 
     def mp_obj(self, x, *args):
         #TODO: Check if x can be divided by n_cpu
-        n_cpu = 2
+        n_cpu = 10
 
 
 
@@ -364,7 +364,8 @@ class Calibrator(Optimizer):
 
                 # Update Parameters
                 parameters.update({name: value for name, value in zip(initial_names, xk_descaled[number].values)})
-                parameter_list.append(parameters)
+                parameter_copy = parameters.copy()
+                parameter_list.append(parameter_copy)
 
             # Start simultaneous Simulation
             # Initialize Pool    !!!!!Leaving this pool alone!!!!
@@ -406,8 +407,6 @@ class Calibrator(Optimizer):
                 )
                 return self.ret_val_on_error
 
-            #### Changes end here
-
             for single_log in range(len(results)):
                 self._counter += 1
                 self._current_iterate = results[single_log]
@@ -422,8 +421,8 @@ class Calibrator(Optimizer):
                 if self.recalibration_count > 1 and self.apply_penalty:
                     # There is no benchmark in the first iteration or
                     # first iterations were skipped, so no penalty is applied
-                    current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
-                    penaltyfactor = self.get_penalty(xk_descaled, current_tuner_scaled)
+                    current_tuner_scaled = xk
+                    penaltyfactor = self.get_penalty(xk_descaled[single_log], current_tuner_scaled)
                     # Evaluate with penalty
                     penalty = penaltyfactor
                 else:
@@ -463,7 +462,7 @@ class Calibrator(Optimizer):
                     )
 
                 # Add single objective to objective list of total Population
-                total_res_list[i] = total_res
+                total_res_list[i+single_log] = total_res
 
         return total_res_list
 

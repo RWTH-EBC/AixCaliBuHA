@@ -19,7 +19,7 @@ def main():
         ],
         show_window=True,
         n_restart=100,
-        n_cpu=2,
+        n_cpu=10,
         equidistant_output=False
     )
     sim_api.set_sim_setup({
