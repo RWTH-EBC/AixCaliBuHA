@@ -336,11 +336,11 @@ class Calibrator(Optimizer):
 
     def mp_obj(self, x, *args):
         #TODO: Check if x can be divided by n_cpu
-        n_cpu = 10
+        n_cpu = 2
 
 
 
-        total_res_list = []
+        total_res_list = np.empty([100, 1])
 
         # Set initial values of variable and fixed parameters
         self.sim_api.result_names = self.goals.get_sim_var_names()
@@ -367,10 +367,46 @@ class Calibrator(Optimizer):
                 parameter_list.append(parameters)
 
             # Start simultaneous Simulation
-            # Initialize Pool
-            pool = mp.Pool(n_cpu)
-            results = pool.starmap(self.obj, [(_x, parameter_list[counter], counter, *args) for counter, _x in enumerate(x_cpu)])
-            pool.close()
+            # Initialize Pool    !!!!!Leaving this pool alone!!!!
+            # pool = mp.Pool(n_cpu)
+            # results = pool.starmap(self.obj, [(_x, parameter_list[counter], counter, *args)
+            #                                   for counter, _x in enumerate(x_cpu)])
+            # pool.close()
+
+            # Simulate
+            # pylint: disable=broad-except
+            try:
+                # Generate the folder name for the calibration
+                if self.save_files:
+                    savepath_files = os.path.join(self.sim_api.cd,
+                                                  f"simulation_{self._counter}")
+                    _filepath = self.sim_api.multi_simulate(
+                        parameters=parameter_list,
+                        return_option="savepath",
+                        savepath=savepath_files,
+                        inputs=self.calibration_class.inputs,
+                        **self.calibration_class.input_kwargs
+                    )
+                    # %% Load results and write to goals object
+                    results = data_types.TimeSeriesData(_filepath)
+                else:
+                    results = self.sim_api.multi_simulate(
+                        work_id=1,
+                        parameter_list=parameter_list,
+                        inputs=self.calibration_class.inputs,
+                        **self.calibration_class.input_kwargs
+                    )
+            except Exception as err:
+                if self.fail_on_error:
+                    self.logger.error("Simulation failed. Raising the error.")
+                    raise err
+                self.logger.error(
+                    f"Simulation failed. Returning '{self.ret_val_on_error}' "
+                    f"for the optimization. Error message: {err}"
+                )
+                return self.ret_val_on_error
+
+            #### Changes end here
 
             for single_log in range(len(results)):
                 self._counter += 1
@@ -427,7 +463,7 @@ class Calibrator(Optimizer):
                     )
 
                 # Add single objective to objective list of total Population
-                total_res_list.append(total_res)
+                total_res_list[i] = total_res
 
         return total_res_list
 
