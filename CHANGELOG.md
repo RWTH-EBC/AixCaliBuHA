@@ -43,6 +43,4 @@
    - Issue 21: Fix setup.py by removing the tests packages 
 
 - **v0.2.3**
-   - Add semantic release and workflows 
-
-<!--next-version-placeholder-->
+   - Add workflows
