@@ -41,3 +41,6 @@
 
 - **v0.2.2**
    - Issue 21: Fix setup.py by removing the tests packages 
+
+- **v0.2.3**
+   - Add workflows
