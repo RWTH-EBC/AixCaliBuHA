@@ -2,7 +2,7 @@ import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
-def run_calibration(sim_api, cal_classes, validation_class):
+def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
     """
     Run an example for a calibration. Make sure you have Dymola installed
     on your device and a working licence. All output data will be stored in
@@ -20,10 +20,13 @@ def run_calibration(sim_api, cal_classes, validation_class):
         Calibrator is used.
     :param CalibrationClass validation_class:
         Class used to validate the findings.
+    :param int n_cpu:
+        Number of logical Processors to run calibration on.
     """
     # %% Settings:
+    # if the selected framework is "pymoo" method is the used algorithm and will be later automatically set to "DE"
     framework = "pymoo"
-    method = "GA"
+    method = "DE"
     # Specify values for keyword-arguments to customize the Calibration process for single-class
     kwargs_calibrator = {"timedelta": 0,
                          "save_files": False,
@@ -56,6 +59,14 @@ def run_calibration(sim_api, cal_classes, validation_class):
                         "jac": None,
                         "hess": None,
                         "hessp": None}
+    kwargs_pymoo = {"n_cpu": n_cpu,
+                    "pop_size": 10,  # pop size in DE is this value multiplied with the number of parameters
+                    "sampling": "real_lhs",
+                    "variant": "DE/rand/1/bin",
+                    "F": (0.7, 1.0),
+                    "CR": 0.7,
+                    "dither": "no",
+                    "jitter": False}
 
     # Merge the dictionaries into one.
     # If you change the solver, also change the solver-kwargs-dict in the line below
@@ -65,6 +76,9 @@ def run_calibration(sim_api, cal_classes, validation_class):
         kwargs_optimization = kwargs_scipy_min
     elif framework == "dlib_minimize":
         kwargs_optimization = kwargs_dlib_min
+    elif framework == "pymoo":
+        kwargs_optimization = kwargs_pymoo
+        method = "DE"
     else:
         kwargs_optimization = {}
     # Select between single or multiple class calibration

@@ -4,6 +4,8 @@ from ebcpy import DymolaAPI
 
 
 def main():
+    # Choose number of Processors you want to run the calibration on
+    n_cpu = 10
     # Parameters for sen-analysis:
     sim_api = DymolaAPI(
         model_name="CalibrationFramework_OptiHorst.calibrationSimulator",
@@ -19,7 +21,7 @@ def main():
         ],
         show_window=True,
         n_restart=100,
-        n_cpu=10,
+        n_cpu=n_cpu,
         equidistant_output=False
     )
     sim_api.set_sim_setup({
@@ -28,14 +30,15 @@ def main():
     })
     calibration_classes, validation_class = tests.test_parallelisation_definition.main(
         statistical_measure="NRMSE",
-        multiple_classes=True
+        multiple_classes=True,
     )
     # just testing
     # sim_api.simulate(return_option="savepath")
     # Calibration
     run_calibration(sim_api=sim_api,
                     cal_classes=calibration_classes,
-                    validation_class=validation_class)
+                    validation_class=validation_class,
+                    n_cpu=n_cpu)
 
 
 if __name__ == '__main__':
