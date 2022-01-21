@@ -81,6 +81,10 @@ def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
         method = "DE"
     else:
         kwargs_optimization = {}
+    # Check if pymoo is being used for Multiprocessing
+    if not framework == "pymoo" and n_cpu > 1:
+        raise TypeError(f"Given framework {framework} does not support Multiprocessing."
+                        f" Please use pymoo as your framework.")
     # Select between single or multiple class calibration
     if isinstance(cal_classes, CalibrationClass):
         modelica_calibrator = Calibrator(
