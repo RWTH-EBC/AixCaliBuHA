@@ -174,7 +174,7 @@ def main(
         )
     ]
 
-    # ######################### Merge multiple classes ##########################
+    # ## Merge multiple classes
     # If wanted, we can merge multiple classes and optimize them as one.
     # Example:
     print([c.name for c in calibration_classes])
