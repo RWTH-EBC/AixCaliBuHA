@@ -1,11 +1,12 @@
-"""
-Goals of this part of the examples:
-1. Learn how to formulate your calibration problem using our data_types
-2. Get to know `TunerParas`
-3. Get to know `Goals`
-4. Get to know `CalibrationClass`
-5. Learn how to merge multiple classes
-"""
+# # Example 2-B Optimization problem definition
+
+# Goals of this part of the examples:
+# 1. Learn how to formulate your calibration problem using our data_types
+# 2. Get to know `TunerParas`
+# 3. Get to know `Goals`
+# 4. Get to know `CalibrationClass`
+# 5. Learn how to merge multiple classes
+#
 # Start by importing all relevant packages
 import pathlib
 # Imports from ebcpy
@@ -32,18 +33,33 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     """
-    # ######################### Tuner Parameter ##########################
-    tuner_paras = TunerParas(names=["speedRamp.duration", "valveRamp.duration"],
-                             initial_values=[0.1, 0.1],
-                             bounds=[(0.1, 10), (0.1, 10)])
-
+    # ## Tuner Parameters
+    # Tuner parameters are the optimization variables we will be
+    # changing to match the simulated onto the measured output.
+    #
+    # As described in the first example (e1_B_energy_system_analysis),
+    # we've changed two parameters in the model.
+    # To define tuner parameters, you have to specify
+    # - the name of the parameter
+    # - an initial guess
+    # - boundaries as a (min, max) tuple.
+    # Note that the initial guess is not always used by optimization routines.
+    # We've chosen to make it a requirement to prevent blindly accepting
+    # calibration results. If the result is very far away from your initial guess
+    # and you though you understand the model, maybe the parameter is just not
+    # sensitive or influenced by another parameter.
+    tuner_paras = TunerParas(
+        names=["speedRamp.duration", "valveRamp.duration"],
+        initial_values=[0.1, 0.1],
+        bounds=[(0.1, 10), (0.1, 10)]
+    )
     print(tuner_paras)
     print("Names of parameters", tuner_paras.get_names())
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
 
-    # ######################### Goals ##########################
+    # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
@@ -70,7 +86,11 @@ def main(
     # Thus, convert it:
     meas_target_data.to_float_index()
 
-    # Lastly, setup the goals object
+    # Lastly, setup the goals object. Note that the statistical_measure
+    # is parameter of the python version of this example. It's a metric to
+    # compare two set's of time series data. Which one to choose is up to
+    # your expert knowledge. If you have no clue, raise an issue or read
+    # basic literature on calibration.
     goals = Goals(
         meas_target_data=meas_target_data,
         variable_names=variable_names,
@@ -112,15 +132,24 @@ def main(
               "why this happens based on the following message?")
         print(err)
 
-    # ######################### Calibration Classes ##########################
+    # ## Calibration Classes
     # We now are going to wrap everything up into a single object called
     # `CalibrationClass`.
-    # Each class has a name, a start_time, stop_time and
-    # goals, tuner parameters and inputs. The latter three can be set for all
+    # Each class has a `name`, a `start_time`, `stop_time` and
+    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
+    # The latter three can be set for all
     # classes if a distinction is not required.
-    # Why do we use CalibrationClasses? Because we expect different parameters
+    # ### Why do we use a `CalibrationClass`?
+    # Because this class contains all information necessary
+    # to perform both sensitivity analysis and calibration automatically.
+    # ### Can there be multiple classes?
+    # Yes! Because we expect different tuner parameters
     # to influence the outputs based on the state of the system,
-    # e.g. 'heat up', 'cool down' and 'stationary'.
+    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
+    # optimization problem, separating tuner parameters into time intervals
+    # can be handy. For example heat losses to the ambient may be most
+    # sensitive if the device is just turned off, while efficiency is more
+    # sensitive during runtime.
 
     # Let's also define some different tuner parameters for the last stationary class.
     different_tuner_paras = TunerParas(names=["speedRamp.duration"],
