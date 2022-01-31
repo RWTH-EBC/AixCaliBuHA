@@ -27,5 +27,6 @@ include:
     file: 'python/unit-tests/coverage.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/examples/examples.gitlab-ci.yml'
+    ref: '18-add-example-file-converter'
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml
