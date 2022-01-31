@@ -30,7 +30,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
         a list with one entry or a CalibrationClass object) the single-class
         Calibrator is used.
     """
-
     # ## Setup
     # Start by loading the simulation api and the calibration classes
     from examples import setup_fmu, setup_calibration_classes
@@ -42,7 +41,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
     )
     if cal_classes is None:
         cal_classes = default_cal_classes
-
     # ## Calibration and optimization settings
     # We refer to the docstrings on more information on each setting.
     # Specify values for keyword-arguments to customize
@@ -62,11 +60,9 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
     # Specify values for keyword-arguments to customize
     # the Calibration process for a multiple-class calibration
     kwargs_multiple_classes = {"merge_multiple_classes": True}
-
     # Specify the framework and the method for the underlying optimization:
     framework = "scipy_differential_evolution"
     method = "best1bin"
-
     # Specify solver-specific keyword-arguments depending on the solver and method you will use
     kwargs_scipy_dif_evo = {"maxiter": 30,
                             "popsize": 5,
@@ -84,7 +80,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
                         "jac": None,
                         "hess": None,
                         "hessp": None}
-
     # Merge the dictionaries into one.
     # If you change the solver, also change the solver-kwargs-dict in the line below
     if framework == "scipy_differential_evolution":
@@ -111,7 +106,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
             calibration_classes=cal_classes,
             start_time_method="fixstart",
             **kwargs_calibrator)
-
     # ## Calibration
     # Start the calibration process
     result = modelica_calibrator.calibrate(
@@ -119,7 +113,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None):
         method=method,
         **kwargs_optimization
     )
-
     # ## Validation
     # Start the validation process
     modelica_calibrator.validate(

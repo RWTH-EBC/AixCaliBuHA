@@ -23,11 +23,10 @@ def main(
         Show the plot at the end of the script. Default is True.
     """
     example_path = pathlib.Path(__file__).parent
-
     # ## System analysis
     # The best way to analyze the model which we later want to calibrate
     # is to open the models in a GUI (OpenModelica, fmpy, Dymola, o.s.).
-    # The model looks like this (only works in markdown and jupyter versions): ![img.png](./data/img_A.png)
+    # The model looks like this (only works in markdown and jupyter versions): ![img.png](../data/img_A.png)
     # Click through the system and subsystem to understand what happens in the model.
     # As you may have guessed, the analysis of an energy system can be quite complex
     # and is thus hard to automize. Before using AixCaliBuHA, you should understand
@@ -40,7 +39,6 @@ def main(
     # under examples\__init__.py
     from examples import setup_fmu
     fmu_api = setup_fmu(example="B")
-
     # ## Data generation
     # We want to exemplify the process of getting experimental data using
     # the model we later want to calibrate.
@@ -64,12 +62,10 @@ def main(
     fmu_api.result_names = ["heatCapacitor.T", "pipe.T"]
     # Perform the simulation
     tsd = fmu_api.simulate(parameters=parameters)
-
     # ## Data analysis
     # Check the frequency of the data:
     print("Simulation had index-frequency of %s with "
           "standard deviation of %s" % tsd.frequency)
-
     # Let's look at the data we've created:
     fig, ax = plt.subplots(1, 1, sharex=True)
     ax.plot(tsd['heatCapacitor.T'] - 273.15, label="Capacity")

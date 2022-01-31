@@ -70,16 +70,14 @@ def main(
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
-
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
-
+    #
     # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
-
     # Map the measured keys to the names inside your simulation
     variable_names = {
         # Name of goal: Name of measured variable, Name of simulated variable
@@ -88,7 +86,6 @@ def main(
         # Or dict
         "Room temperature": {"meas": "TAir", "sim": "vol.T"}
     }
-
     # To match the measured data to simulated data,
     # the index has to match with the simulation output
     # Thus, convert it:
@@ -113,7 +110,6 @@ def main(
     print("Goals data after setting simulation data:\n", goals.get_goals_data())
     print(statistical_measure, "of goals: ", goals.eval_difference())
     print("Verbose information on calculation", goals.eval_difference(verbose=True))
-
     # Lastly we advice to play around with the index of the sim_target_data to
     # understand the error messages of this framework a little bit better.
     # Example:
@@ -136,7 +132,6 @@ def main(
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
         print(err)
-
     # ## Calibration Classes
     # We now are going to wrap everything up into a single object called
     # `CalibrationClass`.
@@ -155,7 +150,6 @@ def main(
     # can be handy. For example heat losses to the ambient may be most
     # sensitive if the device is just turned off, while efficiency is more
     # sensitive during runtime.
-
     calibration_classes = [
         CalibrationClass(
             name="On",
@@ -192,7 +186,6 @@ def main(
         cal_class.goals = goals
         cal_class.tuner_paras = tuner_paras
         cal_class.inputs = meas_inputs_data
-
     # ## Merge multiple classes
     # If wanted, we can merge multiple classes and optimize them as one.
     # Example:
@@ -204,7 +197,6 @@ def main(
     print("Relevant time interval for class",
           calibration_classes_merged[0].name,
           calibration_classes_merged[0].relevant_intervals)
-
     # Let's also create an object to later validate our calibration:
     validation_class = CalibrationClass(
         name="Validation",
@@ -214,7 +206,6 @@ def main(
         tuner_paras=tuner_paras,
         inputs=meas_inputs_data
     )
-
     return calibration_classes, validation_class
 
 

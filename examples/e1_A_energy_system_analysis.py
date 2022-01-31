@@ -29,7 +29,6 @@ def main(
     :param bool with_plot:
         Show the plot at the end of the script. Default is True.
     """
-
     # General settings
     if cd is None:
         cd = pathlib.Path(__file__).parent.joinpath("results")
@@ -37,11 +36,10 @@ def main(
         cd = pathlib.Path(cd)
     example_path = pathlib.Path(__file__).parent
     aixcalibuha_mo = example_path.joinpath("model", "AixCaliBuHAExamples.mo")
-
     # ## System analysis
     # The best way to analyze the model which we later want to calibrate
     # is to either pause here (set a debug point) or open the models in a GUI (OpenModelica, Dymola, o.s.).
-    # The model looks like this (only works in markdown and jupyter versions): ![img.png](./data/img_A.png)
+    # The model looks like this (only works in markdown and jupyter versions): ![img.png](../data/img_A.png)
     # Click through the system and subsystem to understand what happens in the model.
     # As you may have guessed, the analysis of an energy system can be quite complex
     # and is thus hard to automize. Before using AixCaliBuHA, you should understand
@@ -61,7 +59,6 @@ def main(
         equidistant_output=False
     )
     print("Pausing for analysis. Set the break point here if you like!")
-
     # ## Data generation
     # We want to exemplify the process of getting experimental data using
     # the model we later want to calibrate.
@@ -78,7 +75,6 @@ def main(
     file_path = dym_api.simulate(
         return_option="savepath"
     )
-
     # ## Data analysis
     # Now let's analyze the data we've generated.
     # Open the file first and extract variables of interest.

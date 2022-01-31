@@ -58,20 +58,18 @@ def main(
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
-
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
-
+    #
     # Start by loading the measured data generated in 1_B_energy_system_analysis.py:
-
+    #
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
     data_dir = pathlib.Path(__file__).parent.joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"),
                                       key="examples")
-
     # Setup three variables for different format of setup
     variable_names = {
         # Name of goal: Name of measured variable, Name of simulated variable
@@ -80,12 +78,10 @@ def main(
         # Or dict
         "TPipe": {"meas": "TPipe", "sim": "pipe.T"}
     }
-
     # To match the measured data to simulated data,
     # the index has to match with the simulation output
     # Thus, convert it:
     meas_target_data.to_float_index()
-
     # Lastly, setup the goals object. Note that the statistical_measure
     # is parameter of the python version of this example. It's a metric to
     # compare two set's of time series data. Which one to choose is up to
@@ -99,7 +95,6 @@ def main(
     )
     # Let's check if our evaluation is possible by creating some
     # dummy sim_target_data with the same index:
-
     sim_target_data = TimeSeriesData({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
                                      index=meas_target_data.index)
 
@@ -108,7 +103,6 @@ def main(
     print("Goals data after setting simulation data:\n", goals.get_goals_data())
     print(statistical_measure, "of goals: ", goals.eval_difference())
     print("Verbose information on calculation", goals.eval_difference(verbose=True))
-
     # Lastly we advice to play around with the index of the sim_target_data to
     # understand the error messages of this framework a little bit better.
     # Example:
@@ -131,7 +125,6 @@ def main(
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
         print(err)
-
     # ## Calibration Classes
     # We now are going to wrap everything up into a single object called
     # `CalibrationClass`.
@@ -150,7 +143,6 @@ def main(
     # can be handy. For example heat losses to the ambient may be most
     # sensitive if the device is just turned off, while efficiency is more
     # sensitive during runtime.
-
     # Let's also define some different tuner parameters for the last stationary class.
     different_tuner_paras = TunerParas(names=["speedRamp.duration"],
                                        initial_values=[0.1],
@@ -173,7 +165,6 @@ def main(
             goals=goals, tuner_paras=different_tuner_paras
         )
     ]
-
     # ## Merge multiple classes
     # If wanted, we can merge multiple classes and optimize them as one.
     # Example:
@@ -185,7 +176,6 @@ def main(
     print("Relevant time interval for class",
           calibration_classes_merged[0].name,
           calibration_classes_merged[0].relevant_intervals)
-
     # Let's also create an object to later validate our calibration:
     validation_class = CalibrationClass(
         name="validation",
@@ -194,7 +184,6 @@ def main(
         goals=goals,
         tuner_paras=tuner_paras
     )
-
     return calibration_classes, validation_class
 
 
