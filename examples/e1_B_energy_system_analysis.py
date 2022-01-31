@@ -11,18 +11,17 @@ import matplotlib.pyplot as plt
 
 
 def main(
+        examples_dir,
         with_plot=True
 ):
     """
     Arguments of this example:
 
-    :param str cd:
-        Path in which to store the output.
-        Default is the examples\results folder
+    :param str examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param bool with_plot:
         Show the plot at the end of the script. Default is True.
     """
-    example_path = pathlib.Path(__file__).parent
     # ## System analysis
     # The best way to analyze the model which we later want to calibrate
     # is to open the models in a GUI (OpenModelica, fmpy, Dymola, o.s.).
@@ -38,7 +37,7 @@ def main(
     # As we will use the API in each example, we've created a util function
     # under examples\__init__.py
     from examples import setup_fmu
-    fmu_api = setup_fmu(example="B")
+    fmu_api = setup_fmu(example="B", examples_dir=examples_dir)
     # ## Data generation
     # We want to exemplify the process of getting experimental data using
     # the model we later want to calibrate.
@@ -101,9 +100,11 @@ def main(
     # let's change some names and time index to ensure a realistic scenario:
     tsd = tsd.rename(columns={"pipe.T": "TPipe", "heatCapacitor.T": "TCapacity"})
     tsd.to_datetime_index()
-    tsd.save(example_path.joinpath("data", "PumpAndValve.hdf"), key="examples")
-    print("Saved data under", example_path.joinpath("data"))
+    tsd.save(pathlib.Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
+    print("Saved data under", pathlib.Path(examples_dir).joinpath("data"))
 
 
 if __name__ == '__main__':
-    main()
+    main(
+        examples_dir=pathlib.Path(__file__).parent
+    )
