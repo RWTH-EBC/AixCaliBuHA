@@ -13,6 +13,7 @@ from ebcpy import DymolaAPI, TimeSeriesData
 
 
 def main(
+        examples_dir,
         aixlib_mo,
         cd=None,
         with_plot=True
@@ -20,6 +21,8 @@ def main(
     """
     Arguments of this example:
 
+    :param str examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param str aixlib_mo:
         Path to the package.mo of the AixLib.
         This example was tested for AixLib version 1.0.0.
@@ -31,11 +34,11 @@ def main(
     """
     # General settings
     if cd is None:
-        cd = pathlib.Path(__file__).parent.joinpath("results")
+        cd = pathlib.Path(examples_dir).joinpath("results")
     else:
         cd = pathlib.Path(cd)
-    example_path = pathlib.Path(__file__).parent
-    aixcalibuha_mo = example_path.joinpath("model", "AixCaliBuHAExamples.mo")
+    examples_dir = pathlib.Path(examples_dir)
+    aixcalibuha_mo = examples_dir.joinpath("model", "AixCaliBuHAExamples.mo")
     # ## System analysis
     # The best way to analyze the model which we later want to calibrate
     # is to either pause here (set a debug point) or open the models in a GUI (OpenModelica, Dymola, o.s.).
@@ -148,13 +151,14 @@ def main(
     # In order to use this data in the other examples for the calibration, we have to save it.
     tsd_inputs = tsd[["TDryBulSource.y"]]
     tsd_measurements = tsd[["Pel", "TAir"]]
-    tsd_inputs.save(example_path.joinpath("data", "measured_input_data.hdf"), key="example")
-    tsd_measurements.save(example_path.joinpath("data", "measured_target_data.hdf"), key="example")
-    print("Saved data under", example_path.joinpath("data"))
+    tsd_inputs.save(examples_dir.joinpath("data", "measured_input_data.hdf"), key="example")
+    tsd_measurements.save(examples_dir.joinpath("data", "measured_target_data.hdf"), key="example")
+    print("Saved data under", examples_dir.joinpath("data"))
 
 
 if __name__ == '__main__':
     # TODO-User: Change the AixLib path!
     main(
         aixlib_mo=r"D:\02_workshop\AixLib\AixLib\package.mo",
+        examples_dir=pathlib.Path(__file__).parent
     )

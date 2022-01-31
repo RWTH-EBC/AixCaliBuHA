@@ -18,12 +18,15 @@ from aixcalibuha.data_types import merge_calibration_classes
 
 
 def main(
+        examples_dir,
         statistical_measure="NRMSE",
         multiple_classes=True
 ):
     """
     Arguments of this example:
 
+    :param str examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
         One of the supported methods in
@@ -67,7 +70,7 @@ def main(
     #
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
-    data_dir = pathlib.Path(__file__).parent.joinpath("data")
+    data_dir = pathlib.Path(examples_dir).joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"),
                                       key="examples")
     # Setup three variables for different format of setup
@@ -188,4 +191,7 @@ def main(
 
 
 if __name__ == '__main__':
-    main(multiple_classes=True)
+    main(
+        examples_dir=pathlib.Path(__file__).parent,
+        multiple_classes=True
+    )

@@ -18,12 +18,15 @@ from aixcalibuha.data_types import merge_calibration_classes
 
 
 def main(
+        examples_dir,
         statistical_measure="NRMSE",
         multiple_classes=True
 ):
     """
     Arguments of this example:
 
+    :param str examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
         One of the supported methods in
@@ -76,7 +79,7 @@ def main(
     # Thus, you need to specify both measured and simulated data.
     #
     # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
-    data_dir = pathlib.Path(__file__).parent.joinpath("data")
+    data_dir = pathlib.Path(examples_dir).joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
     # Map the measured keys to the names inside your simulation
     variable_names = {
@@ -210,4 +213,7 @@ def main(
 
 
 if __name__ == '__main__':
-    main(multiple_classes=True)
+    main(
+        examples_dir=pathlib.Path(__file__).parent,
+        multiple_classes=True
+    )
