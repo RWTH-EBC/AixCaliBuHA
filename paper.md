@@ -52,10 +52,12 @@ However, its usage is optional.
 
 Simulation based analysis is a key enabler of a sustainable building energy sector.
 In order for the simulation to yield profound results, model parameters have to be calibrated with experimental data. 
-As 74 % of calibrations are performed manually [@coakley2014review], there is a desperate need for an automated software tool.
-Therefore, we developed `AixCaliBuHA` to automate the calibration process of energy-related building and HVAC system models.
-As such models are inherently time dependent and Modelica is quite popular in the context of building performance simulation, we focus the development onto such use cases.
-However, the code can also be extended to static calibration or other simulation languages.
+Since 74 % of calibrations are performed manually [@coakley2014review], there is a desperate need for an automated software tool.
+As building energy systems are inherently time dependent, such a tool should enable dynamic calibration.
+Therefore, we developed `AixCaliBuHA` to automate the calibration process of dynamic building and HVAC system models.
+`AixCaliBuHA` was developed and tested for Modelica models.
+However, other simulation environments, for instance EnergyPlus, could also be integrated. 
+As long as an FMU of the model is given, or an API to python exists, the simulation environment can be coupled to `AixCaliBuHA`.
 For the underlying optimization, we build upon various existing gradient-free frameworks.
 Currently, switching between different frameworks requires substantial implementation effort and programming knowledge.
 We thus created a wrapper class to handle different available frameworks.
