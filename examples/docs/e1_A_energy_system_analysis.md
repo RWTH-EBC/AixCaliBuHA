@@ -14,8 +14,22 @@ import matplotlib.pyplot as plt
 from ebcpy import DymolaAPI, TimeSeriesData
 
 
-examples_dir
-aixlib_mo
+"""
+Arguments of this example:
+
+:param str examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param str aixlib_mo:
+    Path to the package.mo of the AixLib.
+    This example was tested for AixLib version 1.0.0.
+:param str cd:
+    Path in which to store the output.
+    Default is the examples\results folder
+:param bool with_plot:
+    Show the plot at the end of the script. Default is True.
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+aixlib_mo = "TODO: Add a valid input according to the docstring above"
 cd = None
 with_plot = True
 ```
@@ -68,7 +82,6 @@ dym_api.set_sim_setup({
     "output_interval": 10
 })
 file_path = dym_api.simulate(
-    return_option="savepath"
 )
 ```
  ## Data analysis

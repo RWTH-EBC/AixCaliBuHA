@@ -21,7 +21,21 @@ from aixcalibuha import TunerParas, Goals, \
 from aixcalibuha.data_types import merge_calibration_classes
 
 
-examples_dir
+"""
+Arguments of this example:
+
+:param str examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param str statistical_measure:
+    Measure to calculate the scalar of the objective,
+    One of the supported methods in
+    ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
+    e.g. RMSE, MAE, NRMSE
+:param bool multiple_classes:
+    If False, all CalibrationClasses will have the
+    same name
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
 statistical_measure = "NRMSE"
 multiple_classes = True
 ```
@@ -225,5 +239,4 @@ validation_class = CalibrationClass(
     tuner_paras=tuner_paras,
     inputs=meas_inputs_data
 )
-calibration_classes, validation_class
 ```

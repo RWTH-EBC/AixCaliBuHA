@@ -9,6 +9,12 @@ from examples.e3_sensitivity_analysis_example import run_sensitivity_analysis
 from examples.e4_calibration_example import run_calibration
 
 
+"""
+Arguments of this example:
+
+:param str example:
+    Whether to use example A (requires windows) or B
+"""
 example = "A"
 ```
  First we run the sensitivity analysis:
