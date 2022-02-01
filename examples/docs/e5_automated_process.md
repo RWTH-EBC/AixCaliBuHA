@@ -13,7 +13,8 @@ from examples.e4_calibration_example import run_calibration
 Arguments of this example:
 
 :param str example:
-    Whether to use example A (requires windows) or B. Default is "A"
+    Whether to use example A (requires windows) or B.
+    Default is "A"
 """
 example = "A"
 ```
