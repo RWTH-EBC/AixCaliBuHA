@@ -39,6 +39,7 @@ def main(
         cd = pathlib.Path(cd)
     examples_dir = pathlib.Path(examples_dir)
     aixcalibuha_mo = examples_dir.joinpath("model", "AixCaliBuHAExamples.mo")
+
     # ## System analysis
     # The best way to analyze the model which we later want to calibrate
     # is to either pause here (set a debug point) or open the models in a GUI (OpenModelica, Dymola, o.s.).
@@ -62,6 +63,7 @@ def main(
         equidistant_output=False
     )
     print("Pausing for analysis. Set the break point here if you like!")
+
     # ## Data generation
     # We want to exemplify the process of getting experimental data using
     # the model we later want to calibrate.
@@ -78,6 +80,7 @@ def main(
     file_path = dym_api.simulate(
         return_option="savepath"
     )
+
     # ## Data analysis
     # Now let's analyze the data we've generated.
     # Open the file first and extract variables of interest.
@@ -92,10 +95,12 @@ def main(
     # We thus also extract this input for our data analysis.
     tsd = TimeSeriesData(file_path)
     tsd = tsd[["Pel", "TAir", "TDryBulSource.y"]]
+
     # Let's check the frequency of the data to see if our 1 s sampling rate
     # was correctly applied:
     print("Simulation had index-frequency of %s with "
           "standard deviation of %s" % tsd.frequency)
+
     # Due to state events (see Modelica help for more info on that),
     # our data is not equally sampled.
     # To later match the simulation data with a fixed output interval (parameter output_interval),
@@ -110,6 +115,7 @@ def main(
     tsd.clean_and_space_equally(desired_freq="10s")
     print("Simulation now has index-frequency of %s with "
           "standard deviation of %s" % tsd.frequency)
+
     # Let's check if the sampling changed our measured data and
     # plot all relevant variable to analyze our system:
     fig, ax = plt.subplots(3, 1, sharex=True)
@@ -126,6 +132,7 @@ def main(
     plt.legend()
     if with_plot:
         plt.show()
+
     # ### What and why do we see this?
     # Looking at the first plot, we see a very frequent ambient air temperature
     # sinus-wave switching between -10 and 10 °C every other minute. That's obviously

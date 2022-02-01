@@ -36,6 +36,7 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     """
+
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
@@ -73,6 +74,7 @@ def main(
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
+
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
@@ -135,6 +137,7 @@ def main(
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
         print(err)
+
     # ## Calibration Classes
     # We now are going to wrap everything up into a single object called
     # `CalibrationClass`.
