@@ -4,8 +4,13 @@ This folder contains several example files which help with the understanding of 
 
 # Getting started
 
-While these examples should run in any IDE, we advise using PyCharm.
-To execute these examples, be sure to:
+You have three ways of accessing the examples:
+- Only via markdown to read. Use the .md-files under examples/docs
+- Offline using jupyter-notebook. Use the .ipynb-files  under examples/jupyter_notebooks 
+- Offline using python. Use the .py-files under examples. While these examples should run in any IDE, we advise using PyCharm.
+
+
+For the latter two, be sure to:
 
 1. Create a clean environment of python 3.7 or 3.8. In Anaconda run: `conda create -n py38_ebcpy python=3.8`
 2. Activate the environment in your terminal. In Anaconda run: `activate py38_ebcpy`
