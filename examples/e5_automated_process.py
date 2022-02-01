@@ -14,7 +14,7 @@ def main(example="A"):
     Arguments of this example:
 
     :param str example:
-        Whether to use example A (requires windows) or B
+        Whether to use example A (requires windows) or B. Default is "A"
     """
     # First we run the sensitivity analysis:
     calibration_classes, sim_api = run_sensitivity_analysis(example=example)
