@@ -8,6 +8,22 @@
 from aixcalibuha import SobolAnalyzer
 
 
+"""
+Example process of a sensitivity analysis.
+First, the sensitivity problem is constructed, in this example
+the `morris` method is chosen.
+Afterwards, the sen_analyzer class is instantiated to run the
+sensitivity analysis in the next step.
+The result of this analysis is then printed to the user.
+The automatic_select function is presented as-well, using a threshold of 1
+and the default `mu_star` criterion.
+
+:param str example:
+    Which example to run, "A" or "B"
+
+:return: A list of calibration classes
+:rtype: list
+"""
 example = "B"
 ```
  ## Setup
@@ -47,6 +63,3 @@ for cal_class in classes:
     print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
 ```
  Return the classes and the sim_api to later perform an automated process in example 5
-```python
-classes, sim_api
-```

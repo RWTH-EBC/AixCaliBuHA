@@ -8,6 +8,26 @@ import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
+"""
+Run an example for a calibration. Make sure you have Dymola installed
+on your device and a working licence. All output data will be stored in
+the current working directory of python. Look at the logs and plots
+to better understand what is happening in the calibration. If you want, you
+can switch the methods to other supported methods or change the framework and
+try the global optimizer of dlib.
+
+:param str example:
+    Which example to run, "A" or "B"
+
+Optional, for the fully automated process
+:param ebcy.simulationapi.SimulationAPI sim_api:
+    Simulation API to simulate the models
+:param list[CalibrationClass] cal_classes:
+    List with multiple CalibrationClass objects for calibration. Goals and
+    TunerParameters have to be set. If only one class is provided (either
+    a list with one entry or a CalibrationClass object) the single-class
+    Calibrator is used.
+"""
 example = "B"
 sim_api = None
 cal_classes = None

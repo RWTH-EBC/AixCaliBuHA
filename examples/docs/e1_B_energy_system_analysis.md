@@ -11,7 +11,15 @@ import pathlib
 import matplotlib.pyplot as plt
 
 
-examples_dir
+"""
+Arguments of this example:
+
+:param str examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param bool with_plot:
+    Show the plot at the end of the script. Default is True.
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
 with_plot = True
 ```
  ## System analysis
