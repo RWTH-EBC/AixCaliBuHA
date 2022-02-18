@@ -327,17 +327,18 @@ class Calibrator(Optimizer):
             try:
                 # Generate the folder name for the calibration
                 if self.save_files:
-                    savepath_files = os.path.join(self.sim_api.cd,
-                                                  f"simulation_{self._counter}")
-                    _filepath = self.sim_api.multi_simulate(
-                        parameters=parameter_list,
-                        return_option="savepath",
-                        savepath=savepath_files,
-                        inputs=self.calibration_class.inputs,
-                        **self.calibration_class.input_kwargs
-                    )
-                    # %% Load results and write to goals object
-                    results = data_types.TimeSeriesData(_filepath)
+                    raise NotImplementedError("save_files not yet supported for multiprocessing")
+                    # savepath_files = os.path.join(self.sim_api.cd,
+                    #                               f"simulation_{self._counter}")
+                    # _filepath = self.sim_api.multi_simulate(
+                    #     parameter_list=parameter_list,
+                    #     return_option="savepath",
+                    #     savepath=savepath_files,
+                    #     inputs=self.calibration_class.inputs,
+                    #     **self.calibration_class.input_kwargs
+                    # )
+                    # # %% Load results and write to goals object
+                    # results = data_types.TimeSeriesData(_filepath)
                 else:
                     results = self.sim_api.multi_simulate(
                         parameter_list=parameter_list,

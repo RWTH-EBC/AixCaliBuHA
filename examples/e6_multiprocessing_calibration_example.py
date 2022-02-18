@@ -4,8 +4,8 @@ from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
     """
-    Run an example for a calibration. Make sure you have Dymola installed
-    on your device and a working licence. All output data will be stored in
+    Run an example for a calibration using multiprocessing. Multiprocessing only runs with pymoo as the used framework.
+    Make sure you have Dymola installedmon your device and a working licence. All output data will be stored in
     the current working directory of python. Look at the logs and plots
     to better understand what is happening in the calibration. If you want, you
     can switch the methods to other supported methods or change the framework and
@@ -24,7 +24,7 @@ def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
         Number of logical Processors to run calibration on.
     """
     # %% Settings:
-    # if the selected framework is "pymoo" method is the used algorithm and will be later automatically set to "GA"
+    # if the selected framework is "pymoo", method is the used algorithm and will here be automatically set to "GA"
     framework = "pymoo"
     method = "GA"
     # Specify values for keyword-arguments to customize the Calibration process for single-class
@@ -115,19 +115,22 @@ def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
     # Don't forget to close the simulation api
     sim_api.close()
 
-# if __name__ == "__main__":
-#     from examples import setup_fmu, setup_calibration_classes
-#     # Parameters for sen-analysis:
-#     EXAMPLE = "A"  # Or choose B
-#     SIM_API = setup_fmu(example=EXAMPLE)
-#     CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(
-#         example=EXAMPLE,
-#         multiple_classes=False
-#     )
-#
-#     # Sensitivity analysis:
-#     run_calibration(
-#         sim_api=sim_api,
-#         cal_classes=CALIBRATION_CLASSES,
-#         validation_class=VALIDATION_CLASS
-#     )
+if __name__ == "__main__":
+    from examples import setup_fmu, setup_calibration_classes
+    # n_cpu:
+    n_cpu = 10
+    # Parameters for sen-analysis:
+    EXAMPLE = "A"  # Or choose B
+    SIM_API = setup_fmu(example=EXAMPLE, n_cpu=n_cpu)
+    CALIBRATION_CLASSES, VALIDATION_CLASS = setup_calibration_classes(
+        example=EXAMPLE,
+        multiple_classes=False
+    )
+
+    # Sensitivity analysis:
+    run_calibration(
+        sim_api=SIM_API,
+        cal_classes=CALIBRATION_CLASSES,
+        validation_class=VALIDATION_CLASS,
+        n_cpu=n_cpu
+    )

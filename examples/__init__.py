@@ -7,7 +7,7 @@ from ebcpy import FMU_API
 from examples import e2_A_optimization_problem_definition, e2_B_optimization_problem_definition
 
 
-def setup_fmu(example="B"):
+def setup_fmu(example="B", n_cpu=1):
     """Setup the FMU used in all examples and tests."""
     example_dir = pathlib.Path(__file__).parent
 
@@ -24,7 +24,8 @@ def setup_fmu(example="B"):
 
     return FMU_API(cd=example_dir.joinpath("testzone"),
                    model_name=model_name,
-                   log_fmu=False)
+                   log_fmu=False,
+                   n_cpu=n_cpu)
 
 
 def setup_calibration_classes(example="B", multiple_classes=True):
