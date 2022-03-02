@@ -12,8 +12,9 @@ import matplotlib.pyplot as plt
  Imports from ebcpy
 ```python
 from ebcpy import DymolaAPI, TimeSeriesData
-
-
+```
+ Please define the missing TODOs in the section below according to the docstrings.
+```python
 """
 Arguments of this example:
 

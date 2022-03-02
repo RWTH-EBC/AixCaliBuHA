@@ -19,8 +19,9 @@ from ebcpy import TimeSeriesData
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
-
-
+```
+ Please define the missing TODOs in the section below according to the docstrings.
+```python
 """
 Arguments of this example:
 

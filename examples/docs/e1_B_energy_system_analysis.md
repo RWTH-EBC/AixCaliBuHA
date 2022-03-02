@@ -9,8 +9,9 @@
 ```python
 import pathlib
 import matplotlib.pyplot as plt
-
-
+```
+ Please define the missing TODOs in the section below according to the docstrings.
+```python
 """
 Arguments of this example:
 
