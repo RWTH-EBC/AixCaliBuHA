@@ -61,7 +61,7 @@ def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
                         "hessp": None}
     kwargs_pymoo = {"n_cpu": n_cpu,
                     "pop_size": 100,
-                    "sampling": "real_random",
+                    "sampling": "real_random",  # Notice that changing Hyperparameters may change pop size.
                     "selection": "random",
                     "crossover": "real_sbx",
                     "mutation": "real_pm",

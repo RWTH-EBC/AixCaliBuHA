@@ -296,7 +296,7 @@ class Calibrator(Optimizer):
             raise ValueError(f"Chosen Population size = {len(x)} is not dividable through the number of "
                              f"Processors used which is {n_cpu} . Please choose different values.")
         # Initialize list for results
-        total_res_list = np.empty([100, 1])
+        total_res_list = np.empty([len(x), 1])
         # Set initial values of variable and fixed parameters
         self.sim_api.result_names = self.goals.get_sim_var_names()
         initial_names = self.tuner_paras.get_names()

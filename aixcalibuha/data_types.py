@@ -446,7 +446,7 @@ class TunerParas:
         if not self._bounds:
             return scaled
         _scaled = np.array(scaled)
-        if not all((_scaled >= 0-1e4) & (_scaled <= 1+1e4)):
+        if not str(all((_scaled >= 0-1e4) & (_scaled <= 1+1e4))) == "True":
             warnings.warn("Given scaled values are outside of bounds. "
                           "Automatically limiting the values with "
                           "respect to the bounds.")
