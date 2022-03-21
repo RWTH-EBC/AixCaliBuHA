@@ -4,6 +4,8 @@ from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
     """
+    Make sure you are using pandas==1.3.5 and tables==3.6.1
+
     Run an example for a calibration using multiprocessing. Multiprocessing only runs with pymoo as the used framework.
     Make sure you have Dymola installedmon your device and a working licence. All output data will be stored in
     the current working directory of python. Look at the logs and plots
@@ -118,7 +120,7 @@ def run_calibration(sim_api, cal_classes, validation_class, n_cpu):
 if __name__ == "__main__":
     from examples import setup_fmu, setup_calibration_classes
     # n_cpu:
-    n_cpu = 10
+    n_cpu = 2
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
     SIM_API = setup_fmu(example=EXAMPLE, n_cpu=n_cpu)
