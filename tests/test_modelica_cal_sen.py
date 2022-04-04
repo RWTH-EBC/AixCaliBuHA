@@ -63,24 +63,26 @@ class TestModelicaCalibrator(unittest.TestCase):
 
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
-        calibrator = Calibrator(cd=self.sim_api.cd,
-                                sim_api=self.sim_api,
-                                calibration_class=self.calibration_classes[0],
-                                show_plot=False,
-                                max_itercount=5)
+        calibrator = Calibrator(
+            cd=self.sim_api.cd,
+            sim_api=self.sim_api,
+            calibration_class=self.calibration_classes[0],
+            show_plot=False,
+            max_itercount=5)
         # Test run for scipy and L-BFGS-B
         calibrator.calibrate(framework="scipy_differential_evolution",
                              method="best1bin")
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
-        calibrator = MultipleClassCalibrator(self.example_cal_dir,
-                                             self.sim_api,
-                                             self.calibration_classes,
-                                             start_time_method='fixstart',
-                                             fix_start_time=0,
-                                             show_plot=False,
-                                             max_itercount=5)
+        calibrator = MultipleClassCalibrator(
+            cd=self.example_cal_dir,
+            sim_api=self.sim_api,
+            calibration_classes=self.calibration_classes,
+            start_time_method='fixstart',
+            fix_start_time=0,
+            show_plot=False,
+            max_itercount=5)
 
         calibrator.calibrate(framework="scipy_differential_evolution",
                              method="best1bin")

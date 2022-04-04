@@ -13,7 +13,9 @@ import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
-def run_calibration(sim_api, cal_classes, validation_class):
+def run_calibration(sim_api, cal_classes, validation_class,
+                    framework: str = "scipy_differential_evolution",
+                    method: str = "best1bin"):
     """
     Run an example for a calibration. Make sure you have Dymola installed
     on your device and a working licence. All output data will be stored in
@@ -30,11 +32,10 @@ def run_calibration(sim_api, cal_classes, validation_class):
         a list with one entry or a CalibrationClass object) the single-class
         Calibrator is used.
     :param CalibrationClass validation_class:
-        Class used to validate the findings.
+        See Documentation of ebcpy on available optimization frameworks
+    :param str method:
+        See Documentation of ebcpy on available optimization framework methods
     """
-    # %% Settings:
-    framework = "scipy_differential_evolution"
-    method = "best1bin"
     # Specify values for keyword-arguments to customize the Calibration process for single-class
     kwargs_calibrator = {"timedelta": 0,
                          "save_files": False,
@@ -68,6 +69,13 @@ def run_calibration(sim_api, cal_classes, validation_class):
                         "jac": None,
                         "hess": None,
                         "hessp": None}
+    kwargs_pymoo = {"pop_size": 100,
+                    "sampling": "real_random",  # Notice that changing Hyper-Parameters may change pop size.
+                    "selection": "random",
+                    "crossover": "real_sbx",
+                    "mutation": "real_pm",
+                    "eliminate_duplicates": True,
+                    "n_offsprings": None}
 
     # Merge the dictionaries into one.
     # If you change the solver, also change the solver-kwargs-dict in the line below
@@ -77,8 +85,14 @@ def run_calibration(sim_api, cal_classes, validation_class):
         kwargs_optimization = kwargs_scipy_min
     elif framework == "dlib_minimize":
         kwargs_optimization = kwargs_dlib_min
+    elif framework == "pymoo":
+        kwargs_optimization = kwargs_pymoo
     else:
         kwargs_optimization = {}
+    # Check if pymoo is being used for Multiprocessing
+    if framework != "pymoo" and sim_api.n_cpu > 1:
+        raise TypeError(f"Given framework {framework} does not support Multiprocessing."
+                        f"Please use pymoo as your framework.")
     # Select between single or multiple class calibration
     if isinstance(cal_classes, CalibrationClass):
         modelica_calibrator = Calibrator(
