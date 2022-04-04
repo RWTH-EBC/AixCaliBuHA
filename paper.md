@@ -38,6 +38,7 @@ Before executing the calibration, an automated sensitivity analysis can be perfo
 As the derivative of simulations is typically not available, the optimization behind the calibration is solved by using already published gradient-free solvers (e.g. @2020SciPy-NMeth; @dlib09; @pymoo).
 The whole process is visualized by optional progress plots to inform the user about convergence and design space exploration.
 Although the toolchain can be fully automated, users are free to perform semi-automatic calibration based on their expert knowledge.
+Especially for complex models, expert knowledge is still required to define useful parameter boundaries and asses the result quality.
 
 As most of the classes originally created for `AixCaliBuHA` can be used to automate other tasks in simulation based research, 
 we collect them in the separated project \href{https://github.com/RWTH-EBC/ebcpy}{ebcpy}.
@@ -52,13 +53,18 @@ However, its usage is optional.
 
 Simulation based analysis is a key enabler of a sustainable building energy sector.
 In order for the simulation to yield profound results, model parameters have to be calibrated with experimental data. 
-As 74 % of calibrations are performed manually [@coakley2014review], there is a desperate need for an automated software tool.
-Therefore, we developed `AixCaliBuHA` to automate the calibration process of energy-related building and HVAC system models.
-As such models are inherently time dependent and Modelica is quite popular in the context of building performance simulation, we focus the development onto such use cases.
-However, the code can also be extended to static calibration or other simulation languages.
+Since 74 % of calibrations are performed manually [@coakley2014review], there is a desperate need for an automated software tool.
+As building energy systems are inherently time dependent, such a tool should enable dynamic calibration.
+Existing frameworks are either not open-source or a tailored towards a single simulation and optimization method [@modestpy; @bonvini2014fmi]. 
+Therefore, we developed `AixCaliBuHA` to automate the calibration process of dynamic building and HVAC system models.
+`AixCaliBuHA` was developed and tested for Modelica models.
+However, other simulation environments, for instance EnergyPlus, can be integrated by extending the `SimulationAPI`.
 For the underlying optimization, we build upon various existing gradient-free frameworks.
 Currently, switching between different frameworks requires substantial implementation effort and programming knowledge.
 We thus created a wrapper class to handle different available frameworks.
+Thus, existing calibration frameworks such as `EstimationPy` or `modestpy` can be integrated [@modestpy; @bonvini2014fmi].
+Also, novel sensitivity analysis methods may be used, too.
+In general, `AixCaliBuHA` does not aim to provide new methods. Instead, it uses methods from the rich pool of already existing open-source frameworks. 
 `AixCaliBuHA` was already used in various contributions concerning calibration and digital twins [@vering_borges; @Mehrfeld.HPC.2020; @storek_applying_2019; @ModelicaConferenceWullhorst].
 We hope to extend the circle of users and developers by making the code fully open-source.
 
@@ -100,5 +106,6 @@ Even though one `CalibrationClass` is enough to run an automated calibration, th
 This idea, initially described in @storek_applying_2019, will be shortly submitted to a corresponding journal.
 Using segmentation methods, input data can be automatically split into multiple `CalibrationClass` instances.
 In future work we are going to link this segmentation onto multiple-class calibration. Thus, we further decrease manual user input and increase model accuracy.
+As the `SimulationAPI` enables parallelization, we plan to apply parallelization for sensitivity analysis and calibration in future versions.
 
 # References

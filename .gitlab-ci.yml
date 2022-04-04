@@ -2,6 +2,7 @@ stages:
   - test
   - doc
   - code_quality
+  - examples
   - build
   - deploy
 
@@ -9,6 +10,7 @@ variables:
   COVERAGE_TYPE: "FMU"
   PAGES_BRANCH: master
   EXLUDE_PYTHON: 39
+  GIT_REPO: RWTH-EBC/AixCaliBuHA
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
@@ -23,5 +25,8 @@ include:
     file: 'python/unit-tests/unittest.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/coverage.gitlab-ci.yml'
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: 'python/examples/examples.gitlab-ci.yml'
+    ref: '18-add-example-file-converter'
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml

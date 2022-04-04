@@ -1,0 +1,41 @@
+[[ExampleFile]]
+filename = "examples/e1_A_energy_system_analysis.py"
+func_name = "main"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e1_B_energy_system_analysis.py"
+func_name = "main"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e2_A_optimization_problem_definition.py"
+func_name = "main"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e2_B_optimization_problem_definition.py"
+func_name = "main"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e3_sensitivity_analysis_example.py"
+func_name = "run_sensitivity_analysis"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e4_calibration_example.py"
+func_name = "run_calibration"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e5_automated_process.py"
+func_name = "main"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
