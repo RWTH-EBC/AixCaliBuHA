@@ -10,22 +10,24 @@ long_description = readme_path.read_text()
 INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
-    'pandas>=1.1.5',
+    'pandas>=1.3.5',
     'SALib>=1.3.12',
-    'ebcpy>=0.2.2',
+    'ebcpy>=0.3.0',
     'toml>=0.10.2'
 ]
 
+__version__ = "0.3.0"
+
 setuptools.setup(
     name='aixcalibuha',
-    version='0.2.2',
+    version=__version__,
     description='Framework used for sensitivity-analysis'
                 'and calibration for models of HVAC '
                 'components.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
-    download_url='https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/0.2.2.tar.gz',
+    download_url=f'https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/{__version__}.tar.gz',
     license='MIT',
     author='RWTH Aachen University, E.ON Energy Research Center, Institute '
            'of Energy Efficient Buildings and Indoor Climate',

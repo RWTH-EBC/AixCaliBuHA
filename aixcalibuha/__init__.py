@@ -5,4 +5,4 @@ other simulation software.
 from .data_types import CalibrationClass, TunerParas, Goals
 from .calibration import Calibrator, MultipleClassCalibrator
 from .sensitivity_analysis import SobolAnalyzer, MorrisAnalyzer
-__version__ = "0.2.2"
+__version__ = "0.3.0"

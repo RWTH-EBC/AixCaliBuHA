@@ -41,3 +41,7 @@
 
 - **v0.2.2**
    - Issue 21: Fix setup.py by removing the tests packages 
+
+- **v0.3.0**
+   - Issue 20: Add parallelization for calibration and sensitivity analysis
+   - Issue 32: Add example converter to CI/CD
