@@ -133,7 +133,7 @@ class SenAnalyzer(abc.ABC):
             An array containing the evaluated differences for each sample
         """
         output = []
-        # Set the output interval according the the given Goals
+        # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
                          "to measurement target data frequency: %s", mean_freq)
@@ -142,44 +142,48 @@ class SenAnalyzer(abc.ABC):
         self.sim_api.set_sim_setup({"start_time": cal_class.start_time,
                                     "stop_time": cal_class.stop_time})
         self.sim_api.result_names = cal_class.goals.get_sim_var_names()
+        self.logger.info('Starting %s parameter variations on %s cores',
+                         len(samples), self.sim_api.n_cpu)
+        # Simulate the current values
+        parameters = []
         for i, initial_values in enumerate(samples):
-            # Simulate the current values
-            self.logger.info('Parameter variation %s of %s',
-                             i+1, len(samples))
-            parameters = {name: value for name, value in zip(initial_names, initial_values)}
-            # Simulate
-            # pylint: disable=broad-except
-            try:
-                # Generate the folder name for the calibration
-                if self.save_files:
-                    savepath_files = os.path.join(self.cd,
-                                                  f"simulation_{i + 1}")
-                    filepath = self.sim_api.simulate(
-                        parameters=parameters,
-                        return_option="savepath",
-                        savepath=savepath_files,
-                        inputs=cal_class.inputs,
-                        **cal_class.input_kwargs
-                    )
-                    # Load the result file to the goals object
-                    sim_target_data = data_types.TimeSeriesData(filepath)
+            parameters.append({name: value for name, value in zip(initial_names, initial_values)})
+
+        if self.save_files:
+            result_file_names = [f"simulation_{idx + 1}" for idx in range(len(parameters))]
+            _filepaths = self.sim_api.simulate(
+                parameters=parameters,
+                return_option="savepath",
+                savepath=self.sim_api.cd,
+                result_file_name=result_file_names,
+                fail_on_error=self.fail_on_error,
+                inputs=cal_class.inputs,
+                **cal_class.input_kwargs
+            )
+            # Load results
+            results = []
+            for _filepath in _filepaths:
+                if _filepath is None:
+                    results.append(None)
                 else:
-                    sim_target_data = self.sim_api.simulate(
-                        parameters=parameters,
-                        inputs=cal_class.inputs,
-                        **cal_class.input_kwargs
-                    )
-            except Exception as err:
-                if self.fail_on_error:
-                    raise err
-                return self.ret_val_on_error
-
-            cal_class.goals.set_sim_target_data(sim_target_data)
-            cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
-
-            # Evaluate the current objective
-            total_res = cal_class.goals.eval_difference()
-            output.append(total_res)
+                    results.append(data_types.TimeSeriesData(_filepath))
+        else:
+            results = self.sim_api.simulate(
+                parameters=parameters,
+                inputs=cal_class.inputs,
+                fail_on_error=self.fail_on_error,
+                **cal_class.input_kwargs
+            )
+        self.logger.info('Finished %s simulations', len(samples))
+        for i, result in enumerate(results):
+            if result is None:
+                output.append(self.ret_val_on_error)
+            else:
+                cal_class.goals.set_sim_target_data(result)
+                cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
+                # Evaluate the current objective
+                total_res = cal_class.goals.eval_difference()
+                output.append(total_res)
 
         return np.asarray(output)
 

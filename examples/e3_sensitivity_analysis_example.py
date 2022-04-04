@@ -54,7 +54,8 @@ if __name__ == "__main__":
     from examples import setup_fmu, setup_calibration_classes
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
-    SIM_API = setup_fmu(example=EXAMPLE)
+    N_CPU = 2
+    SIM_API = setup_fmu(example=EXAMPLE, n_cpu=N_CPU)
     CALIBRATION_CLASSES = setup_calibration_classes(example=EXAMPLE)[0]
 
     # Sensitivity analysis:
