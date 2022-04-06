@@ -269,7 +269,6 @@ class Calibrator(Optimizer):
             parameter_list.append(parameter_copy)
 
         # Simulate
-        self.logger.log(f"Starting {num_evals} simulations on {self.sim_api.n_cpu} cores", level=logging.INFO)
         if self.save_files:
             result_file_names = [f"simulation_{self._counter + idx}" for idx in range(len(parameter_list))]
             _filepaths = self.sim_api.simulate(
@@ -295,7 +294,7 @@ class Calibrator(Optimizer):
                 fail_on_error=self.fail_on_error,
                 **self.calibration_class.input_kwargs
             )
-        self.logger.log(f"Finished {num_evals} simulations", level=logging.INFO)
+
         for idx, result in enumerate(results):
             self._counter += 1
             self._current_iterate = result
