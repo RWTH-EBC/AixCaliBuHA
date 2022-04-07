@@ -69,7 +69,7 @@ def run_calibration(sim_api, cal_classes, validation_class,
                         "jac": None,
                         "hess": None,
                         "hessp": None}
-    kwargs_pymoo = {"pop_size": 100,
+    kwargs_pymoo = {"pop_size": 20,
                     "sampling": "real_random",  # Notice that changing Hyper-Parameters may change pop size.
                     "selection": "random",
                     "crossover": "real_sbx",
