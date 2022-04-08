@@ -402,9 +402,8 @@ class Calibrator(Optimizer):
                 method=method,
                 n_cpu=self.sim_api.n_cpu,
                 **kwargs)
-        except MaxIterationsReached:
-            self.logger.error("Maximum number of iterations reached. "
-                              "Stopping and saving the result.")
+        except MaxIterationsReached as err:
+            self.logger.log(msg=str(err), level=logging.WARNING)
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
 
@@ -520,6 +519,9 @@ class Calibrator(Optimizer):
         Also save the plots if an error occurs.
         See ebcpy.optimization.Optimizer._handle_error for more info.
         """
+        # This error is our own, we handle it in the calibrate() function
+        if isinstance(error, MaxIterationsReached):
+            raise error
         self.logger.save_calibration_result(best_iterate=self._current_best_iterate,
                                             model_name=self.sim_api.model_name,
                                             duration=0,

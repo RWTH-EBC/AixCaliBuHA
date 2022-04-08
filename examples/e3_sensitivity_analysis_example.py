@@ -1,16 +1,14 @@
-"""
-Example file for the senstivity_analyzer package. The usage of modules and classes inside
-the senanalyzer package should be clear when looking at the examples.
-If not, please raise an issue.
+# # Example 3 sensitivity analysis
 
-Goals of this part of the examples:
-1. Learn how to execute a sensitivity analysis
-2. Learn how to automatically select sensitive tuner parameters
-"""
+# Goals of this part of the examples:
+# 1. Learn how to execute a sensitivity analysis
+# 2. Learn how to automatically select sensitive tuner parameters
+#
+# Import a valid analyzer, e.g. `SobolAnalyzer`
 from aixcalibuha import SobolAnalyzer
 
 
-def run_sensitivity_analysis(sim_api, cal_classes):
+def run_sensitivity_analysis(example="B", n_cpu=1):
     """
     Example process of a sensitivity analysis.
     First, the sensitivity problem is constructed, in this example
@@ -21,15 +19,19 @@ def run_sensitivity_analysis(sim_api, cal_classes):
     The automatic_select function is presented as-well, using a threshold of 1
     and the default `mu_star` criterion.
 
-    :param aixcalibuha.simulationapi.SimulationAPI sim_api:
-        Simulation api to run the simulation for the sensitivtiy analysis
-    :param list cal_classes:
-        List of :meth:`calibration-class<aixcalibuha.data_types.CalibrationClass>`
-        objects to be analyzed.
-    :return: A list calibration classes
+    :param str example:
+        Which example to run, "A" or "B"
+
+    :return: A list of calibration classes
     :rtype: list
     """
-    # Setup the class
+    # ## Setup
+    # Setup the class according to the documentation.
+    # You just have to pass a valid simulation api and
+    # some further settings for the analysis.
+    # Let's thus first load the necessary simulation api:
+    from examples import setup_fmu, setup_calibration_classes
+    sim_api = setup_fmu(example=example, n_cpu=n_cpu)
 
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
@@ -37,17 +39,24 @@ def run_sensitivity_analysis(sim_api, cal_classes):
             cd=sim_api.cd,
             analysis_variable='S1'
         )
+    # Now perform the analysis for the one of the given calibration classes.
+    calibration_classes = setup_calibration_classes(example=example)[0]
 
-    result, classes = sen_analyzer.run(calibration_classes=cal_classes)
+    result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
     print("Result of the sensitivity analysis")
     print(result)
+    # For each given class, you should see the given tuner parameters
+    # and the sensitivity according to the selected method from the SALib.
+    # Let's remove some less sensitive parameters based on some threshold
+    # to remove complexity from our calibration problem:
     print("Selecting relevant tuner-parameters using a fixed threshold:")
-    sen_analyzer.select_by_threshold(calibration_classes=cal_classes,
+    sen_analyzer.select_by_threshold(calibration_classes=classes,
                                      result=result,
                                      threshold=0.01)
-    for cal_class in cal_classes:
+    for cal_class in classes:
         print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
-    return classes
+    # Return the classes and the sim_api to later perform an automated process in example 5
+    return classes, sim_api
 
 
 if __name__ == "__main__":
@@ -55,9 +64,6 @@ if __name__ == "__main__":
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
     N_CPU = 2
-    SIM_API = setup_fmu(example=EXAMPLE, n_cpu=N_CPU)
-    CALIBRATION_CLASSES = setup_calibration_classes(example=EXAMPLE)[0]
 
     # Sensitivity analysis:
-    CALIBRATION_CLASSES = run_sensitivity_analysis(sim_api=SIM_API,
-                                                   cal_classes=CALIBRATION_CLASSES)
+    run_sensitivity_analysis(example=EXAMPLE, n_cpu=N_CPU)
