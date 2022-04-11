@@ -9,9 +9,14 @@ import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 
 
-def run_calibration(example="B", sim_api=None, cal_classes=None,
-                    framework: str = "scipy_differential_evolution",
-                    method: str = "best1bin"):
+def run_calibration(
+        examples_dir,
+        example="B",
+        n_cpu: int = 1,
+        sim_api=None,
+        cal_classes=None,
+        framework: str = "scipy_differential_evolution",
+        method: str = "best1bin"):
     """
     Run an example for a calibration. Make sure you have Dymola installed
     on your device and a working licence. All output data will be stored in
@@ -20,19 +25,21 @@ def run_calibration(example="B", sim_api=None, cal_classes=None,
     can switch the methods to other supported methods or change the framework and
     try the global optimizer of dlib.
 
+    :param [pathlib.Path, str] examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
+    :param int n_cpu:
+        Number of cores to use
 
     Optional, for the fully automated process
-    :param ebcy.simulationapi.SimulationAPI sim_api:
+    :param ebcpy.simulationapi.SimulationAPI sim_api:
         Simulation API to simulate the models
     :param list[CalibrationClass] cal_classes:
         List with multiple CalibrationClass objects for calibration. Goals and
         TunerParameters have to be set. If only one class is provided (either
         a list with one entry or a CalibrationClass object) the single-class
         Calibrator is used.
-    :param CalibrationClass validation_class:
-        Class used to validate the findings.
     :param CalibrationClass framework:
         See Documentation of ebcpy on available optimization frameworks
     :param str method:
@@ -43,8 +50,9 @@ def run_calibration(example="B", sim_api=None, cal_classes=None,
     # Start by loading the simulation api and the calibration classes
     from examples import setup_fmu, setup_calibration_classes
     if sim_api is None:
-        sim_api = setup_fmu(example=example)
+        sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
     default_cal_classes, validation_class = setup_calibration_classes(
+        examples_dir=examples_dir,
         example=example,
         multiple_classes=False
     )
@@ -55,10 +63,6 @@ def run_calibration(example="B", sim_api=None, cal_classes=None,
     # Specify values for keyword-arguments to customize
     # the Calibration process for a single-class calibration
 
-    # %% Settings:
-    framework = "scipy_differential_evolution"
-    method = "best1bin"
-    # Specify values for keyword-arguments to customize the Calibration process for single-class
     kwargs_calibrator = {"timedelta": 0,
                          "save_files": False,
                          "verbose_logging": True,
@@ -74,9 +78,7 @@ def run_calibration(example="B", sim_api=None, cal_classes=None,
     # Specify values for keyword-arguments to customize
     # the Calibration process for a multiple-class calibration
     kwargs_multiple_classes = {"merge_multiple_classes": True}
-    # Specify the framework and the method for the underlying optimization:
-    framework = "scipy_differential_evolution"
-    method = "best1bin"
+
     # Specify solver-specific keyword-arguments depending on the solver and method you will use
     kwargs_scipy_dif_evo = {"maxiter": 30,
                             "popsize": 5,
@@ -152,7 +154,11 @@ def run_calibration(example="B", sim_api=None, cal_classes=None,
 
 
 if __name__ == "__main__":
+    import pathlib
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
     # Sensitivity analysis:
-    run_calibration(example=EXAMPLE)
+    run_calibration(
+        examples_dir=pathlib.Path(__file__).parent,
+        example=EXAMPLE
+    )

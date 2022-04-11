@@ -17,7 +17,7 @@ def main(
     """
     Arguments of this example:
 
-    :param str examples_dir:
+    :param [pathlib.Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param bool with_plot:
         Show the plot at the end of the script. Default is True.

@@ -21,7 +21,7 @@ def main(
     """
     Arguments of this example:
 
-    :param str examples_dir:
+    :param [pathlib.Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str aixlib_mo:
         Path to the package.mo of the AixLib.
