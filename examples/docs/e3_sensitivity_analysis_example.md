@@ -19,13 +19,19 @@ The result of this analysis is then printed to the user.
 The automatic_select function is presented as-well, using a threshold of 1
 and the default `mu_star` criterion.
 
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
 :param str example:
     Which example to run, "A" or "B"
+:param int n_cpu:
+    Number of cores to use
 
 :return: A list of calibration classes
 :rtype: list
 """
-example = "B"
+examples_dir = "TODO: Add a valid input according to the docstring above"
+example: str  =  "B"
+n_cpu: int  =  1
 ```
  ## Setup
  Setup the class according to the documentation.
@@ -34,7 +40,7 @@ example = "B"
  Let's thus first load the necessary simulation api:
 ```python
 from examples import setup_fmu, setup_calibration_classes
-sim_api = setup_fmu(example=example)
+sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 
 sen_analyzer = SobolAnalyzer(
         sim_api=sim_api,
@@ -45,7 +51,9 @@ sen_analyzer = SobolAnalyzer(
 ```
  Now perform the analysis for the one of the given calibration classes.
 ```python
-calibration_classes = setup_calibration_classes(example=example)[0]
+calibration_classes = setup_calibration_classes(
+    examples_dir=examples_dir, example=example
+)[0]
 
 result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
 print("Result of the sensitivity analysis")

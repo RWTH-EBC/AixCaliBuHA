@@ -8,7 +8,11 @@
 from aixcalibuha import SobolAnalyzer
 
 
-def run_sensitivity_analysis(example="B"):
+def run_sensitivity_analysis(
+        examples_dir,
+        example: str = "B",
+        n_cpu: int = 1
+):
     """
     Example process of a sensitivity analysis.
     First, the sensitivity problem is constructed, in this example
@@ -19,8 +23,12 @@ def run_sensitivity_analysis(example="B"):
     The automatic_select function is presented as-well, using a threshold of 1
     and the default `mu_star` criterion.
 
+    :param [pathlib.Path, str] examples_dir:
+        Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
+    :param int n_cpu:
+        Number of cores to use
 
     :return: A list of calibration classes
     :rtype: list
@@ -31,7 +39,7 @@ def run_sensitivity_analysis(example="B"):
     # some further settings for the analysis.
     # Let's thus first load the necessary simulation api:
     from examples import setup_fmu, setup_calibration_classes
-    sim_api = setup_fmu(example=example)
+    sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
@@ -40,7 +48,9 @@ def run_sensitivity_analysis(example="B"):
             analysis_variable='S1'
         )
     # Now perform the analysis for the one of the given calibration classes.
-    calibration_classes = setup_calibration_classes(example=example)[0]
+    calibration_classes = setup_calibration_classes(
+        examples_dir=examples_dir, example=example
+    )[0]
 
     result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
     print("Result of the sensitivity analysis")
@@ -60,7 +70,15 @@ def run_sensitivity_analysis(example="B"):
 
 
 if __name__ == "__main__":
+    import pathlib
+    from examples import setup_fmu, setup_calibration_classes
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
+    N_CPU = 2
+
     # Sensitivity analysis:
-    run_sensitivity_analysis(example=EXAMPLE)
+    run_sensitivity_analysis(
+        examples_dir=pathlib.Path(__file__).parent,
+        example=EXAMPLE,
+        n_cpu=N_CPU
+    )

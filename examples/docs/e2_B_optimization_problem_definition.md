@@ -25,7 +25,7 @@ from aixcalibuha.data_types import merge_calibration_classes
 """
 Arguments of this example:
 
-:param str examples_dir:
+:param [pathlib.Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str statistical_measure:
     Measure to calculate the scalar of the objective,

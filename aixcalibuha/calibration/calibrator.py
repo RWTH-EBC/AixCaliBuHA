@@ -189,14 +189,17 @@ class Calibrator(Optimizer):
 
         :param np.array xk:
             Array with normalized values for the minimizer
+        :param int work_id:
+            id for worker in Multiprocessing
         :return:
             Objective value based on the used quality measurement
         :rtype: float
         """
         # Info: This function is called by the optimization framework (scipy, dlib, etc.)
-        #%% Initialize class objects
+        # Initialize class objects
         self._current_iterate = xk
         self._counter += 1
+
         # Convert set if multiple goals of different scales are used
         xk_descaled = self.tuner_paras.descale(xk)
 
@@ -237,17 +240,95 @@ class Calibrator(Optimizer):
             )
             return self.ret_val_on_error
 
-        self.goals.set_sim_target_data(sim_target_data)
+        total_res = self._kpi_and_logging_calculation(
+            xk_descaled=xk_descaled,
+            counter=self._counter,
+            results=sim_target_data
+        )
+
+        return total_res
+
+    def mp_obj(self, x, *args):
+        # Initialize list for results
+        num_evals = len(x)
+        total_res_list = np.empty([num_evals, 1])
+        # Set initial values of variable and fixed parameters
+        self.sim_api.result_names = self.goals.get_sim_var_names()
+        initial_names = self.tuner_paras.get_names()
+        parameters = self.fixed_parameters.copy()
+
+        parameter_list = []
+        xk_descaled_list = []
+        for _xk_single in x:
+            # Convert set if multiple goals of different scales are used
+            xk_descaled = self.tuner_paras.descale(_xk_single)
+            xk_descaled_list.append(xk_descaled)
+            # Update Parameters
+            parameter_copy = parameters.copy()
+            parameter_copy.update({name: value for name, value in zip(initial_names, xk_descaled.values)})
+            parameter_list.append(parameter_copy)
+
+        # Simulate
+        if self.save_files:
+            result_file_names = [f"simulation_{self._counter + idx}" for idx in range(len(parameter_list))]
+            _filepaths = self.sim_api.simulate(
+                parameters=parameter_list,
+                return_option="savepath",
+                savepath=self.sim_api.cd,
+                result_file_name=result_file_names,
+                fail_on_error=self.fail_on_error,
+                inputs=self.calibration_class.inputs,
+                **self.calibration_class.input_kwargs
+            )
+            # Load results
+            results = []
+            for _filepath in _filepaths:
+                if _filepath is None:
+                    results.append(None)
+                else:
+                    results.append(data_types.TimeSeriesData(_filepath))
+        else:
+            results = self.sim_api.simulate(
+                parameters=parameter_list,
+                inputs=self.calibration_class.inputs,
+                fail_on_error=self.fail_on_error,
+                **self.calibration_class.input_kwargs
+            )
+
+        for idx, result in enumerate(results):
+            self._counter += 1
+            self._current_iterate = result
+            if result is None:
+                total_res_list[idx] = self.ret_val_on_error
+                continue
+            total_res = self._kpi_and_logging_calculation(
+                xk_descaled=xk_descaled_list[idx],
+                counter=self._counter,
+                results=result
+            )
+            # Add single objective to objective list of total Population
+            total_res_list[idx] = total_res
+
+        return total_res_list
+
+    def _kpi_and_logging_calculation(self, *, xk_descaled, counter, results):
+        """
+        Function to calculate everything needed in the obj or mp_obj
+        function after the simulation finished.
+
+        """
+        xk = self.tuner_paras.scale(xk_descaled)
+
+        self.goals.set_sim_target_data(results)
         # Trim results based on start and end-time of cal class
         self.goals.set_relevant_time_intervals(self.calibration_class.relevant_intervals)
 
-        #%% Evaluate the current objective
+        # %% Evaluate the current objective
         # Penalty function (get penalty factor)
         if self.recalibration_count > 1 and self.apply_penalty:
             # There is no benchmark in the first iteration or
             # first iterations were skipped, so no penalty is applied
-            current_tuner_scaled = self.tuner_paras.scale(xk_descaled)
-            penaltyfactor = self.get_penalty(xk_descaled, current_tuner_scaled)
+            penaltyfactor = self.get_penalty(xk_descaled, xk)
             # Evaluate with penalty
             penalty = penaltyfactor
         else:
@@ -267,9 +348,9 @@ class Calibrator(Optimizer):
             )
         # current best iteration step of current calibration class
         if total_res < self._current_best_iterate["Objective"]:
-            #self.best_goals = self.goals
+            # self.best_goals = self.goals
             self._current_best_iterate = {
-                "Iterate": self._counter,
+                "Iterate": counter,
                 "Objective": total_res,
                 "Unweighted Objective": unweighted_objective,
                 "Parameters": xk_descaled,
@@ -280,11 +361,12 @@ class Calibrator(Optimizer):
                 "Penaltyfactor": penalty
             }
 
-        if self._counter >= self.max_itercount:
+        if counter >= self.max_itercount:
             raise MaxIterationsReached(
                 "Terminating calibration as the maximum number "
                 f"of iterations {self.max_itercount} has been reached."
             )
+
         return total_res
 
     def calibrate(self, framework, method=None, **kwargs) -> dict:
@@ -315,7 +397,11 @@ class Calibrator(Optimizer):
 
         # Run optimization
         try:
-            _res = self.optimize(framework, method, **kwargs)
+            _res = self.optimize(
+                framework=framework,
+                method=method,
+                n_cpu=self.sim_api.n_cpu,
+                **kwargs)
         except MaxIterationsReached as err:
             self.logger.log(msg=str(err), level=logging.WARNING)
         t_cal_stop = time.time()
@@ -402,7 +488,7 @@ class Calibrator(Optimizer):
         Validate the given calibration class based on the given
         values for tuner_parameters.
         """
-        #%% Start Validation:
+        # Start Validation:
         self.at_calibration = False
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")

@@ -44,3 +44,7 @@
 
 - **v0.2.3**
    - Add workflows
+
+- **v0.3.0**
+   - Issue 20: Add parallelization for calibration and sensitivity analysis
+   - Issue 32: Add example converter to CI/CD

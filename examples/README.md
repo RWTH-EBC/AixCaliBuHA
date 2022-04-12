@@ -62,3 +62,8 @@ The examples 3-5 are written for both, so just alter the parameter in the `if __
 ## `e5_automated_process.py`
 
 1. Learn how to run everything in one script
+
+## `e6_multiprocessing_calibration_example.py`
+
+1. Just as in e4, learn how to set up a calibration, this time while using multiprocessing
+2. Install and use pandas==1.3.5 and tables==3.6.1
