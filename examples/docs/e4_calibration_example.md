@@ -160,7 +160,7 @@ result = modelica_calibrator.calibrate(
 ```python
 modelica_calibrator.validate(
     validation_class=validation_class,
-    tuner_parameter_values=list(result.values())
+    calibration_result=result
 )
 ```
  Don't forget to close the simulation api:

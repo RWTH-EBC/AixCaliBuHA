@@ -7,7 +7,8 @@ import os
 import json
 import time
 import logging
-from typing import List
+from typing import Dict
+from copy import copy
 import numpy as np
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
@@ -483,10 +484,15 @@ class Calibrator(Optimizer):
             with open(s_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
 
-    def validate(self, validation_class: CalibrationClass, tuner_parameter_values: List):
+    def validate(self, validation_class: CalibrationClass, calibration_result: Dict):
         """
         Validate the given calibration class based on the given
         values for tuner_parameters.
+
+        :param CalibrationClass validation_class:
+            The class to validate on
+        :param dict calibration_result:
+            The calibration result to apply to the validation class on.
         """
         # Start Validation:
         self.at_calibration = False
@@ -497,21 +503,33 @@ class Calibrator(Optimizer):
             start_time=self.calibration_class.start_time
         )
         self.calibration_class = validation_class
+        old_tuner_paras = copy(self.calibration_class.tuner_paras)
+        tuner_values = list(calibration_result.values())
+        self.calibration_class.tuner_paras = TunerParas(
+            names=list(calibration_result.keys()),
+            initial_values=tuner_values,
+            # Dummy bounds as they are scaled anyway
+            bounds=[(val - 1, val + 1) for val in tuner_values]
+        )
+
         # Set the start-time for the simulation
         self.sim_api.sim_setup.start_time = start_time
 
         self.logger.calibrate_new_class(self.calibration_class,
                                         cd=self.cd_of_class,
                                         for_validation=True)
+
         # Use the results parameter vector to simulate again.
         self._counter = 0  # Reset to one
         # Scale the tuner parameters
-        xk = self.tuner_paras.scale(tuner_parameter_values)
+        xk = self.tuner_paras.scale(tuner_values)
         # Evaluate objective
         obj = self.obj(xk=xk)
         self.logger.validation_callback_func(
             obj=obj
         )
+        # Reset tuner_parameters to avoid unwanted behaviour
+        self.calibration_class.tuner_paras = old_tuner_paras
         return obj
 
     def _handle_error(self, error):
