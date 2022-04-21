@@ -66,8 +66,8 @@ We therefore recommend to:
 5. Learn about the methods provided for calibration (statistical measures (RMSE, etc.), optimization, ...)
 6. **Always be critical** about the results of the process. If the model approach or the experiment is faulty, the calibration will perform accordingly. 
 
-## How to start with AixCaliBuHa?
-We have three services in place to help you with the setup of `AixCaliBuHa`. For the basics on using this repo, we recommend the Jupyter Notebook.
+## How to start with AixCaliBuHA?
+We have three services in place to help you with the setup of `AixCaliBuHA`. For the basics on using this repo, we recommend the Jupyter Notebook.
 If you want to setup your calibration models (in Modelica) and quickly start your first calibration, we provide a guided setup.
 
 ### Jupyter Notebook
