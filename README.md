@@ -1,3 +1,4 @@
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.03861/status.svg)](https://doi.org/10.21105/joss.03861)
 [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.html)
 [![documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/doc.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/index.html)
 [![coverage](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/coverage/badge.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/coverage)
@@ -9,8 +10,8 @@
 **Aix** (from French Aix-la-Chapelle) 
 **Cali**bration for **Bu**ilding and **H**V**A**C Systems
 
-This framework attempts to make the process of calibrating models used in Building
-and HVAC Systems easier.
+This framework automates the process of calibrating models used in Building
+and HVAC Simulations.
 
 # Key features
 - Performing a **Sensitivity Analysis** to discover tuner parameters for the calibration
@@ -41,7 +42,7 @@ pip install -e AixCaliBuHA
 
 # Framework structure
 
-The core idea and motivation of `AixCaliBuHA` is described in the [paper](paper.md).
+The core idea and motivation of `AixCaliBuHA` is described in the [paper](https://joss.theoj.org/papers/10.21105/joss.03861).
 The following image illustrates the overall toolchain automated by `AixCaliBuHA`.
 
 ![plot](docs/img/paper_fig_1.png)
@@ -120,7 +121,24 @@ We provide different plots to make the process of calibration clearer to you. We
 
 **How can we enable/disable the plot?** Using the `show_plot=True` keyword argument (default is `True`)
 
+# How to cite AixCaliBuHA
 
+Please use the following metadata to cite AixCaliBuHA in your research:
+
+```
+@article{Wüllhorst2022,
+  doi = {10.21105/joss.03861},
+  url = {https://doi.org/10.21105/joss.03861},
+  year = {2022},
+  publisher = {The Open Journal},
+  volume = {7},
+  number = {72},
+  pages = {3861},
+  author = {Fabian Wüllhorst and Thomas Storek and Philipp Mehrfeld and Dirk Müller},
+  title = {AixCaliBuHA: Automated calibration of building and HVAC systems},
+  journal = {Journal of Open Source Software}
+}
+```
 
 # Documentation
 Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
