@@ -1,3 +1,5 @@
+![E.ON EBC RWTH Aachen University](./docs/EBC_Logo.png)
+
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.03861/status.svg)](https://doi.org/10.21105/joss.03861)
 [![pylint](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.html)
 [![documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/doc.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/index.html)
@@ -123,7 +125,7 @@ We provide different plots to make the process of calibration clearer to you. We
 
 # How to cite AixCaliBuHA
 
-Please use the following metadata to cite AixCaliBuHA in your research:
+Please use the following metadata to cite `AixCaliBuHA` in your research:
 
 ```
 @article{Wüllhorst2022,
