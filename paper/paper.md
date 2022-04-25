@@ -46,7 +46,7 @@ we collect them in the separated project \href{https://github.com/RWTH-EBC/ebcpy
 Last but not least the lightweight Modelica Library \href{https://github.com/RWTH-EBC/Modelica_Calibration_Templates}{Modelica Calibration Templates} (`MoCaTe`) provides a standardized interface for coupling of Modelica models to the calibration toolchain.
 However, its usage is optional. 
 
-![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](docs/img/paper_fig_1.png){ width=60% }
+![Steps to perform in order to calibrate a model using `AixCaliBuHA`.\label{fig:flowshart}](../docs/img/paper_fig_1.png){ width=60% }
 
 
 # Statement of need
@@ -97,7 +97,7 @@ This class contains the goal of the calibration (mathematically speaking the obj
 Lastly, $F$ is included by calling one child-class of the `SimulationAPI` of `ebcpy`.
 \autoref{fig:link_problem} displays all mentioned links.
 
-![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](docs/img/paper_fig_2.png){ width=80% }
+![Link between the optimization problem and the `CalibrationClass` object.\label{fig:link_problem}](../docs/img/paper_fig_2.png){ width=80% }
 
 Once instances of `CalibrationClass` and `SimulationAPI` are generated, the calibration can run fully automated.
 However, the user can decide which steps to automate and which steps to perform manually using expert knowledge.

@@ -51,7 +51,7 @@ The following image illustrates the overall toolchain automated by `AixCaliBuHA`
 
 
 At the core of `AixCaliBuHA` lays the definition of data types, that link the python data types to the underlying optimization problem and are used for all subsequent steps.
-This image below illustrates this. For more information, check the [paper](paper.md) and the subsequent section on how to get started.
+This image below illustrates this. For more information, check the [paper](paper/AixCaliBuHA_10.21105.joss.03861.pdf) and the subsequent section on how to get started.
 
 ![plot](docs/img/paper_fig_2.png)
 
