@@ -26,7 +26,7 @@ To install, simply run
 pip install aixcalibuha
 ```
 
-If you encounter an error with the installation of `scikit-learn`, first install `scikit-learn` separately and then install `ebcpy`:
+If you encounter an error with the installation of `scikit-learn`, first install `scikit-learn` separately and then install `aixcalibuha`:
 
 ```
 pip install scikit-learn
@@ -79,7 +79,7 @@ For this, run the following code:
 ```
 # If jupyter is not already installed:
 pip install jupyter
-# Go into your ebcpy-folder (cd \path_to_\AixCaliBuHA) or change the to the absolute path of the tutorial.ipynb and run:
+# Go into your aixcalibuha-folder (cd \path_to_\AixCaliBuHA) or change the to the absolute path of the tutorial.ipynb and run:
 jupyter notebook AixCaliBuHA\examples\tutorial.ipynb
 ```
 
