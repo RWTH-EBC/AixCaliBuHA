@@ -703,8 +703,10 @@ def merge_calibration_classes(calibration_classes):
             temp_merged[_name] = {"goals": cal_class.goals,
                                   "tuner_paras": cal_class.tuner_paras,
                                   "intervals": deepcopy(cal_class.relevant_intervals),
-                                  "inputs": deepcopy(cal_class.inputs)
+                                  "inputs": deepcopy(cal_class.inputs),
+                                  "input_kwargs": deepcopy(cal_class.input_kwargs)
                                   }
+                                  
     # Convert dict to actual calibration-classes
     cal_classes_merged = []
     for _name, values in temp_merged.items():
@@ -716,7 +718,8 @@ def merge_calibration_classes(calibration_classes):
             goals=values["goals"],
             tuner_paras=values["tuner_paras"],
             relevant_intervals=values["intervals"],
-            inputs=values["inputs"])
+            inputs=values["inputs"],
+            input_kwargs=values["input_kwargs"])
         )
 
     return cal_classes_merged
