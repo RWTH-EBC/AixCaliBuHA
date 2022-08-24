@@ -115,9 +115,9 @@ class Calibrator(Optimizer):
         self.at_calibration = True  # Boolean to indicate if validating or calibrating
         # Extract kwargs for the visualizer
         visualizer_kwargs = {
-            "save_tsd_plot": kwargs.pop("save_tsd_plot", True),
-            "create_tsd_plot": kwargs.pop("create_tsd_plot", False),
-            "show_plot": kwargs.pop("show_plot", False),
+            "save_tsd_plot": kwargs.pop("save_tsd_plot", False),
+            "create_tsd_plot": kwargs.pop("create_tsd_plot", True),
+            "show_plot": kwargs.pop("show_plot", True),
             "show_plot_pause_time": kwargs.pop("show_plot_pause_time", 1e-3),
             "file_type": kwargs.pop("plot_file_type", "png"),
         }
