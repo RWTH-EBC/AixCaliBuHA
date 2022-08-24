@@ -114,11 +114,13 @@ class Calibrator(Optimizer):
         self.max_itercount = kwargs.pop('max_itercount', np.inf)
         self.at_calibration = True  # Boolean to indicate if validating or calibrating
         # Extract kwargs for the visualizer
-        visualizer_kwargs = {"save_tsd_plot": kwargs.pop("save_tsd_plot", None),
-                             "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
-                             "show_plot": kwargs.pop("show_plot", None),
-                             "file_type": kwargs.pop("plot_file_type", "png")
-                             }
+        visualizer_kwargs = {
+            "save_tsd_plot": kwargs.pop("save_tsd_plot", None),
+            "create_tsd_plot": kwargs.pop("create_tsd_plot", None),
+            "show_plot": kwargs.pop("show_plot", None),
+            "show_plot_pause_time": kwargs.pop("show_plot_pause_time", None),
+            "file_type": kwargs.pop("plot_file_type", "png"),
+        }
 
         # Check if types are correct:
         # Booleans:

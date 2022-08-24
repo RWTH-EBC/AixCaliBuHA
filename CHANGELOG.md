@@ -48,3 +48,6 @@
 - **v0.3.0**
    - Issue 20: Add parallelization for calibration and sensitivity analysis
    - Issue 32: Add example converter to CI/CD
+
+- **v0.3.1**
+   - Issue 41: Fix logging and add kwarg

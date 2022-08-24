@@ -331,22 +331,10 @@ class CalibrationVisualizer(CalibrationLogger):
     :keyword boolean save_tsd_plot:
         If True, at each iteration the created plot of the
         time-series is saved. This may make the process much slower
-
+    :keyword float show_plot_pause_time:
+        Set the time (in seconds) the plt.draw() pauses. May be altered if show_plot
+        yields plot which disappear to fast. Default is 1-e3 s.
     """
-
-    # Setup dummy parameters so class-functions
-    # now the type of those later created objects:
-    _n_cols_goals, _n_rows_goals, _n_cols_tuner, _n_rows_tuner = 1, 1, 1, 1
-    plt.ioff()  # Turn of interactive mode. Only
-    fig_tuner, ax_tuner = None, None
-    fig_goal, ax_goal = None, None
-    fig_obj, ax_obj = None, None
-    _num_goals = 0
-    save_tsd_plot = False
-    create_tsd_plot = True
-    show_plot = True
-    file_type = "svg"
-    goals_dir = "TimeSeriesPlot"
 
     def __init__(self, cd,
                  name,
@@ -360,15 +348,22 @@ class CalibrationVisualizer(CalibrationLogger):
                          name=name,
                          calibration_class=calibration_class,
                          logger=logger)
+
+        # Setup dummy parameters so class-functions
+        # now the type of those later created objects:
+        self._n_cols_goals, self._n_rows_goals, self._n_cols_tuner, self._n_rows_tuner = 1, 1, 1, 1
+        self.fig_tuner, self.ax_tuner = None, None
+        self.fig_goal, self.ax_goal = None, None
+        self.fig_obj, self.ax_obj = None, None
+        self._num_goals = 0
+        self.goals_dir = "TimeSeriesPlot"
         # Set supported kwargs:
-        if isinstance(kwargs.get("save_tsd_plot"), bool):
-            self.save_tsd_plot = kwargs.get("save_tsd_plot")
-        if isinstance(kwargs.get("create_tsd_plot"), bool):
-            self.create_tsd_plot = kwargs.get("create_tsd_plot")
-        if isinstance(kwargs.get("show_plot"), bool):
-            self.show_plot = kwargs.get("show_plot")
-        if isinstance(kwargs.get("file_type"), str):
-            self.file_type = kwargs.get("file_type")
+        plt.ioff()  # Turn of interactive mode.
+        self.save_tsd_plot = kwargs.get("save_tsd_plot", False)
+        self.create_tsd_plot = kwargs.get("create_tsd_plot", True)
+        self.show_plot = kwargs.get("show_plot", True)
+        self.file_type = kwargs.get("file_type", "svg")
+        self.show_plot_pause_time = kwargs.get("show_plot_pause_time", 1e-3)
 
     def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
@@ -447,9 +442,7 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.goals is not None and self.create_tsd_plot:
             self._plot_goals()
 
-        if self.show_plot:
-            plt.draw()
-            plt.pause(1e-5)
+        self._show_plot()
 
     def validation_callback_func(self, obj):
         """
@@ -464,9 +457,18 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.goals is not None and self.create_tsd_plot:
             self._plot_goals(at_validation=True)
 
-        if self.show_plot:
-            plt.draw()
-            plt.pause(1e-5)
+        self._show_plot()
+
+    def _show_plot(self):
+        """Show plot if activated"""
+        if not self.show_plot:
+            return
+        plt.draw()
+        self.fig_obj.canvas.draw_idle()
+        self.fig_tuner.canvas.draw_idle()
+        if self.create_tsd_plot:
+            self.fig_goal.canvas.draw_idle()
+        plt.pause(self.show_plot_pause_time)
 
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """

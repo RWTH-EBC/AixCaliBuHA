@@ -69,6 +69,7 @@ def run_calibration(
                          "show_plot": True,
                          "create_tsd_plot": True,
                          "save_tsd_plot": True,
+                         "show_plot_pause_time": 1e-3,
                          "plot_file_type": "png",
                          "fail_on_error": False,
                          "ret_val_on_error": np.NAN,
