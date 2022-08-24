@@ -367,7 +367,8 @@ class CalibrationVisualizer(CalibrationLogger):
         if not isinstance(self.show_plot_pause_time, (float, int)):
             raise TypeError(
                 f"Given 'show_plot_pause_time' needs to "
-                f"be float or int but is {type(self.show_plot_pause_time)}.")
+                f"be float or int but is {type(self.show_plot_pause_time)}."
+            )
 
     def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
