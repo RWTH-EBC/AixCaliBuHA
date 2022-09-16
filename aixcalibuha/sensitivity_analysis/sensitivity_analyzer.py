@@ -120,7 +120,7 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    def simulate_samples(self, samples, cal_class):
+    def simulate_samples(self, samples, cal_class, verbose=False):
         """
         Put the parameters in the model and simulate it.
 
@@ -133,6 +133,7 @@ class SenAnalyzer(abc.ABC):
             An array containing the evaluated differences for each sample
         """
         output = []
+        list_output_verbose = []
         # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
@@ -182,12 +183,25 @@ class SenAnalyzer(abc.ABC):
                 cal_class.goals.set_sim_target_data(result)
                 cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
                 # Evaluate the current objective
-                total_res = cal_class.goals.eval_difference()
-                output.append(total_res)
-
+                if verbose:
+                    total_res, verbose_calculation = cal_class.goals.eval_difference(verbose=verbose)
+                    output.append(total_res)
+                    list_output_verbose.append(verbose_calculation)
+                else:
+                    total_res = cal_class.goals.eval_difference(verbose=verbose)
+                    output.append(total_res)
+        if verbose:
+            # restructure output_verbose
+            output_verbose = {}
+            for key, val in list_output_verbose[0].items():
+                output_verbose[key] = np.array([])
+            for i in list_output_verbose:
+                for key, val in i.items():
+                    output_verbose[key] = np.append(output_verbose[key], np.array([val[1]]))
+            return np.asarray(output), output_verbose
         return np.asarray(output)
 
-    def run(self, calibration_classes, merge_multiple_classes=True):
+    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -214,6 +228,7 @@ class SenAnalyzer(abc.ABC):
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
 
         all_results = []
+        all_results_verbose = []
         for cal_class in calibration_classes:
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
@@ -223,18 +238,44 @@ class SenAnalyzer(abc.ABC):
             self.problem = self.create_problem(cal_class.tuner_paras)
             samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
-            output_array = self.simulate_samples(
-                samples=samples,
-                cal_class=cal_class)
-            result = self.analysis_function(
-                x=samples,
-                y=output_array
-            )
+            result_verbose = {}
+            if verbose:
+                output_array, output_verbose = self.simulate_samples(
+                    samples=samples,
+                    cal_class=cal_class,
+                    verbose=verbose)
+                result = self.analysis_function(
+                    x=samples,
+                    y=output_array
+                )
+                result_verbose['all'] = result
+                for key, val in output_verbose.items():
+                    result_goal = self.analysis_function(
+                        x=samples,
+                        y=output_verbose[key]
+                    )
+                    result_verbose[key] = result_goal
+            else:
+                output_array = self.simulate_samples(
+                    samples=samples,
+                    cal_class=cal_class,
+                    verbose=verbose)
+                result = self.analysis_function(
+                    x=samples,
+                    y=output_array
+                )
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(result)
-        result = self._conv_local_results(results=all_results,
-                                          local_classes=calibration_classes)
+            all_results_verbose.append(result_verbose)
+        if verbose:
+            result = self._conv_local_results(results=all_results_verbose,
+                                              local_classes=calibration_classes,
+                                              verbose=verbose)
+        else:
+            result = self._conv_local_results(results=all_results,
+                                              local_classes=calibration_classes,
+                                              verbose=verbose)
         return result, calibration_classes
 
     @staticmethod
@@ -282,15 +323,24 @@ class SenAnalyzer(abc.ABC):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class)
         return pd.DataFrame(glo_res_dict, index=['global'])
 
-    def _conv_local_results(self, results: list, local_classes: list):
-        _conv_results = [self._get_res_dict(result=result, cal_class=local_class)
-                         for result, local_class in zip(results, local_classes)]
-        df = pd.DataFrame(_conv_results)
-        df.index = [c.name for c in local_classes]
+    def _conv_local_results(self, results: list, local_classes: list, verbose=False):
+        if verbose:
+            _conv_results = []
+            tuples = []
+            for results_single , local_class in zip(results, local_classes):
+                for goal, result in results_single.items():
+                    _conv_results.append(self._get_res_dict(result=result, cal_class=local_class))
+                    tuples.append((local_class.name, goal))
+            index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal'])
+        else:
+            _conv_results = [self._get_res_dict(result=result, cal_class=local_class)
+                             for result, local_class in zip(results, local_classes)]
+            index = [c.name for c in local_classes]
+        df = pd.DataFrame(_conv_results, index=index)
         return df
 
     @abc.abstractmethod
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, verbose=False):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
