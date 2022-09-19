@@ -68,7 +68,7 @@ class FASTAnalyzer(SenAnalyzer):
                            N=self.num_samples,
                            **self.create_sampler_demand())
 
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
@@ -77,4 +77,4 @@ class FASTAnalyzer(SenAnalyzer):
         names = self.create_problem(cal_class.tuner_paras)['names']
         return {var_name: np.abs(res_val)
                 for var_name, res_val in zip(names,
-                                             result[self.analysis_variable])}
+                                             result[analysis_variable])}

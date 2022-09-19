@@ -31,7 +31,7 @@ class MorrisAnalyzer(SenAnalyzer):
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
-        return ['mu_star', 'sigma', 'mu_star_conf']
+        return ['mu_star', 'mu', 'sigma', 'mu_star_conf']
 
     def analysis_function(self, x, y):
         """
@@ -71,10 +71,10 @@ class MorrisAnalyzer(SenAnalyzer):
                              N=self.num_samples,
                              **self.create_sampler_demand())
 
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to self.analysis_variable.
         """
-        return dict(zip(result['names'], result[self.analysis_variable]))
+        return dict(zip(result['names'], result[analysis_variable]))

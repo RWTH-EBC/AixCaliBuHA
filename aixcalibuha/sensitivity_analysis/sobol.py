@@ -23,12 +23,14 @@ class SobolAnalyzer(SenAnalyzer):
             sim_api=sim_api,
             **kwargs)
         # Set additional kwargs
-        self.calc_second_order = kwargs.pop("calc_second_order", True)
+        self.calc_second_order = kwargs.get("calc_second_order", True)
         self.seed = kwargs.pop("seed", None)
 
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
+        if False:
+            return ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
         return ['S1', 'ST', 'S1_conf', 'ST_conf']
 
     def analysis_function(self, x, y):
@@ -68,7 +70,7 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
@@ -77,4 +79,4 @@ class SobolAnalyzer(SenAnalyzer):
         names = self.create_problem(cal_class.tuner_paras)['names']
         return {var_name: np.abs(res_val)
                 for var_name, res_val in zip(names,
-                                             result[self.analysis_variable])}
+                                             result[analysis_variable])}

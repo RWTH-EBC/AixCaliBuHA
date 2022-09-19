@@ -108,10 +108,10 @@ class PAWNAnalyzer(SenAnalyzer):
         else:
             raise NotImplementedError(f'{self.sampler} is not implemented yet')
 
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to self.analysis_variable.
         """
-        return dict(zip(result['names'], result[self.analysis_variable]))
+        return dict(zip(result['names'], result[analysis_variable]))

@@ -12,6 +12,8 @@ from ebcpy import data_types
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha import utils
+import matplotlib.pyplot as plt
+from SALib.plotting.bar import plot as barplot
 
 
 class SenAnalyzer(abc.ABC):
@@ -25,7 +27,7 @@ class SenAnalyzer(abc.ABC):
         the number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of sobol and
         morris in the SALib for more information.
-    :keyword str analysis_function:
+    :keyword str or [str] analysis_variable:
         Used to automatically select result values.
     :keyword str,os.path.normpath cd:
         The path for the current working directory.
@@ -57,11 +59,16 @@ class SenAnalyzer(abc.ABC):
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
         self.analysis_variable = kwargs.pop('analysis_variable',
-                                            self.analysis_variables[0])
-        if self.analysis_variable not in self.analysis_variables:
-            raise TypeError(f'Given analysis_variable "{self.analysis_variable}" not '
-                            f'supported for class {self.__class__.__name__}. '
-                            f'Supported options are: {", ".join(self.analysis_variables)}.')
+                                            self.analysis_variables)
+
+        if not isinstance(self.analysis_variable, (list, tuple)):
+            self.analysis_variable = [self.analysis_variable]
+
+        for v in self.analysis_variable:
+            if v not in self.analysis_variable:
+                raise TypeError(f'Given analysis_variable "{v}" not '
+                                f'supported for class {self.__class__.__name__}. '
+                                f'Supported options are: {", ".join(self.analysis_variables)}.')
 
         # Setup the logger
         self.logger = setup_logger(cd=self.cd, name=self.__class__.__name__)
@@ -201,7 +208,7 @@ class SenAnalyzer(abc.ABC):
             return np.asarray(output), output_verbose
         return np.asarray(output)
 
-    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False):
+    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False, show_plot=False):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -215,11 +222,18 @@ class SenAnalyzer(abc.ABC):
             for both these classes stand-alone.
             This will automatically yield an intersection of tuner-parameters, however may
             have advantages in some cases.
+        :param bool verbose:
+            Default False. If True, all sensitivity measurs of the SALib function are calculated
+            and returend. In addition to the combined Goals of the Classes (saved under index Goal: all),
+            the sensitivity measurs of the individual Goals will also be calculated and returned.
+        :param bool show_plot:
+            Default False. If True, the results will be ploted with functions of the SALib and combined
+            in one figur.
         :return:
-            Returns a list of dictionaries. One dict is the SALib-result for
-            one calibration-class. The order is based on the order of the
-            calibration-class list.
-        :rtype: list
+            Returns a pandas.DataFrame. If verbos is True the DataFrame has a Multiindex with the
+            levels Class, Goal and Analysis variable. When verbos is False the DataFrame has the
+            Class names as index. The variables are the tuner-parameters.
+        :rtype: pandas.DataFrame
         """
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
@@ -229,7 +243,12 @@ class SenAnalyzer(abc.ABC):
 
         all_results = []
         all_results_verbose = []
+        n_goals = len(calibration_classes[0].goals.variable_names)
+        n_classes = len(calibration_classes)
+        fig, ax = plt.subplots(n_goals + 1, n_classes, sharex=True)
+        col = 0
         for cal_class in calibration_classes:
+            row = 0
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
                              'Time-Interval: %s-%s s', cal_class.name,
@@ -239,6 +258,7 @@ class SenAnalyzer(abc.ABC):
             samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
             result_verbose = {}
+            result_verbose_df = {}
             if verbose:
                 output_array, output_verbose = self.simulate_samples(
                     samples=samples,
@@ -249,12 +269,32 @@ class SenAnalyzer(abc.ABC):
                     y=output_array
                 )
                 result_verbose['all'] = result
+                result_df = result.to_df()
+                if isinstance(result_df, (list, tuple)):
+                    if row == 0 and col == 0:
+                        plt.close(fig)
+                        fig, ax = plt.subplots(n_goals + 1, n_classes * len(result_df), sharex=True)
+                    for idx, f in enumerate(result_df):
+                        barplot(f, ax=ax[row][(col * len(result_df)) + idx])
+                        ax[row][(col * len(result_df)) + idx].set_title(f"Class: {cal_class.name} Goal: all")
+                else:
+                    barplot(result_df, ax=ax[row][col])
+                    ax[row][col].set_title(f"Class: {cal_class.name} Goal: all")
                 for key, val in output_verbose.items():
+                    row = row + 1
                     result_goal = self.analysis_function(
                         x=samples,
                         y=output_verbose[key]
                     )
                     result_verbose[key] = result_goal
+                    result_goal_df = result_goal.to_df()
+                    if isinstance(result_goal_df, (list, tuple)):
+                        for idx, f in enumerate(result_goal_df):
+                            barplot(f, ax=ax[row][(col * len(result_goal_df)) + idx])
+                            ax[row][(col * len(result_goal_df)) + idx].set_title(f"Class: {cal_class.name} Goal: {key}")
+                    else:
+                        barplot(result_goal_df, ax=ax[row][col])
+                        ax[row][col].set_title(f"Class: {cal_class.name} Goal: {key}")
             else:
                 output_array = self.simulate_samples(
                     samples=samples,
@@ -264,10 +304,17 @@ class SenAnalyzer(abc.ABC):
                     x=samples,
                     y=output_array
                 )
+                if show_plot:
+                    result.plot()
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(result)
             all_results_verbose.append(result_verbose)
+            col = col + 1
+        if show_plot:
+            plt.show()
+        else:
+            plt.close(fig)
         if verbose:
             result = self._conv_local_results(results=all_results_verbose,
                                               local_classes=calibration_classes,
@@ -327,20 +374,25 @@ class SenAnalyzer(abc.ABC):
         if verbose:
             _conv_results = []
             tuples = []
-            for results_single , local_class in zip(results, local_classes):
+            for results_single, local_class in zip(results, local_classes):
                 for goal, result in results_single.items():
-                    _conv_results.append(self._get_res_dict(result=result, cal_class=local_class))
-                    tuples.append((local_class.name, goal))
-            index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal'])
+                    # _conv_results.append(self._get_res_dict(result=result, cal_class=local_class))
+                    for av in self.analysis_variable:
+                        _conv_results.append(self._get_res_dict(result=result,
+                                                                cal_class=local_class,
+                                                                analysis_variable=av))
+                        tuples.append((local_class.name, goal, av))
+            index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal', 'Analysis variable'])
         else:
-            _conv_results = [self._get_res_dict(result=result, cal_class=local_class)
-                             for result, local_class in zip(results, local_classes)]
+            for av in self.analysis_variable:
+                _conv_results = [self._get_res_dict(result=result, cal_class=local_class, analysis_variable=av)
+                                 for result, local_class in zip(results, local_classes)]
             index = [c.name for c in local_classes]
         df = pd.DataFrame(_conv_results, index=index)
         return df
 
     @abc.abstractmethod
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, verbose=False):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
