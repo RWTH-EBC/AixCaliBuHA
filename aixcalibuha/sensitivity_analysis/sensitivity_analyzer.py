@@ -245,10 +245,13 @@ class SenAnalyzer(abc.ABC):
         all_results_verbose = []
         n_goals = len(calibration_classes[0].goals.variable_names)
         n_classes = len(calibration_classes)
-        fig, ax = plt.subplots(n_goals + 1, n_classes, sharex=True)
-        col = 0
-        for cal_class in calibration_classes:
+        figs = []
+        axes = []
+        for col, cal_class in enumerate(calibration_classes):
             row = 0
+            fig, ax = plt.subplots(n_goals + 1, sharex=True)
+            figs.append(fig)
+            axes.append(ax)
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
                              'Time-Interval: %s-%s s', cal_class.name,
@@ -271,15 +274,17 @@ class SenAnalyzer(abc.ABC):
                 result_verbose['all'] = result
                 result_df = result.to_df()
                 if isinstance(result_df, (list, tuple)):
-                    if row == 0 and col == 0:
-                        plt.close(fig)
-                        fig, ax = plt.subplots(n_goals + 1, n_classes * len(result_df), sharex=True)
+                    if row == 0:
+                        plt.close(figs[col])
+                        fig, ax = plt.subplots(n_goals + 1, len(result_df), sharex=True)
+                        figs[col] = fig
+                        axes[col] = ax
                     for idx, f in enumerate(result_df):
-                        barplot(f, ax=ax[row][(col * len(result_df)) + idx])
-                        ax[row][(col * len(result_df)) + idx].set_title(f"Class: {cal_class.name} Goal: all")
+                        barplot(f, ax=axes[col][row][idx])
+                        axes[col][row][idx].set_title(f"Class: {cal_class.name} Goal: all")
                 else:
-                    barplot(result_df, ax=ax[row][col])
-                    ax[row][col].set_title(f"Class: {cal_class.name} Goal: all")
+                    barplot(result_df, ax=axes[col][row])
+                    axes[col][row].set_title(f"Class: {cal_class.name} Goal: all")
                 for key, val in output_verbose.items():
                     row = row + 1
                     result_goal = self.analysis_function(
@@ -290,11 +295,11 @@ class SenAnalyzer(abc.ABC):
                     result_goal_df = result_goal.to_df()
                     if isinstance(result_goal_df, (list, tuple)):
                         for idx, f in enumerate(result_goal_df):
-                            barplot(f, ax=ax[row][(col * len(result_goal_df)) + idx])
-                            ax[row][(col * len(result_goal_df)) + idx].set_title(f"Class: {cal_class.name} Goal: {key}")
+                            barplot(f, ax=axes[col][row][idx])
+                            axes[col][row][idx].set_title(f"Class: {cal_class.name} Goal: {key}")
                     else:
-                        barplot(result_goal_df, ax=ax[row][col])
-                        ax[row][col].set_title(f"Class: {cal_class.name} Goal: {key}")
+                        barplot(result_goal_df, ax=axes[col][row])
+                        axes[col][row].set_title(f"Class: {cal_class.name} Goal: {key}")
             else:
                 output_array = self.simulate_samples(
                     samples=samples,
@@ -310,11 +315,10 @@ class SenAnalyzer(abc.ABC):
             result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append(result)
             all_results_verbose.append(result_verbose)
-            col = col + 1
         if show_plot:
             plt.show()
         else:
-            plt.close(fig)
+            plt.close('all')
         if verbose:
             result = self._conv_local_results(results=all_results_verbose,
                                               local_classes=calibration_classes,
