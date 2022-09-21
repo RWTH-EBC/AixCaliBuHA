@@ -127,7 +127,7 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    def simulate_samples(self, samples, cal_class, verbose=False):
+    def simulate_samples(self, samples, cal_class, verbose=False, scale=False):
         """
         Put the parameters in the model and simulate it.
 
@@ -155,6 +155,9 @@ class SenAnalyzer(abc.ABC):
         # Simulate the current values
         parameters = []
         for i, initial_values in enumerate(samples):
+            if scale:
+                initial_values = cal_class.tuner_paras.descale(initial_values)
+            # print(initial_values)
             parameters.append({name: value for name, value in zip(initial_names, initial_values)})
 
         if self.save_files:
@@ -208,7 +211,7 @@ class SenAnalyzer(abc.ABC):
             return np.asarray(output), output_verbose
         return np.asarray(output)
 
-    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False, show_plot=False):
+    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False, scale=False, show_plot=False):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -257,7 +260,7 @@ class SenAnalyzer(abc.ABC):
                              'Time-Interval: %s-%s s', cal_class.name,
                              cal_class.start_time, cal_class.stop_time)
 
-            self.problem = self.create_problem(cal_class.tuner_paras)
+            self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
             samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
             result_verbose = {}
@@ -266,7 +269,8 @@ class SenAnalyzer(abc.ABC):
                 output_array, output_verbose = self.simulate_samples(
                     samples=samples,
                     cal_class=cal_class,
-                    verbose=verbose)
+                    verbose=verbose,
+                    scale=scale)
                 result = self.analysis_function(
                     x=samples,
                     y=output_array
@@ -330,10 +334,13 @@ class SenAnalyzer(abc.ABC):
         return result, calibration_classes
 
     @staticmethod
-    def create_problem(tuner_paras) -> dict:
+    def create_problem(tuner_paras, scale=False) -> dict:
         """Create function for later access if multiple calibration-classes are used."""
         num_vars = len(tuner_paras.get_names())
         bounds = np.array(tuner_paras.get_bounds())
+        if scale:
+            bounds = [np.zeros_like(bounds[0]), np.ones_like(bounds[1])]
+        print(bounds)
         problem = {'num_vars': num_vars,
                    'names': tuner_paras.get_names(),
                    'bounds': np.transpose(bounds)}
