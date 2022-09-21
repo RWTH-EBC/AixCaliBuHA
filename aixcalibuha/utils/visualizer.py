@@ -309,8 +309,8 @@ class CalibrationLogger:
                                                            prec=self._prec-3)
         else:
             info_string += "        {}".format("-")
-        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
-                                           for weight, val in unweighted_objective.items()])
+        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(val[0], val[1], prec=4)
+                                           for goal, val in unweighted_objective.items()])
         info_string += f"          {_verbose_info}"
 
         return info_string
