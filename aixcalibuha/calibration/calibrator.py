@@ -10,6 +10,7 @@ import logging
 from typing import Dict
 from copy import copy
 import numpy as np
+import pandas as pd
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha.utils import visualizer, MaxIterationsReached
@@ -243,13 +244,13 @@ class Calibrator(Optimizer):
             )
             return self.ret_val_on_error
 
-        total_res = self._kpi_and_logging_calculation(
+        total_res, unweighted_objective = self._kpi_and_logging_calculation(
             xk_descaled=xk_descaled,
             counter=self._counter,
             results=sim_target_data
         )
 
-        return total_res
+        return total_res, unweighted_objective
 
     def mp_obj(self, x, *args):
         # Initialize list for results
@@ -370,7 +371,7 @@ class Calibrator(Optimizer):
                 f"of iterations {self.max_itercount} has been reached."
             )
 
-        return total_res
+        return total_res, unweighted_objective
 
     def calibrate(self, framework, method=None, **kwargs) -> dict:
         """
@@ -486,7 +487,7 @@ class Calibrator(Optimizer):
             with open(s_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
 
-    def validate(self, validation_class: CalibrationClass, calibration_result: Dict):
+    def validate(self, validation_class: CalibrationClass, calibration_result: Dict, verbose=False):
         """
         Validate the given calibration class based on the given
         values for tuner_parameters.
@@ -526,12 +527,29 @@ class Calibrator(Optimizer):
         # Scale the tuner parameters
         xk = self.tuner_paras.scale(tuner_values)
         # Evaluate objective
-        obj = self.obj(xk=xk)
+        obj, unweighted_objective = self.obj(xk=xk)
         self.logger.validation_callback_func(
             obj=obj
         )
         # Reset tuner_parameters to avoid unwanted behaviour
         self.calibration_class.tuner_paras = old_tuner_paras
+        if verbose:
+            weights = [1]
+            objectives = [obj]
+            goals = ['all']
+            for goal, val in unweighted_objective.items():
+                weights.append(val[0])
+                objectives.append(val[1])
+                goals.append(goal)
+            index = pd.MultiIndex.from_product(
+                [[validation_class.name], goals],
+                names=['Class', 'Goal']
+            )
+            obj_verbos = pd.DataFrame(
+                {'weight': weights, validation_class.goals.statistical_measure: objectives},
+                index=index
+            )
+            return obj_verbos
         return obj
 
     def _handle_error(self, error):
