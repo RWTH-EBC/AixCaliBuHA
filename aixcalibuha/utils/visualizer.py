@@ -462,18 +462,21 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.goals is not None and self.create_tsd_plot:
             self._plot_goals(at_validation=True)
 
-        self._show_plot()
+        self._show_plot(for_validation=True)
 
-    def _show_plot(self):
+    def _show_plot(self, for_validation=False):
         """Show plot if activated"""
         if not self.show_plot:
             return
         plt.draw()
-        self.fig_obj.canvas.draw_idle()
-        self.fig_tuner.canvas.draw_idle()
         if self.create_tsd_plot:
             self.fig_goal.canvas.draw_idle()
-        plt.pause(self.show_plot_pause_time)
+        if not for_validation:
+            self.fig_obj.canvas.draw_idle()
+            self.fig_tuner.canvas.draw_idle()
+            plt.pause(self.show_plot_pause_time)
+        else:
+            plt.show()
 
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
