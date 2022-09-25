@@ -275,6 +275,7 @@ class SenAnalyzer(abc.ABC):
                     x=samples,
                     y=output_array
                 )
+                result.plot()
                 result_verbose['all'] = result
                 result_df = result.to_df()
                 if isinstance(result_df, (list, tuple)):
@@ -295,6 +296,7 @@ class SenAnalyzer(abc.ABC):
                         x=samples,
                         y=output_verbose[key]
                     )
+                    result_goal.plot()
                     result_verbose[key] = result_goal
                     result_goal_df = result_goal.to_df()
                     if isinstance(result_goal_df, (list, tuple)):
@@ -340,7 +342,6 @@ class SenAnalyzer(abc.ABC):
         bounds = np.array(tuner_paras.get_bounds())
         if scale:
             bounds = [np.zeros_like(bounds[0]), np.ones_like(bounds[1])]
-        print(bounds)
         problem = {'num_vars': num_vars,
                    'names': tuner_paras.get_names(),
                    'bounds': np.transpose(bounds)}
