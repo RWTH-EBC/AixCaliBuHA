@@ -305,7 +305,7 @@ class Calibrator(Optimizer):
             if result is None:
                 total_res_list[idx] = self.ret_val_on_error
                 continue
-            total_res = self._kpi_and_logging_calculation(
+            total_res, unweighted_objective = self._kpi_and_logging_calculation(
                 xk_descaled=xk_descaled_list[idx],
                 counter=self._counter,
                 results=result
