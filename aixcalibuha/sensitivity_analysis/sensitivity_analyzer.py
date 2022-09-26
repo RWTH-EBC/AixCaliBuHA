@@ -211,7 +211,7 @@ class SenAnalyzer(abc.ABC):
             return np.asarray(output), output_verbose
         return np.asarray(output)
 
-    def run(self, calibration_classes, merge_multiple_classes=True, verbose=False, scale=False, show_plot=False):
+    def run(self, calibration_classes, merge_multiple_classes=True, **kwargs):
         """
         Execute the sensitivity analysis for each class and
         return the result.
@@ -225,11 +225,11 @@ class SenAnalyzer(abc.ABC):
             for both these classes stand-alone.
             This will automatically yield an intersection of tuner-parameters, however may
             have advantages in some cases.
-        :param bool verbose:
+        :keyword bool verbose:
             Default False. If True, all sensitivity measurs of the SALib function are calculated
             and returend. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measurs of the individual Goals will also be calculated and returned.
-        :param bool show_plot:
+        :keyword bool show_plot:
             Default False. If True, the results will be ploted with functions of the SALib and combined
             in one figur.
         :return:
@@ -238,6 +238,10 @@ class SenAnalyzer(abc.ABC):
             Class names as index. The variables are the tuner-parameters.
         :rtype: pandas.DataFrame
         """
+        verbose = kwargs.pop('verbos', False)
+        scale = kwargs.pop('scale', False)
+        show_plot = kwargs.pop('show_plot', False)
+        plot_sobol = kwargs.pop('plot_sobol', False)
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
@@ -275,7 +279,8 @@ class SenAnalyzer(abc.ABC):
                     x=samples,
                     y=output_array
                 )
-                result.plot()
+                if plot_sobol:
+                    result.plot()
                 result_verbose['all'] = result
                 result_df = result.to_df()
                 if isinstance(result_df, (list, tuple)):
@@ -296,7 +301,8 @@ class SenAnalyzer(abc.ABC):
                         x=samples,
                         y=output_verbose[key]
                     )
-                    result_goal.plot()
+                    if plot_sobol:
+                        result_goal.plot()
                     result_verbose[key] = result_goal
                     result_goal_df = result_goal.to_df()
                     if isinstance(result_goal_df, (list, tuple)):
