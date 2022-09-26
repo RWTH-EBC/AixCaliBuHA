@@ -238,7 +238,7 @@ class SenAnalyzer(abc.ABC):
             Class names as index. The variables are the tuner-parameters.
         :rtype: pandas.DataFrame
         """
-        verbose = kwargs.pop('verbos', False)
+        verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
         show_plot = kwargs.pop('show_plot', False)
         plot_sobol = kwargs.pop('plot_sobol', False)
