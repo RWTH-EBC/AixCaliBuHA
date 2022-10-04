@@ -143,7 +143,7 @@ Please use the following metadata to cite `AixCaliBuHA` in your research:
 ```
 
 # Documentation
-Visit hour official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
+Visit our official [Documentation](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs).
 
 # Problems?
 Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues/new).
