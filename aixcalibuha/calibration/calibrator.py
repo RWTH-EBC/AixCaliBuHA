@@ -502,10 +502,10 @@ class Calibrator(Optimizer):
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
         # Use start-time of calibration class
+        self.calibration_class = validation_class
         start_time = self._apply_start_time_method(
             start_time=self.calibration_class.start_time
         )
-        self.calibration_class = validation_class
         old_tuner_paras = copy(self.calibration_class.tuner_paras)
         tuner_values = list(calibration_result.values())
         self.calibration_class.tuner_paras = TunerParas(
