@@ -176,6 +176,8 @@ class MultipleClassCalibrator(Calibrator):
         for cal_run in self._cal_history:
             for p_name in cal_run['res']['Parameters'].index:
                 parameter_values[p_name] = cal_run['res']['Parameters'][p_name]
+        for p_name, res_intersection in res_tuner.items():
+            parameter_values[p_name] = res_intersection
         self.save_results(parameter_values=parameter_values,
                           filename='MultiClassCalibrationResult')
 
