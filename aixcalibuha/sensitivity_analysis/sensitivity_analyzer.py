@@ -339,6 +339,8 @@ class SenAnalyzer(abc.ABC):
             result = self._conv_local_results(results=all_results,
                                               local_classes=calibration_classes,
                                               verbose=verbose)
+        if verbose:
+            return result, calibration_classes, samples, output_array, output_verbose
         return result, calibration_classes
 
     @staticmethod
