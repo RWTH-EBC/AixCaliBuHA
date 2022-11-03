@@ -80,7 +80,7 @@ For this, run the following code:
 # If jupyter is not already installed:
 pip install jupyter
 # Go into your aixcalibuha-folder (cd \path_to_\AixCaliBuHA) or change the to the absolute path of the tutorial.ipynb and run:
-jupyter notebook AixCaliBuHA\examples\tutorial.ipynb
+jupyter notebook tutorial\tutorial.ipynb
 ```
 
 ### Examples
