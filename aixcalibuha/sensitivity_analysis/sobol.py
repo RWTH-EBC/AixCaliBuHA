@@ -29,7 +29,7 @@ class SobolAnalyzer(SenAnalyzer):
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
-        if False:
+        if self.calc_second_order:
             return ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
         return ['S1', 'ST', 'S1_conf', 'ST_conf']
 

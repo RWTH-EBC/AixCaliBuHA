@@ -24,10 +24,11 @@ class SenAnalyzer(abc.ABC):
         Simulation-API used to simulate the samples
     :param int num_samples:
         The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the
-        the number of samples produced, but relates to the total number of samples produced in
-        a manner dependent on the sampler method used. See the documentation of sobol and
-        morris in the SALib for more information.
-    :keyword str or [str] analysis_variable:
+        number of samples produced, but relates to the total number of samples produced in
+        a manner dependent on the sampler method used. See the documentation of the specific 
+        method in the SALib for more information.
+    :keyword str or [str] analysis_variable: 
+        Default is a list of all possible result values.
         Used to automatically select result values.
     :keyword str,os.path.normpath cd:
         The path for the current working directory.
@@ -135,6 +136,13 @@ class SenAnalyzer(abc.ABC):
             Output variables in dymola
         :param cal_class:
             One class for calibration. Goals and tuner_paras have to be set
+        :param verbose:
+            Default is False.
+            If True returns an additional dict containing the evaluated differences
+            for each sample as values in a np.array of the combined goal with the key 'all'
+            and for the single goals with their VARIABLE_NAME as the key.
+        :param scale:
+            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
 
         :returns: np.array
             An array containing the evaluated differences for each sample
@@ -157,7 +165,6 @@ class SenAnalyzer(abc.ABC):
         for i, initial_values in enumerate(samples):
             if scale:
                 initial_values = cal_class.tuner_paras.descale(initial_values)
-            # print(initial_values)
             parameters.append({name: value for name, value in zip(initial_names, initial_values)})
 
         if self.save_files:
@@ -220,21 +227,21 @@ class SenAnalyzer(abc.ABC):
             Either one or multiple classes for calibration
         :param bool merge_multiple_classes:
             Default True. If False, the given list of calibration-classes
-            is handeled as-is. This means if you pass two CalibrationClass objects
+            is handled as-is. This means if you pass two CalibrationClass objects
             with the same name (e.g. "device on"), the calibration process will run
             for both these classes stand-alone.
             This will automatically yield an intersection of tuner-parameters, however may
             have advantages in some cases.
         :keyword bool verbose:
-            Default False. If True, all sensitivity measurs of the SALib function are calculated
-            and returend. In addition to the combined Goals of the Classes (saved under index Goal: all),
-            the sensitivity measurs of the individual Goals will also be calculated and returned.
+            Default False. If True, all sensitivity measures of the SALib function are calculated
+            and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
+            the sensitivity measures of the individual Goals will also be calculated and returned.
         :keyword bool show_plot:
-            Default False. If True, the results will be ploted with functions of the SALib and combined
+            Default False. If True, the results will be plotted with functions of the SALib and combined
             in one figur.
         :return:
-            Returns a pandas.DataFrame. If verbos is True the DataFrame has a Multiindex with the
-            levels Class, Goal and Analysis variable. When verbos is False the DataFrame has the
+            Returns a pandas.DataFrame. If verbose is True the DataFrame has a Multiindex with the
+            levels Class, Goal and Analysis variable. When verbose is False the DataFrame has the
             Class names as index. The variables are the tuner-parameters.
         :rtype: pandas.DataFrame
         """
@@ -256,7 +263,7 @@ class SenAnalyzer(abc.ABC):
         axes = []
         for col, cal_class in enumerate(calibration_classes):
             row = 0
-            fig, ax = plt.subplots(n_goals + 1, sharex=True)
+            fig, ax = plt.subplots(n_goals + 1, sharex='all')
             figs.append(fig)
             axes.append(ax)
             t_sen_start = time.time()
@@ -268,7 +275,6 @@ class SenAnalyzer(abc.ABC):
             samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
             result_verbose = {}
-            result_verbose_df = {}
             if verbose:
                 output_array, output_verbose = self.simulate_samples(
                     samples=samples,
@@ -286,7 +292,7 @@ class SenAnalyzer(abc.ABC):
                 if isinstance(result_df, (list, tuple)):
                     if row == 0:
                         plt.close(figs[col])
-                        fig, ax = plt.subplots(n_goals + 1, len(result_df), sharex=True)
+                        fig, ax = plt.subplots(n_goals + 1, len(result_df), sharex='all')
                         figs[col] = fig
                         axes[col] = ax
                     for idx, f in enumerate(result_df):
