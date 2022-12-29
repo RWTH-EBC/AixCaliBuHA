@@ -23,7 +23,7 @@ class PAWNAnalyzer(SenAnalyzer):
         Which sampler should be used. Default sobol.
         Choose between 'sobol', 'morris' and 'fast
     :keyword int num_levels:
-        Default 4, used for the sampler of the morris-method
+        Default num_samples, used for the sampler of the morris-method
     :keyword optimal_trajectories:
         Used for the sampler of the morris-method
     :keyword bool local_optimization:
@@ -39,7 +39,7 @@ class PAWNAnalyzer(SenAnalyzer):
         self.calc_second_order = kwargs.pop("calc_second_order", True)
         self.s = kwargs.pop("s", 10)
         self.sampler = kwargs.pop("sampler", 'sobol')
-        self.num_levels = kwargs.pop("num_levels", 4)
+        self.num_levels = kwargs.pop("num_levels", self.num_samples)
         self.optimal_trajectories = kwargs.pop("optimal_trajectories", None)
         self.local_optimization = kwargs.pop("local_optimization", True)
         self.M = kwargs.pop("M", 4)

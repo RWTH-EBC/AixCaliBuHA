@@ -13,7 +13,7 @@ class MorrisAnalyzer(SenAnalyzer):
     Additional arguments:
 
     :keyword int num_levels:
-        Default 4, used for the morris-method
+        Default num_samples, used for the morris-method
     :keyword optimal_trajectories:
         Used for the morris-method
     :keyword bool local_optimization:
@@ -24,7 +24,7 @@ class MorrisAnalyzer(SenAnalyzer):
             sim_api=sim_api,
             **kwargs)
         # Set additional kwargs
-        self.num_levels = kwargs.pop("num_levels", 4)
+        self.num_levels = kwargs.pop("num_levels", self.num_samples)
         self.optimal_trajectories = kwargs.pop("optimal_trajectories", None)
         self.local_optimization = kwargs.pop("local_optimization", True)
 
