@@ -2,7 +2,7 @@
 Adds the PAWNAnalyzer to the available
 classes of sensitivity analysis.
 """
-from SALib.sample import saltelli as sobol
+from SALib.sample import sobol
 from SALib.sample import morris
 from SALib.sample import fast_sampler as fast
 from SALib.analyze import pawn as analyze_pawn

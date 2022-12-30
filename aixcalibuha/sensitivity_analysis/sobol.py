@@ -2,7 +2,7 @@
 Adds the SobolAnalyzer to the available
 classes of sensitivity analysis.
 """
-from SALib.sample import saltelli as sobol
+from SALib.sample import sobol
 from SALib.analyze import sobol as analyze_sobol
 import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
@@ -18,20 +18,45 @@ class SobolAnalyzer(SenAnalyzer):
     :keyword seed:
         Used for the sobol-method
     """
+    __sobol_analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf']
+
     def __init__(self, sim_api, **kwargs):
+        # Additional kwarg which changes the possible analysis_variables
+        self.calc_second_order = kwargs.get("calc_second_order", True)
+        if self.calc_second_order:
+            self.__sobol_analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
+
         super().__init__(
             sim_api=sim_api,
             **kwargs)
         # Set additional kwargs
-        self.calc_second_order = kwargs.get("calc_second_order", True)
         self.seed = kwargs.pop("seed", None)
 
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
-        if self.calc_second_order:
-            return ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
-        return ['S1', 'ST', 'S1_conf', 'ST_conf']
+        return self.__sobol_analysis_variables
+
+    @property
+    def analysis_variable(self):
+        return self._analysis_variable
+
+    @analysis_variable.setter
+    def analysis_variable(self, value):
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        false_values = []
+        for v in value:
+            if v not in self.analysis_variables:
+                false_values.append(v)
+        if false_values:
+            error_message = f'Given analysis_variable "{false_values}" not ' \
+                            f'supported for class {self.__class__.__name__}. ' \
+                            f'Supported options are: {", ".join(self.analysis_variables)}.'
+            if not self.calc_second_order:
+                error_message += f' When calc_second_order also S2 und S2_conf are supported.'
+            raise ValueError(error_message)
+        self._analysis_variable = value
 
     def analysis_function(self, x, y):
         """

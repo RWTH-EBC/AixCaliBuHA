@@ -62,15 +62,6 @@ class SenAnalyzer(abc.ABC):
         self.analysis_variable = kwargs.pop('analysis_variable',
                                             self.analysis_variables)
 
-        if not isinstance(self.analysis_variable, (list, tuple)):
-            self.analysis_variable = [self.analysis_variable]
-
-        for v in self.analysis_variable:
-            if v not in self.analysis_variable:
-                raise TypeError(f'Given analysis_variable "{v}" not '
-                                f'supported for class {self.__class__.__name__}. '
-                                f'Supported options are: {", ".join(self.analysis_variables)}.')
-
         # Setup the logger
         self.logger = setup_logger(cd=self.cd, name=self.__class__.__name__)
 
@@ -90,6 +81,24 @@ class SenAnalyzer(abc.ABC):
         """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_variables '
                                   f'property is not defined yet')
+
+    @property
+    def analysis_variable(self):
+        return self._analysis_variable
+
+    @analysis_variable.setter
+    def analysis_variable(self, value):
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        false_values = []
+        for v in value:
+            if v not in self.analysis_variables:
+                false_values.append(v)
+        if false_values:
+            raise ValueError(f'Given analysis_variable "{false_values}" not '
+                             f'supported for class {self.__class__.__name__}. '
+                             f'Supported options are: {", ".join(self.analysis_variables)}.')
+        self._analysis_variable = value
 
     @abc.abstractmethod
     def analysis_function(self, x, y):
