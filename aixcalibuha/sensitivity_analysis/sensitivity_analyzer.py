@@ -434,3 +434,16 @@ class SenAnalyzer(abc.ABC):
         associated to self.analysis_variable.
         """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    @staticmethod
+    def plot(result: pd.DataFrame):
+        """
+        Plot the results of the sensitivity analysis method from run().
+
+        :param pd.DataFrame result:
+            Dataframe of the results like from the run() function.
+        :return tuple of matplotlib objects (fig, ax)
+        """
+        raise NotImplementedError(f'{self.__class__.__name__}.plot '
+                                  f'function is not defined yet')
