@@ -411,7 +411,6 @@ class SenAnalyzer(abc.ABC):
             tuples = []
             for results_single, local_class in zip(results, local_classes):
                 for goal, result in results_single.items():
-                    # _conv_results.append(self._get_res_dict(result=result, cal_class=local_class))
                     for av in self.analysis_variable:
                         _conv_results.append(self._get_res_dict(result=result,
                                                                 cal_class=local_class,
@@ -435,9 +434,9 @@ class SenAnalyzer(abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @staticmethod
-    def plot(result: pd.DataFrame):
+    # @abc.abstractmethod
+    def plot(result):
         """
         Plot the results of the sensitivity analysis method from run().
 

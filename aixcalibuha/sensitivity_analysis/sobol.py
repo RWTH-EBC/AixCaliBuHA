@@ -2,6 +2,7 @@
 Adds the SobolAnalyzer to the available
 classes of sensitivity analysis.
 """
+import pandas as pd
 from SALib.sample import sobol
 from SALib.analyze import sobol as analyze_sobol
 import numpy as np
@@ -18,13 +19,18 @@ class SobolAnalyzer(SenAnalyzer):
     :keyword seed:
         Used for the sobol-method
     """
-    __sobol_analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf']
+    __analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf']
+    __analysis_variables_1 = ['S1', 'ST', 'S1_conf', 'ST_conf']
+    __analysis_variables_2 = ['S2', 'S2_conf']
 
     def __init__(self, sim_api, **kwargs):
         # Additional kwarg which changes the possible analysis_variables
         self.calc_second_order = kwargs.get("calc_second_order", True)
         if self.calc_second_order:
-            self.__sobol_analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
+            self.__analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
+        # seperatly store first and total oder (1) and second order (2) analysis variables
+        self.av_1_selected = []
+        self.av_2_selected = []
 
         super().__init__(
             sim_api=sim_api,
@@ -32,10 +38,12 @@ class SobolAnalyzer(SenAnalyzer):
         # Set additional kwargs
         self.seed = kwargs.pop("seed", None)
 
+
+
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
-        return self.__sobol_analysis_variables
+        return self.__analysis_variables
 
     @property
     def analysis_variable(self):
@@ -49,6 +57,12 @@ class SobolAnalyzer(SenAnalyzer):
         for v in value:
             if v not in self.analysis_variables:
                 false_values.append(v)
+                continue
+            if v in self.__analysis_variables_1:
+                self.av_1_selected.append(v)
+                continue
+            if v in self.__analysis_variables_2:
+                self.av_2_selected.append(v)
         if false_values:
             error_message = f'Given analysis_variable "{false_values}" not ' \
                             f'supported for class {self.__class__.__name__}. ' \
@@ -95,13 +109,58 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
+    def _conv_local_results(self, results: list, local_classes: list, verbose=False):
+        if verbose:
+            _conv_results = []
+            _conv_restuls_2 =[]
+            tuples = []
+            tuples_2 = []
+            for results_single, local_class in zip(results, local_classes):
+                for goal, result in results_single.items():
+                    for av in self.analysis_variable:
+                        res_dict = self._get_res_dict(result=result,
+                                                       cal_class=local_class,
+                                                       analysis_variable=av)
+                        if av in self.__analysis_variables_1:
+                            _conv_results.append(res_dict)
+                            tuples.append((local_class.name, goal, av))
+                        elif av in self.__analysis_variables_2:
+                            for tuner_para, res_dict in res_dict.items():
+                                _conv_restuls_2.append(res_dict)
+                                tuples_2.append((local_class.name, goal, av, tuner_para))
+            index = pd.MultiIndex.from_tuples(tuples=tuples,
+                                              names=['Class', 'Goal', 'Analysis variable'])
+            index_2 = pd.MultiIndex.from_tuples(tuples=tuples_2,
+                                                names=['Class', 'Goal', 'Analysis variable', 'Interaction'])
+        else:
+            for av in self.analysis_variable:
+                _conv_results = [self._get_res_dict(result=result, cal_class=local_class, analysis_variable=av)
+                                 for result, local_class in zip(results, local_classes)]
+            index = [c.name for c in local_classes]
+        df = pd.DataFrame(_conv_results, index=index)
+        df_2 = pd.DataFrame(_conv_restuls_2, index=index_2)
+        return (df, df_2)
+
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to self.analysis_variable.
         """
+        #res_dict = {'res_dict_1': None, 'res_dict_2': None}
         names = self.create_problem(cal_class.tuner_paras)['names']
-        return {var_name: np.abs(res_val)
-                for var_name, res_val in zip(names,
-                                             result[analysis_variable])}
+        if analysis_variable in self.__analysis_variables_1:
+            res_dict_1 = {var_name: np.abs(res_val)
+                          for var_name, res_val in zip(names,
+                                                       result[analysis_variable])}
+            return res_dict_1
+        if analysis_variable in self.__analysis_variables_2:
+            result_av = result[analysis_variable]
+            for i in range(len(result_av)):
+                for j in range(len(result_av)):
+                    if i > j:
+                        result_av[i][j] = result_av[j][i]
+            res_dict_2 = {var_name: dict(zip(names, np.abs(res_val)))
+                          for var_name, res_val in zip(names,
+                                                       result_av)}
+            return res_dict_2
