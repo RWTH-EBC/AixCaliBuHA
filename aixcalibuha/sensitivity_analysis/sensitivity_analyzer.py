@@ -249,9 +249,12 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, the results will be plotted with functions of the SALib and combined
             in one figur.
         :return:
-            Returns a pandas.DataFrame. If verbose is True the DataFrame has a Multiindex with the
-            levels Class, Goal and Analysis variable. When verbose is False the DataFrame has the
-            Class names as index. The variables are the tuner-parameters.
+            Returns a pandas.DataFrame. The DataFrame has a Multiindex with the
+            levels Class, Goal and Analysis variable. The Goal name of combined goals is 'all'.
+            The variables are the tuner-parameters.
+            For the Sobol Method and calc_second_order returns a tuple of DataFrames (df_1, df_2)
+            where df_2 contains the second oder analysis variables and has an extra index level
+            Interaction, which also contians the variables.
         :rtype: pandas.DataFrame
         """
         verbose = kwargs.pop('verbose', False)
@@ -340,7 +343,7 @@ class SenAnalyzer(abc.ABC):
                     result.plot()
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
-            all_results.append(result)
+            all_results.append({'all': result})
             all_results_verbose.append(result_verbose)
         if show_plot:
             plt.show()
@@ -372,6 +375,7 @@ class SenAnalyzer(abc.ABC):
 
     @staticmethod
     def select_by_threshold(calibration_classes, result, threshold):
+        # TODO: chang to fit the new result dataframes
         """
         Automatically select sensitive tuner parameters based on a given threshold
         and a key-word of the result.
@@ -406,22 +410,16 @@ class SenAnalyzer(abc.ABC):
         return pd.DataFrame(glo_res_dict, index=['global'])
 
     def _conv_local_results(self, results: list, local_classes: list, verbose=False):
-        if verbose:
-            _conv_results = []
-            tuples = []
-            for results_single, local_class in zip(results, local_classes):
-                for goal, result in results_single.items():
-                    for av in self.analysis_variable:
-                        _conv_results.append(self._get_res_dict(result=result,
-                                                                cal_class=local_class,
-                                                                analysis_variable=av))
-                        tuples.append((local_class.name, goal, av))
-            index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal', 'Analysis variable'])
-        else:
-            for av in self.analysis_variable:
-                _conv_results = [self._get_res_dict(result=result, cal_class=local_class, analysis_variable=av)
-                                 for result, local_class in zip(results, local_classes)]
-            index = [c.name for c in local_classes]
+        _conv_results = []
+        tuples = []
+        for class_results, local_class in zip(results, local_classes):
+            for goal, goal_results in class_results.items():
+                for av in self.analysis_variable:
+                    _conv_results.append(self._get_res_dict(result=goal_results,
+                                                            cal_class=local_class,
+                                                            analysis_variable=av))
+                    tuples.append((local_class.name, goal, av))
+        index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal', 'Analysis variable'])
         df = pd.DataFrame(_conv_results, index=index)
         return df
 
@@ -430,7 +428,7 @@ class SenAnalyzer(abc.ABC):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
-        associated to self.analysis_variable.
+        associated to analysis_variable.
         """
         raise NotImplementedError
 
