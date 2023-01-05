@@ -266,9 +266,7 @@ class SenAnalyzer(abc.ABC):
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
 
         all_results = []
-        all_results_verbose = []
         for col, cal_class in enumerate(calibration_classes):
-            row = 0
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
                              'Time-Interval: %s-%s s', cal_class.name,
@@ -277,50 +275,31 @@ class SenAnalyzer(abc.ABC):
             self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
             samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
-            result_verbose = {}
+            results_goals = {}
+            output_array, output_verbose = self.simulate_samples(
+                samples=samples,
+                cal_class=cal_class,
+                verbose=True)
+            result = self.analysis_function(
+                x=samples,
+                y=output_array
+            )
+            t_sen_stop = time.time()
+            result['duration[s]'] = t_sen_stop - t_sen_start
+            results_goals['all'] = result
             if verbose:
-                output_array, output_verbose = self.simulate_samples(
-                    samples=samples,
-                    cal_class=cal_class,
-                    verbose=verbose,
-                    scale=scale)
-                result = self.analysis_function(
-                    x=samples,
-                    y=output_array
-                )
-                result_verbose['all'] = result
                 for key, val in output_verbose.items():
-                    row = row + 1
                     result_goal = self.analysis_function(
                         x=samples,
                         y=output_verbose[key]
                     )
-                    result_verbose[key] = result_goal
-            else:
-                output_array = self.simulate_samples(
-                    samples=samples,
-                    cal_class=cal_class,
-                    verbose=verbose)
-                result = self.analysis_function(
-                    x=samples,
-                    y=output_array
-                )
-            t_sen_stop = time.time()
-            result['duration[s]'] = t_sen_stop - t_sen_start
-            all_results.append({'all': result})
-            all_results_verbose.append(result_verbose)
-        if verbose:
-            result = self._conv_local_results(results=all_results_verbose,
-                                              local_classes=calibration_classes,
-                                              verbose=verbose)
-        else:
-            result = self._conv_local_results(results=all_results,
-                                              local_classes=calibration_classes,
-                                              verbose=verbose)
+                    results_goals[key] = result_goal
+            all_results.append(results_goals)
+        result = self._conv_local_results(results=all_results,
+                                          local_classes=calibration_classes,
+                                          verbose=verbose)
         if plot_result:
             self.plot(result)
-        # if verbose:
-        #     return result, calibration_classes, samples, output_array, output_verbose
         return result, calibration_classes
 
     @staticmethod
@@ -457,7 +436,6 @@ class SenAnalyzer(abc.ABC):
             plt.show()
 
         return figs, axes
-
 
     def plot(self, result):
         """
