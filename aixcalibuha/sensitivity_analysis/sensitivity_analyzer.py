@@ -245,9 +245,8 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, all sensitivity measures of the SALib function are calculated
             and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
-        :keyword bool show_plot:
-            Default False. If True, the results will be plotted with functions of the SALib and combined
-            in one figur.
+        :keyword bool plot_resutl:
+            Default True. If True, the results will be plotted.
         :return:
             Returns a pandas.DataFrame. The DataFrame has a Multiindex with the
             levels Class, Goal and Analysis variable. The Goal name of combined goals is 'all'.
@@ -259,8 +258,7 @@ class SenAnalyzer(abc.ABC):
         """
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
-        show_plot = kwargs.pop('show_plot', False)
-        plot_sobol = kwargs.pop('plot_sobol', False)
+        plot_result = kwargs.pop('plot_result', True)
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
@@ -269,15 +267,8 @@ class SenAnalyzer(abc.ABC):
 
         all_results = []
         all_results_verbose = []
-        n_goals = len(calibration_classes[0].goals.variable_names)
-        n_classes = len(calibration_classes)
-        figs = []
-        axes = []
         for col, cal_class in enumerate(calibration_classes):
             row = 0
-            fig, ax = plt.subplots(n_goals + 1, sharex='all')
-            figs.append(fig)
-            axes.append(ax)
             t_sen_start = time.time()
             self.logger.info('Start sensitivity analysis of class: %s, '
                              'Time-Interval: %s-%s s', cal_class.name,
@@ -297,39 +288,14 @@ class SenAnalyzer(abc.ABC):
                     x=samples,
                     y=output_array
                 )
-                if plot_sobol:
-                    result.plot()
                 result_verbose['all'] = result
-                result_df = result.to_df()
-                if isinstance(result_df, (list, tuple)):
-                    if row == 0:
-                        plt.close(figs[col])
-                        fig, ax = plt.subplots(n_goals + 1, len(result_df), sharex='all')
-                        figs[col] = fig
-                        axes[col] = ax
-                    for idx, f in enumerate(result_df):
-                        barplot(f, ax=axes[col][row][idx])
-                        axes[col][row][idx].set_title(f"Class: {cal_class.name} Goal: all")
-                else:
-                    barplot(result_df, ax=axes[col][row])
-                    axes[col][row].set_title(f"Class: {cal_class.name} Goal: all")
                 for key, val in output_verbose.items():
                     row = row + 1
                     result_goal = self.analysis_function(
                         x=samples,
                         y=output_verbose[key]
                     )
-                    if plot_sobol:
-                        result_goal.plot()
                     result_verbose[key] = result_goal
-                    result_goal_df = result_goal.to_df()
-                    if isinstance(result_goal_df, (list, tuple)):
-                        for idx, f in enumerate(result_goal_df):
-                            barplot(f, ax=axes[col][row][idx])
-                            axes[col][row][idx].set_title(f"Class: {cal_class.name} Goal: {key}")
-                    else:
-                        barplot(result_goal_df, ax=axes[col][row])
-                        axes[col][row].set_title(f"Class: {cal_class.name} Goal: {key}")
             else:
                 output_array = self.simulate_samples(
                     samples=samples,
@@ -339,16 +305,10 @@ class SenAnalyzer(abc.ABC):
                     x=samples,
                     y=output_array
                 )
-                if show_plot:
-                    result.plot()
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
             all_results.append({'all': result})
             all_results_verbose.append(result_verbose)
-        if show_plot:
-            plt.show()
-        else:
-            plt.close('all')
         if verbose:
             result = self._conv_local_results(results=all_results_verbose,
                                               local_classes=calibration_classes,
@@ -357,8 +317,10 @@ class SenAnalyzer(abc.ABC):
             result = self._conv_local_results(results=all_results,
                                               local_classes=calibration_classes,
                                               verbose=verbose)
-        if verbose:
-            return result, calibration_classes, samples, output_array, output_verbose
+        if plot_result:
+            self.plot(result)
+        # if verbose:
+        #     return result, calibration_classes, samples, output_array, output_verbose
         return result, calibration_classes
 
     @staticmethod
@@ -432,9 +394,72 @@ class SenAnalyzer(abc.ABC):
         """
         raise NotImplementedError
 
-    @staticmethod
-    # @abc.abstractmethod
-    def plot(result):
+    def _del_duplicates(self, x):
+        return list(dict.fromkeys(x))
+
+    def _get_suffix(self, modelica_var_name):
+        index_last_dot = modelica_var_name.rfind('.')
+        suffix = modelica_var_name[index_last_dot + 1:]
+        return suffix
+
+    def plot_single(self, result: pd.DataFrame, **kwargs):
+        '''
+        Plot senitivity results of first and total order analysis variables.
+        For each calibration class one figure is created, which shows for each goal an axis
+        with a barplot of the values of the analysis variables.
+
+        :param pd.DataFrame result:
+            A result from run
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :keyword bool use_suffix:
+            Default is True: If True, the last part after the last point
+            of Modelica variables is used for the x ticks.
+        :return:
+            Returns all created figures and axes in lists like [fig], [ax]
+        '''
+        show_plot = kwargs.pop('show_plot', True)
+        # kwargs for the design
+        use_suffix = kwargs.pop('use_suffix', True)
+
+        # get lists of the calibration classes their goals and the analysis variables in the result dataframe
+        cal_classes = self._del_duplicates(list(result.index.get_level_values(0)))
+        goals = self._del_duplicates(list(result.index.get_level_values(1)))
+        analysis_variables = self._del_duplicates(list(result.index.get_level_values(2)))
+
+        # rename tuner_names in result to the suffix of their variable name
+        if use_suffix:
+            tuner_names = list(result.columns)
+            rename_tuner_names = {name: self._get_suffix(name) for name in tuner_names}
+            result = result.rename(columns=rename_tuner_names)
+
+        # when the index is not sorted pandas throws a performance warning
+        result = result.sort_index()
+
+        # plotting with simple plot function of the SALib
+        figs = []
+        axes = []
+        for col, cal_class in enumerate(cal_classes):
+            fig, ax = plt.subplots(len(goals), sharex='all')
+            fig.suptitle(cal_class)
+            figs.append(fig)
+            if not isinstance(ax, np.ndarray):
+                ax = [ax]
+            axes.append(ax)
+            for row, goal in enumerate(goals):
+                result_df = result.loc[cal_class, goal]
+                axes[col][row].grid(True, which='both', axis='y')
+                barplot(result_df.T, ax=axes[col][row])
+                axes[col][row].set_title(goal)
+                axes[col][row].legend()
+
+        if show_plot:
+            plt.show()
+
+        return figs, axes
+
+
+    def plot(self, result):
         """
         Plot the results of the sensitivity analysis method from run().
 
@@ -442,5 +467,9 @@ class SenAnalyzer(abc.ABC):
             Dataframe of the results like from the run() function.
         :return tuple of matplotlib objects (fig, ax)
         """
-        raise NotImplementedError(f'{self.__class__.__name__}.plot '
-                                  f'function is not defined yet')
+        self.plot_single(result=result)
+
+    @staticmethod
+    def load_from_csv(path):
+        result = pd.read_csv(path, index_col=[0, 1, 2])
+        return result

@@ -162,3 +162,15 @@ class SobolAnalyzer(SenAnalyzer):
                           for var_name, res_val in zip(names,
                                                        result_av)}
             return res_dict_2
+
+    def plot(self, result):
+        """
+        Plot the results of the sensitivity analysis method from run().
+
+        :param pd.DataFrame result:
+            Dataframe of the results like from the run() function.
+        :return tuple of matplotlib objects (fig, ax)
+        """
+        self.plot_single(result=result[0])
+
+
