@@ -8,6 +8,7 @@ from SALib.analyze import sobol as analyze_sobol
 import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
+import matplotlib.pyplot as plt
 
 
 class SobolAnalyzer(SenAnalyzer):
@@ -163,6 +164,69 @@ class SobolAnalyzer(SenAnalyzer):
                                                        result_av)}
             return res_dict_2
 
+    @staticmethod
+    def plot_second_order(result: pd.DataFrame, **kwargs):
+        """
+        Plot sensitivity results of second order analysis variables.
+        For each calibration class and goal one figure of a 3d plot is created
+        with the barplots of the interactions for each parameter.
+
+        :param pd.DataFrame result:
+            A result from run
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :keyword bool use_suffix:
+            Default is True: If True, the last part after the last point
+            of Modelica variables is used for the x ticks.
+        :return:
+            Returns all created figures and axes in lists like [fig], [ax]
+        """
+        show_plot = kwargs.pop('show_plot', True)
+        # kwargs for the design
+        use_suffix = kwargs.pop('use_suffix', True)
+        result = result.fillna(0)
+        # get lists of the calibration classes their goals and the analysis variables in the result dataframe
+        cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
+        goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+        analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(2)))
+
+        # rename tuner_names in result to the suffix of their variable name
+        if use_suffix:
+            result = SenAnalyzer._rename_tuner_names(result)
+            print(result.to_string())
+
+        tuner_names = result.columns
+        xticks = np.arange(len(tuner_names))
+
+        # when the index is not sorted pandas throws a performance warning
+        result = result.sort_index()
+
+        # plot of S2 without S2_conf
+        all_figs = []
+        all_axes = []
+        for cal_class in cal_classes:
+            class_figs = []
+            class_axes = []
+            for goal in goals:
+                fig = plt.figure()
+                ax = fig.add_subplot(projection='3d')
+                for idx, name in enumerate(tuner_names):
+                    ax.bar(tuner_names, result.loc[cal_class, goal, 'S2', name].to_numpy(), zs=idx, zdir='y', alpha=0.8)
+                    ax.set_title(f"{cal_class} {goal}")
+                    ax.set_zlabel('S2 [-]')
+                    ax.set_yticks(xticks)
+                    ax.set_yticklabels(tuner_names)
+                    # rotate tick labels for better readability
+                    plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
+                    plt.setp(ax.get_yticklabels(), rotation=90, ha="right", rotation_mode="anchor")
+                class_figs.append(fig)
+                class_axes.append(ax)
+            all_figs.append(class_figs)
+            all_axes.append(class_axes)
+        if show_plot:
+            plt.show()
+        return all_figs, all_axes
+
     def plot(self, result):
         """
         Plot the results of the sensitivity analysis method from run().
@@ -171,6 +235,12 @@ class SobolAnalyzer(SenAnalyzer):
             Dataframe of the results like from the run() function.
         :return tuple of matplotlib objects (fig, ax)
         """
-        self.plot_single(result=result[0])
+        SobolAnalyzer.plot_single(result=result[0])
+        SobolAnalyzer.plot_second_order(result=result[1])
+
+    @staticmethod
+    def load_second_order_from_csv(path):
+        result = pd.read_csv(path, index_col=[0, 1, 2, 3])
+        return result
 
 

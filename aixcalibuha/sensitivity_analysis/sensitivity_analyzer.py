@@ -373,16 +373,26 @@ class SenAnalyzer(abc.ABC):
         """
         raise NotImplementedError
 
-    def _del_duplicates(self, x):
+    @staticmethod
+    def _del_duplicates(x):
         return list(dict.fromkeys(x))
 
-    def _get_suffix(self, modelica_var_name):
+    @staticmethod
+    def _get_suffix(modelica_var_name):
         index_last_dot = modelica_var_name.rfind('.')
         suffix = modelica_var_name[index_last_dot + 1:]
         return suffix
 
-    def plot_single(self, result: pd.DataFrame, **kwargs):
-        '''
+    @staticmethod
+    def _rename_tuner_names(result):
+        tuner_names = list(result.columns)
+        rename_tuner_names = {name: SenAnalyzer._get_suffix(name) for name in tuner_names}
+        result = result.rename(columns=rename_tuner_names, index=rename_tuner_names)
+        return result
+
+    @staticmethod
+    def plot_single(result: pd.DataFrame, **kwargs):
+        """
         Plot senitivity results of first and total order analysis variables.
         For each calibration class one figure is created, which shows for each goal an axis
         with a barplot of the values of the analysis variables.
@@ -396,21 +406,19 @@ class SenAnalyzer(abc.ABC):
             of Modelica variables is used for the x ticks.
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
-        '''
+        """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
         use_suffix = kwargs.pop('use_suffix', True)
 
         # get lists of the calibration classes their goals and the analysis variables in the result dataframe
-        cal_classes = self._del_duplicates(list(result.index.get_level_values(0)))
-        goals = self._del_duplicates(list(result.index.get_level_values(1)))
-        analysis_variables = self._del_duplicates(list(result.index.get_level_values(2)))
+        cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
+        goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+        analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(2)))
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
-            tuner_names = list(result.columns)
-            rename_tuner_names = {name: self._get_suffix(name) for name in tuner_names}
-            result = result.rename(columns=rename_tuner_names)
+            result = SenAnalyzer._rename_tuner_names(result)
 
         # when the index is not sorted pandas throws a performance warning
         result = result.sort_index()
@@ -445,7 +453,7 @@ class SenAnalyzer(abc.ABC):
             Dataframe of the results like from the run() function.
         :return tuple of matplotlib objects (fig, ax)
         """
-        self.plot_single(result=result)
+        SenAnalyzer.plot_single(result=result)
 
     @staticmethod
     def load_from_csv(path):
