@@ -9,6 +9,7 @@ import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
 import matplotlib.pyplot as plt
+from SALib.plotting.bar import plot as barplot
 
 
 class SobolAnalyzer(SenAnalyzer):
@@ -38,8 +39,6 @@ class SobolAnalyzer(SenAnalyzer):
             **kwargs)
         # Set additional kwargs
         self.seed = kwargs.pop("seed", None)
-
-
 
     @property
     def analysis_variables(self):
@@ -146,7 +145,6 @@ class SobolAnalyzer(SenAnalyzer):
         with the vaiable names as the keys and the result associated to analysis_valiable
         from the interaction between the two variables.
         """
-        #res_dict = {'res_dict_1': None, 'res_dict_2': None}
         names = self.create_problem(cal_class.tuner_paras)['names']
         if analysis_variable in self.__analysis_variables_1:
             res_dict_1 = {var_name: np.abs(res_val)
@@ -227,6 +225,30 @@ class SobolAnalyzer(SenAnalyzer):
             plt.show()
         return all_figs, all_axes
 
+    @staticmethod
+    def plot_single_scond_order(result, para_name, **kwargs):
+        """
+        Plot the value of S2 from one parameter with all other parameters.
+
+        :param pd.DataFrame result:
+            Second order result from run.
+        :param str para_name:
+            Name of the parameter of which the results should be plotted.
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :return:
+            Returns all created figures and axes in lists like [fig], [ax]
+        """
+        show_plot = kwargs.pop('show_plot', True)
+        result = result.loc[:, :, :, para_name][:].fillna(0)
+        figs, axes = SenAnalyzer.plot_single(result=result, show_plot=False)
+        # set new title for the figures of each calibraition class
+        for fig in figs:
+            fig.suptitle(f"Interaction of {para_name} in class {fig._suptitle.get_text()}")
+        if show_plot:
+            plt.show()
+        return figs, axes
+
     def plot(self, result):
         """
         Plot the results of the sensitivity analysis method from run().
@@ -242,5 +264,3 @@ class SobolAnalyzer(SenAnalyzer):
     def load_second_order_from_csv(path):
         result = pd.read_csv(path, index_col=[0, 1, 2, 3])
         return result
-
-
