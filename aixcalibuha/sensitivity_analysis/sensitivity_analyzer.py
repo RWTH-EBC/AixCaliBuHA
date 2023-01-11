@@ -195,13 +195,16 @@ class SenAnalyzer(abc.ABC):
                 else:
                     results.append(data_types.TimeSeriesData(_filepath))
         else:
+            t_sim_start = time.time()
             results = self.sim_api.simulate(
                 parameters=parameters,
                 inputs=cal_class.inputs,
                 fail_on_error=self.fail_on_error,
                 **cal_class.input_kwargs
             )
+            print(f"Total time simulations: {time.time()-t_sim_start}")
         self.logger.info('Finished %s simulations', len(samples))
+        t1 = time.time()
         for i, result in enumerate(results):
             if result is None:
                 output.append(self.ret_val_on_error)
@@ -216,6 +219,7 @@ class SenAnalyzer(abc.ABC):
                 else:
                     total_res = cal_class.goals.eval_difference(verbose=verbose)
                     output.append(total_res)
+        print(f"Time eval_difference: {time.time()-t1}")
         if verbose:
             # restructure output_verbose
             output_verbose = {}
@@ -256,6 +260,7 @@ class SenAnalyzer(abc.ABC):
             Interaction, which also contians the variables.
         :rtype: pandas.DataFrame
         """
+        t_start_abs = time.time()
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
         plot_result = kwargs.pop('plot_result', True)
@@ -280,10 +285,12 @@ class SenAnalyzer(abc.ABC):
                 samples=samples,
                 cal_class=cal_class,
                 verbose=True)
+            t1 = time.time()
             result = self.analysis_function(
                 x=samples,
                 y=output_array
             )
+            print(f"Time for one sensitivity analysis without the simulations {time.time()-t1}")
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
             results_goals['all'] = result
@@ -298,6 +305,7 @@ class SenAnalyzer(abc.ABC):
         result = self._conv_local_results(results=all_results,
                                           local_classes=calibration_classes,
                                           verbose=verbose)
+        print(f"Absolut time: {time.time()-t_start_abs}")
         if plot_result:
             self.plot(result)
         return result, calibration_classes
