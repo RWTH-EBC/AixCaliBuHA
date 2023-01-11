@@ -137,7 +137,7 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    def simulate_samples(self, samples, cal_class, verbose=False, scale=False):
+    def simulate_samples(self, cal_class, verbose=False, scale=False):
         """
         Put the parameters in the model and simulate it.
 
@@ -156,8 +156,6 @@ class SenAnalyzer(abc.ABC):
         :returns: np.array
             An array containing the evaluated differences for each sample
         """
-        output = []
-        list_output_verbose = []
         # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
@@ -167,8 +165,10 @@ class SenAnalyzer(abc.ABC):
         self.sim_api.set_sim_setup({"start_time": cal_class.start_time,
                                     "stop_time": cal_class.stop_time})
         self.sim_api.result_names = cal_class.goals.get_sim_var_names()
-        self.logger.info('Starting %s parameter variations on %s cores',
-                         len(samples), self.sim_api.n_cpu)
+
+        self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
+        samples = self.generate_samples()
+
         # Simulate the current values
         parameters = []
         for i, initial_values in enumerate(samples):
@@ -176,12 +176,25 @@ class SenAnalyzer(abc.ABC):
                 initial_values = cal_class.tuner_paras.descale(initial_values)
             parameters.append({name: value for name, value in zip(initial_names, initial_values)})
 
+
+        # creat df of samples with the result_file_names as the index
+        result_file_names = [f"simulation_{idx}" for idx in range(len(parameters))]
+        print(samples)
+        samples_df = pd.DataFrame(samples, columns=initial_names, index=result_file_names)
+        # print(samples_df.to_string())
+
+        self.logger.info('Starting %s parameter variations on %s cores',
+                         len(samples), self.sim_api.n_cpu)
+        t_sim_start = time.time()
         if self.save_files:
-            result_file_names = [f"simulation_{idx + 1}" for idx in range(len(parameters))]
+            dir = self.sim_api.cd.joinpath(f'samples_sim_{cal_class.name}')
+            os.makedirs(dir, exist_ok=True)
+            print(self.sim_api.cd.joinpath('samples'))
+            samples_df.to_csv(dir.joinpath('samples.csv'))
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
-                savepath=self.sim_api.cd,
+                savepath=dir,
                 result_file_name=result_file_names,
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
@@ -194,16 +207,21 @@ class SenAnalyzer(abc.ABC):
                     results.append(None)
                 else:
                     results.append(data_types.TimeSeriesData(_filepath))
+            # return results, samples
         else:
-            t_sim_start = time.time()
             results = self.sim_api.simulate(
                 parameters=parameters,
                 inputs=cal_class.inputs,
                 fail_on_error=self.fail_on_error,
                 **cal_class.input_kwargs
             )
-            print(f"Total time simulations: {time.time()-t_sim_start}")
+        print(f"Total time simulations: {time.time()-t_sim_start}")
         self.logger.info('Finished %s simulations', len(samples))
+        return results, samples
+
+    def eval_statistical_measure(self, cal_class, results, verbose=True):
+        output = []
+        list_output_verbose = []
         t1 = time.time()
         for i, result in enumerate(results):
             if result is None:
@@ -219,7 +237,7 @@ class SenAnalyzer(abc.ABC):
                 else:
                     total_res = cal_class.goals.eval_difference(verbose=verbose)
                     output.append(total_res)
-        print(f"Time eval_difference: {time.time()-t1}")
+        print(f"Time eval_difference: {time.time() - t1}")
         if verbose:
             # restructure output_verbose
             output_verbose = {}
@@ -237,7 +255,7 @@ class SenAnalyzer(abc.ABC):
         return the result.
 
         :param CalibrationClass,list calibration_classes:
-            Either one or multiple classes for calibration
+            Either one or multiple classes for calibration with same tuner-parmeters.
         :param bool merge_multiple_classes:
             Default True. If False, the given list of calibration-classes
             is handled as-is. This means if you pass two CalibrationClass objects
@@ -249,6 +267,10 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, all sensitivity measures of the SALib function are calculated
             and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
+        :keyword bool use_same_simulations:
+            Default False. If True, the same simulation results are used for each calibration class.
+        :keyword bool load_simulations:
+            Default False. If True, no new simulations are done and old simulations are loaded.
         :keyword bool plot_resutl:
             Default True. If True, the results will be plotted.
         :return:
@@ -277,14 +299,15 @@ class SenAnalyzer(abc.ABC):
                              'Time-Interval: %s-%s s', cal_class.name,
                              cal_class.start_time, cal_class.stop_time)
 
-            self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
-            samples = self.generate_samples()
             # Generate list with metrics of every parameter variation
             results_goals = {}
-            output_array, output_verbose = self.simulate_samples(
-                samples=samples,
+            results, samples = self.simulate_samples(
                 cal_class=cal_class,
                 verbose=True)
+            output_array, output_verbose = self.eval_statistical_measure(
+                cal_class=cal_class,
+                results=results
+            )
             t1 = time.time()
             result = self.analysis_function(
                 x=samples,
