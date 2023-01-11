@@ -137,19 +137,12 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    def simulate_samples(self, cal_class, verbose=False, scale=False):
+    def simulate_samples(self, cal_class, scale=False):
         """
-        Put the parameters in the model and simulate it.
+        Creates the samples for the calibration class and simulates them.
 
-        :param Union[list, np.ndarray] samples:
-            Output variables in dymola
         :param cal_class:
             One class for calibration. Goals and tuner_paras have to be set
-        :param verbose:
-            Default is False.
-            If True returns an additional dict containing the evaluated differences
-            for each sample as values in a np.array of the combined goal with the key 'all'
-            and for the single goals with their VARIABLE_NAME as the key.
         :param scale:
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
 
@@ -176,21 +169,17 @@ class SenAnalyzer(abc.ABC):
                 initial_values = cal_class.tuner_paras.descale(initial_values)
             parameters.append({name: value for name, value in zip(initial_names, initial_values)})
 
-
         # creat df of samples with the result_file_names as the index
         result_file_names = [f"simulation_{idx}" for idx in range(len(parameters))]
-        print(samples)
         samples_df = pd.DataFrame(samples, columns=initial_names, index=result_file_names)
-        # print(samples_df.to_string())
 
         self.logger.info('Starting %s parameter variations on %s cores',
                          len(samples), self.sim_api.n_cpu)
         t_sim_start = time.time()
         if self.save_files:
-            dir = self.sim_api.cd.joinpath(f'samples_sim_{cal_class.name}')
-            os.makedirs(dir, exist_ok=True)
-            print(self.sim_api.cd.joinpath('samples'))
-            samples_df.to_csv(dir.joinpath('samples.csv'))
+            sim_dir = self.sim_api.cd.joinpath(f'samples_sim_{cal_class.name}')
+            os.makedirs(sim_dir, exist_ok=True)
+            samples_df.to_csv(sim_dir.joinpath('samples.csv'))
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
@@ -200,6 +189,7 @@ class SenAnalyzer(abc.ABC):
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
             )
+            t = time.time()
             # Load results
             results = []
             for _filepath in _filepaths:
@@ -207,6 +197,7 @@ class SenAnalyzer(abc.ABC):
                     results.append(None)
                 else:
                     results.append(data_types.TimeSeriesData(_filepath))
+            print(f"Time loading results: {time.time() - t}")
             # return results, samples
         else:
             results = self.sim_api.simulate(
@@ -215,7 +206,7 @@ class SenAnalyzer(abc.ABC):
                 fail_on_error=self.fail_on_error,
                 **cal_class.input_kwargs
             )
-        print(f"Total time simulations: {time.time()-t_sim_start}")
+        print(f"Total time simulations: {time.time() - t_sim_start}")
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
@@ -271,7 +262,7 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, the same simulation results are used for each calibration class.
         :keyword bool load_simulations:
             Default False. If True, no new simulations are done and old simulations are loaded.
-        :keyword bool plot_resutl:
+        :keyword bool plot_result:
             Default True. If True, the results will be plotted.
         :return:
             Returns a pandas.DataFrame. The DataFrame has a Multiindex with the
@@ -303,17 +294,19 @@ class SenAnalyzer(abc.ABC):
             results_goals = {}
             results, samples = self.simulate_samples(
                 cal_class=cal_class,
-                verbose=True)
+                scale=scale)
             output_array, output_verbose = self.eval_statistical_measure(
                 cal_class=cal_class,
                 results=results
             )
+            print(output_array)
+            print(output_verbose)
             t1 = time.time()
             result = self.analysis_function(
                 x=samples,
                 y=output_array
             )
-            print(f"Time for one sensitivity analysis without the simulations {time.time()-t1}")
+            print(f"Time for one sensitivity analysis without the simulations {time.time() - t1}")
             t_sen_stop = time.time()
             result['duration[s]'] = t_sen_stop - t_sen_start
             results_goals['all'] = result
@@ -328,7 +321,7 @@ class SenAnalyzer(abc.ABC):
         result = self._conv_local_results(results=all_results,
                                           local_classes=calibration_classes,
                                           verbose=verbose)
-        print(f"Absolut time: {time.time()-t_start_abs}")
+        print(f"Absolut time: {time.time() - t_start_abs}")
         if plot_result:
             self.plot(result)
         return result, calibration_classes
@@ -445,7 +438,6 @@ class SenAnalyzer(abc.ABC):
         # get lists of the calibration classes their goals and the analysis variables in the result dataframe
         cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
         goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
-        analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(2)))
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
