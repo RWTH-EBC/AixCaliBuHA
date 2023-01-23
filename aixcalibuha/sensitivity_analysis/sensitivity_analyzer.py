@@ -32,6 +32,7 @@ class SenAnalyzer(abc.ABC):
         Used to automatically select result values.
     :keyword str,os.path.normpath cd:
         The path for the current working directory.
+        Logger and results will be stored here.
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
         the simulation fails. See also: ``ret_val_on_error``
@@ -42,6 +43,10 @@ class SenAnalyzer(abc.ABC):
         max influence the solver.
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
+    :keyword str,os.path.normpath savepath_sim:
+        Default is cd. Own directory for the time series data sets of all simulations
+        during the sensitivity analysis. The own dir can be necessary for large data sets,
+        because they can crash IDE during indexing when they are in the project folder.
 
     """
 
@@ -59,6 +64,7 @@ class SenAnalyzer(abc.ABC):
         self.save_files = kwargs.pop("save_files", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
+        self.savepath_sim = kwargs.pop('savepath_sim', self.cd)
         self.analysis_variable = kwargs.pop('analysis_variable',
                                             self.analysis_variables)
 
@@ -137,18 +143,23 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    def simulate_samples(self, cal_class, scale=False):
+    def simulate_samples(self, cal_class, **kwargs):
         """
         Creates the samples for the calibration class and simulates them.
 
         :param cal_class:
             One class for calibration. Goals and tuner_paras have to be set
-        :param scale:
+        :keyword scale:
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
 
-        :returns: np.array
-            An array containing the evaluated differences for each sample
+        :return:
+            Returns tow lists. Fist a list with the simulation results for each sample.
+            If save_files the list contains the filepaths to the results
+            Second a list of the samples.
+        :rtype: list
         """
+        scale = kwargs.pop('scale', False)
+
         # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
@@ -162,6 +173,11 @@ class SenAnalyzer(abc.ABC):
         self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
         samples = self.generate_samples()
 
+        # creat df of samples with the result_file_names as the index
+        result_file_names = [f"simulation_{idx}" for idx in range(len(samples))]
+        samples_df = pd.DataFrame(samples, columns=initial_names, index=result_file_names)
+        samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))
+
         # Simulate the current values
         parameters = []
         for i, initial_values in enumerate(samples):
@@ -169,37 +185,26 @@ class SenAnalyzer(abc.ABC):
                 initial_values = cal_class.tuner_paras.descale(initial_values)
             parameters.append({name: value for name, value in zip(initial_names, initial_values)})
 
-        # creat df of samples with the result_file_names as the index
-        result_file_names = [f"simulation_{idx}" for idx in range(len(parameters))]
-        samples_df = pd.DataFrame(samples, columns=initial_names, index=result_file_names)
-
         self.logger.info('Starting %s parameter variations on %s cores',
                          len(samples), self.sim_api.n_cpu)
         t_sim_start = time.time()
         if self.save_files:
-            sim_dir = self.sim_api.cd.joinpath(f'samples_sim')
+            sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
             os.makedirs(sim_dir, exist_ok=True)
-            samples_df.to_csv(sim_dir.joinpath('_samples.csv'))
+            samples_df.to_csv(self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv'))
+            self.logger.info(f'Saving simulation files in: {sim_dir}')
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix='csv',
+                result_file_suffix='parquet',
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
             )
             t = time.time()
-            # Load results
-            results = []
-            for _filepath in _filepaths:
-                if _filepath is None:
-                    results.append(None)
-                else:
-                    results.append(data_types.TimeSeriesData(_filepath))
-            print(f"Time loading results: {time.time() - t}")
-            # return results, samples
+            results = _filepaths
         else:
             results = self.sim_api.simulate(
                 parameters=parameters,
@@ -263,8 +268,9 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, the same simulation results are used for each calibration class.
         :keyword bool load_simulations:
             Default False. If True, no new simulations are done and old simulations are loaded.
-        :keyword bool save_statistical_measure:
-            Default True. If True, the statistical measure of the samples is saved.
+        :keyword bool save_results:
+            Default True. If True, all results are saved
+            (samples, statistical measures and analysis variables).
         :keyword bool plot_result:
             Default True. If True, the results will be plotted.
         :return:
@@ -273,13 +279,13 @@ class SenAnalyzer(abc.ABC):
             The variables are the tuner-parameters.
             For the Sobol Method and calc_second_order returns a tuple of DataFrames (df_1, df_2)
             where df_2 contains the second oder analysis variables and has an extra index level
-            Interaction, which also contians the variables.
+            Interaction, which also contains the variables.
         :rtype: pandas.DataFrame
         """
         t_start_abs = time.time()
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
-        save_stat_mea = kwargs.pop('save_statistical_measure', True)
+        save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
@@ -299,6 +305,14 @@ class SenAnalyzer(abc.ABC):
             results, samples = self.simulate_samples(
                 cal_class=cal_class,
                 scale=scale)
+            if self.save_files:
+                _filepaths = results
+                results = []
+                for _filepath in _filepaths:
+                    if _filepath is None:
+                        results.append(None)
+                    else:
+                        results.append(data_types.TimeSeriesData(_filepath, default_tag='sim'))
             output_array, output_verbose = self.eval_statistical_measure(
                 cal_class=cal_class,
                 results=results
@@ -309,13 +323,13 @@ class SenAnalyzer(abc.ABC):
             if len(output_verbose) > 1 and verbose:
                 stat_mea.update(output_verbose)
 
-            if save_stat_mea:
-                stat_mea_df = pd.DataFrame(
-                    stat_mea,
-                    index=[f"simulation_{idx}" for idx in range(len(output_array))])
-                sim_dir = self.sim_api.cd.joinpath(f'samples_sim')
-                os.makedirs(sim_dir, exist_ok=True)
-                stat_mea_df.to_csv(sim_dir.joinpath(f'_stat_meas_{cal_class.name}.csv'))
+            if save_results:
+                result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
+                stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
+                stat_mea_df.to_csv(self.cd.joinpath(f'stat_meas_{cal_class.name}.csv'))
+                samples_df = pd.DataFrame(samples, columns=cal_class.tuner_paras.get_names(),
+                                          index=result_file_names)
+                samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))
 
             for key, val in stat_mea.items():
                 t1 = time.time()
@@ -330,9 +344,17 @@ class SenAnalyzer(abc.ABC):
                                           local_classes=calibration_classes,
                                           verbose=verbose)
         print(f"Absolut time: {time.time() - t_start_abs}")
+        if save_results:
+            self._save(result)
         if plot_result:
             self.plot(result)
         return result, calibration_classes
+
+    def _save(self, result):
+        """
+        Needs to be overwritten for Sobol results.
+        """
+        result.to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))
 
     @staticmethod
     def create_problem(tuner_paras, scale=False) -> dict:

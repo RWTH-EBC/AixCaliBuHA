@@ -109,9 +109,15 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
+    def _save(self, result):
+        if not result[0].empty:
+            result[0].to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))
+        if not result[1].empty:
+            result[1].to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv'))
+
     def _conv_local_results(self, results: list, local_classes: list, verbose=False):
         _conv_results = []
-        _conv_restuls_2 = []
+        _conv_results_2 = []
         tuples = []
         tuples_2 = []
         for class_results, local_class in zip(results, local_classes):
@@ -125,15 +131,16 @@ class SobolAnalyzer(SenAnalyzer):
                         tuples.append((local_class.name, goal, av))
                     elif av in self.__analysis_variables_2:
                         for tuner_para, res_dict in res_dict.items():
-                            _conv_restuls_2.append(res_dict)
+                            _conv_results_2.append(res_dict)
                             tuples_2.append((local_class.name, goal, av, tuner_para))
         index = pd.MultiIndex.from_tuples(tuples=tuples,
                                           names=['Class', 'Goal', 'Analysis variable'])
         index_2 = pd.MultiIndex.from_tuples(tuples=tuples_2,
                                             names=['Class', 'Goal', 'Analysis variable', 'Interaction'])
         df = pd.DataFrame(_conv_results, index=index)
-        df_2 = pd.DataFrame(_conv_restuls_2, index=index_2)
-        return (df, df_2)
+        df_2 = pd.DataFrame(_conv_results_2, index=index_2)
+        result = (df, df_2)
+        return result
 
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
@@ -191,6 +198,7 @@ class SobolAnalyzer(SenAnalyzer):
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
             result = SenAnalyzer._rename_tuner_names(result)
+            print('Second order results with suffixes of tuner-parameter names:')
             print(result.to_string())
 
         tuner_names = result.columns
