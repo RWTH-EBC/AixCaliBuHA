@@ -280,9 +280,11 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, all sensitivity measures of the SALib function are calculated
             and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
-        :keyword bool use_same_simulations:
-            Default False. If True, the same simulation results are used for each calibration class.
-            Not implemented yet.
+        :keyword dict use_fist_sim:
+            Default False. If True, the simulations of the first calibration class will be used for
+            all other calibration classes with their relevant time intervals.
+            The simulations must be stored on a hard-drive, so it must be used with
+            either save_files or load_files.
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples, statistical measures and analysis variables).
@@ -300,6 +302,7 @@ class SenAnalyzer(abc.ABC):
         t_start_abs = time.time()
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
+        use_first_sim = kwargs.pop('use_first_sim', False)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
         # Check correct input
@@ -307,6 +310,26 @@ class SenAnalyzer(abc.ABC):
         # Merge the classes for avoiding possible intersection of tuner-parameters
         if merge_multiple_classes:
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
+
+        # Check if the usage of the simulations from the first calibration class for all is possible
+        if use_first_sim:
+            if not self.save_files and not self.load_files:
+                raise AttributeError(f'To use the simulations of the first calibration class '
+                                     f'for all classes the simulation files must be saved. '
+                                     f'Either set save_files=True or load already exiting files '
+                                     f'with load_files=True.')
+            start_time = 0
+            stop_time = 0
+            for idx, cal_class in enumerate(calibration_classes):
+                if idx == 0:
+                    start_time = cal_class.start_time
+                    stop_time = cal_class.stop_time
+                    continue
+                if start_time > cal_class.start_time or stop_time < cal_class.stop_time:
+                    raise ValueError(f'To use the simulations of the first calibration class '
+                                     f'for all classes the start and stop times of the other '
+                                     f'classes must be in the interval [{start_time}, {stop_time}] '
+                                     f'of the first calibration class.')
 
         def _load_files(_filepaths):
             t_load = time.time()
@@ -330,25 +353,30 @@ class SenAnalyzer(abc.ABC):
             results_goals = {}
             if self.load_files:
                 self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
-                sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
+                if use_first_sim:
+                    class_name = calibration_classes[0].name
+                else:
+                    class_name = cal_class.name
+                sim_dir = self.savepath_sim.joinpath(f'simulations_{class_name}')
                 n_sim = len(list(sim_dir.iterdir()))
                 result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
                 results = _load_files(_filepaths)
-                samples_path = self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv')
+                samples_path = self.savepath_sim.joinpath(f'samples_{class_name}.csv')
                 self.logger.info(f'Loading samples from {samples_path}')
                 samples = pd.read_csv(samples_path,
                                       header=0,
                                       index_col=0)
                 samples = samples.to_numpy()
-                print(samples)
             else:
                 results, samples = self.simulate_samples(
                     cal_class=cal_class,
                     scale=scale)
                 if self.save_files:
                     results = _load_files(_filepaths=results)
+                if use_first_sim:
+                    self.load_files = True
             self.logger.info(f'Starting evaluation of statistical measure')
             output_array, output_verbose = self.eval_statistical_measure(
                 cal_class=cal_class,
