@@ -3,6 +3,7 @@ The module contains the relevant base-classes."""
 import abc
 import copy
 import os
+import pathlib
 import time
 from typing import List
 import numpy as np
@@ -43,6 +44,12 @@ class SenAnalyzer(abc.ABC):
         max influence the solver.
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
+    :keyword bool load_files:
+            Default False. If True, no new simulations are done and old simulations are loaded.
+            The simulations and corresponding samples will be loaded from self.savepath_sim like they
+            were saved from self.save_files. Currently, the name of the sim folder must be
+            "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
+            The usage of the same simulations for different calibration classes is not supported yet.
     :keyword str,os.path.normpath savepath_sim:
         Default is cd. Own directory for the time series data sets of all simulations
         during the sensitivity analysis. The own dir can be necessary for large data sets,
@@ -62,11 +69,17 @@ class SenAnalyzer(abc.ABC):
         # Update kwargs
         self.fail_on_error = kwargs.pop("fail_on_error", True)
         self.save_files = kwargs.pop("save_files", False)
+        self.load_files = kwargs.pop('load_files', False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
         self.savepath_sim = kwargs.pop('savepath_sim', self.cd)
         self.analysis_variable = kwargs.pop('analysis_variable',
                                             self.analysis_variables)
+
+        if isinstance(self.cd, str):
+            self.cd = pathlib.Path(self.cd)
+        if isinstance(self.savepath_sim, str):
+            self.savepath_sim = pathlib.Path(self.savepath_sim)
 
         # Setup the logger
         self.logger = setup_logger(cd=self.cd, name=self.__class__.__name__)
@@ -198,7 +211,7 @@ class SenAnalyzer(abc.ABC):
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix='parquet',
+                result_file_suffix='csv',
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
@@ -215,6 +228,9 @@ class SenAnalyzer(abc.ABC):
         print(f"Total time simulations: {time.time() - t_sim_start}")
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
+
+    def _single_eval_statistical_measure(self):
+        pass
 
     def eval_statistical_measure(self, cal_class, results, verbose=True):
         output = []
@@ -266,10 +282,9 @@ class SenAnalyzer(abc.ABC):
             the sensitivity measures of the individual Goals will also be calculated and returned.
         :keyword bool use_same_simulations:
             Default False. If True, the same simulation results are used for each calibration class.
-        :keyword bool load_simulations:
-            Default False. If True, no new simulations are done and old simulations are loaded.
+            Not implemented yet.
         :keyword bool save_results:
-            Default True. If True, all results are saved
+            Default True. If True, all results are saved as a csv in cd.
             (samples, statistical measures and analysis variables).
         :keyword bool plot_result:
             Default True. If True, the results will be plotted.
@@ -293,6 +308,17 @@ class SenAnalyzer(abc.ABC):
         if merge_multiple_classes:
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
 
+        def _load_files(_filepaths):
+            t_load = time.time()
+            results = []
+            for _filepath in _filepaths:
+                if _filepath is None:
+                    results.append(None)
+                else:
+                    results.append(data_types.TimeSeriesData(_filepath, default_tag='sim'))
+            print(f"Time loading simulations {time.time() - t_load}")
+            return results
+
         all_results = []
         for idx, cal_class in enumerate(calibration_classes):
 
@@ -302,17 +328,28 @@ class SenAnalyzer(abc.ABC):
 
             # Generate list with metrics of every parameter variation
             results_goals = {}
-            results, samples = self.simulate_samples(
-                cal_class=cal_class,
-                scale=scale)
-            if self.save_files:
-                _filepaths = results
-                results = []
-                for _filepath in _filepaths:
-                    if _filepath is None:
-                        results.append(None)
-                    else:
-                        results.append(data_types.TimeSeriesData(_filepath, default_tag='sim'))
+            if self.load_files:
+                self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
+                sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
+                n_sim = len(list(sim_dir.iterdir()))
+                result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
+                _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
+                self.logger.info(f'Loading simulation files from {sim_dir}')
+                results = _load_files(_filepaths)
+                samples_path = self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv')
+                self.logger.info(f'Loading samples from {samples_path}')
+                samples = pd.read_csv(samples_path,
+                                      header=0,
+                                      index_col=0)
+                samples = samples.to_numpy()
+                print(samples)
+            else:
+                results, samples = self.simulate_samples(
+                    cal_class=cal_class,
+                    scale=scale)
+                if self.save_files:
+                    results = _load_files(_filepaths=results)
+            self.logger.info(f'Starting evaluation of statistical measure')
             output_array, output_verbose = self.eval_statistical_measure(
                 cal_class=cal_class,
                 results=results
@@ -331,6 +368,7 @@ class SenAnalyzer(abc.ABC):
                                           index=result_file_names)
                 samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))
 
+            self.logger.info('Starting calculation of analysis variables')
             for key, val in stat_mea.items():
                 t1 = time.time()
                 result_goal = self.analysis_function(
