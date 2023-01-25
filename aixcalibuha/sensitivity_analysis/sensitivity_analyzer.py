@@ -19,6 +19,7 @@ import multiprocessing as mp
 
 
 def _load_single_file(_filepath):
+    """Helper function"""
     if _filepath is None:
         return None
     else:
@@ -26,6 +27,7 @@ def _load_single_file(_filepath):
 
 
 def _load_files(_filepaths):
+    """Helper function"""
     t_load = time.time()
     results = []
     for _filepath in _filepaths:
@@ -35,6 +37,7 @@ def _load_files(_filepaths):
 
 
 def _restruct_verbose(list_output_verbose):
+    """Helper function"""
     output_verbose = {}
     for key, val in list_output_verbose[0].items():
         output_verbose[key] = np.array([])
@@ -255,14 +258,8 @@ class SenAnalyzer(abc.ABC):
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
-    def _single_load_eval_file(self, kwargs_load_eval):
-        filepath = kwargs_load_eval.pop('filepath')
-        _result = _load_single_file(filepath)
-        kwargs_load_eval.update({'result': _result})
-        total_res, verbose_calculation = self._single_eval_statistical_measure(kwargs_load_eval)
-        return total_res, verbose_calculation
-
     def _single_eval_statistical_measure(self, kwargs_eval):
+        """Evaluates statistical measure of one result"""
         cal_class = kwargs_eval.pop('cal_class')
         result = kwargs_eval.pop('result')
         if result is None:
@@ -275,6 +272,7 @@ class SenAnalyzer(abc.ABC):
             return total_res, verbose_calculation
 
     def eval_statistical_measure(self, cal_class, results, verbose=True):
+        """Evaluates statistical measures of results on single core"""
         self.logger.info(f'Starting evaluation of statistical measure')
         output = []
         list_output_verbose = []
@@ -292,7 +290,16 @@ class SenAnalyzer(abc.ABC):
             return np.asarray(output), output_verbose
         return np.asarray(output)
 
+    def _single_load_eval_file(self, kwargs_load_eval):
+        """For multiprocessing"""
+        filepath = kwargs_load_eval.pop('filepath')
+        _result = _load_single_file(filepath)
+        kwargs_load_eval.update({'result': _result})
+        total_res, verbose_calculation = self._single_eval_statistical_measure(kwargs_load_eval)
+        return total_res, verbose_calculation
+
     def _mp_load_eval(self, _filepaths, cal_class, n_cpu):
+        """Loading and evaluating the statistical measure of saved simulation files on multiple cores"""
         self.logger.info(f'Load files and evaluate statistical measure on {n_cpu} processes.')
         kwargs_load_eval = []
         for filepath in _filepaths:
@@ -308,6 +315,10 @@ class SenAnalyzer(abc.ABC):
         return output_array, output_verbose
 
     def _load_eval(self, _filepaths, cal_class, n_cpu):
+        """
+        Loading and evaluating the statistical measure of saved simulation files.
+        Single- or multiprocessing possible with definition of n_cpu.
+        """
         if n_cpu == 1:
             results = _load_files(_filepaths)
             output_array, output_verbose = self.eval_statistical_measure(
@@ -375,6 +386,12 @@ class SenAnalyzer(abc.ABC):
         if merge_multiple_classes:
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
 
+        # Check n_cpu
+        if n_cpu > mp.cpu_count():
+            raise ValueError(f"Given n_cpu '{n_cpu}' is greater "
+                             "than the available number of "
+                             f"cpus on your machine '{mp.cpu_count()}'")
+
         # Check if the usage of the simulations from the first calibration class for all is possible
         if use_first_sim:
             if not self.save_files and not self.load_files:
@@ -437,12 +454,16 @@ class SenAnalyzer(abc.ABC):
                     )
                 if use_first_sim:
                     self.load_files = True
+
+            # combine output_array and output_verbose
+            # set key for output_array depending on one or multiple goals
             stat_mea = {'all': output_array}
             if len(output_verbose) == 1:
                 stat_mea = output_verbose
             if len(output_verbose) > 1 and verbose:
                 stat_mea.update(output_verbose)
 
+            # save statistical measure and corresponding samples for each cal_class in cd
             if save_results:
                 result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
                 stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
@@ -473,6 +494,7 @@ class SenAnalyzer(abc.ABC):
 
     def _save(self, result):
         """
+        Saves the result DataFrame of run.
         Needs to be overwritten for Sobol results.
         """
         result.to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))
