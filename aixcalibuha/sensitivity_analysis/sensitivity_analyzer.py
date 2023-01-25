@@ -15,6 +15,33 @@ from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha import utils
 import matplotlib.pyplot as plt
 from SALib.plotting.bar import plot as barplot
+import multiprocessing as mp
+
+
+def _load_single_file(_filepath):
+    if _filepath is None:
+        return None
+    else:
+        return data_types.TimeSeriesData(_filepath, default_tag='sim')
+
+
+def _load_files(_filepaths):
+    t_load = time.time()
+    results = []
+    for _filepath in _filepaths:
+        results.append(_load_single_file(_filepath))
+    print(f"Time loading simulations {time.time() - t_load}")
+    return results
+
+
+def _restruct_verbose(list_output_verbose):
+    output_verbose = {}
+    for key, val in list_output_verbose[0].items():
+        output_verbose[key] = np.array([])
+    for i in list_output_verbose:
+        for key, val in i.items():
+            output_verbose[key] = np.append(output_verbose[key], np.array([val[1]]))
+    return output_verbose
 
 
 class SenAnalyzer(abc.ABC):
@@ -216,7 +243,6 @@ class SenAnalyzer(abc.ABC):
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
             )
-            t = time.time()
             results = _filepaths
         else:
             results = self.sim_api.simulate(
@@ -229,38 +255,69 @@ class SenAnalyzer(abc.ABC):
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
-    def _single_eval_statistical_measure(self):
-        pass
+    def _single_load_eval_file(self, kwargs_load_eval):
+        filepath = kwargs_load_eval.pop('filepath')
+        _result = _load_single_file(filepath)
+        kwargs_load_eval.update({'result': _result})
+        total_res, verbose_calculation = self._single_eval_statistical_measure(kwargs_load_eval)
+        return total_res, verbose_calculation
+
+    def _single_eval_statistical_measure(self, kwargs_eval):
+        cal_class = kwargs_eval.pop('cal_class')
+        result = kwargs_eval.pop('result')
+        if result is None:
+            return self.ret_val_on_error, self.ret_val_on_error  # TODO: specify an error value for verbose
+        else:
+            cal_class.goals.set_sim_target_data(result)
+            cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
+            # Evaluate the current objective
+            total_res, verbose_calculation = cal_class.goals.eval_difference(verbose=True)
+            return total_res, verbose_calculation
 
     def eval_statistical_measure(self, cal_class, results, verbose=True):
+        self.logger.info(f'Starting evaluation of statistical measure')
         output = []
         list_output_verbose = []
         t1 = time.time()
         for i, result in enumerate(results):
-            if result is None:
-                output.append(self.ret_val_on_error)
-            else:
-                cal_class.goals.set_sim_target_data(result)
-                cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
-                # Evaluate the current objective
-                if verbose:
-                    total_res, verbose_calculation = cal_class.goals.eval_difference(verbose=verbose)
-                    output.append(total_res)
-                    list_output_verbose.append(verbose_calculation)
-                else:
-                    total_res = cal_class.goals.eval_difference(verbose=verbose)
-                    output.append(total_res)
+            total_res, verbose_calculation = self._single_eval_statistical_measure(
+                {'cal_class': cal_class, 'result': result}
+            )
+            output.append(total_res)
+            list_output_verbose.append(verbose_calculation)
         print(f"Time eval_difference: {time.time() - t1}")
         if verbose:
             # restructure output_verbose
-            output_verbose = {}
-            for key, val in list_output_verbose[0].items():
-                output_verbose[key] = np.array([])
-            for i in list_output_verbose:
-                for key, val in i.items():
-                    output_verbose[key] = np.append(output_verbose[key], np.array([val[1]]))
+            output_verbose = _restruct_verbose(list_output_verbose)
             return np.asarray(output), output_verbose
         return np.asarray(output)
+
+    def _mp_load_eval(self, _filepaths, cal_class, n_cpu):
+        self.logger.info(f'Load files and evaluate statistical measure on {n_cpu} processes.')
+        kwargs_load_eval = []
+        for filepath in _filepaths:
+            kwargs_load_eval.append({'filepath': filepath, 'cal_class': cal_class})
+        output_array = []
+        list_output_verbose = []
+        with mp.Pool(processes=n_cpu) as pool:
+            for total, verbose in pool.imap(self._single_load_eval_file, kwargs_load_eval):
+                output_array.append(total)
+                list_output_verbose.append(verbose)
+            output_array = np.asarray(output_array)
+            output_verbose = _restruct_verbose(list_output_verbose)
+        return output_array, output_verbose
+
+    def _load_eval(self, _filepaths, cal_class, n_cpu):
+        if n_cpu == 1:
+            results = _load_files(_filepaths)
+            output_array, output_verbose = self.eval_statistical_measure(
+                cal_class=cal_class,
+                results=results
+            )
+            return output_array, output_verbose
+        else:
+            output_array, output_verbose = self._mp_load_eval(_filepaths, cal_class, n_cpu)
+            return output_array, output_verbose
 
     def run(self, calibration_classes, merge_multiple_classes=True, **kwargs):
         """
@@ -268,7 +325,7 @@ class SenAnalyzer(abc.ABC):
         return the result.
 
         :param CalibrationClass,list calibration_classes:
-            Either one or multiple classes for calibration with same tuner-parmeters.
+            Either one or multiple classes for calibration with same tuner-parameters.
         :param bool merge_multiple_classes:
             Default True. If False, the given list of calibration-classes
             is handled as-is. This means if you pass two CalibrationClass objects
@@ -285,6 +342,12 @@ class SenAnalyzer(abc.ABC):
             all other calibration classes with their relevant time intervals.
             The simulations must be stored on a hard-drive, so it must be used with
             either save_files or load_files.
+        :keyword int n_cpu:
+            Default is 1. The number of processes to use for the evaluation of the statistical measure.
+            For n_cpu > 1 only one simulation file is loaded at once in a process and dumped directly
+            after the evaluation of the statistical measure, so that only minimal memory is used.
+            Use this option for large analyses.
+            Only implemented for save_files=True or load_files=True.
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples, statistical measures and analysis variables).
@@ -303,6 +366,7 @@ class SenAnalyzer(abc.ABC):
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
         use_first_sim = kwargs.pop('use_first_sim', False)
+        n_cpu = kwargs.pop('n_cpu', 1)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
         # Check correct input
@@ -331,17 +395,6 @@ class SenAnalyzer(abc.ABC):
                                      f'classes must be in the interval [{start_time}, {stop_time}] '
                                      f'of the first calibration class.')
 
-        def _load_files(_filepaths):
-            t_load = time.time()
-            results = []
-            for _filepath in _filepaths:
-                if _filepath is None:
-                    results.append(None)
-                else:
-                    results.append(data_types.TimeSeriesData(_filepath, default_tag='sim'))
-            print(f"Time loading simulations {time.time() - t_load}")
-            return results
-
         all_results = []
         for idx, cal_class in enumerate(calibration_classes):
 
@@ -358,30 +411,32 @@ class SenAnalyzer(abc.ABC):
                 else:
                     class_name = cal_class.name
                 sim_dir = self.savepath_sim.joinpath(f'simulations_{class_name}')
-                n_sim = len(list(sim_dir.iterdir()))
-                result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
-                _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
-                self.logger.info(f'Loading simulation files from {sim_dir}')
-                results = _load_files(_filepaths)
                 samples_path = self.savepath_sim.joinpath(f'samples_{class_name}.csv')
                 self.logger.info(f'Loading samples from {samples_path}')
                 samples = pd.read_csv(samples_path,
                                       header=0,
                                       index_col=0)
                 samples = samples.to_numpy()
+                n_sim = len(list(sim_dir.iterdir()))
+                result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
+                _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
+                self.logger.info(f'Loading simulation files from {sim_dir}')
+                t_load_eval = time.time()
+                output_array, output_verbose = self._load_eval(_filepaths, cal_class, n_cpu)
+                print(f'Time load files and eval: {time.time() - t_load_eval}')
             else:
                 results, samples = self.simulate_samples(
                     cal_class=cal_class,
                     scale=scale)
                 if self.save_files:
-                    results = _load_files(_filepaths=results)
+                    output_array, output_verbose = self._load_eval(results, cal_class, n_cpu)
+                else:
+                    output_array, output_verbose = self.eval_statistical_measure(
+                        cal_class=cal_class,
+                        results=results
+                    )
                 if use_first_sim:
                     self.load_files = True
-            self.logger.info(f'Starting evaluation of statistical measure')
-            output_array, output_verbose = self.eval_statistical_measure(
-                cal_class=cal_class,
-                results=results
-            )
             stat_mea = {'all': output_array}
             if len(output_verbose) == 1:
                 stat_mea = output_verbose
@@ -513,7 +568,7 @@ class SenAnalyzer(abc.ABC):
     @staticmethod
     def plot_single(result: pd.DataFrame, **kwargs):
         """
-        Plot senitivity results of first and total order analysis variables.
+        Plot sensitivity results of first and total order analysis variables.
         For each calibration class one figure is created, which shows for each goal an axis
         with a barplot of the values of the analysis variables.
 
