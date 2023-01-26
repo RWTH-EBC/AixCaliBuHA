@@ -5,6 +5,7 @@ import copy
 import os
 import pathlib
 import time
+import warnings
 from typing import List
 import numpy as np
 import pandas as pd
@@ -192,7 +193,7 @@ class SenAnalyzer(abc.ABC):
         Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
         if the simulation files and samples are saved-
         """
-        raise Warning(f'No info.txt file will be created for the saved samples and simulation files. '
+        warnings.warn(f'No info.txt file will be created for the saved samples and simulation files. '
                       f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
                       f'to keep track off what configuration you used for the creation of the samples.')
 

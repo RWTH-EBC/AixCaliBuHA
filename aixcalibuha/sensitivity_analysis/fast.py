@@ -7,6 +7,7 @@ from SALib.analyze import fast as analyze_fast
 import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
+import warnings
 
 
 class FASTAnalyzer(SenAnalyzer):
@@ -73,7 +74,7 @@ class FASTAnalyzer(SenAnalyzer):
         Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
         if the simulation files and samples are saved-
         """
-        raise Warning(f'No info.txt file will be created for the saved samples and simulation files. '
+        warnings.warn(f'No info.txt file will be created for the saved samples and simulation files. '
                       f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
                       f'to keep track off what configuration you used for the creation of the samples.')
 
