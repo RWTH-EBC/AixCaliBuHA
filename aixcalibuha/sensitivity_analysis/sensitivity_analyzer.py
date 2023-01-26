@@ -186,6 +186,16 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
+    @abc.abstractmethod
+    def info_samples(self, cal_class, scale):
+        """
+        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
+        if the simulation files and samples are saved-
+        """
+        raise Warning(f'No info.txt file will be created for the saved samples and simulation files. '
+                      f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
+                      f'to keep track off what configuration you used for the creation of the samples.')
+
     def simulate_samples(self, cal_class, **kwargs):
         """
         Creates the samples for the calibration class and simulates them.
@@ -247,6 +257,7 @@ class SenAnalyzer(abc.ABC):
                 **cal_class.input_kwargs
             )
             results = _filepaths
+            self.info_samples(cal_class, scale)
         else:
             results = self.sim_api.simulate(
                 parameters=parameters,
@@ -467,7 +478,7 @@ class SenAnalyzer(abc.ABC):
             if save_results:
                 result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
                 stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
-                stat_mea_df.to_csv(self.cd.joinpath(f'stat_meas_{cal_class.name}.csv'))
+                stat_mea_df.to_csv(self.cd.joinpath(f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv'))
                 samples_df = pd.DataFrame(samples, columns=cal_class.tuner_paras.get_names(),
                                           index=result_file_names)
                 samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))

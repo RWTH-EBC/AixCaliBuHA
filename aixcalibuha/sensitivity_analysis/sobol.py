@@ -109,6 +109,22 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
+    def info_samples(self, cal_class, scale):
+        """
+        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
+        if the simulation files and samples are saved.
+        """
+        with open(self.savepath_sim.joinpath(f'info_{cal_class.name}.txt'), 'w') as f:
+            f.write(f'Configuration SenAnalyser:\n'
+                    f'SenAnalyser: {self.__class__.__name__}\n'
+                    f'Logger: {self.cd.joinpath(self.__class__.__name__)}\n'
+                    f'num_samples: {self.num_samples}\n'
+                    f'calc_second_order: {self.calc_second_order}\n'
+                    f'scale: {scale}\n'
+                    f'Model: {self.sim_api.model_name}\n'
+                    f'Tuner-Paras:\n'
+                    f'{cal_class.tuner_paras._df.to_string()}')
+
     def _save(self, result):
         if not result[0].empty:
             result[0].to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))

@@ -68,6 +68,15 @@ class FASTAnalyzer(SenAnalyzer):
                            N=self.num_samples,
                            **self.create_sampler_demand())
 
+    def info_samples(self, cal_class, scale):
+        """
+        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
+        if the simulation files and samples are saved-
+        """
+        raise Warning(f'No info.txt file will be created for the saved samples and simulation files. '
+                      f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
+                      f'to keep track off what configuration you used for the creation of the samples.')
+
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
