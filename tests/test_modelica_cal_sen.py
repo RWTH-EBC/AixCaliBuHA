@@ -94,11 +94,11 @@ class TestModelicaCalibrator(unittest.TestCase):
         # Setup the problem
         sen_ana = MorrisAnalyzer(
             sim_api=self.sim_api,
-            num_samples=1,
+            num_samples=2,
             cd=self.sim_api.cd,
             analysis_variable='mu_star'
         )
-        self._run_sen_ana(sen_ana)
+        self._run_sen_ana(sen_ana, 'mu_star')
 
     def test_sa_sobol(self):
         """
@@ -111,18 +111,22 @@ class TestModelicaCalibrator(unittest.TestCase):
             cd=self.sim_api.cd,
             analysis_variable='S1'
         )
-        self._run_sen_ana(sen_ana)
+        self._run_sen_ana(sen_ana, 'S1')
 
-    def _run_sen_ana(self, sen_ana):
+    def _run_sen_ana(self, sen_ana, analysis_variable):
         # Choose initial_values and set boundaries to tuner_parameters
         # Evaluate which tuner_para has influence on what class
         sen_result, classes = sen_ana.run(self.calibration_classes)
+        print(sen_ana.__class__.__name__)
+        if sen_ana.__class__.__name__ == 'SobolAnalyzer':
+            sen_result = sen_result[0]
         self.assertIsInstance(sen_result, pd.DataFrame)
         self.assertIsInstance(classes, list)
         for _cls in classes:
             self.assertIsInstance(_cls, CalibrationClass)
         classes = sen_ana.select_by_threshold(calibration_classes=classes,
                                               result=sen_result,
+                                              analysis_variable=analysis_variable,
                                               threshold=0)
         self.assertIsInstance(classes, list)
         self.assertTrue(len(classes) >= 1)
@@ -130,6 +134,7 @@ class TestModelicaCalibrator(unittest.TestCase):
             sen_ana.select_by_threshold(
                 calibration_classes=classes,
                 result=sen_result,
+                analysis_variable=analysis_variable,
                 threshold=np.inf)
 
     def tearDown(self):
