@@ -274,7 +274,10 @@ class SenAnalyzer(abc.ABC):
         cal_class = kwargs_eval.pop('cal_class')
         result = kwargs_eval.pop('result')
         if result is None:
-            return self.ret_val_on_error, self.ret_val_on_error  # TODO: specify an error value for verbose
+            verbose_error = {}
+            for goal, w in zip(cal_class.goals.get_goals_list(), cal_class.goals._weightings):
+                verbose_error[goal] = (w, self.ret_val_on_error)
+            return self.ret_val_on_error, verbose_error
         else:
             cal_class.goals.set_sim_target_data(result)
             cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
