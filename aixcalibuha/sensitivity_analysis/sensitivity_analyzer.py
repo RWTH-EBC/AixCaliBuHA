@@ -449,6 +449,10 @@ class SenAnalyzer(abc.ABC):
                                       index_col=0)
                 samples = samples.to_numpy()
                 n_sim = len(list(sim_dir.iterdir()))
+                if n_sim != len(samples):
+                    raise ValueError('Number of files do not match number of samples. '
+                                     'The folder with the simulation files does not included '
+                                     'other files.')
                 result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
