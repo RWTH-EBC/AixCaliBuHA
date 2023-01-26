@@ -523,23 +523,27 @@ class SenAnalyzer(abc.ABC):
         return problem
 
     @staticmethod
-    def select_by_threshold(calibration_classes, result, threshold):
+    def select_by_threshold(calibration_classes, result, analysis_variable, threshold):
         # TODO: chang to fit the new result dataframes
         """
         Automatically select sensitive tuner parameters based on a given threshold
-        and a key-word of the result.
+        of a given analysis variable from a sensitivity result.
+        Uses only the combined goals.
 
         :param list calibration_classes:
             List of aixcalibuha.data_types.CalibrationClass objects that you want to
             automatically select sensitive tuner-parameters.
         :param pd.DataFrame result:
             Result object of sensitivity analysis run
+        :param str analysis_variable:
+            Analysis variable to use for the selection
         :param float threshold:
             Minimal required value of given key
         :return: list calibration_classes
         """
         for num_class, cal_class in enumerate(calibration_classes):
-            class_result = result.loc[cal_class.name]
+            first_goal = result.index.get_level_values(1)[0]
+            class_result = result.loc[cal_class.name, first_goal, analysis_variable]
             tuner_paras = copy.deepcopy(cal_class.tuner_paras)
             select_names = class_result[class_result < threshold].index.values
             tuner_paras.remove_names(select_names)
