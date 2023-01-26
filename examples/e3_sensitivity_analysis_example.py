@@ -52,7 +52,8 @@ def run_sensitivity_analysis(
         examples_dir=examples_dir, example=example
     )[0]
 
-    result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
+    result, classes = sen_analyzer.run(calibration_classes=calibration_classes,
+                                       plot_result=True)
     print("Result of the sensitivity analysis")
     print(result)
     # For each given class, you should see the given tuner parameters
@@ -61,8 +62,9 @@ def run_sensitivity_analysis(
     # to remove complexity from our calibration problem:
     print("Selecting relevant tuner-parameters using a fixed threshold:")
     sen_analyzer.select_by_threshold(calibration_classes=classes,
-                                     result=result,
-                                     threshold=0.01)
+                                     result=result[0],
+                                     threshold=0.01,
+                                     analysis_variable='S1')
     for cal_class in classes:
         print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
     # Return the classes and the sim_api to later perform an automated process in example 5
