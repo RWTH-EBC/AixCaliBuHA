@@ -191,6 +191,7 @@ class SobolAnalyzer(SenAnalyzer):
         Plot sensitivity results of second order analysis variables.
         For each calibration class and goal one figure of a 3d plot is created
         with the barplots of the interactions for each parameter.
+        Only working for more than 2 parameter.
 
         :param pd.DataFrame result:
             A result from run
@@ -204,7 +205,7 @@ class SobolAnalyzer(SenAnalyzer):
         """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
-        use_suffix = kwargs.pop('use_suffix', True)
+        use_suffix = kwargs.pop('use_suffix', False)
         result = result.fillna(0)
         # get lists of the calibration classes their goals and the analysis variables in the result dataframe
         cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
@@ -218,6 +219,8 @@ class SobolAnalyzer(SenAnalyzer):
             print(result.to_string())
 
         tuner_names = result.columns
+        if len(tuner_names) < 3:
+            return None
         xticks = np.arange(len(tuner_names))
 
         # when the index is not sorted pandas throws a performance warning
@@ -250,7 +253,7 @@ class SobolAnalyzer(SenAnalyzer):
         return all_figs, all_axes
 
     @staticmethod
-    def plot_single_scond_order(result, para_name, **kwargs):
+    def plot_single_second_order(result, para_name, **kwargs):
         """
         Plot the value of S2 from one parameter with all other parameters.
 
