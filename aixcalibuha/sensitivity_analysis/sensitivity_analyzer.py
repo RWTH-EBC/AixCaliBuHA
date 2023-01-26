@@ -524,7 +524,6 @@ class SenAnalyzer(abc.ABC):
 
     @staticmethod
     def select_by_threshold(calibration_classes, result, analysis_variable, threshold):
-        # TODO: chang to fit the new result dataframes
         """
         Automatically select sensitive tuner parameters based on a given threshold
         of a given analysis variable from a sensitivity result.
