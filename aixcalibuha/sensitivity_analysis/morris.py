@@ -78,9 +78,17 @@ class MorrisAnalyzer(SenAnalyzer):
         Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
         if the simulation files and samples are saved-
         """
-        warnings.warn(f'No info.txt file will be created for the saved samples and simulation files. '
-                      f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
-                      f'to keep track off what configuration you used for the creation of the samples.')
+        with open(self.savepath_sim.joinpath(f'info_{cal_class.name}.txt'), 'w') as f:
+            f.write(f'Configuration SenAnalyser:\n'
+                    f'SenAnalyser: {self.__class__.__name__}\n'
+                    f'Logger: {self.cd.joinpath(self.__class__.__name__)}\n'
+                    f'num_samples: {self.num_samples}\n'
+                    f'num_levels: {self.num_levels}\n'
+                    f'local_optimization: {self.local_optimization}\n'
+                    f'scale: {scale}\n'
+                    f'Model: {self.sim_api.model_name}\n'
+                    f'Tuner-Paras:\n'
+                    f'{cal_class.tuner_paras._df.to_string()}')
 
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
