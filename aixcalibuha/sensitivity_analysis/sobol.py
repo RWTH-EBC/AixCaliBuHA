@@ -9,7 +9,6 @@ import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
 import matplotlib.pyplot as plt
-from SALib.plotting.bar import plot as barplot
 
 
 class SobolAnalyzer(SenAnalyzer):
@@ -30,7 +29,7 @@ class SobolAnalyzer(SenAnalyzer):
         self.calc_second_order = kwargs.get("calc_second_order", True)
         if self.calc_second_order:
             self.__analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf', 'S2', 'S2_conf']
-        # seperatly store first and total oder (1) and second order (2) analysis variables
+        # separately store first and total order (1) and second order (2) analysis variables
         self.av_1_selected = []
         self.av_2_selected = []
 
@@ -76,7 +75,7 @@ class SobolAnalyzer(SenAnalyzer):
         """
         Use the SALib.analyze.sobol method to analyze the simulation results.
 
-        :param np.array: x
+        :param np.array x:
             placeholder for the `X` parameter of the morris method not used for sobol
         :param np.array y:
             The NumPy array containing the model outputs
@@ -163,9 +162,9 @@ class SobolAnalyzer(SenAnalyzer):
         Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to analysis_variable.
-        For second oder analyisis variables the result is convertet to a
+        For second oder analysis variables the result is converted to a
         dict with the key being the variable name and the value being another dict
-        with the vaiable names as the keys and the result associated to analysis_valiable
+        with the variable names as the keys and the result associated to analysis_variable
         from the interaction between the two variables.
         """
         names = self.create_problem(cal_class.tuner_paras)['names']
@@ -210,7 +209,6 @@ class SobolAnalyzer(SenAnalyzer):
         # get lists of the calibration classes their goals and the analysis variables in the result dataframe
         cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
         goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
-        analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(2)))
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
@@ -269,7 +267,7 @@ class SobolAnalyzer(SenAnalyzer):
         show_plot = kwargs.pop('show_plot', True)
         result = result.loc[:, :, :, para_name][:].fillna(0)
         figs, axes = SenAnalyzer.plot_single(result=result, show_plot=False)
-        # set new title for the figures of each calibraition class
+        # set new title for the figures of each calibration class
         for fig in figs:
             fig.suptitle(f"Interaction of {para_name} in class {fig._suptitle.get_text()}")
         if show_plot:

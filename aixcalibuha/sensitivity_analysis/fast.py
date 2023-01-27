@@ -37,7 +37,7 @@ class FASTAnalyzer(SenAnalyzer):
         """
         Use the SALib.analyze.fast method to analyze the simulation results.
 
-        :param np.array: x
+        :param np.array x:
             placeholder for the `X` parameter of the morris method not used for sobol
         :param np.array y:
             The NumPy array containing the model outputs
@@ -84,6 +84,7 @@ class FASTAnalyzer(SenAnalyzer):
                     f'Model: {self.sim_api.model_name}\n'
                     f'Tuner-Paras:\n'
                     f'{cal_class.tuner_paras._df.to_string()}')
+
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key

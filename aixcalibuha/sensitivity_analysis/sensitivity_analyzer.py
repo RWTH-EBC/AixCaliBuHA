@@ -452,7 +452,7 @@ class SenAnalyzer(abc.ABC):
                 n_sim = len(list(sim_dir.iterdir()))
                 if n_sim != len(samples):
                     raise ValueError('Number of files do not match number of samples. '
-                                     'The folder with the simulation files does not included '
+                                     'The folder with the simulation files can not included '
                                      'other files.')
                 result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]

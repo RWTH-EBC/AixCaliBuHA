@@ -2,7 +2,6 @@
 Adds the MorrisAnalyzer to the available
 classes of sensitivity analysis.
 """
-import warnings
 
 from SALib.sample import morris
 from SALib.analyze import morris as analyze_morris

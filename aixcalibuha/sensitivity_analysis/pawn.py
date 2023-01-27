@@ -2,7 +2,6 @@
 Adds the PAWNAnalyzer to the available
 classes of sensitivity analysis.
 """
-import warnings
 
 from SALib.sample import sobol
 from SALib.sample import morris
@@ -20,18 +19,18 @@ class PAWNAnalyzer(SenAnalyzer):
     :keyword bool calc_second_order:
         Default True, used for the sampler of the sobol-method
     :keyword int s:
-        Default 10, used for the pawn-method
+        Default 10, used for the pawn-method.
     :keyword str sampler:
         Which sampler should be used. Default sobol.
-        Choose between 'sobol', 'morris' and 'fast
+        Choose between 'sobol', 'morris' and 'fast'.
     :keyword int num_levels:
-        Default num_samples, used for the sampler of the morris-method
+        Default num_samples, used for the sampler of the morris-method.
     :keyword optimal_trajectories:
-        Used for the sampler of the morris-method
+        Used for the sampler of the morris-method.
     :keyword bool local_optimization:
-        Default True, used for the sampler of the morris-method
+        Default True, used for the sampler of the morris-method.
     :keyword int M:
-        Default 4, used for the sampler of the fast-method
+        Default 4, used for the sampler of the fast-method.
     """
 
     def __init__(self, sim_api, **kwargs):
@@ -56,7 +55,7 @@ class PAWNAnalyzer(SenAnalyzer):
         """
         Use the SALib.analyze.pawn method to analyze the simulation results.
 
-        :param np.array: x
+        :param np.array x:
             placeholder for the `X` parameter of the morris method not used for sobol
         :param np.array y:
             The NumPy array containing the model outputs
