@@ -1,0 +1,49 @@
+Class,Goal,Analysis variable,Interaction,speedRamp.duration,valveRamp.duration
+global,all,S2,speedRamp.duration,,0.025310201538231436
+global,all,S2,valveRamp.duration,0.025310201538231436,
+global,all,S2_conf,speedRamp.duration,,0.09263496301447202
+global,all,S2_conf,valveRamp.duration,0.09263496301447202,
+global,TCap,S2,speedRamp.duration,,0.02510815334489852
+global,TCap,S2,valveRamp.duration,0.02510815334489852,
+global,TCap,S2_conf,speedRamp.duration,,0.08403574199838072
+global,TCap,S2_conf,valveRamp.duration,0.08403574199838072,
+global,TPipe,S2,speedRamp.duration,,0.02564762833065176
+global,TPipe,S2,valveRamp.duration,0.02564762833065176,
+global,TPipe,S2_conf,speedRamp.duration,,0.08707239835207532
+global,TPipe,S2_conf,valveRamp.duration,0.08707239835207532,
+heat up,all,S2,speedRamp.duration,,0.0021955576128004765
+heat up,all,S2,valveRamp.duration,0.0021955576128004765,
+heat up,all,S2_conf,speedRamp.duration,,0.20154302316420983
+heat up,all,S2_conf,valveRamp.duration,0.20154302316420983,
+heat up,TCap,S2,speedRamp.duration,,0.0012995270454584343
+heat up,TCap,S2,valveRamp.duration,0.0012995270454584343,
+heat up,TCap,S2_conf,speedRamp.duration,,0.2420898458105829
+heat up,TCap,S2_conf,valveRamp.duration,0.2420898458105829,
+heat up,TPipe,S2,speedRamp.duration,,0.0031993339164700474
+heat up,TPipe,S2,valveRamp.duration,0.0031993339164700474,
+heat up,TPipe,S2_conf,speedRamp.duration,,0.18805732378187293
+heat up,TPipe,S2_conf,valveRamp.duration,0.18805732378187293,
+cool down,all,S2,speedRamp.duration,,0.053354300386931786
+cool down,all,S2,valveRamp.duration,0.053354300386931786,
+cool down,all,S2_conf,speedRamp.duration,,0.11057871422127731
+cool down,all,S2_conf,valveRamp.duration,0.11057871422127731,
+cool down,TCap,S2,speedRamp.duration,,0.052955009211473
+cool down,TCap,S2,valveRamp.duration,0.052955009211473,
+cool down,TCap,S2_conf,speedRamp.duration,,0.0941273641207029
+cool down,TCap,S2_conf,valveRamp.duration,0.0941273641207029,
+cool down,TPipe,S2,speedRamp.duration,,0.054434830401888235
+cool down,TPipe,S2,valveRamp.duration,0.054434830401888235,
+cool down,TPipe,S2_conf,speedRamp.duration,,0.09416195219251533
+cool down,TPipe,S2_conf,valveRamp.duration,0.09416195219251533,
+stationary,all,S2,speedRamp.duration,,0.019799380701387148
+stationary,all,S2,valveRamp.duration,0.019799380701387148,
+stationary,all,S2_conf,speedRamp.duration,,0.09697025188939104
+stationary,all,S2_conf,valveRamp.duration,0.09697025188939104,
+stationary,TCap,S2,speedRamp.duration,,0.02009112317326811
+stationary,TCap,S2,valveRamp.duration,0.02009112317326811,
+stationary,TCap,S2_conf,speedRamp.duration,,0.09902866632577796
+stationary,TCap,S2_conf,valveRamp.duration,0.09902866632577796,
+stationary,TPipe,S2,speedRamp.duration,,0.019230472503300844
+stationary,TPipe,S2,valveRamp.duration,0.019230472503300844,
+stationary,TPipe,S2_conf,speedRamp.duration,,0.09120933886110148
+stationary,TPipe,S2_conf,valveRamp.duration,0.09120933886110148,
