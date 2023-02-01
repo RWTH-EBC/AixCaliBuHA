@@ -363,7 +363,7 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, all sensitivity measures of the SALib function are calculated
             and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
-        :keyword dict use_fist_sim:
+        :keyword bool use_fist_sim:
             Default False. If True, the simulations of the first calibration class will be used for
             all other calibration classes with their relevant time intervals.
             The simulations must be stored on a hard-drive, so it must be used with
@@ -623,16 +623,25 @@ class SenAnalyzer(abc.ABC):
         :keyword bool use_suffix:
             Default is True: If True, the last part after the last point
             of Modelica variables is used for the x ticks.
+        :keyword [str] cal_classes:
+            Default are all possible calibration classes. If a list of
+            names of calibration classes is given only plots for these
+            classes are created.
+        :keyword [str] goals:
+            Default are all possible goal names. If a list of specific
+            goal names is given only these will be plotted.
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
         """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
-        use_suffix = kwargs.pop('use_suffix', True)
+        use_suffix = kwargs.pop('use_suffix', False)
 
-        # get lists of the calibration classes their goals and the analysis variables in the result dataframe
+        # get lists of the calibration classes and their goals in the result dataframe
         cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
         goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+        cal_classes = kwargs.pop('cal_classes', cal_classes)
+        goals = kwargs.pop('goals', goals)
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
