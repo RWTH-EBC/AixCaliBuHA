@@ -630,18 +630,23 @@ class SenAnalyzer(abc.ABC):
         :keyword [str] goals:
             Default are all possible goal names. If a list of specific
             goal names is given only these will be plotted.
+        :keyword ([fig], [ax]) figs_axes:
+            Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
         """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
         use_suffix = kwargs.pop('use_suffix', False)
+        figs_axes = kwargs.pop('figs_axes', None)
 
         # get lists of the calibration classes and their goals in the result dataframe
-        cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
-        goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
-        cal_classes = kwargs.pop('cal_classes', cal_classes)
-        goals = kwargs.pop('goals', goals)
+        cal_classes = kwargs.pop('cal_classes', None)
+        if cal_classes is None:
+            cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
+        goals = kwargs.pop('goals', None)
+        if goals is None:
+            goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
@@ -654,7 +659,11 @@ class SenAnalyzer(abc.ABC):
         figs = []
         axes = []
         for col, cal_class in enumerate(cal_classes):
-            fig, ax = plt.subplots(len(goals), sharex='all')
+            if figs_axes is None:
+                fig, ax = plt.subplots(len(goals), sharex='all')
+            else:
+                fig = figs_axes[0][col]
+                ax = figs_axes[1][col]
             fig.suptitle(cal_class)
             figs.append(fig)
             if not isinstance(ax, np.ndarray):

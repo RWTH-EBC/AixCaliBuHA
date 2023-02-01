@@ -206,12 +206,15 @@ class SobolAnalyzer(SenAnalyzer):
         :keyword [str] goals:
             Default are all possible goal names. If a list of specific
             goal names is given only these will be plotted.
+        :keyword [[fig]] figs:
+            Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
         """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
         use_suffix = kwargs.pop('use_suffix', False)
+        figs = kwargs.pop('figs', None)
         result = result.fillna(0)
         # get lists of the calibration classes and their goals in the result dataframe
         cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
@@ -236,11 +239,14 @@ class SobolAnalyzer(SenAnalyzer):
         # plot of S2 without S2_conf
         all_figs = []
         all_axes = []
-        for cal_class in cal_classes:
+        for class_idx, cal_class in enumerate(cal_classes):
             class_figs = []
             class_axes = []
-            for goal in goals:
-                fig = plt.figure()
+            for goal_idx, goal in enumerate(goals):
+                if figs is None:
+                    fig = plt.figure()
+                else:
+                    fig = figs[class_idx][goal_idx]
                 ax = fig.add_subplot(projection='3d')
                 for idx, name in enumerate(tuner_names):
                     ax.bar(tuner_names, result.loc[cal_class, goal, 'S2', name].to_numpy(), zs=idx, zdir='y', alpha=0.8)
@@ -268,14 +274,32 @@ class SobolAnalyzer(SenAnalyzer):
             Second order result from run.
         :param str para_name:
             Name of the parameter of which the results should be plotted.
+        :keyword [str] cal_classes:
+            Default are all possible calibration classes. If a list of
+            names of calibration classes is given only plots for these
+            classes are created.
+        :keyword [str] goals:
+            Default are all possible goal names. If a list of specific
+            goal names is given only these will be plotted.
         :keyword bool show_plot:
             Default is True. If False, all created plots are not shown.
+        :keyword ([fig], [ax]) axes:
+            Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
         """
+        cal_classes = kwargs.pop('cal_classes', None)
+        goals = kwargs.pop('goals', None)
+        figs_axes = kwargs.pop('figs_axes', None)
         show_plot = kwargs.pop('show_plot', True)
         result = result.loc[:, :, :, para_name][:].fillna(0)
-        figs, axes = SenAnalyzer.plot_single(result=result, show_plot=False)
+        figs, axes = SenAnalyzer.plot_single(
+            result=result,
+            show_plot=False,
+            cal_classes=cal_classes,
+            goals=goals,
+            figs_axes=figs_axes
+        )
         # set new title for the figures of each calibration class
         for fig in figs:
             fig.suptitle(f"Interaction of {para_name} in class {fig._suptitle.get_text()}")
