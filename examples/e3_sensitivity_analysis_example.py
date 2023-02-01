@@ -53,7 +53,8 @@ def run_sensitivity_analysis(
     )[0]
 
     result, classes = sen_analyzer.run(calibration_classes=calibration_classes,
-                                       plot_result=True)
+                                       plot_result=True,
+                                       save_results=False)
     print("Result of the sensitivity analysis")
     print(result)
     # For each given class, you should see the given tuner parameters
