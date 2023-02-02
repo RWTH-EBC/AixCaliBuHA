@@ -59,9 +59,6 @@ class SenAnalyzer(abc.ABC):
         number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of the specific 
         method in the SALib for more information.
-    :keyword str or [str] analysis_variable: 
-        Default is a list of all possible result values.
-        Used to automatically select result values.
     :keyword str,os.path.normpath cd:
         The path for the current working directory.
         Logger and results will be stored here.
@@ -104,8 +101,6 @@ class SenAnalyzer(abc.ABC):
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
         self.savepath_sim = kwargs.pop('savepath_sim', self.cd)
-        self.analysis_variable = kwargs.pop('analysis_variable',
-                                            self.analysis_variables)
 
         if isinstance(self.cd, str):
             self.cd = pathlib.Path(self.cd)
@@ -131,24 +126,6 @@ class SenAnalyzer(abc.ABC):
         """
         raise NotImplementedError(f'{self.__class__.__name__}.analysis_variables '
                                   f'property is not defined yet')
-
-    @property
-    def analysis_variable(self):
-        return self._analysis_variable
-
-    @analysis_variable.setter
-    def analysis_variable(self, value):
-        if not isinstance(value, (list, tuple)):
-            value = [value]
-        false_values = []
-        for v in value:
-            if v not in self.analysis_variables:
-                false_values.append(v)
-        if false_values:
-            raise ValueError(f'Given analysis_variable "{false_values}" not '
-                             f'supported for class {self.__class__.__name__}. '
-                             f'Supported options are: {", ".join(self.analysis_variables)}.')
-        self._analysis_variable = value
 
     @abc.abstractmethod
     def analysis_function(self, x, y):
@@ -574,7 +551,7 @@ class SenAnalyzer(abc.ABC):
         tuples = []
         for class_results, local_class in zip(results, local_classes):
             for goal, goal_results in class_results.items():
-                for av in self.analysis_variable:
+                for av in self.analysis_variables:
                     _conv_results.append(self._get_res_dict(result=goal_results,
                                                             cal_class=local_class,
                                                             analysis_variable=av))

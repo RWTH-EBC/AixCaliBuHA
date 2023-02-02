@@ -95,8 +95,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         sen_ana = MorrisAnalyzer(
             sim_api=self.sim_api,
             num_samples=2,
-            cd=self.sim_api.cd,
-            analysis_variable='mu_star'
+            cd=self.sim_api.cd
         )
         self._run_sen_ana(sen_ana, 'mu_star')
 
@@ -108,8 +107,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         sen_ana = SobolAnalyzer(
             sim_api=self.sim_api,
             num_samples=1,
-            cd=self.sim_api.cd,
-            analysis_variable='S1'
+            cd=self.sim_api.cd
         )
         self._run_sen_ana(sen_ana, 'S1')
 

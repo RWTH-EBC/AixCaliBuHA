@@ -44,33 +44,6 @@ class SobolAnalyzer(SenAnalyzer):
         """The analysis variables of the sobol method"""
         return self.__analysis_variables
 
-    @property
-    def analysis_variable(self):
-        return self._analysis_variable
-
-    @analysis_variable.setter
-    def analysis_variable(self, value):
-        if not isinstance(value, (list, tuple)):
-            value = [value]
-        false_values = []
-        for v in value:
-            if v not in self.analysis_variables:
-                false_values.append(v)
-                continue
-            if v in self.__analysis_variables_1:
-                self.av_1_selected.append(v)
-                continue
-            if v in self.__analysis_variables_2:
-                self.av_2_selected.append(v)
-        if false_values:
-            error_message = f'Given analysis_variable "{false_values}" not ' \
-                            f'supported for class {self.__class__.__name__}. ' \
-                            f'Supported options are: {", ".join(self.analysis_variables)}.'
-            if not self.calc_second_order:
-                error_message += f' When calc_second_order also S2 und S2_conf are supported.'
-            raise ValueError(error_message)
-        self._analysis_variable = value
-
     def analysis_function(self, x, y):
         """
         Use the SALib.analyze.sobol method to analyze the simulation results.
@@ -137,7 +110,7 @@ class SobolAnalyzer(SenAnalyzer):
         tuples_2 = []
         for class_results, local_class in zip(results, local_classes):
             for goal, goal_results in class_results.items():
-                for av in self.analysis_variable:
+                for av in self.analysis_variables:
                     res_dict = self._get_res_dict(result=goal_results,
                                                   cal_class=local_class,
                                                   analysis_variable=av)
