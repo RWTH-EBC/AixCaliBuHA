@@ -6,6 +6,7 @@
 .project
 .pydevproject
 examples/testzone
+examples/results
 
 # pip install #
 #####################
