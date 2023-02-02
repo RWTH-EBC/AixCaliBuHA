@@ -190,7 +190,7 @@ class SenAnalyzer(abc.ABC):
         :rtype: list
         """
         scale = kwargs.pop('scale', False)
-
+        suffix = kwargs.pop('suffix', 'csv')
         # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
@@ -229,7 +229,7 @@ class SenAnalyzer(abc.ABC):
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix='csv',
+                result_file_suffix=suffix,
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
@@ -372,6 +372,7 @@ class SenAnalyzer(abc.ABC):
         n_cpu = kwargs.pop('n_cpu', 1)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
+        suffix = kwargs.pop('suffix', 'csc')
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
@@ -426,12 +427,7 @@ class SenAnalyzer(abc.ABC):
                                       header=0,
                                       index_col=0)
                 samples = samples.to_numpy()
-                n_sim = len(list(sim_dir.iterdir()))
-                if n_sim != len(samples):
-                    raise ValueError('Number of files do not match number of samples. '
-                                     'The folder with the simulation files can not included '
-                                     'other files.')
-                result_file_names = [f"simulation_{idx}.csv" for idx in range(n_sim)]
+                result_file_names = [f"simulation_{idx}.{suffix}" for idx in range(len(samples))]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
                 t_load_eval = time.time()
@@ -440,7 +436,9 @@ class SenAnalyzer(abc.ABC):
             else:
                 results, samples = self.simulate_samples(
                     cal_class=cal_class,
-                    scale=scale)
+                    scale=scale,
+                    suffix=suffix
+                )
                 if self.save_files:
                     output_array, output_verbose = self._load_eval(results, cal_class, n_cpu)
                 else:
