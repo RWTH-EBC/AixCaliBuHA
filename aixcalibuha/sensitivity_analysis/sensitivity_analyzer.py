@@ -247,16 +247,36 @@ class SenAnalyzer(abc.ABC):
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
+    def _check_index(self, tsd: data_types.TimeSeriesData, sim_num=None):
+        freq = tsd.frequency
+        if sim_num is None:
+            sim_num = tsd.filepath.name
+        if freq[0] != self.sim_api.sim_setup.output_interval:
+            self.logger.info(f'The mean value of the frequency from {sim_num} does not match output '
+                             'interval index will be cleaned and spaced equally')
+            tsd.to_datetime_index()
+            tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval*1000)}ms')
+            tsd.to_float_index()
+            freq = tsd.frequency
+        if freq[1] > 0.0:
+            self.logger.info(f'The standard deviation of the frequency from {sim_num} is to high '
+                             f'and will be rounded to the accuracy of the output interval')
+            tsd.index = np.round(tsd.index.astype("float64"),
+                                 str(self.sim_api.sim_setup.output_interval)[::-1].find('.'))
+        return tsd
+
     def _single_eval_statistical_measure(self, kwargs_eval):
         """Evaluates statistical measure of one result"""
         cal_class = kwargs_eval.pop('cal_class')
         result = kwargs_eval.pop('result')
+        num_sim = kwargs_eval.pop('sim_num', None)
         if result is None:
             verbose_error = {}
             for goal, w in zip(cal_class.goals.get_goals_list(), cal_class.goals._weightings):
                 verbose_error[goal] = (w, self.ret_val_on_error)
             return self.ret_val_on_error, verbose_error
         else:
+            result = self._check_index(result, num_sim)
             cal_class.goals.set_sim_target_data(result)
             cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
             # Evaluate the current objective
@@ -271,7 +291,7 @@ class SenAnalyzer(abc.ABC):
         t1 = time.time()
         for i, result in enumerate(results):
             total_res, verbose_calculation = self._single_eval_statistical_measure(
-                {'cal_class': cal_class, 'result': result}
+                {'cal_class': cal_class, 'result': result, 'sim_num': f'simulation_{i}'}
             )
             output.append(total_res)
             list_output_verbose.append(verbose_calculation)
