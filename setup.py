@@ -11,7 +11,7 @@ INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
     'pandas>=1.3.5',
-    'SALib>=1.3.12',
+    'SALib>=1.4.6',
     'ebcpy>=0.3.0',
     'toml>=0.10.2'
 ]
