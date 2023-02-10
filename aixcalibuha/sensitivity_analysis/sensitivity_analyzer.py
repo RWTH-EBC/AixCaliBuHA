@@ -19,20 +19,20 @@ from SALib.plotting.bar import plot as barplot
 import multiprocessing as mp
 
 
-def _load_single_file(_filepath):
+def _load_single_file(_filepath, parquet_engine='pyarrow'):
     """Helper function"""
     if _filepath is None:
         return None
     else:
-        return data_types.TimeSeriesData(_filepath, default_tag='sim')
+        return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation', engine=parquet_engine)
 
 
-def _load_files(_filepaths):
+def _load_files(_filepaths, parquet_engine='pyarrow'):
     """Helper function"""
     t_load = time.time()
     results = []
     for _filepath in _filepaths:
-        results.append(_load_single_file(_filepath))
+        results.append(_load_single_file(_filepath, parquet_engine=parquet_engine))
     print(f"Time loading simulations {time.time() - t_load}")
     return results
 
@@ -73,11 +73,19 @@ class SenAnalyzer(abc.ABC):
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
     :keyword bool load_files:
-            Default False. If True, no new simulations are done and old simulations are loaded.
-            The simulations and corresponding samples will be loaded from self.savepath_sim like they
-            were saved from self.save_files. Currently, the name of the sim folder must be
-            "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
-            The usage of the same simulations for different calibration classes is not supported yet.
+        Default False. If True, no new simulations are done and old simulations are loaded.
+        The simulations and corresponding samples will be loaded from self.savepath_sim like they
+        were saved from self.save_files. Currently, the name of the sim folder must be
+        "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
+        The usage of the same simulations for different calibration classes is not supported yet.
+    :keyword str suffix_files:
+        Default 'csv'. Specifies the data format to store the simulation files in.
+        Options are 'csv', 'hdf', 'parquet'.
+    :keyword str parquet_engine:
+        The engine to use for the data format parquet.
+        Supported options can be extracted
+        from the ebcpy.TimeSeriesData.save() function.
+        Default is 'pyarrow'.
     :keyword str,os.path.normpath savepath_sim:
         Default is cd. Own directory for the time series data sets of all simulations
         during the sensitivity analysis. The own dir can be necessary for large data sets,
@@ -98,6 +106,8 @@ class SenAnalyzer(abc.ABC):
         self.fail_on_error = kwargs.pop("fail_on_error", True)
         self.save_files = kwargs.pop("save_files", False)
         self.load_files = kwargs.pop('load_files', False)
+        self.suffix_files = kwargs.pop('suffix_files', 'csv')
+        self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
         self.cd = kwargs.pop("cd", os.getcwd())
         self.savepath_sim = kwargs.pop('savepath_sim', self.cd)
@@ -190,7 +200,6 @@ class SenAnalyzer(abc.ABC):
         :rtype: list
         """
         scale = kwargs.pop('scale', False)
-        suffix = kwargs.pop('suffix', 'csv')
         # Set the output interval according the given Goals
         mean_freq = cal_class.goals.get_meas_frequency()
         self.logger.info("Setting output_interval of simulation according "
@@ -229,7 +238,8 @@ class SenAnalyzer(abc.ABC):
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix=suffix,
+                result_file_suffix=self.suffix_files,
+                parquet_engine=self.parquet_engine,
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
@@ -305,7 +315,7 @@ class SenAnalyzer(abc.ABC):
     def _single_load_eval_file(self, kwargs_load_eval):
         """For multiprocessing"""
         filepath = kwargs_load_eval.pop('filepath')
-        _result = _load_single_file(filepath)
+        _result = _load_single_file(filepath, self.parquet_engine)
         kwargs_load_eval.update({'result': _result})
         total_res, verbose_calculation = self._single_eval_statistical_measure(kwargs_load_eval)
         return total_res, verbose_calculation
@@ -332,7 +342,7 @@ class SenAnalyzer(abc.ABC):
         Single- or multiprocessing possible with definition of n_cpu.
         """
         if n_cpu == 1:
-            results = _load_files(_filepaths)
+            results = _load_files(_filepaths, self.parquet_engine)
             output_array, output_verbose = self.eval_statistical_measure(
                 cal_class=cal_class,
                 results=results
@@ -392,7 +402,6 @@ class SenAnalyzer(abc.ABC):
         n_cpu = kwargs.pop('n_cpu', 1)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
-        suffix = kwargs.pop('suffix', 'csc')
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
@@ -447,7 +456,7 @@ class SenAnalyzer(abc.ABC):
                                       header=0,
                                       index_col=0)
                 samples = samples.to_numpy()
-                result_file_names = [f"simulation_{idx}.{suffix}" for idx in range(len(samples))]
+                result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
                 t_load_eval = time.time()
@@ -456,8 +465,7 @@ class SenAnalyzer(abc.ABC):
             else:
                 results, samples = self.simulate_samples(
                     cal_class=cal_class,
-                    scale=scale,
-                    suffix=suffix
+                    scale=scale
                 )
                 if self.save_files:
                     output_array, output_verbose = self._load_eval(results, cal_class, n_cpu)
