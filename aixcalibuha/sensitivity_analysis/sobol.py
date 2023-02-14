@@ -280,6 +280,76 @@ class SobolAnalyzer(SenAnalyzer):
             plt.show()
         return figs, axes
 
+    @staticmethod
+    def heatmap(result, cal_class, goal, ax=None, show_plot=True):
+        """
+        Plot S2 sensitivity results from one calibration class and goal as a heatmap.
+
+        :param pd.DataFrame result:
+            A second order result from run
+        :param str cal_class:
+            Name of the class to plot S2 from.
+        :param str goal:
+            Name of the goal to plot S2 from.
+        :param matplotlib.axes ax:
+            Default is None. If an axes is given the heatmap will be plotted on it else
+            a new figure and axes is created.
+        :param bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :return:
+            Returns axes
+        """
+        if ax is None:
+            fig, ax = plt.subplots()
+        data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
+            index=result.columns)
+        im = ax.imshow(data, cmap='Reds')
+        ax.set_title(f'Class: {cal_class} Goal: {goal}')
+        ax.set_xticks(np.arange(len(data.columns)))
+        ax.set_yticks(np.arange(len(data.index)))
+        ax.set_xticklabels(data.columns)
+        ax.set_yticklabels(data.index)
+        ax.spines[:].set_color('black')
+        plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
+        cbar = ax.figure.colorbar(im, ax=ax)
+        cbar.ax.set_ylabel("S2", rotation=90)
+        if show_plot:
+            plt.show()
+        return ax
+
+    @staticmethod
+    def heatmaps(result, **kwargs):
+        """
+        Plot S2 sensitivity results as a heatmap for multiple
+        calibration classes and goals in one figure.
+
+        :param pd.DataFrame result:
+            A second order result from run
+        :keyword [str] cal_class:
+            Default is a list of all calibration classes in the result.
+            If a list of classes is given only these classes are plotted.
+        :keyword [str] goal:
+            Default is a list of all goals in the result.
+            If a list of goals is given only these goals are plotted.
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        """
+        show_plot = kwargs.pop('show_plot', True)
+        cal_classes = kwargs.pop('cal_class', None)
+        goals = kwargs.pop('goals', None)
+        if cal_classes is None:
+            cal_classes = result.index.get_level_values("Class").unique()
+        if goals is None:
+            goals = result.index.get_level_values("Goal").unique()
+
+        fig, axes = plt.subplots(ncols=len(cal_classes), nrows=len(goals), sharex='all', sharey='all')
+
+        for col, class_name in enumerate(cal_classes):
+            for row, goal_name in enumerate(goals):
+                SobolAnalyzer.heatmap(result, class_name, goal_name, ax=axes[row][col], show_plot=False)
+        if show_plot:
+            plt.show()
+
     def plot(self, result):
         """
         Plot the results of the sensitivity analysis method from run().
@@ -289,7 +359,7 @@ class SobolAnalyzer(SenAnalyzer):
         :return tuple of matplotlib objects (fig, ax)
         """
         SobolAnalyzer.plot_single(result=result[0])
-        SobolAnalyzer.plot_second_order(result=result[1])
+        SobolAnalyzer.heatmaps(result=result[1])
 
     @staticmethod
     def load_second_order_from_csv(path):
