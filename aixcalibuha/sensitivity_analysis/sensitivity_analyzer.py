@@ -122,6 +122,7 @@ class SenAnalyzer(abc.ABC):
 
         # Setup default values
         self.problem: dict = None
+        self.reproduction_files = []
 
     @property
     @abc.abstractmethod
@@ -244,6 +245,7 @@ class SenAnalyzer(abc.ABC):
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
             )
+            self.reproduction_files.extend(_filepaths)
             results = _filepaths
             self.info_samples(cal_class, scale)
         else:
@@ -489,10 +491,14 @@ class SenAnalyzer(abc.ABC):
             if save_results:
                 result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
                 stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
-                stat_mea_df.to_csv(self.cd.joinpath(f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv'))
+                savepath_stat_mea = self.cd.joinpath(f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv')
+                stat_mea_df.to_csv(savepath_stat_mea)
+                self.reproduction_files.append(savepath_stat_mea)
                 samples_df = pd.DataFrame(samples, columns=cal_class.tuner_paras.get_names(),
                                           index=result_file_names)
-                samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))
+                savepath_samples = self.cd.joinpath(f'samples_{cal_class.name}.csv')
+                samples_df.to_csv(savepath_samples)
+                self.reproduction_files.append(savepath_samples)
 
             self.logger.info('Starting calculation of analysis variables')
             for key, val in stat_mea.items():
@@ -519,7 +525,9 @@ class SenAnalyzer(abc.ABC):
         Saves the result DataFrame of run.
         Needs to be overwritten for Sobol results.
         """
-        result.to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))
+        savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
+        result.to_csv(savepath_result)
+        self.reproduction_files.append(savepath_result)
 
     @staticmethod
     def create_problem(tuner_paras, scale=False) -> dict:
@@ -698,3 +706,57 @@ class SenAnalyzer(abc.ABC):
     def load_from_csv(path):
         result = pd.read_csv(path, index_col=[0, 1, 2])
         return result
+
+    def save_for_reproduction(self,
+                              title: str,
+                              path: pathlib.Path = None,
+                              files: list = None,
+                              exclude_sim_files: bool = False,
+                              remove_saved_files: bool = False,
+                              **kwargs):
+        """
+        Save the settings of the SenAnalyzer and SimApi in order to
+        reproduce the simulations and sensitivity analysis method.
+        All saved results will be also saved in the reproduction
+        archive. The simulations can be excluded from saving.
+
+        :param str title:
+            Title of the study
+        :param pathlib.Path path:
+            Where to store the .zip file. If not given, self.cd is used.
+        :param list files:
+            List of files to save along the standard ones.
+            Examples would be plots, tables etc.
+        :param bool exclude_sim_files:
+            Default False. If True, the simulation files will not be saved in
+            the reproduction archive.
+        :param bool remove_saved_files:
+            Default False. If True, the result and simulation files will be moved
+            instead of just copied.
+        :param dict kwargs:
+            All keyword arguments except title, files, and path of the function
+            `save_reproduction_archive`. Most importantly, `log_message` may be
+            specified to avoid input during execution.
+        """
+        from ebcpy.utils.reproduction import CopyFile
+
+        if files is None:
+            files = []
+
+        for file_path in self.reproduction_files:
+            if exclude_sim_files:
+                if 'simulation' in str(file_path):
+                    continue
+            filename = "SenAnalyzer" + str(file_path).split(self.cd.name)[-1]
+            files.append(CopyFile(
+                sourcepath=file_path,
+                filename=filename,
+                remove=remove_saved_files
+            ))
+
+        return self.sim_api.save_for_reproduction(
+            title=title,
+            path=path,
+            files=files,
+            **kwargs
+        )

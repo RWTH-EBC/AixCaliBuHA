@@ -99,9 +99,13 @@ class SobolAnalyzer(SenAnalyzer):
 
     def _save(self, result):
         if not result[0].empty:
-            result[0].to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results.csv'))
+            savepath_result_1 = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
+            result[0].to_csv(savepath_result_1)
+            self.reproduction_files.append(savepath_result_1)
         if not result[1].empty:
-            result[1].to_csv(self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv'))
+            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv')
+            result[1].to_csv(savepath_result_2)
+            self.reproduction_files.append(savepath_result_2)
 
     def _conv_local_results(self, results: list, local_classes: list, verbose=False):
         _conv_results = []
