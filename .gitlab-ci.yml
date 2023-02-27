@@ -9,7 +9,7 @@ stages:
 variables:
   COVERAGE_TYPE: "FMU"
   PAGES_BRANCH: master
-  EXLUDE_PYTHON: 39
+  EXLUDE_PYTHON: 37
   GIT_REPO: RWTH-EBC/AixCaliBuHA
 
 include:
