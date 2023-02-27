@@ -110,29 +110,6 @@ class PAWNAnalyzer(SenAnalyzer):
         else:
             raise NotImplementedError(f'{self.sampler} is not implemented yet')
 
-    def info_samples(self, cal_class, scale):
-        """
-        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
-        if the simulation files and samples are saved-
-        """
-        with open(self.savepath_sim.joinpath(f'info_{cal_class.name}.txt'), 'w') as f:
-            f.write(f'Configuration SenAnalyser:\n'
-                    f'SenAnalyser: {self.__class__.__name__}\n'
-                    f'Logger: {self.cd.joinpath(self.__class__.__name__)}\n'
-                    f'Sampler: {self.sampler}\n'
-                    f'num_samples: {self.num_samples}\n')
-            if self.sampler == 'sobol':
-                f.write(f'calc_second_order: {self.calc_second_order}\n')
-            elif self.sampler == 'morris':
-                f.write(f'num_levels: {self.num_levels}\n'
-                        f'local_optimization: {self.local_optimization}\n')
-            elif self.sampler == 'fast':
-                f.write(f'M: {self.M}\n'
-                        f'scale: {scale}\n')
-            f.write(f'Model: {self.sim_api.model_name}\n'
-                    f'Tuner-Paras:\n'
-                    f'{cal_class.tuner_paras._df.to_string()}')
-
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key

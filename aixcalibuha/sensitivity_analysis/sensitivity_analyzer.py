@@ -172,16 +172,6 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError(f'{self.__class__.__name__}.generate_samples '
                                   f'function is not defined yet')
 
-    @abc.abstractmethod
-    def info_samples(self, cal_class, scale):
-        """
-        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
-        if the simulation files and samples are saved-
-        """
-        warnings.warn(f'No info.txt file will be created for the saved samples and simulation files. '
-                      f'{self.__class__.__name__}.info_samples is not defined yet. You are responsible'
-                      f'to keep track off what configuration you used for the creation of the samples.')
-
     def simulate_samples(self, cal_class, **kwargs):
         """
         Creates the samples for the calibration class and simulates them.

@@ -72,23 +72,6 @@ class MorrisAnalyzer(SenAnalyzer):
                              N=self.num_samples,
                              **self.create_sampler_demand())
 
-    def info_samples(self, cal_class, scale):
-        """
-        Saves an info.txt about the configuration of the SenAnalyser for the creation of the samples
-        if the simulation files and samples are saved-
-        """
-        with open(self.savepath_sim.joinpath(f'info_{cal_class.name}.txt'), 'w') as f:
-            f.write(f'Configuration SenAnalyser:\n'
-                    f'SenAnalyser: {self.__class__.__name__}\n'
-                    f'Logger: {self.cd.joinpath(self.__class__.__name__)}\n'
-                    f'num_samples: {self.num_samples}\n'
-                    f'num_levels: {self.num_levels}\n'
-                    f'local_optimization: {self.local_optimization}\n'
-                    f'scale: {scale}\n'
-                    f'Model: {self.sim_api.model_name}\n'
-                    f'Tuner-Paras:\n'
-                    f'{cal_class.tuner_paras._df.to_string()}')
-
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
