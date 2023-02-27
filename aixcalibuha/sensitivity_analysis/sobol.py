@@ -269,13 +269,15 @@ class SobolAnalyzer(SenAnalyzer):
         goals = kwargs.pop('goals', None)
         figs_axes = kwargs.pop('figs_axes', None)
         show_plot = kwargs.pop('show_plot', True)
+        use_suffix = kwargs.pop('use_suffix', False)
         result = result.loc[:, :, :, para_name][:].fillna(0)
         figs, axes = SenAnalyzer.plot_single(
             result=result,
             show_plot=False,
             cal_classes=cal_classes,
             goals=goals,
-            figs_axes=figs_axes
+            figs_axes=figs_axes,
+            use_suffix=use_suffix
         )
         # set new title for the figures of each calibration class
         for fig in figs:
@@ -285,7 +287,7 @@ class SobolAnalyzer(SenAnalyzer):
         return figs, axes
 
     @staticmethod
-    def heatmap(result, cal_class, goal, ax=None, show_plot=True):
+    def heatmap(result, cal_class, goal, ax=None, show_plot=True, use_suffix=False):
         """
         Plot S2 sensitivity results from one calibration class and goal as a heatmap.
 
@@ -303,6 +305,8 @@ class SobolAnalyzer(SenAnalyzer):
         :return:
             Returns axes
         """
+        if use_suffix:
+            result = SenAnalyzer._rename_tuner_names(result)
         if ax is None:
             fig, ax = plt.subplots()
         data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
