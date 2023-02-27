@@ -10,7 +10,6 @@
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 
 
 def run_sensitivity_analysis(

@@ -17,7 +17,7 @@ class SobolAnalyzer(SenAnalyzer):
 
     :keyword bool calc_second_order:
         Default True, used for the sobol-method
-    :keyword seed:
+    :keyword int seed:
         Used for the sobol-method
     """
     __analysis_variables = ['S1', 'ST', 'S1_conf', 'ST_conf']
@@ -32,12 +32,12 @@ class SobolAnalyzer(SenAnalyzer):
         # separately store first and total order (1) and second order (2) analysis variables
         self.av_1_selected = []
         self.av_2_selected = []
+        # Set additional kwargs
+        self.seed = kwargs.pop("seed", None)
 
         super().__init__(
             sim_api=sim_api,
             **kwargs)
-        # Set additional kwargs
-        self.seed = kwargs.pop("seed", None)
 
     @property
     def analysis_variables(self):
@@ -302,6 +302,8 @@ class SobolAnalyzer(SenAnalyzer):
             a new figure and axes is created.
         :param bool show_plot:
             Default is True. If False, all created plots are not shown.
+        :param bool use_suffix:
+            Default is False. If True, only the last suffix of a Modelica variable is displayed.
         :return:
             Returns axes
         """

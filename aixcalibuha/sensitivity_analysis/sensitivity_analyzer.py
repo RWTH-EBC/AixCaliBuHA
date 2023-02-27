@@ -4,7 +4,6 @@ import abc
 import copy
 import os
 import pathlib
-import time
 import warnings
 from typing import List
 import numpy as np
@@ -29,11 +28,9 @@ def _load_single_file(_filepath, parquet_engine='pyarrow'):
 
 def _load_files(_filepaths, parquet_engine='pyarrow'):
     """Helper function"""
-    t_load = time.time()
     results = []
     for _filepath in _filepaths:
         results.append(_load_single_file(_filepath, parquet_engine=parquet_engine))
-    print(f"Time loading simulations {time.time() - t_load}")
     return results
 
 
@@ -228,7 +225,6 @@ class SenAnalyzer(abc.ABC):
 
         self.logger.info('Starting %s parameter variations on %s cores',
                          len(samples), self.sim_api.n_cpu)
-        t_sim_start = time.time()
         if self.save_files:
             sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
             os.makedirs(sim_dir, exist_ok=True)
@@ -255,7 +251,6 @@ class SenAnalyzer(abc.ABC):
                 fail_on_error=self.fail_on_error,
                 **cal_class.input_kwargs
             )
-        print(f"Total time simulations: {time.time() - t_sim_start}")
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
@@ -300,14 +295,12 @@ class SenAnalyzer(abc.ABC):
         self.logger.info(f'Starting evaluation of statistical measure')
         output = []
         list_output_verbose = []
-        t1 = time.time()
         for i, result in enumerate(results):
             total_res, verbose_calculation = self._single_eval_statistical_measure(
                 {'cal_class': cal_class, 'result': result, 'sim_num': f'simulation_{i}'}
             )
             output.append(total_res)
             list_output_verbose.append(verbose_calculation)
-        print(f"Time eval_difference: {time.time() - t1}")
         if verbose:
             # restructure output_verbose
             output_verbose = _restruct_verbose(list_output_verbose)
@@ -397,7 +390,6 @@ class SenAnalyzer(abc.ABC):
             Interaction, which also contains the variables.
         :rtype: pandas.DataFrame
         """
-        t_start_abs = time.time()
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
         use_first_sim = kwargs.pop('use_first_sim', False)
@@ -461,9 +453,7 @@ class SenAnalyzer(abc.ABC):
                 result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
                 _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
-                t_load_eval = time.time()
                 output_array, output_verbose = self._load_eval(_filepaths, cal_class, n_cpu)
-                print(f'Time load files and eval: {time.time() - t_load_eval}')
             else:
                 results, samples = self.simulate_samples(
                     cal_class=cal_class,
@@ -502,18 +492,15 @@ class SenAnalyzer(abc.ABC):
 
             self.logger.info('Starting calculation of analysis variables')
             for key, val in stat_mea.items():
-                t1 = time.time()
                 result_goal = self.analysis_function(
                     x=samples,
                     y=val
                 )
-                print(f"Time for one sensitivity analysis without the simulations {time.time() - t1}")
                 results_goals[key] = result_goal
             all_results.append(results_goals)
         result = self._conv_local_results(results=all_results,
                                           local_classes=calibration_classes,
                                           verbose=verbose)
-        print(f"Absolut time: {time.time() - t_start_abs}")
         if save_results:
             self._save(result)
         if plot_result:
@@ -576,8 +563,8 @@ class SenAnalyzer(abc.ABC):
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
 
-    def _conv_global_result(self, result: dict, cal_class: CalibrationClass):
-        glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class)
+    def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
+        glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)
         return pd.DataFrame(glo_res_dict, index=['global'])
 
     def _conv_local_results(self, results: list, local_classes: list, verbose=False):

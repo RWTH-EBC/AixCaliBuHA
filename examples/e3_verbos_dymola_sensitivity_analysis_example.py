@@ -1,4 +1,5 @@
 # # Example 3 sensitivity analysis with dymola api
+import os
 
 # Goals of this part of the examples:
 # 1. Learn how to execute a sensitivity analysis with the dymola api
@@ -54,7 +55,8 @@ def run_sensitivity_analysis(
         cd=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}'),
         save_files=True,
         load_files=False,
-        savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}', 'files')
+        savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}', 'files'),
+        suffix_files='mat'
     )
 
     # The only difference to the fmu example is the handling of inputs. There we have in the model now
@@ -63,7 +65,8 @@ def run_sensitivity_analysis(
     # To generate the input in the correct format, use the convert_tsd_to_modelica_txt function:
     if example == "A":
         table_name = "InputTDryBul"
-        file_name = r"D:\sbg-hst\Repos\AixCaliBuHA\examples\data\dymola_inputs_A.txt"
+        # file_name = examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}')
+        file_name = r"D:\dymola_inputs_A.txt"
         print(file_name)
         filepath = convert_tsd_to_modelica_txt(
             tsd=merged_calibration_classes[0].inputs,
@@ -77,32 +80,26 @@ def run_sensitivity_analysis(
     result, classes = sen_analyzer.run(calibration_classes=merged_calibration_classes,
                                        verbose=True,
                                        use_first_sim=True,
-                                       plot_result=False,
+                                       plot_result=True,
                                        save_results=True,
-                                       suffix='mat',
-                                       n_cpu=1)
+                                       n_cpu=2)
     print("Result of the sensitivity analysis")
     print('First and total order results of sobol method')
     print(result[0].to_string())
     print('Second order results of sobol method')
     print(result[1].to_string())
 
-    # plotting Sensitivity results
-    SobolAnalyzer.plot_single(result[0])
-
-    # The plotting of second order results is only useful and working for more than 2 parameter.
-    # So we only can take a look at them in example A
-    if example == 'A':
-        SobolAnalyzer.plot_second_order(result[1])
-        SobolAnalyzer.plot_single_second_order(result[1], 'rad.n')
+    # remove input file
+    if example == "A":
+        os.remove(file_name)
 
 
 if __name__ == "__main__":
     import pathlib
 
     # Parameters for sen-analysis:
-    EXAMPLE = "B"  # Or choose B
-    N_CPU = 1
+    EXAMPLE = "A"  # Or choose B
+    N_CPU = 2
 
     # Sensitivity analysis:
     run_sensitivity_analysis(

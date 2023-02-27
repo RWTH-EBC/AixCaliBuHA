@@ -429,8 +429,7 @@ package AixCaliBuHAExamples
     Modelica.Blocks.Sources.CombiTimeTable InputTDryBul(
       tableOnFile=true,
       tableName="InputTDryBul",
-      fileName=Modelica.Utilities.Files.loadResource(
-          "D:\sbg-hst\Repos\AixCaliBuHA\examples\data\dymola_inputs_A.txt"))
+      fileName=Modelica.Utilities.Files.loadResource("D:\dymola_inputs_A.txt"))
       annotation (Placement(transformation(extent={{-104,0},{-84,20}})));
   equation
     connect(theCon.port_b,vol. heatPort) annotation (Line(
