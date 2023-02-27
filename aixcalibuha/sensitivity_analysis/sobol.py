@@ -337,6 +337,11 @@ class SobolAnalyzer(SenAnalyzer):
             goals = result.index.get_level_values("Goal").unique()
 
         fig, axes = plt.subplots(ncols=len(cal_classes), nrows=len(goals), sharex='all', sharey='all')
+        if len(goals) == 1:
+            axes = [axes]
+        if len(cal_classes) == 1:
+            for idx, ax in enumerate(axes):
+                axes[idx] = [ax]
 
         for col, class_name in enumerate(cal_classes):
             for row, goal_name in enumerate(goals):
