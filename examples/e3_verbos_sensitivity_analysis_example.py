@@ -272,7 +272,7 @@ def run_sensitivity_analysis(
         cal_classes=[c.name],
         figs_axes=([subfigs_comp[2]], [ax2_comp])
     )
-    subfigs_comp[3].suptitle("Morris")
+    subfigs_comp[2].suptitle("Morris")
     plt.show()
 
     # At the end we also can create a reproduction archive which saves all settings and all created files

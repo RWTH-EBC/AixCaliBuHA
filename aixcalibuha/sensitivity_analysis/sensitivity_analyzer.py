@@ -233,7 +233,6 @@ class SenAnalyzer(abc.ABC):
             )
             self.reproduction_files.extend(_filepaths)
             results = _filepaths
-            self.info_samples(cal_class, scale)
         else:
             results = self.sim_api.simulate(
                 parameters=parameters,

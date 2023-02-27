@@ -186,11 +186,9 @@ class SobolAnalyzer(SenAnalyzer):
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
             result = SenAnalyzer._rename_tuner_names(result)
-            print('Second order results with suffixes of tuner-parameter names:')
-            print(result.to_string())
 
         tuner_names = result.columns
-        if len(tuner_names) < 3:
+        if len(tuner_names) < 2:
             return None
         xticks = np.arange(len(tuner_names))
 
