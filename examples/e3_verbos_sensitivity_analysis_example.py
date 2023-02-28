@@ -210,16 +210,16 @@ def run_sensitivity_analysis(
             use_suffix=True
         )
         plt.show()
-        # Now what can we see in these results? First of all the confidence intervals are now much smaller, so that we
-        # can interpret and connect the different analysis variables. S1 stands for the variance in the objective,
-        # which is caused by the variation of one parameter while all other parameter a constant. The sobol analysis
-        # variables are normalized with the total variance caused by all parameter variations together in within
-        # their bounds. This means that when the parameters had now interactions the sum of all S1 values would
-        # be 1. ST shows the resulting variance of a parameter with all his interactions. Let's take a look at the
-        # interaction between n and G which is the highest. There is to see that the S2 value of the interaction
-        # between n and G has a simular value to each difference of S1 and ST from these parameters. All other
-        # parameters have only a very small sensitivity. These are just some basics, to understand what option you
-        # have in AixCaliBuAH. For more information look up some literature.
+    # Now what can we see in these results? First of all the confidence intervals are now much smaller, so that we
+    # can interpret and connect the different analysis variables. S1 stands for the variance in the objective,
+    # which is caused by the variation of one parameter while all other parameter a constant. The sobol analysis
+    # variables are normalized with the total variance caused by all parameter variations together in within
+    # their bounds. This means that when the parameters had now interactions the sum of all S1 values would
+    # be 1. ST shows the resulting variance of a parameter with all his interactions. Let's take a look at the
+    # interaction between n and G which is the highest. There is to see that the S2 value of the interaction
+    # between n and G has a simular value to each difference of S1 and ST from these parameters. All other
+    # parameters have only a very small sensitivity. These are just some basics, to understand what option you
+    # have in AixCaliBuAH. For more information look up some literature.
 
     # We will now take a short look at a comparison of the Sobol, Fast and Morris method in AixCaliBuAH.
     # The SALib provides more methods, which can be implemented here in the future.
@@ -274,6 +274,22 @@ def run_sensitivity_analysis(
     )
     subfigs_comp[2].suptitle("Morris")
     plt.show()
+
+    # # Selection of tuner-parameters based on verbose sensitivity results
+    # We can now also use these verbose sensitivity results for a selection of relevant tuner-parameters.
+    # We already saw that our models have interactions, so it will be necessary to calibrate them together
+    # in one calibration class. The calibration class global can be used for that because it includes all
+    # the other specific classes. But in the sensitivity results of this class it could be that parameters,
+    # which are only in one state sensitiv can be missed. We can use the verbose sensitivity results so,
+    # that a parameter will be selected when it has a sensitivity at least in one class and target value
+    # of the sensitivity results. This is enough that the parameter can be calibrated.
+    calibration_class = SobolAnalyzer.select_by_threshold_verbose(merged_calibration_classes[0],
+                                                                  result=result_sobol,
+                                                                  analysis_variable='S1',
+                                                                  threshold=0.001,
+                                                                  )
+
+    print(calibration_class.tuner_paras)
 
     # At the end we also can create a reproduction archive which saves all settings and all created files
     # automatically with the reproduction function of ebcpy.
