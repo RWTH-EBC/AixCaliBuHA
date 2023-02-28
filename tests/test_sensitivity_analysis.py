@@ -121,6 +121,7 @@ class TestModelicaCalibrator(unittest.TestCase):
                                           use_first_sim=True,
                                           n_cpu=2)
         self._check_sen_run_return(sen_ana, sen_result, classes)
+        os.getlogin = lambda: "test_login"
         sen_ana.save_for_reproduction(
             title="SenAnalyzerTest",
             path=self.result_dir,
