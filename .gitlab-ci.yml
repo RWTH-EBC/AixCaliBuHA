@@ -9,8 +9,9 @@ stages:
 variables:
   COVERAGE_TYPE: "FMU"
   PAGES_BRANCH: master
-  EXLUDE_PYTHON: 39
+  EXLUDE_PYTHON: 37
   GIT_REPO: RWTH-EBC/AixCaliBuHA
+  COVERAGE_PYTHON_VERSION: python39
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
@@ -23,6 +24,8 @@ include:
     file: 'python/build/build.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/unittest.gitlab-ci.yml'
+  - project: 'EBC/EBC_all/gitlab_ci/templates'
+    file: 'python/unit-tests/unittest_clean_env.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/coverage.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
