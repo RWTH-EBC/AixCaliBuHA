@@ -55,7 +55,9 @@ calibration_classes = setup_calibration_classes(
     examples_dir=examples_dir, example=example
 )[0]
 
-result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
+result, classes = sen_analyzer.run(calibration_classes=calibration_classes,
+                                   plot_result=True,
+                                   save_results=False)
 print("Result of the sensitivity analysis")
 print(result)
 ```
@@ -66,8 +68,9 @@ print(result)
 ```python
 print("Selecting relevant tuner-parameters using a fixed threshold:")
 sen_analyzer.select_by_threshold(calibration_classes=classes,
-                                 result=result,
-                                 threshold=0.01)
+                                 result=result[0],
+                                 threshold=0.01,
+                                 analysis_variable='S1')
 for cal_class in classes:
     print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
 ```
