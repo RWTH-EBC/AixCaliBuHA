@@ -208,6 +208,49 @@ class TestModelicaCalibrator(unittest.TestCase):
                 analysis_variable='mu_star',
                 threshold=np.inf)
 
+    def test_select_by_threshold_verbose(self):
+        """
+        Function to test the function select_by_threshold of the SenAnalyzer
+        """
+        sen_result = SobolAnalyzer.load_from_csv(
+            self.data_dir.joinpath("SobolAnalyzer_results_B.csv"))
+        cal_class = SobolAnalyzer.select_by_threshold_verbose(
+            calibration_class=self.calibration_classes[0],
+            result=sen_result,
+            analysis_variable="S1",
+            threshold=0,
+            calc_names_for_selection=["heat up", "cool down"]
+        )
+        self.assertIsInstance(cal_class, CalibrationClass)
+        with self.assertRaises(NameError):
+            cal_class = SobolAnalyzer.select_by_threshold_verbose(
+                calibration_class=self.calibration_classes[0],
+                result=sen_result,
+                analysis_variable="S1",
+                threshold=0,
+                calc_names_for_selection=["On", "Off"]
+            )
+        with self.assertRaises(ValueError):
+            cal_class = SobolAnalyzer.select_by_threshold_verbose(
+                calibration_class=self.calibration_classes[0],
+                result=sen_result,
+                analysis_variable="S1",
+                threshold=np.inf,
+                calc_names_for_selection=["heat up", "cool down"]
+            )
+        with self.assertRaises(NameError):
+            false_cal_class = self.calibration_classes[0]
+            false_cal_class.tuner_paras = TunerParas(names=["false.name", "valveRamp.duration"],
+                                                     initial_values=[0.1, 0.1],
+                                                     bounds=[(0.1, 10), (0.1, 10)])
+            cal_class = SobolAnalyzer.select_by_threshold_verbose(
+                calibration_class=self.calibration_classes[0],
+                result=sen_result,
+                analysis_variable="S1",
+                threshold=np.inf,
+                calc_names_for_selection=["heat up", "cool down"]
+            )
+
     def test_plot_single(self):
         """
         Function to test the plot function of the SenAnalyzer
