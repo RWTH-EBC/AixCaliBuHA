@@ -4,8 +4,8 @@ import abc
 import copy
 import os
 import pathlib
-import warnings
 from typing import List
+from collections import Counter
 import numpy as np
 import pandas as pd
 from ebcpy.utils import setup_logger
@@ -251,7 +251,7 @@ class SenAnalyzer(abc.ABC):
             self.logger.info(f'The mean value of the frequency from {sim_num} does not match output '
                              'interval index will be cleaned and spaced equally')
             tsd.to_datetime_index()
-            tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval*1000)}ms')
+            tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval * 1000)}ms')
             tsd.to_float_index()
             freq = tsd.frequency
         if freq[1] > 0.0:
@@ -551,6 +551,62 @@ class SenAnalyzer(abc.ABC):
             # cal_class.set_tuner_paras(tuner_paras)
             cal_class.tuner_paras = tuner_paras
         return calibration_classes
+
+    @staticmethod
+    def select_by_threshold_verbose(calibration_class: CalibrationClass,
+                                    result: pd.DataFrame,
+                                    analysis_variable: str,
+                                    threshold: float,
+                                    calc_names_for_selection: List[str] = None):
+        """
+        Select tuner-parameters of single calibration class with verbose sensitivity results.
+        This function selects tuner-parameters if their sensitivity is equal or greater
+        than the threshold in just one target value of one calibration class in the
+        sensitivity result. This can be more robust because a small sensitivity in one target
+        value and state of the system can mean that the parameter can also be calibrated in
+        a global calibration class which calibrates multiple states and target values at
+        the same time and has there not directly the same sensitivity as in the isolated
+        view of a calibration class for only one state.
+
+        :param CalibrationClass calibration_class:
+            The calibration class from which the tuner parameters will be selected.
+        :param pd.DataFrame result:
+            Sensitivity results to use for the selection. Can include multiple classes.
+        :param str analysis_variable:
+            The analysis variable to use for the selection.
+        :param float threshold:
+            Minimal required value of given analysis variable.
+        :param List[str] calc_names_for_selection:
+            Specifies which calibration classes in the sensitivity results will be used for
+            the selection. Default are all classes.
+        """
+        if not Counter(calibration_class.tuner_paras.get_names()) == Counter(list(result.columns)):
+            raise NameError("The tuner-parameter of the calibration class do not "
+                            "match the tuner-parameters in the sensitivity result."
+                            "They have to match.")
+
+        result = result.loc[:, :, analysis_variable]
+        calc_names_results = result.index.get_level_values("Class").unique()
+        if calc_names_for_selection:
+            for idx, c in enumerate(calc_names_for_selection):
+                if c not in calc_names_results:
+                    raise NameError(f"The calibration class name {c} does not match any class name "
+                                    f"in the given sensitivity result.")
+            result = result.loc[calc_names_for_selection, :, :]
+
+        selected_tuners = (result >= threshold).any()
+
+        remove_tuners = []
+        for tuner, selected in selected_tuners.items():
+            if not selected:
+                remove_tuners.append(tuner)
+        tuner_paras = copy.deepcopy(calibration_class.tuner_paras)
+        tuner_paras.remove_names(remove_tuners)
+        if not tuner_paras.get_names():
+            raise ValueError("Threshold to small. All tuner-parameters would be removed.")
+        else:
+            calibration_class.tuner_paras = tuner_paras
+        return calibration_class
 
     def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)
