@@ -203,10 +203,10 @@ def run_sensitivity_analysis(
         # ## Loading results
         # These results were produced with a samples number N=1024 and calc_second_order=True
         result_sobol = SobolAnalyzer.load_from_csv(
-            examples_dir.joinpath('data', f'SobolAnalyzer_results_A.csv')
+            examples_dir.joinpath('data', 'SobolAnalyzer_results_A.csv')
         )
         result_sobol_2 = SobolAnalyzer.load_second_order_from_csv(
-            examples_dir.joinpath('data', f'SobolAnalyzer_results_second_order_A.csv')
+            examples_dir.joinpath('data', 'SobolAnalyzer_results_second_order_A.csv')
         )
         # For a better understanding we will only take a
         # look at the global class and Electricity goal
@@ -307,13 +307,13 @@ def run_sensitivity_analysis(
         examples_dir.joinpath('data', f'MorrisAnalyzer_results_{example}.csv')
     )
 
-    c = merged_calibration_classes[0]
+    global_class = classes[0]
     fig_comp = plt.figure(figsize=plt.figaspect(1. / 4.))
     subfigs_comp = fig_comp.subfigures(1, 3, wspace=0)
     ax0_comp = subfigs_comp[0].subplots(3, 1, sharex=True)
     SobolAnalyzer.plot_single(
         result=result_sobol,
-        cal_classes=[c.name],
+        cal_classes=[global_class.name],
         show_plot=False,
         figs_axes=([subfigs_comp[0]], [ax0_comp])
     )
@@ -321,7 +321,7 @@ def run_sensitivity_analysis(
     ax1_comp = subfigs_comp[1].subplots(3, 1, sharex=True)
     FASTAnalyzer.plot_single(
         result=result_fast,
-        cal_classes=[c.name],
+        cal_classes=[global_class.name],
         show_plot=False,
         figs_axes=([subfigs_comp[1]], [ax1_comp])
     )
@@ -330,7 +330,7 @@ def run_sensitivity_analysis(
     SobolAnalyzer.plot_single(
         result=result_morris,
         show_plot=False,
-        cal_classes=[c.name],
+        cal_classes=[global_class.name],
         figs_axes=([subfigs_comp[2]], [ax2_comp])
     )
     subfigs_comp[2].suptitle("Morris")
@@ -351,7 +351,7 @@ def run_sensitivity_analysis(
     # sensitivity at least in one class and target value
     # of the sensitivity results. This is enough that
     # the parameter can be calibrated.
-    calibration_class = SobolAnalyzer.select_by_threshold_verbose(merged_calibration_classes[0],
+    calibration_class = SobolAnalyzer.select_by_threshold_verbose(classes[0],
                                                                   result=result_sobol,
                                                                   analysis_variable='S1',
                                                                   threshold=0.001,

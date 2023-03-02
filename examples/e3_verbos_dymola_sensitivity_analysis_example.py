@@ -1,9 +1,10 @@
 # # Example 3 sensitivity analysis with dymola api
-import os
 
 # Goals of this part of the examples:
 # 1. Learn how to execute a sensitivity analysis with the dymola api
 #
+import os
+from examples import setup_dym_api, setup_calibration_classes
 # Import a valid analyzer, e.g. `SobolAnalyzer`
 from aixcalibuha import SobolAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
@@ -21,6 +22,8 @@ def run_sensitivity_analysis(
 
     :param [pathlib.Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
+    :param [pathlib.Path, str] aixlib_mo:
+        Path to the AixLib package.mo file.
     :param str example:
         Which example to run, "A" or "B"
     :param int n_cpu:
@@ -31,8 +34,10 @@ def run_sensitivity_analysis(
     """
     # ## Setup
     # Using a dymola api instead of the fmu api
-    from examples import setup_dym_api, setup_calibration_classes
-    sim_api = setup_dym_api(examples_dir=examples_dir, aixlib_mo=aixlib_mo, example=example, n_cpu=n_cpu)
+    sim_api = setup_dym_api(examples_dir=examples_dir,
+                            aixlib_mo=aixlib_mo,
+                            example=example,
+                            n_cpu=n_cpu)
     calibration_classes = setup_calibration_classes(
         examples_dir=examples_dir, example=example, multiple_classes=False
     )[0]
@@ -59,13 +64,13 @@ def run_sensitivity_analysis(
         suffix_files='mat'
     )
 
-    # The only difference to the fmu example is the handling of inputs. There we have in the model now
-    # a table for the inputs and generate an input file here. This is only necessary for example A because
-    # example B has no inputs.
-    # To generate the input in the correct format, use the convert_tsd_to_modelica_txt function:
+    # The only difference to the fmu example is the handling of inputs.
+    # There we have in the model now a table for the inputs and generate
+    # an input file here. This is only necessary for example A because
+    # example B has no inputs. To generate the input in the correct format,
+    # use the convert_tsd_to_modelica_txt function:
     if example == "A":
         table_name = "InputTDryBul"
-        # file_name = examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}')
         file_name = r"D:\dymola_inputs_A.txt"
         print(file_name)
         filepath = convert_tsd_to_modelica_txt(
@@ -73,8 +78,9 @@ def run_sensitivity_analysis(
             table_name=table_name,
             save_path_file=file_name
         )
-        for c in merged_calibration_classes:
-            c._inputs = None
+        # Now we can remove the input from the old fmu calibration classes
+        for cal_class in merged_calibration_classes:
+            cal_class._inputs = None
         print("Successfully created Dymola input file at", filepath)
     # run sensitivity analysis
     result, classes = sen_analyzer.run(calibration_classes=merged_calibration_classes,
@@ -92,6 +98,8 @@ def run_sensitivity_analysis(
     # remove input file
     if example == "A":
         os.remove(file_name)
+
+    return classes
 
 
 if __name__ == "__main__":
