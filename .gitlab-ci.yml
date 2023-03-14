@@ -11,23 +11,27 @@ variables:
   PAGES_BRANCH: master
   EXLUDE_PYTHON: 37
   GIT_REPO: RWTH-EBC/AixCaliBuHA
-  COVERAGE_PYTHON_VERSION: python39
+  PYTHON_VERSION: python39
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/code-quality/pylint.gitlab-ci.yml'
+    ref: 34-option-to-choose-python-version-for-jobs
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/doc/sphinxdoc.gitlab-ci.yml'
+    ref: 34-option-to-choose-python-version-for-jobs
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'pages/pages.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/build/build.gitlab-ci.yml'
+    ref: 34-option-to-choose-python-version-for-jobs
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/unittest.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/unittest_clean_env.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/unit-tests/coverage.gitlab-ci.yml'
+    ref: 34-option-to-choose-python-version-for-jobs
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/examples/examples.gitlab-ci.yml'
     ref: '18-add-example-file-converter'
