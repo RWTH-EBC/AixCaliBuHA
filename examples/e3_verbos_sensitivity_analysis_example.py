@@ -47,9 +47,10 @@ def run_sensitivity_analysis(
     sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
     # For performing a sensitivity analysis we must define calibration classes which
     # define the objective on which the sensitivity will be calculated.
-    # Here we will study different calibration classes for different states of models.
-    # First we creat one global calibration class of the complete time and name it 'global'
-    # We will use the calibration classes from the e2 example and customize them for the verbose
+    # Here we will study different calibration classes for different states of the models.
+    # First we creat one global calibration class of the complete time and name it 'global'.
+    # This class is important later. For the states of the models we will use the
+    # calibration classes from the e2 example and customize them for the verbose
     # sensitivity analysis, but we could also create costume classes direct here.
     calibration_classes = setup_calibration_classes(
         examples_dir=examples_dir, example=example, multiple_classes=False
@@ -151,12 +152,13 @@ def run_sensitivity_analysis(
     # The first result has as columns the tuner-parameters
     # and a multi level index with three levels.
     # The first level defines the calibration class.
-    # The second level defines the Goals (target values) the index 'all'
+    # The second level defines the Goals (target values). The index 'all'
     # is for the result of the combined target values in the goals.
     # The last level defines the result of the
     # sensitivity measure for each class and goal.
     # These analysis variables are specific for each method.
     # For their exact meaning I refer to the documentation of the SALib or the literature.
+    # In this example you get a short overview in the comparison later.
     print('First and total order results of sobol method')
     print(result[0].to_string())
     # The specific second result of the sobol method is for second order sensitive measures.
@@ -165,12 +167,12 @@ def run_sensitivity_analysis(
     # In this level the tuner-parameters are listed again.
     print('Second order results of sobol method')
     print(result[1].to_string())
-    # For a better understanding of the results we will now plot them
+    # For a better understanding of the results we will now plot them.
 
     # ## Plotting Sensitivity results
-    # We start with result which were calculated with the small sample size.
-    # First we plot the first and total order results. Also, the results
-    # which are specific for each single parameter
+    # We start with the result which were calculated with the small sample size.
+    # First we plot the first and total order results. These results
+    # are specific for each single parameter
     # Here for each calibration class a figure is created
     # which shows for each goal the first order sensitivity S1
     # and the total order sensitivity combined. For the small
@@ -217,7 +219,7 @@ def run_sensitivity_analysis(
         # visibility. This show how you can easily customize
         # these plots, and you can also chang everything
         # on the axes of the plots.
-        fig = plt.figure(figsize=plt.figaspect(1. / 4.))  # creating on figure
+        fig = plt.figure(figsize=plt.figaspect(1. / 4.))  # creating one figure
         subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
         # plotting S1 and ST
         ax0 = subfigs[0].subplots()
@@ -256,9 +258,9 @@ def run_sensitivity_analysis(
     # can interpret and connect the different analysis variables.
     # S1 stands for the variance in the objective,
     # which is caused by the variation of one parameter
-    # while all other parameter a constant. The sobol analysis
+    # while all other parameters are constant. The sobol analysis
     # variables are normalized with the total variance caused
-    # by all parameter variations together in within
+    # by all parameter variations together within
     # their bounds. This means that when the parameters had
     # now interactions the sum of all S1 values would
     # be 1. ST shows the resulting variance of a parameter
@@ -281,7 +283,7 @@ def run_sensitivity_analysis(
     # where k is the number of parameters and N is the sample
     # number. For variance-based methods N should be greater
     # the 1000. The sobol method can also compute only S1 and
-    # ST with calc_second_order=False and the needs (1+k)N simulations.
+    # ST with calc_second_order=False and (1+k)N simulations.
     # The FAST method is another variance-based
     # method and only computes S1 and ST with k*N simulations.
     # Sobol and FAST should show simular results which is the
@@ -351,6 +353,8 @@ def run_sensitivity_analysis(
     # sensitivity at least in one class and target value
     # of the sensitivity results. This is enough that
     # the parameter can be calibrated.
+    # Here we will use S1 because it is normalized instead of mu_star
+    # and we can set on single threshold for all classes and goals.
     calibration_class = SobolAnalyzer.select_by_threshold_verbose(classes[0],
                                                                   result=result_sobol,
                                                                   analysis_variable='S1',
