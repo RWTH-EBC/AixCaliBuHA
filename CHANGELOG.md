@@ -51,3 +51,8 @@
 
 - **v0.3.1**
    - Issue 41: Fix logging and add kwarg
+  
+-  **v1.0.0**
+    - Issue 43: Improvement of sensitivity analysis
+    - Enables verbose sensitivity analysis and the reuse of simulations
+    - Ends support vor python 3.7
