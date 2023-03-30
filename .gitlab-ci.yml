@@ -11,7 +11,8 @@ variables:
   PAGES_BRANCH: master
   EXLUDE_PYTHON: 37
   GIT_REPO: RWTH-EBC/AixCaliBuHA
-  COVERAGE_PYTHON_VERSION: python39
+  PYTHON_VERSION: "registry.git.rwth-aachen.de/ebc/ebc_all/gitlab_ci/templates:python_3.9"
+  TEST_ENGINE: "unittest"
 
 include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
@@ -23,13 +24,10 @@ include:
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/build/build.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: 'python/unit-tests/unittest.gitlab-ci.yml'
+    file: 'python/tests/tests.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: 'python/unit-tests/unittest_clean_env.gitlab-ci.yml'
-  - project: 'EBC/EBC_all/gitlab_ci/templates'
-    file: 'python/unit-tests/coverage.gitlab-ci.yml'
+    file: 'python/tests/coverage.gitlab-ci.yml'
   - project: 'EBC/EBC_all/gitlab_ci/templates'
     file: 'python/examples/examples.gitlab-ci.yml'
-    ref: '18-add-example-file-converter'
   - template: Dependency-Scanning.gitlab-ci.yml
   - template: SAST.gitlab-ci.yml
