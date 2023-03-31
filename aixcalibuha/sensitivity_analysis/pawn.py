@@ -14,6 +14,10 @@ from aixcalibuha import CalibrationClass
 
 class PAWNAnalyzer(SenAnalyzer):
     """
+    PAWN method from SALib https://salib.readthedocs.io/en/latest/api.html#pawn-sensitivity-analysis
+    Density-based method which computes the PAWN index at 'min', 'max', 'mean',
+    'median' and coefficient of variation 'cv'.
+    
     Additional arguments:
 
     :keyword bool calc_second_order:

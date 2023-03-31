@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 
 class SobolAnalyzer(SenAnalyzer):
     """
+    Sobol method from SALib https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis
+    A variance-based method which can compute the sensitivity measures
+    'S1', 'ST' and 'S2' with their confidence intervals.
+
     Additional arguments:
 
     :keyword bool calc_second_order:

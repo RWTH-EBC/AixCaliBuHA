@@ -12,6 +12,10 @@ import warnings
 
 class FASTAnalyzer(SenAnalyzer):
     """
+    Sobol method from SALib https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test
+    A variance-based method which can compute the sensitivity measures
+    'S1' and 'ST'.
+
     Additional arguments:
 
     :keyword int M:
