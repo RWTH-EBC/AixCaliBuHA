@@ -20,26 +20,6 @@ from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
 ```
- Please define the missing TODOs in the section below according to the docstrings.
-```python
-"""
-Arguments of this example:
-
-:param [pathlib.Path, str] examples_dir:
-    Path to the examples folder of AixCaliBuHA
-:param str statistical_measure:
-    Measure to calculate the scalar of the objective,
-    One of the supported methods in
-    ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
-    e.g. RMSE, MAE, NRMSE
-:param bool multiple_classes:
-    If False, all CalibrationClasses will have the
-    same name
-"""
-examples_dir = "TODO: Add a valid input according to the docstring above"
-statistical_measure = "NRMSE"
-multiple_classes = True
-```
  ## Tuner Parameters
  Tuner parameters are the optimization variables we will be
  changing to match the simulated onto the measured output.

@@ -7,32 +7,6 @@
 ```python
 from aixcalibuha import SobolAnalyzer
 ```
- Please define the missing TODOs in the section below according to the docstrings.
-```python
-"""
-Example process of a sensitivity analysis.
-First, the sensitivity problem is constructed, in this example
-the `morris` method is chosen.
-Afterwards, the sen_analyzer class is instantiated to run the
-sensitivity analysis in the next step.
-The result of this analysis is then printed to the user.
-The automatic_select function is presented as-well, using a threshold of 1
-and the default `mu_star` criterion.
-
-:param [pathlib.Path, str] examples_dir:
-    Path to the examples folder of AixCaliBuHA
-:param str example:
-    Which example to run, "A" or "B"
-:param int n_cpu:
-    Number of cores to use
-
-:return: A list of calibration classes
-:rtype: list
-"""
-examples_dir = "TODO: Add a valid input according to the docstring above"
-example: str  =  "B"
-n_cpu: int  =  1
-```
  ## Setup
  Setup the class according to the documentation.
  You just have to pass a valid simulation api and

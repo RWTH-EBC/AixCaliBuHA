@@ -13,27 +13,6 @@ import matplotlib.pyplot as plt
 ```python
 from ebcpy import DymolaAPI, TimeSeriesData
 ```
- Please define the missing TODOs in the section below according to the docstrings.
-```python
-"""
-Arguments of this example:
-
-:param [pathlib.Path, str] examples_dir:
-    Path to the examples folder of AixCaliBuHA
-:param str aixlib_mo:
-    Path to the package.mo of the AixLib.
-    This example was tested for AixLib version 1.0.0.
-:param str cd:
-    Path in which to store the output.
-    Default is the examples\results folder
-:param bool with_plot:
-    Show the plot at the end of the script. Default is True.
-"""
-examples_dir = "TODO: Add a valid input according to the docstring above"
-aixlib_mo = "TODO: Add a valid input according to the docstring above"
-cd = None
-with_plot = True
-```
  General settings
 ```python
 if cd is None:
