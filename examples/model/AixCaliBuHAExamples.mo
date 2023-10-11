@@ -9,7 +9,7 @@ package AixCaliBuHAExamples
       annotation (Placement(transformation(extent={{-18,-18},{18,18}})));
     Modelica.Blocks.Sources.Sine TDryBulSource(
       amplitude=10,
-      freqHz=0.01,
+      f=0.01,
       offset=273.15) "Time table for internal heat gain"
       annotation (Placement(transformation(extent={{-64,-10},{-44,10}})));
     Modelica.Blocks.Interfaces.RealOutput Pel
@@ -278,5 +278,8 @@ package AixCaliBuHAExamples
                   fillPattern = FillPattern.Solid,
                   points={{-38,64},{68,-2},{-38,-64},{-38,64}})}));
   end HeatPumpSystemWithInputs;
-  annotation (uses(AixLib(version="1.0.0"), Modelica(version="3.2.3")));
+  annotation (uses(AixLib(version="1.0.0"), Modelica(version="4.0.0")),
+    version="1",
+    conversion(from(version="", script=
+            "modelica://AixCaliBuHAExamples/ConvertFromAixCaliBuHAExamples_.mos")));
 end AixCaliBuHAExamples;
