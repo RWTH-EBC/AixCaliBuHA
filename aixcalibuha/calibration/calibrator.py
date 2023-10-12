@@ -148,10 +148,10 @@ class Calibrator(Optimizer):
             # As tuner-parameters are scaled between 0 and 1, the scaled bounds are always 0 and 1
             self.bounds = [(0, 1) for i in range(len(self.x0))]
         # Add the values to the simulation setup.
-        self.sim_api.set_sim_setup(
-            {"start_time": self.calibration_class.start_time - self.timedelta,
-             "stop_time": self.calibration_class.stop_time}
-        )
+        # self.sim_api.set_sim_setup(
+        #     {"start_time": self.calibration_class.start_time - self.timedelta,
+        #      "stop_time": self.calibration_class.stop_time}
+        # )
 
         #%% Setup the logger
         # De-register the logger setup in the optimization class:
@@ -174,10 +174,10 @@ class Calibrator(Optimizer):
         self.cd_of_class = cd  # Single class does not need an extra folder
 
         # Set the output interval according the the given Goals
-        mean_freq = self.goals.get_meas_frequency()
-        self.logger.log("Setting output_interval of simulation according "
-                        f"to measurement target data frequency: {mean_freq}")
-        self.sim_api.sim_setup.output_interval = mean_freq
+        # mean_freq = self.goals.get_meas_frequency()
+        # self.logger.log("Setting output_interval of simulation according "
+        #                 f"to measurement target data frequency: {mean_freq}")
+        # self.sim_api.sim_setup.output_interval = mean_freq
 
     def obj(self, xk, *args):
         """
@@ -233,6 +233,8 @@ class Calibrator(Optimizer):
                     inputs=self.calibration_class.inputs,
                     **self.calibration_class.input_kwargs
                 )
+                if sim_target_data is None:
+                    raise TypeError('Simulation returned None')
         except Exception as err:
             if self.fail_on_error:
                 self.logger.error("Simulation failed. Raising the error.")
@@ -302,6 +304,10 @@ class Calibrator(Optimizer):
             self._counter += 1
             self._current_iterate = result
             if result is None:
+                self.logger.error(
+                    f"Simulation failed. Returning '{self.ret_val_on_error}' "
+                    f"for the optimization."
+                )
                 total_res_list[idx] = self.ret_val_on_error
                 continue
             total_res = self._kpi_and_logging_calculation(
@@ -441,10 +447,10 @@ class Calibrator(Optimizer):
     @calibration_class.setter
     def calibration_class(self, calibration_class: CalibrationClass):
         """Set the current calibration class"""
-        self.sim_api.set_sim_setup(
-            {"start_time": self._apply_start_time_method(start_time=calibration_class.start_time),
-             "stop_time": calibration_class.stop_time}
-        )
+        # self.sim_api.set_sim_setup(
+        #     {"start_time": self._apply_start_time_method(start_time=calibration_class.start_time),
+        #      "stop_time": calibration_class.stop_time}
+        # )
         self._cal_class = calibration_class
 
     @property

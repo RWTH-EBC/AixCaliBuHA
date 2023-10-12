@@ -271,7 +271,7 @@ class Goals:
         # Resize simulation data to match to meas data
         for goal_name in self.variable_names.keys():
             _tsd_sim = sim_target_data.loc[sta:sto, self._sim_var_matcher[goal_name]]
-            if len(_tsd_sim.columns) > 1:
+            if not isinstance(_tsd_sim, pd.core.series.Series) and len(_tsd_sim.columns) > 1:
                 raise ValueError("Given sim_target_data contains multiple tags for variable "
                                  f"{self._sim_var_matcher[goal_name]}. "
                                  "Can't select one automatically.")
