@@ -68,13 +68,7 @@ class SenAnalyzer(abc.ABC):
         options are np.NaN, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword boolean save_files:
-        If true, all simulation files for each iteration will be saved!
-    :keyword bool load_files:
-        Default False. If True, no new simulations are done and old simulations are loaded.
-        The simulations and corresponding samples will be loaded from self.savepath_sim like they
-        were saved from self.save_files. Currently, the name of the sim folder must be
-        "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
-        The usage of the same simulations for different calibration classes is not supported yet.
+        Default False. If true, all simulation files for each iteration will be saved!
     :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
         Options are 'csv', 'hdf', 'parquet'.
@@ -102,7 +96,6 @@ class SenAnalyzer(abc.ABC):
         # Update kwargs
         self.fail_on_error = kwargs.pop("fail_on_error", True)
         self.save_files = kwargs.pop("save_files", False)
-        self.load_files = kwargs.pop('load_files', False)
         self.suffix_files = kwargs.pop('suffix_files', 'csv')
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
@@ -182,7 +175,7 @@ class SenAnalyzer(abc.ABC):
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
 
         :return:
-            Returns tow lists. Fist a list with the simulation results for each sample.
+            Returns two lists. First a list with the simulation results for each sample.
             If save_files the list contains the filepaths to the results
             Second a list of the samples.
         :rtype: list
@@ -365,6 +358,12 @@ class SenAnalyzer(abc.ABC):
             after the evaluation of the statistical measure, so that only minimal memory is used.
             Use this option for large analyses.
             Only implemented for save_files=True or load_files=True.
+        :keyword bool load_sim_files:
+            Default False. If True, no new simulations are done and old simulations are loaded.
+            The simulations and corresponding samples will be loaded from self.savepath_sim like they
+            were saved from self.save_files. Currently, the name of the sim folder must be
+            "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
+            The usage of the same simulations for different calibration classes is not supported yet.
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples, statistical measures and analysis variables).
@@ -385,6 +384,7 @@ class SenAnalyzer(abc.ABC):
         n_cpu = kwargs.pop('n_cpu', 1)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
+        load_sim_files = kwargs.pop('load_sim_files', False)
         # Check correct input
         calibration_classes = utils.validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
@@ -399,7 +399,7 @@ class SenAnalyzer(abc.ABC):
 
         # Check if the usage of the simulations from the first calibration class for all is possible
         if use_first_sim:
-            if not self.save_files and not self.load_files:
+            if not self.save_files and not load_sim_files:
                 raise AttributeError(f'To use the simulations of the first calibration class '
                                      f'for all classes the simulation files must be saved. '
                                      f'Either set save_files=True or load already exiting files '
@@ -426,7 +426,7 @@ class SenAnalyzer(abc.ABC):
 
             # Generate list with metrics of every parameter variation
             results_goals = {}
-            if self.load_files:
+            if load_sim_files:
                 self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
                 if use_first_sim:
                     class_name = calibration_classes[0].name
@@ -456,7 +456,7 @@ class SenAnalyzer(abc.ABC):
                         results=results
                     )
                 if use_first_sim:
-                    self.load_files = True
+                    load_sim_files = True
 
             # combine output_array and output_verbose
             # set key for output_array depending on one or multiple goals

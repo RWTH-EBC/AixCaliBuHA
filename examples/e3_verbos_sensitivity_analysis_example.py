@@ -127,7 +127,7 @@ def run_sensitivity_analysis(
                                        use_first_sim=True,
                                        plot_result=False,
                                        save_results=True,
-                                       n_cpu=2)
+                                       n_cpu=n_cpu)
     # After running the sensitivity analysis you can see
     # that the working directory was created and the result
     # files were saved here. First the folder "files" was
