@@ -12,7 +12,7 @@ from copy import copy
 import numpy as np
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
-from aixcalibuha.utils import visualizer, MaxIterationsReached
+from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -112,6 +112,7 @@ class Calibrator(Optimizer):
         self.perform_square_deviation = kwargs.pop("square_deviation", False)
         self.result_path = kwargs.pop('result_path', None)
         self.max_itercount = kwargs.pop('max_itercount', np.inf)
+        self.max_time = kwargs.pop('max_time', np.inf)
         self.at_calibration = True  # Boolean to indicate if validating or calibrating
         # Extract kwargs for the visualizer
         visualizer_kwargs = {
@@ -178,6 +179,8 @@ class Calibrator(Optimizer):
         # self.logger.log("Setting output_interval of simulation according "
         #                 f"to measurement target data frequency: {mean_freq}")
         # self.sim_api.sim_setup.output_interval = mean_freq
+
+        self.start_time = time.perf_counter()
 
     def obj(self, xk, *args):
         """
@@ -318,6 +321,18 @@ class Calibrator(Optimizer):
             # Add single objective to objective list of total Population
             total_res_list[idx] = total_res
 
+        if self._counter >= self.max_itercount:
+            raise MaxIterationsReached(
+                "Terminating calibration as the maximum number "
+                f"of iterations {self.max_itercount} has been reached."
+            )
+
+        if time.perf_counter() - self.start_time > self.max_time:
+            raise MaxTimeReached(
+                f"Terminating calibration as the maximum time of {self.max_time}s has been "
+                f"reached"
+            )
+
         return total_res_list
 
     def _kpi_and_logging_calculation(self, *, xk_descaled, counter, results):
@@ -370,10 +385,24 @@ class Calibrator(Optimizer):
                 "Penaltyfactor": penalty
             }
 
+        # If multiprocessing is enabled, a result list will be returned by the simulation api
+        # and the evaluation is done on every element in the list.
+        # In this case the check for termination due to number of iterations or done will be
+        # done after the evaluation of the whole list, since the evaluation takes no time compared
+        # to the simulation
+        if self.sim_api.n_cpu > 1:
+            return total_res
+
         if counter >= self.max_itercount:
             raise MaxIterationsReached(
                 "Terminating calibration as the maximum number "
                 f"of iterations {self.max_itercount} has been reached."
+            )
+
+        if time.perf_counter() - self.start_time > self.max_time:
+            raise MaxTimeReached(
+                f"Terminating calibration as the maximum time of {self.max_time}s has been "
+                f"reached"
             )
 
         return total_res
@@ -411,7 +440,7 @@ class Calibrator(Optimizer):
                 method=method,
                 n_cpu=self.sim_api.n_cpu,
                 **kwargs)
-        except MaxIterationsReached as err:
+        except (MaxIterationsReached, MaxTimeReached) as err:
             self.logger.log(msg=str(err), level=logging.WARNING)
         t_cal_stop = time.time()
         t_cal = t_cal_stop - t_cal_start
@@ -546,7 +575,7 @@ class Calibrator(Optimizer):
         See ebcpy.optimization.Optimizer._handle_error for more info.
         """
         # This error is our own, we handle it in the calibrate() function
-        if isinstance(error, MaxIterationsReached):
+        if isinstance(error, (MaxIterationsReached, MaxTimeReached)):
             raise error
         self.logger.save_calibration_result(best_iterate=self._current_best_iterate,
                                             model_name=self.sim_api.model_name,

@@ -71,6 +71,16 @@ class Goals:
                  weightings: list = None):
         """Initialize class-objects and check correct input."""
 
+        def nmbe(y_true, y_pred):
+            nom = np.sum(y_true - y_pred)
+            denom = np.sum(y_true)
+
+            nmbe = nom/denom * 100
+            return np.abs(nmbe)
+
+        if statistical_measure == 'NMBE':
+            statistical_measure = nmbe
+
         # Open the meas target data:
         if not isinstance(meas_target_data, (TimeSeriesData, pd.DataFrame)):
             raise TypeError(f"Given meas_target_data is of type {type(meas_target_data).__name__} "
@@ -216,6 +226,7 @@ class Goals:
 
             _verbose_calculation[self._weightings[i]] = _diff
             total_difference += self._weightings[i] * _diff
+
 
         if verbose:
             return total_difference, _verbose_calculation

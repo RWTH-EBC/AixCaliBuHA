@@ -311,6 +311,7 @@ class CalibrationLogger:
             info_string += "        {}".format("-")
         _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
                                            for weight, val in unweighted_objective.items()])
+
         info_string += f"          {_verbose_info}"
 
         return info_string
