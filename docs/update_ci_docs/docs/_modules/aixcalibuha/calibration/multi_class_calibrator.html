@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.calibration.multi_class_calibrator &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.calibration.multi_class_calibrator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.calibration.multi_class_calibrator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing a class for</span>
+<span class="sd">calibrating multiple calibration classes at once.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha.calibration</span> <span class="kn">import</span> <span class="n">Calibrator</span>
+
+
+<div class="viewcode-block" id="MultipleClassCalibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator">[docs]</a><span class="k">class</span> <span class="nc">MultipleClassCalibrator</span><span class="p">(</span><span class="n">Calibrator</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for calibration of multiple calibration classes.</span>
+<span class="sd">    When passing multiple classes of the same name, all names</span>
+<span class="sd">    are merged into one class with so called relevant time intervals.</span>
+<span class="sd">    These time intervals are used for the evaluation of the objective</span>
+<span class="sd">    function. Please have a look at the file in docs\img\typeOfContinouusCalibration.pdf</span>
+<span class="sd">    for a better understanding on how this class works.</span>
+
+<span class="sd">    :param str start_time_method:</span>
+<span class="sd">        Default is &#39;fixstart&#39;. Method you want to use to</span>
+<span class="sd">        specify the start time of your simulation. If &#39;fixstart&#39; is selected,</span>
+<span class="sd">        the keyword argument fixstart is used for all classes (Default is 0).</span>
+<span class="sd">        If &#39;timedelta&#39; is used, the keyword argument timedelta specifies the</span>
+<span class="sd">        time being subtracted from each start time of each calibration class.</span>
+<span class="sd">        Please have a look at the file in docs\img\typeOfContinouusCalibration.pdf</span>
+<span class="sd">        for a better visualization.</span>
+<span class="sd">    :param str calibration_strategy:</span>
+<span class="sd">        Default is &#39;parallel&#39;. Strategy you want to use for multi-class calibration.</span>
+<span class="sd">        If &#39;parallel&#39; is used, parameters will be calibrated on the respective time intervals</span>
+<span class="sd">        independently. If &#39;sequential&#39; is used, the order of the calibration classes matters:</span>
+<span class="sd">        The resulting parameter values of one class will be used as starting values for calibration</span>
+<span class="sd">        on the next class.</span>
+<span class="sd">    :keyword float fix_start_time:</span>
+<span class="sd">        Value for the fix start time if start_time_method=&quot;fixstart&quot;. Default is zero.</span>
+<span class="sd">    :keyword float timedelta:</span>
+<span class="sd">        Value for timedelta if start_time_method=&quot;timedelta&quot;. Default is zero.</span>
+<span class="sd">    :keyword str merge_multiple_classes:</span>
+<span class="sd">        Default True. If False, the given list of calibration-classes</span>
+<span class="sd">        is handeled as-is. This means if you pass two CalibrationClass objects</span>
+<span class="sd">        with the same name (e.g. &quot;device on&quot;), the calibration process will run</span>
+<span class="sd">        for both these classes stand-alone.</span>
+<span class="sd">        This will automatically yield an intersection of tuner-parameters, however may</span>
+<span class="sd">        have advantages in some cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Default value for the reference time is zero</span>
+    <span class="n">fix_start_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">merge_multiple_classes</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">cd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">sim_api</span><span class="p">,</span>
+                 <span class="n">calibration_classes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CalibrationClass</span><span class="p">],</span>
+                 <span class="n">start_time_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;fixstart&#39;</span><span class="p">,</span>
+                 <span class="n">calibration_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Check if input is correct</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;calibration_classes is of type &quot;</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> but should be list&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calibration_classes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cal_class</span><span class="p">,</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;calibration_classes is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cal_class</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;but should be CalibrationClass&quot;</span><span class="p">)</span>
+        <span class="c1"># Pop kwargs of this class (pass parameters and remove from kwarg dict):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge_multiple_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;merge_multiple_classes&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Apply (if given) the fix_start_time. Check for correct input as-well.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fix_start_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fix_start_time&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Choose the time-method</span>
+        <span class="k">if</span> <span class="n">start_time_method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fixstart&quot;</span><span class="p">,</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given start_time_method </span><span class="si">{</span><span class="n">start_time_method</span><span class="si">}</span><span class="s2"> is not supported. &quot;</span>
+                             <span class="s2">&quot;Please choose between &#39;fixstart&#39; or &#39;timedelta&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time_method</span> <span class="o">=</span> <span class="n">start_time_method</span>
+
+        <span class="c1"># Choose the calibration method</span>
+        <span class="k">if</span> <span class="n">calibration_strategy</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="s1">&#39;sequential&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given calibration_strategy </span><span class="si">{</span><span class="n">calibration_strategy</span><span class="si">}</span><span class="s2"> is not supported. &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;Please choose between &#39;parallel&#39; or &#39;sequential&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_strategy</span> <span class="o">=</span> <span class="n">calibration_strategy</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Instantiate parent-class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Merge the multiple calibration_classes</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_multiple_classes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">merge_calibration_classes</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MultipleClassCalibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the calibration process.</span>
+
+<span class="sd">        :return dict self.res_tuner:</span>
+<span class="sd">            Dictionary of the optimized tuner parameter names and values.</span>
+<span class="sd">        :return dict self._current_best_iterate:</span>
+<span class="sd">            Dictionary of the current best results of tuner parameter,</span>
+<span class="sd">            iteration step, objective value, information</span>
+<span class="sd">            about the goals object and the penaltyfactor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># First check possible intersection of tuner-parameteres</span>
+        <span class="c1"># and warn the user about it</span>
+        <span class="n">all_tuners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span><span class="p">:</span>
+            <span class="n">all_tuners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span>
+        <span class="n">intersection</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_tuners</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">all_tuners</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">intersection</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;The following tuner-parameters intersect over multiple&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; classes:</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">intersection</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Iterate over the different existing classes</span>
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span><span class="p">:</span>
+            <span class="c1">#%% Working-Directory:</span>
+            <span class="c1"># Alter the working directory for saving the simulations-results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_&quot;</span>
+                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2">_&quot;</span>
+                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_cd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">)</span>
+
+            <span class="c1">#%% Calibration-Setup</span>
+            <span class="c1"># Reset counter for new calibration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Retrieve already calibrated parameters (i.e. calibrated in the previous classes)</span>
+            <span class="n">already_calibrated_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">cal_run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">par_name</span> <span class="ow">in</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                    <span class="n">already_calibrated_parameters</span><span class="p">[</span><span class="n">par_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">par_name</span><span class="p">]</span>
+            <span class="c1"># Set fixed names:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">already_calibrated_parameters</span><span class="p">)</span>
+
+            <span class="c1"># Reset best iterate for new class</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Objective&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span> <span class="o">=</span> <span class="n">cal_class</span>
+
+            <span class="c1"># Set initial values</span>
+            <span class="n">initial_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_initial_values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">par_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_strategy</span> <span class="o">==</span> <span class="s2">&quot;sequential&quot;</span><span class="p">:</span>
+                    <span class="c1"># Use already calibrated values as initial value for new calibration</span>
+                    <span class="c1"># Delete it from fixed values and retreive the value</span>
+                    <span class="n">initial_values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">par_name</span><span class="p">,</span>
+                                                                    <span class="n">initial_values</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">par_name</span><span class="p">)</span>  <span class="c1"># Just delete, don&#39;t use the value</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>  <span class="c1"># Faster than checking if is in dict.</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
+            <span class="c1"># Either bounds are present or not.</span>
+            <span class="c1"># If present, the obj will scale the values to 0 and 1. If not</span>
+            <span class="c1"># we have an unconstrained optimization.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">))]</span>
+
+            <span class="c1">#%% Execution</span>
+            <span class="c1"># Run the single ModelicaCalibration</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">calibrate</span><span class="p">(</span><span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1">#%% Post-processing</span>
+            <span class="c1"># Append result to list for future perturbation based on older results.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;res&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
+                                      <span class="s2">&quot;cal_class&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="p">})</span>
+
+        <span class="n">res_tuner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_intersection_of_tuner_parameters</span><span class="p">()</span>
+
+        <span class="c1"># Save calibrated parameter values in JSON</span>
+        <span class="n">parameter_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cal_run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">p_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">parameter_values</span><span class="o">=</span><span class="n">parameter_values</span><span class="p">,</span>
+                          <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;MultiClassCalibrationResult&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">parameter_values</span></div>
+
+    <span class="k">def</span> <span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to be calculate the start_time based on the used</span>
+<span class="sd">        start-time-method (timedelta or fix-start).</span>
+
+<span class="sd">        :param float start_time:</span>
+<span class="sd">            Start time which was specified by the user in the TOML file.</span>
+<span class="sd">        :return float start_time - self.timedelta:</span>
+<span class="sd">            Calculated &quot;timedelta&quot;, if specified in the TOML file.</span>
+<span class="sd">        :return float self.fix_start_time:</span>
+<span class="sd">            Fix start time which was specified by the user in the TOML file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time_method</span> <span class="o">==</span> <span class="s2">&quot;timedelta&quot;</span><span class="p">:</span>
+            <span class="c1"># Check if timedelta does not fall below the</span>
+            <span class="c1"># start_time (start_time should not be lower then zero)</span>
+            <span class="k">if</span> <span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># pylint: disable=import-outside-toplevel</span>
+                <span class="kn">import</span> <span class="nn">warnings</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Simulation start time current calibration class </span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39; falls below 0, because of the chosen timedelta. &#39;</span>
+                    <span class="s1">&#39;The start time will be set to 0 seconds.&#39;</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="c1"># Using timedelta, _ref_time is subtracted of the given start-time</span>
+            <span class="k">return</span> <span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># With fixed start, the _ref_time parameter is always returned</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_start_time</span>
+
+<div class="viewcode-block" id="MultipleClassCalibrator.check_intersection_of_tuner_parameters"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">check_intersection_of_tuner_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks intersections between tuner parameters.</span>
+
+<span class="sd">        :return dict res_tuner:</span>
+<span class="sd">            Dictionary of the optimized tuner parameter names and values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># merge all tuners (writes all values from all classes in one dictionary)</span>
+        <span class="n">merged_tuner_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tuner_name</span><span class="p">,</span> <span class="n">best_value</span> <span class="ow">in</span> <span class="n">cal_class</span><span class="p">[</span><span class="s2">&quot;res&quot;</span><span class="p">][</span><span class="s2">&quot;Parameters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">tuner_name</span> <span class="ow">in</span> <span class="n">merged_tuner_parameters</span> <span class="ow">and</span>
+                        <span class="n">best_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">merged_tuner_parameters</span><span class="p">[</span><span class="n">tuner_name</span><span class="p">]):</span>
+                    <span class="n">merged_tuner_parameters</span><span class="p">[</span><span class="n">tuner_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">merged_tuner_parameters</span><span class="p">[</span><span class="n">tuner_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">best_value</span><span class="p">]</span>
+
+        <span class="c1"># Get tuner parameter</span>
+        <span class="n">res_tuner</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tuner_para</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">merged_tuner_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">res_tuner</span><span class="p">[</span><span class="n">tuner_para</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># pop single values, as of no interest</span>
+        <span class="n">intersected_tuners</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tuner_para</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">merged_tuner_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">intersected_tuners</span><span class="p">[</span><span class="n">tuner_para</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+        <span class="c1"># Handle tuner intersections</span>
+        <span class="k">if</span> <span class="n">intersected_tuners</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># Plot or log the information, depending on which logger you are using:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_intersection_of_tuners</span><span class="p">(</span><span class="n">intersected_tuners</span><span class="p">,</span>
+                                                   <span class="n">itercount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recalibration_count</span><span class="p">)</span>
+
+            <span class="c1"># Return average value of ALL tuner parameters (not only intersected).</span>
+            <span class="c1"># Reason: if there is an intersection of a tuner parameter, but</span>
+            <span class="c1"># the results of both calibration classes are exactly the same, there</span>
+            <span class="c1"># is no intersection and the affected parameter will not be</span>
+            <span class="c1"># delivered to &quot;res_tuner&quot; if one of the other tuners</span>
+            <span class="c1"># intersect and &quot;intersected_tuners.keys()&quot; is true.</span>
+            <span class="n">average_tuner_parameter</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">tuner_para</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">merged_tuner_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">average_tuner_parameter</span><span class="p">[</span><span class="n">tuner_para</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;The tuner parameters used for evaluation &quot;</span>
+                            <span class="s2">&quot;are averaged as follows:</span><span class="se">\n</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; ,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tuner</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="k">for</span> <span class="n">tuner</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">average_tuner_parameter</span><span class="o">.</span><span class="n">items</span><span class="p">()])))</span>
+
+            <span class="c1"># Create result-dictionary</span>
+            <span class="n">res_tuner</span> <span class="o">=</span> <span class="n">average_tuner_parameter</span>
+
+        <span class="k">return</span> <span class="n">res_tuner</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
