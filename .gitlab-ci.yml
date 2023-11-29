@@ -11,6 +11,7 @@ variables:
   PAGES_BRANCH: master
   EXLUDE_PYTHON: 37
   GIT_REPO: RWTH-EBC/AixCaliBuHA
+  PYTHON_PACKAGE_NAME: "aixcalibuha"
   PYTHON_VERSION: "registry.git.rwth-aachen.de/ebc/ebc_all/gitlab_ci/templates:python_3.9"
   TEST_ENGINE: "unittest"
 
