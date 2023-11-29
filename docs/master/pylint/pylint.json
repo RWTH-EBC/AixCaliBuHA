@@ -1,0 +1,2423 @@
+{
+    "messages": [
+        {
+            "type": "error",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unrecognized-option",
+            "message": "Unrecognized option found: no-space-check",
+            "message-id": "E0015"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'print-statement' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'parameter-unpacking' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'unpacking-in-except' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'old-raise-syntax' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'backtick' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'import-star-module-level' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'apply-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'basestring-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'buffer-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'cmp-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'coerce-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'execfile-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'file-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'long-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'raw_input-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'reduce-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'standarderror-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'unicode-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'xrange-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'coerce-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'delslice-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'getslice-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'setslice-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'no-absolute-import' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'old-division' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'dict-iter-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'dict-view-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'next-method-called' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'metaclass-assignment' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'indexing-exception' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'raising-string' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'reload-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'oct-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'hex-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'nonzero-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'cmp-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'input-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'round-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'intern-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'unichr-builtin' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'map-builtin-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'zip-builtin-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'range-builtin-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'filter-builtin-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'using-cmp-argument' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'div-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'idiv-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'rdiv-method' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'exception-message-attribute' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'invalid-str-codec' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'sys-max-int' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'bad-python3-import' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'deprecated-string-function' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'deprecated-str-translate-call' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'deprecated-itertools-function' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'deprecated-types-field' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'next-method-defined' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'dict-items-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'dict-keys-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "refactor",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "useless-option-value",
+            "message": "Useless option value for '--disable', 'dict-values-not-iterating' was removed from pylint, see https://github.com/pylint-dev/pylint/pull/4942.",
+            "message-id": "R0022"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'long-suffix'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'old-ne-operator'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'old-octal-literal'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'non-ascii-bytes-literal'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'locally-enabled'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "warning",
+            "module": "/builds/EBC/EBC_all/github_ci/AixCaliBuHA/pylintrc",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "pylintrc",
+            "symbol": "unknown-option-value",
+            "message": "Unknown option value for '--disable', expected a valid pylint message and got 'eq-without-hash'",
+            "message-id": "W0012"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.data_types",
+            "obj": "",
+            "line": 709,
+            "column": 0,
+            "path": "aixcalibuha/data_types.py",
+            "symbol": "trailing-whitespace",
+            "message": "Trailing whitespace",
+            "message-id": "C0303"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.data_types",
+            "obj": "Goals",
+            "line": 19,
+            "column": 0,
+            "path": "aixcalibuha/data_types.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (9/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.data_types",
+            "obj": "Goals.__init__",
+            "line": 67,
+            "column": 4,
+            "path": "aixcalibuha/data_types.py",
+            "symbol": "too-many-branches",
+            "message": "Too many branches (17/12)",
+            "message-id": "R0912"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.data_types",
+            "obj": "CalibrationClass",
+            "line": 506,
+            "column": 0,
+            "path": "aixcalibuha/data_types.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (14/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.data_types",
+            "obj": "CalibrationClass.__init__",
+            "line": 547,
+            "column": 4,
+            "path": "aixcalibuha/data_types.py",
+            "symbol": "too-many-arguments",
+            "message": "Too many arguments (7/5)",
+            "message-id": "R0913"
+        },
+        {
+            "type": "convention",
+            "module": "guided_setup",
+            "obj": "",
+            "line": 314,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (102/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "guided_setup",
+            "obj": "",
+            "line": 374,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (103/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "guided_setup",
+            "obj": "",
+            "line": 404,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (104/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "",
+            "line": 295,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "fixme",
+            "message": "TODO: Check if this still works for new installs",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_handle_tsd_input",
+            "line": 34,
+            "column": 12,
+            "path": "bin/guided_setup.py",
+            "symbol": "lost-exception",
+            "message": "break statement in finally block may swallow exception",
+            "message-id": "W0150"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "_handle_argv",
+            "line": 72,
+            "column": 12,
+            "path": "bin/guided_setup.py",
+            "symbol": "no-else-raise",
+            "message": "Unnecessary \"else\" after \"raise\", remove the \"else\" and de-indent the code inside it",
+            "message-id": "R1720"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_handle_argv",
+            "line": 77,
+            "column": 12,
+            "path": "bin/guided_setup.py",
+            "symbol": "raise-missing-from",
+            "message": "Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\\n{_handle_argv.__doc__}') from exc'",
+            "message-id": "W0707"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 82,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (18/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 153,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 157,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 159,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 172,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 182,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 184,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 186,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 196,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 199,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 201,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 210,
+            "column": 9,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "_automatically_generate_mocate",
+            "line": 82,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "too-many-statements",
+            "message": "Too many statements (55/50)",
+            "message-id": "R0915"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 226,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (43/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 232,
+            "column": 4,
+            "path": "bin/guided_setup.py",
+            "symbol": "unreachable",
+            "message": "Unreachable code",
+            "message-id": "W0101"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 255,
+            "column": 12,
+            "path": "bin/guided_setup.py",
+            "symbol": "no-else-break",
+            "message": "Unnecessary \"elif\" after \"break\", remove the leading \"el\" from \"elif\"",
+            "message-id": "R1723"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 484,
+            "column": 11,
+            "path": "bin/guided_setup.py",
+            "symbol": "broad-exception-caught",
+            "message": "Catching too general exception Exception",
+            "message-id": "W0718"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 363,
+            "column": 13,
+            "path": "bin/guided_setup.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 369,
+            "column": 28,
+            "path": "bin/guided_setup.py",
+            "symbol": "f-string-without-interpolation",
+            "message": "Using an f-string that does not have any interpolated variables",
+            "message-id": "W1309"
+        },
+        {
+            "type": "warning",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 371,
+            "column": 33,
+            "path": "bin/guided_setup.py",
+            "symbol": "protected-access",
+            "message": "Access to a protected member _make_modelica_normpath of a client class",
+            "message-id": "W0212"
+        },
+        {
+            "type": "error",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 453,
+            "column": 45,
+            "path": "bin/guided_setup.py",
+            "symbol": "no-member",
+            "message": "Instance of 'DymolaAPI' has no 'dymola_path' member",
+            "message-id": "E1101"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 226,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "too-many-branches",
+            "message": "Too many branches (19/12)",
+            "message-id": "R0912"
+        },
+        {
+            "type": "refactor",
+            "module": "guided_setup",
+            "obj": "main",
+            "line": 226,
+            "column": 0,
+            "path": "bin/guided_setup.py",
+            "symbol": "too-many-statements",
+            "message": "Too many statements (108/50)",
+            "message-id": "R0915"
+        },
+        {
+            "type": "refactor",
+            "module": "run_modelica_calibration",
+            "obj": "_handle_argv",
+            "line": 34,
+            "column": 12,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "no-else-raise",
+            "message": "Unnecessary \"else\" after \"raise\", remove the \"else\" and de-indent the code inside it",
+            "message-id": "R1720"
+        },
+        {
+            "type": "warning",
+            "module": "run_modelica_calibration",
+            "obj": "_handle_argv",
+            "line": 39,
+            "column": 12,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "raise-missing-from",
+            "message": "Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\\n{_handle_argv.__doc__}') from exc'",
+            "message-id": "W0707"
+        },
+        {
+            "type": "convention",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 44,
+            "column": 0,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "missing-function-docstring",
+            "message": "Missing function or method docstring",
+            "message-id": "C0116"
+        },
+        {
+            "type": "refactor",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 44,
+            "column": 0,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (31/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "warning",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 112,
+            "column": 8,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "redefined-builtin",
+            "message": "Redefining built-in 'map'",
+            "message-id": "W0622"
+        },
+        {
+            "type": "warning",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 46,
+            "column": 4,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "unreachable",
+            "message": "Unreachable code",
+            "message-id": "W0101"
+        },
+        {
+            "type": "convention",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 78,
+            "column": 4,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "invalid-name",
+            "message": "Variable name \"e\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "warning",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 80,
+            "column": 8,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "raise-missing-from",
+            "message": "Consider explicitly re-raising using 'raise KeyError(f'Given config file does not contain {value_error}. You need to specify this value in order to run the calibration.') from e'",
+            "message-id": "W0707"
+        },
+        {
+            "type": "error",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 108,
+            "column": 14,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "no-member",
+            "message": "Module 'aixcalibuha.utils.configuration' has no 'get_simulation_api_from_config' member",
+            "message-id": "E1101"
+        },
+        {
+            "type": "error",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 121,
+            "column": 8,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "no-member",
+            "message": "Module 'ebcpy.utils.conversion' has no 'convert_hdf_to_modelica_txt' member",
+            "message-id": "E1101"
+        },
+        {
+            "type": "refactor",
+            "module": "run_modelica_calibration",
+            "obj": "main",
+            "line": 44,
+            "column": 0,
+            "path": "bin/run_modelica_calibration.py",
+            "symbol": "too-many-statements",
+            "message": "Too many statements (59/50)",
+            "message-id": "R0915"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 45,
+            "column": 0,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (107/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 46,
+            "column": 0,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (108/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 124,
+            "column": 25,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "anomalous-backslash-in-string",
+            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
+            "message-id": "W1401"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 127,
+            "column": 25,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "anomalous-backslash-in-string",
+            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
+            "message-id": "W1401"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 130,
+            "column": 25,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "anomalous-backslash-in-string",
+            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
+            "message-id": "W1401"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "invalid-name",
+            "message": "Module name \"e1_A_energy_system_analysis\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "main",
+            "line": 101,
+            "column": 10,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "main",
+            "line": 116,
+            "column": 10,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e1_A_energy_system_analysis",
+            "obj": "main",
+            "line": 121,
+            "column": 4,
+            "path": "examples/e1_A_energy_system_analysis.py",
+            "symbol": "unused-variable",
+            "message": "Unused variable 'fig'",
+            "message-id": "W0612"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "",
+            "line": 28,
+            "column": 0,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (108/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "invalid-name",
+            "message": "Module name \"e1_B_energy_system_analysis\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "main",
+            "line": 39,
+            "column": 4,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "import-outside-toplevel",
+            "message": "Import outside toplevel (examples.setup_fmu)",
+            "message-id": "C0415"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "main",
+            "line": 66,
+            "column": 10,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e1_B_energy_system_analysis",
+            "obj": "main",
+            "line": 69,
+            "column": 4,
+            "path": "examples/e1_B_energy_system_analysis.py",
+            "symbol": "unused-variable",
+            "message": "Unused variable 'fig'",
+            "message-id": "W0612"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e2_A_optimization_problem_definition",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e2_A_optimization_problem_definition.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e2_A_optimization_problem_definition",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e2_A_optimization_problem_definition.py",
+            "symbol": "invalid-name",
+            "message": "Module name \"e2_A_optimization_problem_definition\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "refactor",
+            "module": "examples.e2_A_optimization_problem_definition",
+            "obj": "main",
+            "line": 20,
+            "column": 0,
+            "path": "examples/e2_A_optimization_problem_definition.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (17/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e2_A_optimization_problem_definition",
+            "obj": "main",
+            "line": 126,
+            "column": 11,
+            "path": "examples/e2_A_optimization_problem_definition.py",
+            "symbol": "broad-exception-caught",
+            "message": "Catching too general exception Exception",
+            "message-id": "W0718"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e2_A_optimization_problem_definition",
+            "obj": "main",
+            "line": 136,
+            "column": 11,
+            "path": "examples/e2_A_optimization_problem_definition.py",
+            "symbol": "broad-exception-caught",
+            "message": "Catching too general exception Exception",
+            "message-id": "W0718"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e2_B_optimization_problem_definition",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e2_B_optimization_problem_definition.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e2_B_optimization_problem_definition",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e2_B_optimization_problem_definition.py",
+            "symbol": "invalid-name",
+            "message": "Module name \"e2_B_optimization_problem_definition\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e2_B_optimization_problem_definition",
+            "obj": "main",
+            "line": 117,
+            "column": 11,
+            "path": "examples/e2_B_optimization_problem_definition.py",
+            "symbol": "broad-exception-caught",
+            "message": "Catching too general exception Exception",
+            "message-id": "W0718"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e2_B_optimization_problem_definition",
+            "obj": "main",
+            "line": 127,
+            "column": 11,
+            "path": "examples/e2_B_optimization_problem_definition.py",
+            "symbol": "broad-exception-caught",
+            "message": "Catching too general exception Exception",
+            "message-id": "W0718"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "run_sensitivity_analysis",
+            "line": 41,
+            "column": 4,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "redefined-outer-name",
+            "message": "Redefining name 'setup_fmu' from outer scope (line 74)",
+            "message-id": "W0621"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "run_sensitivity_analysis",
+            "line": 41,
+            "column": 4,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "redefined-outer-name",
+            "message": "Redefining name 'setup_calibration_classes' from outer scope (line 74)",
+            "message-id": "W0621"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "run_sensitivity_analysis",
+            "line": 41,
+            "column": 4,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "import-outside-toplevel",
+            "message": "Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)",
+            "message-id": "C0415"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "",
+            "line": 74,
+            "column": 4,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "unused-import",
+            "message": "Unused setup_fmu imported from examples",
+            "message-id": "W0611"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_sensitivity_analysis_example",
+            "obj": "",
+            "line": 74,
+            "column": 4,
+            "path": "examples/e3_sensitivity_analysis_example.py",
+            "symbol": "unused-import",
+            "message": "Unused setup_calibration_classes imported from examples",
+            "message-id": "W0611"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e4_calibration_example",
+            "obj": "",
+            "line": 101,
+            "column": 0,
+            "path": "examples/e4_calibration_example.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (108/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e4_calibration_example",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e4_calibration_example.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "refactor",
+            "module": "examples.e4_calibration_example",
+            "obj": "run_calibration",
+            "line": 12,
+            "column": 0,
+            "path": "examples/e4_calibration_example.py",
+            "symbol": "too-many-arguments",
+            "message": "Too many arguments (7/5)",
+            "message-id": "R0913"
+        },
+        {
+            "type": "refactor",
+            "module": "examples.e4_calibration_example",
+            "obj": "run_calibration",
+            "line": 12,
+            "column": 0,
+            "path": "examples/e4_calibration_example.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (20/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e4_calibration_example",
+            "obj": "run_calibration",
+            "line": 51,
+            "column": 4,
+            "path": "examples/e4_calibration_example.py",
+            "symbol": "import-outside-toplevel",
+            "message": "Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)",
+            "message-id": "C0415"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e5_automated_process",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "examples/e5_automated_process.py",
+            "symbol": "missing-module-docstring",
+            "message": "Missing module docstring",
+            "message-id": "C0114"
+        },
+        {
+            "type": "convention",
+            "module": "tests.test_data_types",
+            "obj": "TestDataTypes.test_tuner_paras",
+            "line": 89,
+            "column": 17,
+            "path": "tests/test_data_types.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:131]\n==examples.e2_B_optimization_problem_definition:[113:122]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    new_index = meas_target_data.index.values.copy()\n    new_index[-10] += 0.05  # Change some value",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy sim_target_data with the same index:",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[213:222]\n==examples.e2_B_optimization_problem_definition:[188:197]\n    )\n    return calibration_classes, validation_class\n\n\nif __name__ == '__main__':\n    main(\n        examples_dir=pathlib.Path(__file__).parent,\n        multiple_classes=True\n    )",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[197:207]\n==examples.e2_B_optimization_problem_definition:[173:183]\n    print([c.name for c in calibration_classes])\n    calibration_classes_merged = merge_calibration_classes(calibration_classes)\n    print([c.name for c in calibration_classes_merged])\n    # Don't worry, the relevant_time_interval object keeps track\n    # of which time intervals are relevant for the objective calculation\n    print(\"Relevant time interval for class\",\n          calibration_classes_merged[0].name,\n          calibration_classes_merged[0].relevant_intervals)\n    # Let's also create an object to later validate our calibration:\n    validation_class = CalibrationClass(",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.\n    # Let's also define some different tuner parameters for the last stationary class.",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[70:84]\n==examples.e2_B_optimization_problem_definition:[57:73]\n    )\n    print(tuner_paras)\n    print(\"Names of parameters\", tuner_paras.get_names())\n    print(\"Initial values\", tuner_paras.get_initial_values())\n    # Scaling (will be done internally)\n    print(\"Scaled initial values:\\n\", tuner_paras.scale(tuner_paras.get_initial_values()))\n    # ## Goals\n    # The evaluation of your goals (or mathematically speaking 'objective function')\n    # depends on the difference of measured to simulated data.\n    # Thus, you need to specify both measured and simulated data.\n    #\n    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:\n    #\n    # As the examples should work, and the cal_class example uses the other examples,\n    # we will test it here:\n    data_dir = pathlib.Path(examples_dir).joinpath(\"data\")",
+            "message-id": "R0801"
+        },
+        {
+            "type": "refactor",
+            "module": "tests.test_modelica_cal_sen",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "tests/test_modelica_cal_sen.py",
+            "symbol": "duplicate-code",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from aixcalibuha\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_A_energy_system_analysis),\n    # we've changed four parameters in the model. To show the usefulness\n    # of sensitivity analysis prior to calibration, we will add a fifth without\n    # any influence, the heating curve declination of the heat pump.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.\n    # How to load the data is up to you. To make the structure clear,\n    # we use a 3 element tuple in this example:",
+            "message-id": "R0801"
+        }
+    ],
+    "stats": {
+        "bad_names": {
+            "argument": 0,
+            "attr": 0,
+            "klass": 0,
+            "class_attribute": 0,
+            "class_const": 0,
+            "const": 0,
+            "inlinevar": 0,
+            "function": 0,
+            "method": 0,
+            "module": 4,
+            "variable": 1,
+            "typevar": 0,
+            "typealias": 0
+        },
+        "by_module": {
+            "aixcalibuha.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 4,
+                "warning": 0
+            },
+            "aixcalibuha.data_types": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 4,
+                "statement": 255,
+                "warning": 0
+            },
+            "guided_setup": {
+                "convention": 3,
+                "error": 1,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 7,
+                "statement": 223,
+                "warning": 19
+            },
+            "run_modelica_calibration": {
+                "convention": 2,
+                "error": 2,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 3,
+                "statement": 80,
+                "warning": 4
+            },
+            "examples.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 22,
+                "warning": 0
+            },
+            "examples.e1_A_energy_system_analysis": {
+                "convention": 6,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 41,
+                "warning": 4
+            },
+            "examples.e1_B_energy_system_analysis": {
+                "convention": 5,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 24,
+                "warning": 1
+            },
+            "examples.e2_A_optimization_problem_definition": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 1,
+                "statement": 52,
+                "warning": 2
+            },
+            "examples.e2_B_optimization_problem_definition": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 46,
+                "warning": 2
+            },
+            "examples.e3_sensitivity_analysis_example": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 20,
+                "warning": 4
+            },
+            "examples.e4_calibration_example": {
+                "convention": 3,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 2,
+                "statement": 37,
+                "warning": 0
+            },
+            "examples.e5_automated_process": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 9,
+                "warning": 0
+            },
+            "examples.e6_multiprocessing_calibration_example": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 6,
+                "warning": 0
+            },
+            "tests.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 0,
+                "warning": 0
+            },
+            "tests.test_config": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 16,
+                "warning": 0
+            },
+            "tests.test_data_types": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 85,
+                "warning": 0
+            },
+            "tests.test_modelica_cal_sen": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 10,
+                "statement": 57,
+                "warning": 0
+            }
+        },
+        "by_msg": {
+            "trailing-whitespace": 1,
+            "too-many-instance-attributes": 2,
+            "too-many-branches": 2,
+            "too-many-arguments": 2,
+            "line-too-long": 7,
+            "fixme": 1,
+            "lost-exception": 1,
+            "no-else-raise": 2,
+            "raise-missing-from": 3,
+            "too-many-locals": 5,
+            "unspecified-encoding": 12,
+            "too-many-statements": 3,
+            "unreachable": 2,
+            "no-else-break": 1,
+            "broad-exception-caught": 5,
+            "f-string-without-interpolation": 1,
+            "protected-access": 1,
+            "no-member": 3,
+            "missing-function-docstring": 1,
+            "redefined-builtin": 1,
+            "invalid-name": 5,
+            "anomalous-backslash-in-string": 3,
+            "missing-module-docstring": 7,
+            "consider-using-f-string": 4,
+            "unused-variable": 2,
+            "import-outside-toplevel": 3,
+            "redefined-outer-name": 2,
+            "unused-import": 2,
+            "duplicate-code": 10
+        },
+        "code_type_count": {
+            "code": 0,
+            "comment": 0,
+            "docstring": 0,
+            "empty": 0,
+            "total": 0
+        },
+        "dependencies": {
+            "aixcalibuha.data_types": [
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e2_B_optimization_problem_definition",
+                "aixcalibuha"
+            ],
+            "aixcalibuha.calibration": [
+                "run_modelica_calibration",
+                "aixcalibuha"
+            ],
+            "aixcalibuha.sensitivity_analysis": [
+                "aixcalibuha"
+            ],
+            "pandas": [
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
+            ],
+            "numpy": [
+                "tests.test_data_types",
+                "examples.e4_calibration_example",
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
+            ],
+            "ebcpy": [
+                "aixcalibuha.data_types",
+                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e1_A_energy_system_analysis",
+                "tests.test_modelica_cal_sen",
+                "examples"
+            ],
+            "ebcpy.utils.statistics_analyzer": [
+                "aixcalibuha.data_types"
+            ],
+            "ebcpy.preprocessing": [
+                "aixcalibuha.data_types"
+            ],
+            "ebcpy.data_types": [
+                "tests.test_data_types",
+                "guided_setup",
+                "run_modelica_calibration"
+            ],
+            "ebcpy.simulationapi.dymola_api": [
+                "guided_setup"
+            ],
+            "ebcpy.modelica": [
+                "guided_setup"
+            ],
+            "aixcalibuha.utils.configuration": [
+                "tests.test_config",
+                "guided_setup",
+                "run_modelica_calibration"
+            ],
+            "ebcpy.utils.conversion": [
+                "run_modelica_calibration"
+            ],
+            "examples.e2_A_optimization_problem_definition": [
+                "examples"
+            ],
+            "examples.e2_B_optimization_problem_definition": [
+                "examples"
+            ],
+            "matplotlib.pyplot": [
+                "examples.e1_B_energy_system_analysis",
+                "examples.e1_A_energy_system_analysis"
+            ],
+            "examples": [
+                "examples.e3_sensitivity_analysis_example",
+                "examples.e1_B_energy_system_analysis",
+                "examples.e4_calibration_example"
+            ],
+            "aixcalibuha": [
+                "examples.e2_B_optimization_problem_definition",
+                "tests.test_data_types",
+                "tests.test_config",
+                "examples.e3_sensitivity_analysis_example",
+                "tests.test_modelica_cal_sen",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e4_calibration_example"
+            ],
+            "examples.e3_sensitivity_analysis_example": [
+                "examples.e5_automated_process"
+            ],
+            "examples.e4_calibration_example": [
+                "examples.e6_multiprocessing_calibration_example",
+                "examples.e5_automated_process"
+            ]
+        },
+        "duplicated_lines": {
+            "nb_duplicated_lines": 0,
+            "percent_duplicated_lines": 0.0
+        },
+        "node_count": {
+            "function": 17,
+            "klass": 6,
+            "method": 51,
+            "module": 17
+        },
+        "undocumented": {
+            "function": 1,
+            "klass": 0,
+            "method": 0,
+            "module": 7
+        },
+        "convention": 28,
+        "error": 3,
+        "fatal": 0,
+        "info": 0,
+        "refactor": 27,
+        "statement": 977,
+        "warning": 36,
+        "global_note": 0,
+        "nb_duplicated_lines": 75,
+        "percent_duplicated_lines": 2.6862464183381087
+    },
+    "previous": {
+        "bad_names": {
+            "argument": 0,
+            "attr": 0,
+            "klass": 0,
+            "class_attribute": 0,
+            "class_const": 0,
+            "const": 0,
+            "inlinevar": 0,
+            "function": 0,
+            "method": 0,
+            "module": 4,
+            "variable": 1,
+            "typevar": 0,
+            "typealias": 0
+        },
+        "by_module": {
+            "aixcalibuha.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 4,
+                "warning": 0
+            },
+            "aixcalibuha.data_types": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 4,
+                "statement": 255,
+                "warning": 0
+            },
+            "guided_setup": {
+                "convention": 3,
+                "error": 1,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 7,
+                "statement": 223,
+                "warning": 19
+            },
+            "run_modelica_calibration": {
+                "convention": 2,
+                "error": 2,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 3,
+                "statement": 80,
+                "warning": 4
+            },
+            "examples.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 22,
+                "warning": 0
+            },
+            "examples.e1_A_energy_system_analysis": {
+                "convention": 6,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 41,
+                "warning": 4
+            },
+            "examples.e1_B_energy_system_analysis": {
+                "convention": 5,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 24,
+                "warning": 1
+            },
+            "examples.e2_A_optimization_problem_definition": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 1,
+                "statement": 52,
+                "warning": 2
+            },
+            "examples.e2_B_optimization_problem_definition": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 46,
+                "warning": 2
+            },
+            "examples.e3_sensitivity_analysis_example": {
+                "convention": 2,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 20,
+                "warning": 4
+            },
+            "examples.e4_calibration_example": {
+                "convention": 3,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 2,
+                "statement": 37,
+                "warning": 0
+            },
+            "examples.e5_automated_process": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 9,
+                "warning": 0
+            },
+            "examples.e6_multiprocessing_calibration_example": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 6,
+                "warning": 0
+            },
+            "tests.__init__": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 0,
+                "warning": 0
+            },
+            "tests.test_config": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 16,
+                "warning": 0
+            },
+            "tests.test_data_types": {
+                "convention": 1,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 85,
+                "warning": 0
+            },
+            "tests.test_modelica_cal_sen": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 10,
+                "statement": 57,
+                "warning": 0
+            }
+        },
+        "by_msg": {
+            "trailing-whitespace": 1,
+            "too-many-instance-attributes": 2,
+            "too-many-branches": 2,
+            "too-many-arguments": 2,
+            "line-too-long": 7,
+            "fixme": 1,
+            "lost-exception": 1,
+            "no-else-raise": 2,
+            "raise-missing-from": 3,
+            "too-many-locals": 5,
+            "unspecified-encoding": 12,
+            "too-many-statements": 3,
+            "unreachable": 2,
+            "no-else-break": 1,
+            "broad-exception-caught": 5,
+            "f-string-without-interpolation": 1,
+            "protected-access": 1,
+            "no-member": 3,
+            "missing-function-docstring": 1,
+            "redefined-builtin": 1,
+            "invalid-name": 5,
+            "anomalous-backslash-in-string": 3,
+            "missing-module-docstring": 7,
+            "consider-using-f-string": 4,
+            "unused-variable": 2,
+            "import-outside-toplevel": 3,
+            "redefined-outer-name": 2,
+            "unused-import": 2,
+            "duplicate-code": 10
+        },
+        "code_type_count": {
+            "code": 0,
+            "comment": 0,
+            "docstring": 0,
+            "empty": 0,
+            "total": 0
+        },
+        "dependencies": {
+            "aixcalibuha.data_types": [
+                "examples.e2_A_optimization_problem_definition",
+                "aixcalibuha",
+                "examples.e2_B_optimization_problem_definition"
+            ],
+            "aixcalibuha.calibration": [
+                "run_modelica_calibration",
+                "aixcalibuha"
+            ],
+            "aixcalibuha.sensitivity_analysis": [
+                "aixcalibuha"
+            ],
+            "pandas": [
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
+            ],
+            "numpy": [
+                "tests.test_data_types",
+                "examples.e4_calibration_example",
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
+            ],
+            "ebcpy": [
+                "aixcalibuha.data_types",
+                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e1_A_energy_system_analysis",
+                "tests.test_modelica_cal_sen",
+                "examples"
+            ],
+            "ebcpy.utils.statistics_analyzer": [
+                "aixcalibuha.data_types"
+            ],
+            "ebcpy.preprocessing": [
+                "aixcalibuha.data_types"
+            ],
+            "ebcpy.data_types": [
+                "tests.test_data_types",
+                "guided_setup",
+                "run_modelica_calibration"
+            ],
+            "ebcpy.simulationapi.dymola_api": [
+                "guided_setup"
+            ],
+            "ebcpy.modelica": [
+                "guided_setup"
+            ],
+            "aixcalibuha.utils.configuration": [
+                "tests.test_config",
+                "guided_setup",
+                "run_modelica_calibration"
+            ],
+            "ebcpy.utils.conversion": [
+                "run_modelica_calibration"
+            ],
+            "examples.e2_A_optimization_problem_definition": [
+                "examples"
+            ],
+            "examples.e2_B_optimization_problem_definition": [
+                "examples"
+            ],
+            "matplotlib.pyplot": [
+                "examples.e1_B_energy_system_analysis",
+                "examples.e1_A_energy_system_analysis"
+            ],
+            "examples": [
+                "examples.e3_sensitivity_analysis_example",
+                "examples.e1_B_energy_system_analysis",
+                "examples.e4_calibration_example"
+            ],
+            "aixcalibuha": [
+                "examples.e2_B_optimization_problem_definition",
+                "tests.test_data_types",
+                "tests.test_config",
+                "examples.e3_sensitivity_analysis_example",
+                "tests.test_modelica_cal_sen",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e4_calibration_example"
+            ],
+            "examples.e3_sensitivity_analysis_example": [
+                "examples.e5_automated_process"
+            ],
+            "examples.e4_calibration_example": [
+                "examples.e6_multiprocessing_calibration_example",
+                "examples.e5_automated_process"
+            ]
+        },
+        "duplicated_lines": {
+            "nb_duplicated_lines": 0,
+            "percent_duplicated_lines": 0.0
+        },
+        "node_count": {
+            "function": 17,
+            "klass": 6,
+            "method": 51,
+            "module": 17
+        },
+        "undocumented": {
+            "function": 1,
+            "klass": 0,
+            "method": 0,
+            "module": 7
+        },
+        "convention": 28,
+        "error": 3,
+        "fatal": 0,
+        "info": 0,
+        "refactor": 27,
+        "statement": 977,
+        "warning": 36,
+        "global_note": 8.915046059365405,
+        "nb_duplicated_lines": 75,
+        "percent_duplicated_lines": 2.6862464183381087
+    }
+}

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.utils.visualizer &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">aixcalibuha.utils</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.utils.visualizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.utils.visualizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module with classes and function to help visualize</span>
+<span class="sd">different processes inside the framework. Both plots</span>
+<span class="sd">and print-function/log-function will be implemented here.</span>
+<span class="sd">The Visualizer Class inherits the Logger class, as logging</span>
+<span class="sd">will always be used as a default.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfile</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ebcpy.utils</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">import</span> <span class="nn">aixcalibuha</span>
+
+
+<div class="viewcode-block" id="CalibrationLogger"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger">[docs]</a><span class="k">class</span> <span class="nc">CalibrationLogger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for showing the process of functions in</span>
+<span class="sd">        this Framework with print-statements and saving everything</span>
+<span class="sd">        relevant as a log-file.</span>
+
+<span class="sd">        :param str,os.path.normpath cd:</span>
+<span class="sd">            Directory where to store the output of the Logger and possible</span>
+<span class="sd">            child-classes. If the given directory can not be created, an error</span>
+<span class="sd">            will be raised.</span>
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the reason of logging, e.g. classification, processing etc.</span>
+<span class="sd">        :param aixcalibuha.CalibrationClass calibration_class:</span>
+<span class="sd">            Calibration class used in the calibration-process.</span>
+<span class="sd">        :param logging.Logger logger:</span>
+<span class="sd">            If given, this logger is used to print and or save the messsages.</span>
+<span class="sd">            Else, a new one is set up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Instantiate class parameters</span>
+    <span class="n">integer_prec</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of integer parts</span>
+    <span class="n">decimal_prec</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">_counter_calibration</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Number of function calls of calibration</span>
+    <span class="n">_prec</span> <span class="o">=</span> <span class="n">decimal_prec</span>
+    <span class="n">_width</span> <span class="o">=</span> <span class="n">integer_prec</span> <span class="o">+</span> <span class="n">decimal_prec</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Calculate the actual width</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate class parameters&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given logger is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;but should be type logging.Logger&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cd</span> <span class="o">=</span> <span class="n">cd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span> <span class="o">=</span> <span class="n">calibration_class</span>
+
+<div class="viewcode-block" id="CalibrationLogger.log"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper function to directly log in the internal logger&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalibrationLogger.error"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper function to directly log an error&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_prec_and_with_for_tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integer_prec</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Number of integer parts</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bounds_min</span><span class="p">,</span> <span class="n">bounds_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">()</span>
+            <span class="n">maximal_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">bounds_max</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bounds_min</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integer_prec</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">maximal_value</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Number of function calls of calibration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integer_prec</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">decimal_prec</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Calculate the actual width</span>
+
+<div class="viewcode-block" id="CalibrationLogger.calibration_callback_func"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibration_callback_func">[docs]</a>    <span class="k">def</span> <span class="nf">calibration_callback_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">verbose_information</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logs the current values of the objective function.</span>
+
+<span class="sd">        :param np.array xk:</span>
+<span class="sd">            Array with the current values of the calibration</span>
+<span class="sd">        :param float obj:</span>
+<span class="sd">            Current objective value.</span>
+<span class="sd">        :param dict verbose_information:</span>
+<span class="sd">            A dict with difference-values of for all goals and the</span>
+<span class="sd">            corresponding weightings</span>
+<span class="sd">        :param float penalty:</span>
+<span class="sd">            Penaltyfactor from current evaluation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xk_descaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">descale</span><span class="p">(</span><span class="n">xk</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">penalty</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tuner_para_values_as_string</span><span class="p">(</span>
+                <span class="n">xk_descaled</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">verbose_information</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tuner_para_values_as_string</span><span class="p">(</span>
+                <span class="n">xk_descaled</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">verbose_information</span><span class="p">,</span> <span class="n">penalty</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info_string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalibrationLogger.validation_callback_func"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.validation_callback_func">[docs]</a>    <span class="k">def</span> <span class="nf">validation_callback_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log the validation result information</span>
+
+<span class="sd">        :param float obj:</span>
+<span class="sd">            Objective value of validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="si">}</span><span class="s2"> of validation: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalibrationLogger.save_calibration_result"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.save_calibration_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_calibration_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">best_iterate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the result, re-run the simulation and generate</span>
+<span class="sd">        a logFile for the minimal quality measurement</span>
+
+<span class="sd">        :param dict best_iterate:</span>
+<span class="sd">            Result object of the minimization</span>
+<span class="sd">        :param str model_name:</span>
+<span class="sd">            Name of the model being calibrated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;Iterate&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_iterate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No best iterate. Can&#39;t save result&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">result_log</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Results for calibration of model: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">result_log</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Number of iterations: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">result_log</span> <span class="o">+=</span> <span class="s2">&quot;Final parameter values:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="c1"># Set the iteration counter to the actual number of the best iteration is printed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span> <span class="o">=</span> <span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Iterate&quot;</span><span class="p">]</span>
+        <span class="n">result_log</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_tuner_para_names_as_string</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">final_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tuner_para_values_as_string</span><span class="p">(</span>
+            <span class="n">xk_descaled</span><span class="o">=</span><span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Parameters&quot;</span><span class="p">],</span>
+            <span class="n">obj</span><span class="o">=</span><span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Objective&quot;</span><span class="p">],</span>
+            <span class="n">unweighted_objective</span><span class="o">=</span><span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Unweighted Objective&quot;</span><span class="p">],</span>
+            <span class="n">penalty</span><span class="o">=</span><span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Penaltyfactor&quot;</span><span class="p">])</span>
+        <span class="n">result_log</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">final_values</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result_log</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="CalibrationLogger.calibrate_new_class"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibrate_new_class">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">,</span> <span class="n">cd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">for_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to setup the figures for a new class of calibration.</span>
+<span class="sd">        This function is called when instantiating this Class. If you</span>
+<span class="sd">        uses continuuos calibration classes, call this function before</span>
+<span class="sd">        starting the next calibration-class.</span>
+
+<span class="sd">        :param aixcalibuha.CalibrationClass calibration_class:</span>
+<span class="sd">            Class holding information on names, tuner_paras, goals</span>
+<span class="sd">            and time-intervals of calibration.</span>
+<span class="sd">        :param str,os.path.normpath cd:</span>
+<span class="sd">            Optional change in working directory to store files</span>
+<span class="sd">        :param bool for_validation:</span>
+<span class="sd">            If it&#39;s only for validation, only plot the goals</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cd</span> <span class="o">=</span> <span class="n">cd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span> <span class="o">=</span> <span class="n">calibration_class</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cd</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current working directory for storing plots.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span>
+
+    <span class="nd">@cd</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current working directory for storing plots.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cd</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cd</span> <span class="o">=</span> <span class="n">cd</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">TunerParas</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span>
+
+    <span class="nd">@tuner_paras</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner_paras</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the currently used TunerParas object to use the information for logging.</span>
+
+<span class="sd">        :param tuner_paras: aixcalibuha.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">TunerParas</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given tuner_paras is of &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but type TunerParas is needed.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_prec_and_with_for_tuner_paras</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">Goals</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current goals instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span>
+
+    <span class="nd">@goals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goals</span><span class="p">:</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">Goals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the currently used Goals object to use the information for logging.</span>
+
+<span class="sd">        :param ebcpy.aixcalibuha.Goals goals:</span>
+<span class="sd">            Goals to be set to the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goals</span><span class="p">,</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">Goals</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given goals is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">goals</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but type Goals is needed.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span> <span class="o">=</span> <span class="n">goals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">CalibrationClass</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current calibration class object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration_class</span>
+
+    <span class="nd">@calibration_class</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">:</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">CalibrationClass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the current calibration class.</span>
+
+<span class="sd">        :param aixcalibuha.CalibrationClass calibration_class:</span>
+<span class="sd">            Class holding information on names, tuner_paras, goals</span>
+<span class="sd">            and time-intervals of calibration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">,</span> <span class="n">aixcalibuha</span><span class="o">.</span><span class="n">CalibrationClass</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given calibration_class &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but type CalibrationClass is needed.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calibration_class</span> <span class="o">=</span> <span class="n">calibration_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span>
+        <span class="k">if</span> <span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="o">=</span> <span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span>
+
+<div class="viewcode-block" id="CalibrationLogger.log_initial_names"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log_initial_names">[docs]</a>    <span class="k">def</span> <span class="nf">log_initial_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to log the initial names and the statistical measure</span>
+<span class="sd">        before calibration.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_tuner_para_names_as_string</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="CalibrationLogger.log_intersection_of_tuners"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log_intersection_of_tuners">[docs]</a>    <span class="k">def</span> <span class="nf">log_intersection_of_tuners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intersected_tuner_parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If an intersection for multiple classes occurs, an information about</span>
+<span class="sd">        the statistics of the dataset has to be provided.</span>
+
+<span class="sd">        :param dict intersected_tuner_parameters:</span>
+<span class="sd">            Dict with cols being the name of the tuner parameter and the</span>
+<span class="sd">            value being the list with all the different &quot;best&quot; values for</span>
+<span class="sd">            the tuner parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_formatted_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tuner</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">values</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="k">for</span> <span class="n">tuner</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">intersected_tuner_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Multiple &#39;best&#39; values for the following tuner parameters &quot;</span>
+                         <span class="s2">&quot;were identified in different classes:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">_formatted_str</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_tuner_para_names_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string with the names of current tunerParameters</span>
+
+<span class="sd">        :return: str info_string</span>
+<span class="sd">            The desired string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">initial_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span>
+
+        <span class="n">info_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:9s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Names of tuner parameter</span>
+        <span class="k">for</span> <span class="n">ini_name</span> <span class="ow">in</span> <span class="n">initial_names</span><span class="p">:</span>
+            <span class="c1"># Limit string length to a certain amount.</span>
+            <span class="c1"># The full name has to be displayed somewhere else</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">:</span>
+                <span class="n">num_dots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
+                <span class="k">if</span> <span class="n">num_dots</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">num_dots</span> <span class="o">=</span> <span class="mi">3</span>
+                <span class="n">formatted_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">*</span><span class="n">num_dots</span> <span class="o">+</span> <span class="n">ini_name</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">-</span><span class="n">num_dots</span><span class="p">):]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">formatted_name</span> <span class="o">=</span> <span class="n">ini_name</span>
+            <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formatted_name</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
+        <span class="c1"># Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;     {0:</span><span class="si">{width}</span><span class="s2">s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;penaltyfactor&quot;</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;   Unweighted </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">info_string</span>
+
+    <span class="k">def</span> <span class="nf">_get_tuner_para_values_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                         <span class="n">xk_descaled</span><span class="p">,</span>
+                                         <span class="n">obj</span><span class="p">,</span>
+                                         <span class="n">unweighted_objective</span><span class="p">,</span>
+                                         <span class="n">penalty</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string with the values of current tuner parameters</span>
+<span class="sd">        as well as the objective value.</span>
+
+<span class="sd">        :param np.array xk_descaled:</span>
+<span class="sd">            Array with the current values of the calibration, descaled to bounds</span>
+<span class="sd">        :param float obj:</span>
+<span class="sd">            Current objective value.</span>
+<span class="sd">        :param dict unweighted_objective:</span>
+<span class="sd">            Further information about the objective value of each individual goal</span>
+<span class="sd">        :param None/float penalty:</span>
+<span class="sd">            Penaltyfactor.</span>
+<span class="sd">        :return: str</span>
+<span class="sd">            The desired string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This will limit the number of iterations to 999999999 (for correct format).</span>
+        <span class="c1"># More iterations will most likely never be used.</span>
+        <span class="n">info_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:9d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x_value</span> <span class="ow">in</span> <span class="n">xk_descaled</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">.</span><span class="si">{prec}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x_value</span><span class="p">,</span>
+                                                           <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
+                                                           <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span><span class="p">)</span>
+        <span class="c1"># Add the last return value of the objective function.</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">.</span><span class="si">{prec}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
+                                                       <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">penalty</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">.</span><span class="si">{prec}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">penalty</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
+                                                           <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;        </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+        <span class="n">_verbose_info</span> <span class="o">=</span> <span class="s2">&quot;= &quot;</span> <span class="o">+</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;{0:.</span><span class="si">{prec}</span><span class="s2">}*{1:.</span><span class="si">{prec}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                                           <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">unweighted_objective</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;          </span><span class="si">{</span><span class="n">_verbose_info</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">info_string</span></div>
+
+
+<div class="viewcode-block" id="CalibrationVisualizer"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer">[docs]</a><span class="k">class</span> <span class="nc">CalibrationVisualizer</span><span class="p">(</span><span class="n">CalibrationLogger</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;More advanced class to not only log ongoing function</span>
+<span class="sd">    evaluations but also show the process of the functions</span>
+<span class="sd">    by plotting interesting causalities and saving these plots.</span>
+
+<span class="sd">    :keyword boolean show_plot:</span>
+<span class="sd">        If False, all created plots are not shown during calibration but only</span>
+<span class="sd">        stored at the end of the process.</span>
+<span class="sd">    :keyword boolean create_tsd_plot:</span>
+<span class="sd">        If False, the plot of the time series data (goals) is not created and</span>
+<span class="sd">        thus shown in during calibration. It therefore is also not stored, even if</span>
+<span class="sd">        you set the save_tsd_plot keyword-argument to true.</span>
+<span class="sd">    :keyword boolean save_tsd_plot:</span>
+<span class="sd">        If True, at each iteration the created plot of the</span>
+<span class="sd">        time-series is saved. This may make the process much slower</span>
+<span class="sd">    :keyword float show_plot_pause_time:</span>
+<span class="sd">        Set the time (in seconds) the plt.draw() pauses. May be altered if show_plot</span>
+<span class="sd">        yields plot which disappear to fast. Default is 1-e3 s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">,</span>
+                 <span class="n">calibration_class</span><span class="p">,</span>
+                 <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate class parameters&quot;&quot;&quot;</span>
+
+        <span class="c1"># Instantiate the logger:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span>
+                         <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                         <span class="n">calibration_class</span><span class="o">=</span><span class="n">calibration_class</span><span class="p">,</span>
+                         <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+        <span class="c1"># Setup dummy parameters so class-functions</span>
+        <span class="c1"># now the type of those later created objects:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_goals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_goals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_tuner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_tuner</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_tuner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_goal</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goals_dir</span> <span class="o">=</span> <span class="s2">&quot;TimeSeriesPlot&quot;</span>
+        <span class="c1"># Set supported kwargs:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ioff</span><span class="p">()</span>  <span class="c1"># Turn of interactive mode.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_tsd_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save_tsd_plot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;create_tsd_plot&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;show_plot&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_type&quot;</span><span class="p">,</span> <span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;show_plot_pause_time&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Given &#39;show_plot_pause_time&#39; needs to &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;be float or int but is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="CalibrationVisualizer.calibrate_new_class"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.calibrate_new_class">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">,</span> <span class="n">cd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">for_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to setup the figures for a new class of calibration.</span>
+<span class="sd">        This function is called when instantiating this Class. If you</span>
+<span class="sd">        uses continuuos calibration classes, call this function before</span>
+<span class="sd">        starting the next calibration-class.</span>
+
+<span class="sd">        :param aixcalibuha.CalibrationClass calibration_class:</span>
+<span class="sd">            Class holding information on names, tuner_paras, goals</span>
+<span class="sd">            and time-intervals of calibration.</span>
+<span class="sd">        :param str,os.path.normpath cd:</span>
+<span class="sd">            Optional change in working directory to store files</span>
+<span class="sd">        :param bool for_validation:</span>
+<span class="sd">            If it&#39;s only for validation, only plot the goals</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">calibrate_new_class</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">calibration_class</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># Close all old figures to create new ones.</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">for_validation</span><span class="p">:</span>
+            <span class="c1"># %% Set-up figure for objective-plotting</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Objective&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Number iterations&quot;</span><span class="p">)</span>
+            <span class="c1"># If the changes are small, it seems like the plot does</span>
+            <span class="c1"># not fit the printed values. This boolean assures that no offset is used.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span><span class="o">.</span><span class="n">ticklabel_format</span><span class="p">(</span><span class="n">useOffset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># %% Setup Tuner-Paras figure</span>
+            <span class="c1"># Make a almost quadratic layout based on the number of tuner-parameters evolved.</span>
+            <span class="n">num_tuners</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_tuner</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_tuners</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_tuner</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_tuners</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_tuner</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_tuner</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_tuner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_tuner</span><span class="p">,</span>
+                                                         <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Tuner Parameters&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_tuner_parameters</span><span class="p">(</span><span class="n">for_setup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># %% Setup Goals figure</span>
+        <span class="c1"># Only a dummy, as the figure is recreated at every iteration</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_goals_list</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_goals</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_goals</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_goals</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_goal</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_goals</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_goals</span><span class="p">,</span>
+                                                       <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                       <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;: Goals&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalibrationVisualizer.calibration_callback_func"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.calibration_callback_func">[docs]</a>    <span class="k">def</span> <span class="nf">calibration_callback_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">verbose_information</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logs the current values of the objective function.</span>
+
+<span class="sd">        :param np.array xk:</span>
+<span class="sd">            Array with the current values of the calibration</span>
+<span class="sd">        :param float obj:</span>
+<span class="sd">            Current objective value.</span>
+<span class="sd">        :param dict verbose_information:</span>
+<span class="sd">            A dict with difference-values of for all goals and the</span>
+<span class="sd">            corresponding weightings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call the logger function to print and log</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">calibration_callback_func</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">verbose_information</span><span class="p">,</span> <span class="n">penalty</span><span class="p">)</span>
+        <span class="c1"># Plot the current objective value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax_obj</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Plot the tuner parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_tuner_parameters</span><span class="p">(</span><span class="n">xk</span><span class="o">=</span><span class="n">xk</span><span class="p">)</span>
+
+        <span class="c1"># Plot the measured and simulated data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_goals</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CalibrationVisualizer.validation_callback_func"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.validation_callback_func">[docs]</a>    <span class="k">def</span> <span class="nf">validation_callback_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log the validation result information.</span>
+<span class="sd">        Also plot if selected.</span>
+
+<span class="sd">        :param float obj:</span>
+<span class="sd">            Objective value of validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">validation_callback_func</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">)</span>
+        <span class="c1"># Plot the measured and simulated data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_goals</span><span class="p">(</span><span class="n">at_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_plot</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show plot if activated&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_plot</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CalibrationVisualizer.save_calibration_result"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.save_calibration_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_calibration_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">best_iterate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the result, re-run the simulation and generate</span>
+<span class="sd">        a logFile for the minimal quality measurement</span>
+
+<span class="sd">        :param scipy.optimize.minimize.result best_iterate:</span>
+<span class="sd">            Result object of the minimization</span>
+<span class="sd">        :param str model_name:</span>
+<span class="sd">            Name of the model being calibrated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;Iterate&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_iterate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No best iterate. Can&#39;t save result&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save_calibration_result</span><span class="p">(</span><span class="n">best_iterate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">itercount</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;itercount&quot;</span><span class="p">]</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Extract filepathes</span>
+        <span class="n">iterpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Iteration_</span><span class="si">{</span><span class="n">itercount</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">iterpath</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">iterpath</span><span class="p">)</span>
+
+        <span class="n">filepath_tuner</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iterpath</span><span class="p">,</span> <span class="s2">&quot;tuner_parameter_plot.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
+        <span class="n">filepath_obj</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iterpath</span><span class="p">,</span> <span class="s2">&quot;objective_plot.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_tsd_plot</span><span class="p">:</span>
+            <span class="n">bestgoal</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">goals_dir</span><span class="p">,</span>
+                                    <span class="nb">str</span><span class="p">(</span><span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Iterate&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_goals.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Copy best goals figure</span>
+            <span class="n">copyfile</span><span class="p">(</span><span class="n">bestgoal</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">iterpath</span><span class="si">}</span><span class="se">\\</span><span class="s1">best_goals.%s&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
+
+        <span class="c1"># Save calibration results as csv</span>
+        <span class="n">res_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">])</span>
+        <span class="n">res_dict</span><span class="p">[</span><span class="s1">&#39;Objective&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_iterate</span><span class="p">[</span><span class="s2">&quot;Objective&quot;</span><span class="p">]</span>
+        <span class="n">res_dict</span><span class="p">[</span><span class="s1">&#39;Duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="n">res_csv</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="si">}</span><span class="se">\\</span><span class="s1">Iteration_</span><span class="si">{</span><span class="n">itercount</span><span class="si">}</span><span class="se">\\</span><span class="s1">RESUL&#39;</span> \
+                  <span class="sa">f</span><span class="s1">&#39;TS_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">_iteration</span><span class="si">{</span><span class="n">itercount</span><span class="si">}</span><span class="s1">.csv&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">res_csv</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rescsv</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">rescsv</span><span class="p">,</span> <span class="n">res_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">res_dict</span><span class="p">)</span>
+
+        <span class="c1"># Save figures &amp; close plots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filepath_tuner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filepath_obj</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">best_iterate</span><span class="p">[</span><span class="s1">&#39;better_current_result&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_tsd_plot</span><span class="p">:</span>
+            <span class="c1"># save improvement of recalibration (&quot;best goals df&quot; as csv)</span>
+            <span class="n">best_iterate</span><span class="p">[</span><span class="s1">&#39;Goals&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_goals_data</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">iterpath</span><span class="p">,</span> <span class="s1">&#39;goals_df.csv&#39;</span><span class="p">),</span>
+                <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+                <span class="n">decimal</span><span class="o">=</span><span class="s2">&quot;.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CalibrationVisualizer.log_intersection_of_tuners"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.log_intersection_of_tuners">[docs]</a>    <span class="k">def</span> <span class="nf">log_intersection_of_tuners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intersected_tuner_parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If an intersection for multiple classes occurs, an information about</span>
+<span class="sd">        the statistics of the dataset has to be provided.</span>
+
+<span class="sd">        :param dict intersected_tuner_parameters:</span>
+<span class="sd">            Dict with cols being the name of the tuner parameter and the</span>
+<span class="sd">            value being the list with all the different &quot;best&quot; values for</span>
+<span class="sd">            the tuner parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">log_intersection_of_tuners</span><span class="p">(</span><span class="n">intersected_tuner_parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">x_labels</span> <span class="o">=</span> <span class="n">intersected_tuner_parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">intersected_tuner_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">fig_intersection</span><span class="p">,</span> <span class="n">ax_intersection</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_labels</span><span class="p">),</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x_labels</span><span class="p">):</span>
+            <span class="c1"># Remove name of record (modelica) for visualization</span>
+            <span class="n">x_label_vis</span> <span class="o">=</span> <span class="n">x_label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;TunerParameter.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">cur_ax</span> <span class="o">=</span> <span class="n">ax_intersection</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showmedians</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">showextrema</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># cur_ax.plot([1] * len(data[i]), data[i], &quot;ro&quot;, label=&quot;Results&quot;)</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;ro&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ergebnisse&quot;</span><span class="p">)</span>
+
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">)</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">)</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="n">x_label_vis</span><span class="p">])</span>
+            <span class="n">cur_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Always store in the parent diretory as this info is relevant for all classes</span>
+        <span class="c1"># fig_intersection.suptitle(&quot;Intersection of Tuner Parameters&quot;)</span>
+        <span class="n">fig_intersection</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Intersection of Tuner Parameters&quot;</span><span class="p">)</span>
+        <span class="n">path_intersections</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">),</span> <span class="s2">&quot;tunerintersections&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;itercount&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">fig_intersection</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">,</span>
+                             <span class="sa">f</span><span class="s1">&#39;tuner_parameter_intersection_plot_it</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;itercount&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig_intersection</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">,</span>
+                             <span class="sa">f</span><span class="s1">&#39;tuner_parameter_intersection_plot.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_plot</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_plot_tuner_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">for_setup</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the tuner parameter values history for better user interaction</span>
+
+<span class="sd">        :param np.array xk:</span>
+<span class="sd">            current iterate, scaled.</span>
+<span class="sd">        :param bool for_setup:</span>
+<span class="sd">            True if the function is called to initialize the calibration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tuner_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_tuner</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_tuner</span><span class="p">):</span>
+                <span class="n">cur_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_tuner</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+                <span class="n">tuner_names_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+                <span class="c1"># Remove name of record (modelica)</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tuner_names_vis</span><span class="p">):</span>
+                    <span class="n">tuner_names_vis</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;TunerParameter.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">tuner_counter</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()):</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tuner_para_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()[</span><span class="n">tuner_counter</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">for_setup</span><span class="p">:</span>
+                        <span class="n">cur_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">tuner_names_vis</span><span class="p">[</span><span class="n">tuner_counter</span><span class="p">])</span>
+                        <span class="n">max_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">tuner_para_name</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">)</span>
+                        <span class="n">min_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">tuner_para_name</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">)</span>
+                        <span class="n">ini_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">tuner_para_name</span><span class="p">,</span> <span class="s2">&quot;initial_value&quot;</span><span class="p">)</span>
+                        <span class="n">cur_ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">max_value</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+                        <span class="n">cur_ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+                        <span class="n">cur_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span><span class="p">,</span> <span class="n">ini_val</span><span class="p">,</span> <span class="s2">&quot;bo&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">xk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">cur_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">descale</span><span class="p">(</span><span class="n">xk</span><span class="p">)[</span><span class="n">tuner_counter</span><span class="p">]</span>
+                        <span class="n">cur_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span><span class="p">,</span> <span class="n">cur_val</span><span class="p">,</span> <span class="s2">&quot;bo&quot;</span><span class="p">)</span>
+                    <span class="n">tuner_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_plot_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">at_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the measured and simulated data for the current iterate&quot;&quot;&quot;</span>
+
+        <span class="c1"># Get information on the relevant-intervals of the calibration:</span>
+        <span class="n">rel_intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">relevant_intervals</span>
+
+        <span class="n">_goals_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_goals_data</span><span class="p">()</span>
+        <span class="n">_goals_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_goals_list</span><span class="p">()</span>
+        <span class="n">goal_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_rows_goals</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_cols_goals</span><span class="p">):</span>
+                <span class="n">cur_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax_goal</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+                <span class="n">cur_ax</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">goal_counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">:</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cur_goal</span> <span class="o">=</span> <span class="n">_goals_names</span><span class="p">[</span><span class="n">goal_counter</span><span class="p">]</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_goals_df</span><span class="p">[</span><span class="n">cur_goal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="p">],</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">cur_goal</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">_goals_df</span><span class="p">[</span><span class="n">cur_goal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">],</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">cur_goal</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">color</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+                    <span class="c1"># Mark the disregarded intervals in grey</span>
+                    <span class="n">_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span>
+                    <span class="n">_first</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Only create one label</span>
+                    <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">rel_intervals</span><span class="p">:</span>
+                        <span class="n">_end</span> <span class="o">=</span> <span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">_first</span><span class="p">:</span>
+                            <span class="n">cur_ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">_start</span><span class="p">,</span> <span class="n">_end</span><span class="p">,</span>
+                                           <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+                                           <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                                           <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Disregarded Interval&quot;</span><span class="p">)</span>
+                            <span class="n">_first</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="c1"># Only create one label</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">cur_ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">_start</span><span class="p">,</span> <span class="n">_end</span><span class="p">,</span>
+                                           <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+                        <span class="n">_start</span> <span class="o">=</span> <span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c1"># Final plot of grey</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">rel_intervals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">,</span>
+                                   <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+                                   <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+                    <span class="n">cur_ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time / s&quot;</span><span class="p">)</span>
+                <span class="n">goal_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">at_validation</span><span class="p">:</span>
+            <span class="n">name_id</span> <span class="o">=</span> <span class="s2">&quot;Validation&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter_calibration</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_tsd_plot</span><span class="p">:</span>
+            <span class="n">_savedir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">_savedir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">_savedir</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_savedir</span><span class="p">,</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_id</span><span class="si">}</span><span class="s2">_goals.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

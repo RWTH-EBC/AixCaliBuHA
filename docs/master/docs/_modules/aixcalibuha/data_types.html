@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.data_types &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.data_types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.data_types</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing data types to enable an automatic usage of</span>
+<span class="sd">different other modules in the Python package.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">TimeSeriesData</span>
+<span class="kn">from</span> <span class="nn">ebcpy.utils.statistics_analyzer</span> <span class="kn">import</span> <span class="n">StatisticsAnalyzer</span>
+<span class="kn">from</span> <span class="nn">ebcpy.preprocessing</span> <span class="kn">import</span> <span class="n">convert_datetime_index_to_float_index</span>
+<span class="c1"># pylint: disable=I1101</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Goals"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals">[docs]</a><span class="k">class</span> <span class="nc">Goals</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for one or multiple goals. Used to evaluate the</span>
+<span class="sd">    difference between current simulation and measured data</span>
+
+<span class="sd">    :param (ebcpy.data_types.TimeSeriesData, pd.DataFrame) meas_target_data:</span>
+<span class="sd">        The dataset of the measurement. It acts as a point of reference</span>
+<span class="sd">        for the simulation output. If the dimensions of the given DataFrame and later</span>
+<span class="sd">        added simulation-data are not equal, an error is raised.</span>
+<span class="sd">        Has to hold all variables listed under the MEASUREMENT_NAME variable in the</span>
+<span class="sd">        variable_names dict.</span>
+<span class="sd">    :param dict variable_names:</span>
+<span class="sd">        A dictionary to construct the goals-DataFrame using pandas MultiIndex-Functionality.</span>
+<span class="sd">        The dict has to follow the structure.</span>
+<span class="sd">        ``variable_names = {VARIABLE_NAME: [MEASUREMENT_NAME, SIMULATION_NAME]}``</span>
+
+<span class="sd">        - VARIABLE_NAME: A string which holds the actual name</span>
+<span class="sd">          of the variable you use as a goal.</span>
+<span class="sd">          E.g.: ``VARIABLE_NAME=&quot;Temperature_Condenser_Outflow&quot;``</span>
+<span class="sd">        - MEASUREMENT_NAME: Is either a string or a tuple. Hold the name the variable</span>
+<span class="sd">          has inside the given meas_target_data. If you want to specify a tag you have</span>
+<span class="sd">          to pass a tuple, like: ``(MEASUREMENT_NAME, TAG_NAME)``. Else just pass a string.</span>
+<span class="sd">          E.g.: ``MEASUREMENT_NAME=&quot;HydraulicBench[4].T_Out&quot;`` or</span>
+<span class="sd">          ``MEASUREMENT_NAME=(&quot;HydraulicBench[4].T_Out&quot;, &quot;preprocessed&quot;)``</span>
+<span class="sd">        - SIMULATION_NAME is either a string or a tuple, just like MEASUREMENT_NAME.</span>
+<span class="sd">          E.g. (for Modelica): ``SIMULATION_NAME=&quot;HeatPump.Condenser.Vol.T&quot;``</span>
+
+<span class="sd">        You may use a tuple instead of a list OR a dict</span>
+<span class="sd">        with key &quot;meas&quot; for measurement and key &quot;sim&quot; for simulation. These options may be</span>
+<span class="sd">        relevant for your own code readability.</span>
+<span class="sd">        E.g. ``variable_names =</span>
+<span class="sd">        {VARIABLE_NAME: {&quot;meas&quot;:MEASUREMENT_NAME, &quot;sim&quot;: SIMULATION_NAME}}``</span>
+<span class="sd">    :param str statistical_measure:</span>
+<span class="sd">        Measure to calculate the scalar of the objective,</span>
+<span class="sd">        One of the supported methods in</span>
+<span class="sd">        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer</span>
+<span class="sd">        e.g. RMSE, MAE, NRMSE</span>
+<span class="sd">    :param list weightings:</span>
+<span class="sd">        Values between 0 and 1 to account for multiple Goals to be evaluated.</span>
+<span class="sd">        If multiple goals are selected, and weightings is None, each</span>
+<span class="sd">        weighting will be equal to 1/(Number of goals).</span>
+<span class="sd">        The weighting is scaled so that the sum will equal 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Set default string for measurement reference</span>
+    <span class="n">meas_tag_str</span> <span class="o">=</span> <span class="s2">&quot;meas&quot;</span>
+    <span class="n">sim_tag_str</span> <span class="o">=</span> <span class="s2">&quot;sim&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">meas_target_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                 <span class="n">variable_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                 <span class="n">statistical_measure</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">weightings</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class-objects and check correct input.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Open the meas target data:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given meas_target_data is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but TimeSeriesData is required.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_names</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given variable_names is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">variable_names</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;but a dict is required.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Extract the measurement-information out of the dict.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span> <span class="o">=</span> <span class="n">variable_names</span>
+
+        <span class="c1"># Used to speed up the frequently used set_sim_target_data function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">_columns</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Used to extract relevant part of df</span>
+
+        <span class="n">_rename_cols_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">meas_sim_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># First extract the information about the measurement out of the dict</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_sim_info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">meas_info</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_sim_info</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="n">meas_info</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> of variable_names has a value&quot;</span>
+                                <span class="s2">&quot;neither being a dict, list or tuple.&quot;</span><span class="p">)</span>
+            <span class="c1"># Now get the info to extract the values out of the given tsd</span>
+            <span class="c1"># Convert string with into a list of tuples containing the relevant tag.</span>
+            <span class="c1"># If mulitple tags exist, and the default tag (self.meas_tag_str)</span>
+            <span class="c1"># is not present, an error is raised.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_info</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">[</span><span class="n">meas_info</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Given meas_target_data contains columns without a tag.&quot;</span>
+                                    <span class="s2">&quot;Please only pass MultiIndex-DataFrame objects.&quot;</span><span class="p">)</span>
+                <span class="n">tags</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+                <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not able to automatically select variables and tags. &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">meas_info</span><span class="si">}</span><span class="s2"> has mutliple tags, none of which &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;is specified as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                    <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_info</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">var_name</span>
+                <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meas_info</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measurement Info on variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> is &quot;</span>
+                                <span class="s2">&quot;neither of type string or tuple.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Take the subset of the given tsd based on var_names and tags.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Rename all variables to the given var_name (key of self.variable_names)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">_rename_cols_dict</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Rename all tags to the default measurement name for consistency.</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">))]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Save the tsd to a tsd_ref object</span>
+        <span class="c1"># Used to never lose the original dataframe.</span>
+        <span class="c1"># _tsd may be altered by relevant intervals, this object never!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Set the statistical analyzer:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statistical_measure</span> <span class="o">=</span> <span class="n">statistical_measure</span>
+
+        <span class="c1"># Set the weightings, if not specified.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">weightings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span>
+                                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weightings</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;weightings is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;but should be of type list.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The given number of weightings (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;does not match the number of &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;goals (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrite string method to present the Goals-Object more</span>
+<span class="sd">        nicely.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The statistical measure of this Goal instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span>
+
+    <span class="nd">@statistical_measure</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistical_measure</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the new statistical measure. The value must be</span>
+<span class="sd">        supported by the method argument in the</span>
+<span class="sd">        ``StatisticsAnalyzer`` class of ``ebcpy``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stat_analyzer</span> <span class="o">=</span> <span class="n">StatisticsAnalyzer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">statistical_measure</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">statistical_measure</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="o">=</span> <span class="n">statistical_measure</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="o">=</span> <span class="n">statistical_measure</span>
+
+<div class="viewcode-block" id="Goals.eval_difference"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.eval_difference">[docs]</a>    <span class="k">def</span> <span class="nf">eval_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">penaltyfactor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate the difference of the measurement and simulated data based on the</span>
+<span class="sd">        chosen statistical_measure.</span>
+
+<span class="sd">        :param boolean verbose:</span>
+<span class="sd">            If True, a dict with difference-values of for all goals and the</span>
+<span class="sd">            corresponding weightings is returned together with the total difference.</span>
+<span class="sd">            This can be useful to better understand which goals is performing</span>
+<span class="sd">            well in an optimization and which goals needs further is not performing well.</span>
+<span class="sd">        :param float penaltyfactor:</span>
+<span class="sd">            Muliplty result with this factor to account for</span>
+<span class="sd">            penatlies of some sort.</span>
+<span class="sd">        :return: float total_difference</span>
+<span class="sd">            weighted ouput for all goals.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_difference</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_verbose_calculation</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are not valid values in the &quot;</span>
+                                 <span class="s2">&quot;simulated target data. Probably the time &quot;</span>
+                                 <span class="s2">&quot;interval of measured and simulated data &quot;</span>
+                                 <span class="s2">&quot;are not equal. </span><span class="se">\n</span><span class="s2">Please check the frequencies &quot;</span>
+                                 <span class="s2">&quot;in the toml file (output_interval &amp; frequency).&quot;</span><span class="p">)</span>
+            <span class="n">_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat_analyzer</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span>
+                <span class="n">meas</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="p">[(</span><span class="n">goal_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">)],</span>
+                <span class="n">sim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="p">[(</span><span class="n">goal_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="p">)]</span>
+            <span class="p">)</span>
+            <span class="c1"># Apply penalty function</span>
+            <span class="n">_diff</span> <span class="o">=</span> <span class="n">_diff</span> <span class="o">*</span> <span class="n">penaltyfactor</span>
+
+            <span class="n">_verbose_calculation</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_diff</span>
+            <span class="n">total_difference</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">_diff</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">total_difference</span><span class="p">,</span> <span class="n">_verbose_calculation</span>
+        <span class="k">return</span> <span class="n">total_difference</span></div>
+
+<div class="viewcode-block" id="Goals.set_sim_target_data"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.set_sim_target_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_sim_target_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_target_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alter the object with new simulation data</span>
+<span class="sd">        self._sim_target_data based on the given dataframe</span>
+<span class="sd">        sim_target_data.</span>
+
+<span class="sd">        :param TimeSeriesData sim_target_data:</span>
+<span class="sd">            Object with simulation target data. This data should be</span>
+<span class="sd">            the output of a simulation, hence &quot;sim&quot;-target-data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Start with the base</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Check index type</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Given sim_target_data is using </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; as an index, but the reference results (measured-data) was declared&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; using the </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. Convert your&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; measured-data index to solve this error.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Three critical cases may occur:</span>
+        <span class="c1"># 1. sim_target_data is bigger (in len) than _tsd</span>
+        <span class="c1">#   --&gt; Only the first part is accepted</span>
+        <span class="c1"># 2. sim_target_data is smaller than _tsd</span>
+        <span class="c1">#   --&gt; Missing values become NaN, which is fine. If no other function eliminates</span>
+        <span class="c1">#       the NaNs, an error is raised when doing eval_difference().</span>
+        <span class="c1"># 3. The index differs:</span>
+        <span class="c1">#   --&gt; All new values are NaN. However, this should raise an error, as an error</span>
+        <span class="c1">#   in eval_difference would not lead back to this function.</span>
+        <span class="c1"># Check if index matches in relevant intersection:</span>
+        <span class="n">sta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">sto</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given indexes have different lengths &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2"> vs &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2">). &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;Can&#39;t compare them. &quot;</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span> <span class="o">!=</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measured and simulated data differ on </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; index points. Affected index part: </span><span class="si">{</span><span class="n">diff</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="si">}</span><span class="s2">. &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;This will lead to errors in evaluation, &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;hence we raise the error already here. &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;Check output_interval, equidistant_output and &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;frequency of measured data to find the reason for &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;this error. The have to match.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Resize simulation data to match to meas data</span>
+        <span class="k">for</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">_tsd_sim</span> <span class="o">=</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_tsd_sim</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given sim_target_data contains multiple tags for variable &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span><span class="si">}</span><span class="s2">. &quot;</span>
+                                 <span class="s2">&quot;Can&#39;t select one automatically.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">,</span> <span class="p">(</span><span class="n">goal_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_tsd_sim</span><span class="o">.</span><span class="n">values</span>
+        <span class="c1"># Sort the index for better visualisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Goals.set_relevant_time_intervals"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.set_relevant_time_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">set_relevant_time_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intervals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For many calibration-uses cases, different time-intervals of the measured</span>
+<span class="sd">        and simulated data are relevant. Set the interval to be used with this function.</span>
+<span class="sd">        This will change both measured and simulated data. Therefore, the eval_difference</span>
+<span class="sd">        function can be called at every moment.</span>
+
+<span class="sd">        :param list intervals:</span>
+<span class="sd">            List with time-intervals. Each list element has to be a tuple</span>
+<span class="sd">            with the first element being the start_time as float or int and</span>
+<span class="sd">            the second item being the end_time of the interval as float or int.</span>
+<span class="sd">            E.g:</span>
+<span class="sd">            [(0, 100), [150, 200), (500, 600)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_df_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Create initial False mask</span>
+        <span class="n">_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">_df_ref</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Dynamically make mask for multiple possible time-intervals</span>
+        <span class="k">for</span> <span class="n">_start_time</span><span class="p">,</span> <span class="n">_end_time</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+            <span class="n">_mask</span> <span class="o">=</span> <span class="n">_mask</span> <span class="o">|</span> <span class="p">((</span><span class="n">_df_ref</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">_start_time</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_df_ref</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;=</span> <span class="n">_end_time</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">_df_ref</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">_mask</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Goals.get_goals_list"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.get_goals_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_goals_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the internal list containing all goals.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Goals.get_goals_data"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.get_goals_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_goals_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current time-series-data object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Goals.get_sim_var_names"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.get_sim_var_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_sim_var_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the names of the simulation variables.</span>
+
+<span class="sd">        :returns list sim_var_names:</span>
+<span class="sd">            Names of the simulation variables as a list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Goals.get_meas_frequency"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.get_meas_frequency">[docs]</a>    <span class="k">def</span> <span class="nf">get_meas_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the frequency of the measurement data.</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            float: Mean frequency of the index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">frequency</span>
+        <span class="k">if</span> <span class="n">std</span> <span class="o">&gt;=</span> <span class="mf">1e-8</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;The index of your measurement data is not &quot;</span>
+                            <span class="s2">&quot;equally sampled. The standard deviation is </span><span class="si">%s</span><span class="s2">.&quot;</span>
+                            <span class="s2">&quot;The may lead to errors when mapping measurements to simulation &quot;</span>
+                            <span class="s2">&quot;results.&quot;</span><span class="p">,</span> <span class="n">mean</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">mean</span></div></div>
+
+
+<div class="viewcode-block" id="TunerParas"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas">[docs]</a><span class="k">class</span> <span class="nc">TunerParas</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for tuner parameters.</span>
+<span class="sd">    Tuner parameters are parameters of a model which are</span>
+<span class="sd">    constant during simulation but are varied during calibration</span>
+<span class="sd">    or other analysis.</span>
+
+<span class="sd">    :param list names:</span>
+<span class="sd">        List of names of the tuner parameters</span>
+<span class="sd">    :param float,int initial_values:</span>
+<span class="sd">        Initial values for optimization.</span>
+<span class="sd">        Even though some optimization methods don&#39;t require an</span>
+<span class="sd">        initial guess, specifying a initial guess based on</span>
+<span class="sd">        expected values or experience is helpful to better</span>
+<span class="sd">        check the results of the calibration</span>
+<span class="sd">    :param list,tuple bounds:</span>
+<span class="sd">        Tuple or list of float or ints for lower and upper bound to the tuner parameter.</span>
+<span class="sd">        The bounds object is optional, however highly recommend</span>
+<span class="sd">        for calibration or optimization in general. As soon as you</span>
+<span class="sd">        tune parameters with different units, such as Capacity and</span>
+<span class="sd">        heat conductivity, the solver will fail to find good solutions.</span>
+
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    &gt;&gt;&gt; tuner_paras = TunerParas(names=[&quot;C&quot;, &quot;m_flow_2&quot;, &quot;heatConv_a&quot;],</span>
+<span class="sd">    &gt;&gt;&gt;                          initial_values=[5000, 0.02, 200],</span>
+<span class="sd">    &gt;&gt;&gt;                          bounds=[(4000, 6000), (0.01, 0.1), (10, 300)])</span>
+<span class="sd">    &gt;&gt;&gt; print(tuner_paras)</span>
+<span class="sd">                initial_value      min     max    scale</span>
+<span class="sd">    names</span>
+<span class="sd">    C                 5000.00  4000.00  6000.0  2000.00</span>
+<span class="sd">    m_flow_2             0.02     0.01     0.1     0.09</span>
+<span class="sd">    heatConv_a         200.00    10.00   300.0   290.00</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class-objects and check correct input.&quot;&quot;&quot;</span>
+        <span class="c1"># Check if the given input-parameters are of correct format. If not, raise an error.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given name is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="s2">&quot;and not of type str.&quot;</span><span class="p">)</span>
+        <span class="c1"># Check if all names are unique:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given names contain duplicates. &quot;</span>
+                             <span class="s2">&quot;This will yield errors in later stages&quot;</span>
+                             <span class="s2">&quot;such as calibration of sensitivity analysis.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Calculate the sum, as this will fail if the elements are not float or int.</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;initial_values contains other &quot;</span>
+                            <span class="s2">&quot;instances than float or int.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;shape mismatch: names has length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; and initial_values </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_bound_min</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="n">_bound_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;shape mismatch: bounds has length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;and names </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">_bound_min</span><span class="p">,</span> <span class="n">_bound_max</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
+                <span class="n">_bound_min</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bound</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">_bound_max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bound</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;names&quot;</span><span class="p">:</span> <span class="n">names</span><span class="p">,</span>
+                                 <span class="s2">&quot;initial_value&quot;</span><span class="p">:</span> <span class="n">initial_values</span><span class="p">,</span>
+                                 <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">_bound_min</span><span class="p">,</span>
+                                 <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">_bound_max</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_scale</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrite string method to present the TunerParas-Object more</span>
+<span class="sd">        nicely.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TunerParas.scale"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descaled</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scales the given value to the bounds of the tuner parameter between 0 and 1</span>
+
+<span class="sd">        :param np.array,list descaled:</span>
+<span class="sd">            Value to be scaled</span>
+<span class="sd">        :return: np.array scaled:</span>
+<span class="sd">            Scaled value between 0 and 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If no bounds are given, scaling is not possible--&gt; descaled = scaled</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">descaled</span>
+        <span class="n">_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">descaled</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">])</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">_scaled</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_scaled</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Given descaled values are outside &quot;</span>
+                          <span class="s2">&quot;of bounds. Automatically limiting &quot;</span>
+                          <span class="s2">&quot;the values with respect to the bounds.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">_scaled</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TunerParas.descale"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.descale">[docs]</a>    <span class="k">def</span> <span class="nf">descale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scaled</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the given scaled value to an descaled one.</span>
+
+<span class="sd">        :param np.array,list scaled:</span>
+<span class="sd">            Scaled input value between 0 and 1</span>
+<span class="sd">        :return: np.array descaled:</span>
+<span class="sd">            descaled value based on bounds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If no bounds are given, scaling is not possible--&gt; descaled = scaled</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scaled</span>
+        <span class="n">_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scaled</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">_scaled</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">-</span><span class="mf">1e4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_scaled</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">+</span><span class="mf">1e4</span><span class="p">)):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Given scaled values are outside of bounds. &quot;</span>
+                          <span class="s2">&quot;Automatically limiting the values with &quot;</span>
+                          <span class="s2">&quot;respect to the bounds.&quot;</span><span class="p">)</span>
+        <span class="n">_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">_scaled</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_scaled</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get property bounds&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span>
+
+<div class="viewcode-block" id="TunerParas.get_names"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.get_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the names of the tuner parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TunerParas.get_initial_values"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.get_initial_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_initial_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the initial values of the tuner parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;initial_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+<div class="viewcode-block" id="TunerParas.get_bounds"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.get_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the bound-values of the tuner parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+<div class="viewcode-block" id="TunerParas.get_value"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to get a value of a specific tuner parameter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TunerParas.set_value"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to set a value of a specific tuner parameter&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given value is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;but float or int is required&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;initial_value&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Can only alter max, min and initial_value&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_scale</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TunerParas.remove_names"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.TunerParas.remove_names">[docs]</a>    <span class="k">def</span> <span class="nf">remove_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove gives list of names from the Tuner-parameters</span>
+
+<span class="sd">        :param list names:</span>
+<span class="sd">            List with names inside of the TunerParas-dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">names</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The given lower bounds are greater equal &quot;</span>
+                <span class="s2">&quot;than the upper bounds, resulting in a &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;negative scale: </span><span class="se">\n</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CalibrationClass"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.CalibrationClass">[docs]</a><span class="k">class</span> <span class="nc">CalibrationClass</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class used for calibration of time-series data.</span>
+
+<span class="sd">    :param str name:</span>
+<span class="sd">        Name of the class, e.g. &#39;device on&#39;</span>
+<span class="sd">    :param float,int start_time:</span>
+<span class="sd">        Time at which the class starts</span>
+<span class="sd">    :param float,int stop_time:</span>
+<span class="sd">        Time at which the class ends</span>
+<span class="sd">    :param Goals goals:</span>
+<span class="sd">        Goals parameters which are relevant in this class.</span>
+<span class="sd">        As this class may be used in the classifier, a Goals-Class</span>
+<span class="sd">        may not be available at all times and can be added later.</span>
+<span class="sd">    :param TunerParas tuner_paras:</span>
+<span class="sd">        As this class may be used in the classifier, a TunerParas-Class</span>
+<span class="sd">        may not be available at all times and can be added later.</span>
+<span class="sd">    :param list relevant_intervals:</span>
+<span class="sd">        List with time-intervals relevant for the calibration.</span>
+<span class="sd">        Each list element has to be a tuple with the first element being</span>
+<span class="sd">        the start-time as float/int and the second item being the end-time</span>
+<span class="sd">        of the interval as float/int.</span>
+<span class="sd">        E.g:</span>
+<span class="sd">        For a class with start_time=0 and stop_time=1000, given following intervals</span>
+<span class="sd">        [(0, 100), [150, 200), (500, 600)]</span>
+<span class="sd">        will only evaluate the data between 0-100, 150-200 and 500-600.</span>
+<span class="sd">        The given intervals may overlap. Furthermore the intervals do not need</span>
+<span class="sd">        to be in an ascending order or be limited to</span>
+<span class="sd">        the start_time and end_time parameters.</span>
+<span class="sd">    :keyword (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:</span>
+<span class="sd">        TimeSeriesData or DataFrame that holds</span>
+<span class="sd">        input data for the simulation to run.</span>
+<span class="sd">        The time-index should be float index and match the overall</span>
+<span class="sd">        ranges set by start- and stop-time.</span>
+<span class="sd">    :keyword dict input_kwargs:</span>
+<span class="sd">        If inputs are provided, additional input keyword-args passed to the</span>
+<span class="sd">        simulation API can be specified.</span>
+<span class="sd">        Using FMUs, you don&#39;t need to specify anything.</span>
+<span class="sd">        Using DymolaAPI, you have to specify &#39;table_name&#39; and &#39;file_name&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">stop_time</span><span class="p">,</span> <span class="n">goals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tuner_paras</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relevant_intervals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class-objects and check correct input.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_time</span> <span class="o">=</span> <span class="n">stop_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="o">=</span> <span class="n">goals</span>
+        <span class="k">if</span> <span class="n">tuner_paras</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
+        <span class="k">if</span> <span class="n">relevant_intervals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relevant_intervals</span> <span class="o">=</span> <span class="n">relevant_intervals</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Then all is relevant</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relevant_intervals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">stop_time</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>  <span class="c1"># Trigger the property setter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input_kwargs&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get name of calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set name of calibration class&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name of CalibrationClass is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;but has to be of type str&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get start time of calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="nd">@start_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set start time of calibration class&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">start_time</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The given start-time is &quot;</span>
+                             <span class="s2">&quot;higher than the stop-time.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stop_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get stop time of calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_time</span>
+
+    <span class="nd">@stop_time</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">stop_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set stop time of calibration class&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&lt;=</span> <span class="n">stop_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The given stop-time is &quot;</span>
+                             <span class="s2">&quot;lower than the start-time.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_time</span> <span class="o">=</span> <span class="n">stop_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerParas</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the tuner parameters of the calibration-class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span>
+
+    <span class="nd">@tuner_paras</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner_paras</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the tuner parameters for the calibration-class.</span>
+
+<span class="sd">        :param tuner_paras: TunerParas</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">TunerParas</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given tuner_paras is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but should be type TunerParas&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tuner_paras</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Goals</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current goals instance&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span>
+
+    <span class="nd">@goals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goals</span><span class="p">:</span> <span class="n">Goals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the goals object for the calibration-class.</span>
+
+<span class="sd">        :param Goals goals:</span>
+<span class="sd">            Goals-data-type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goals</span><span class="p">,</span> <span class="n">Goals</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given goals parameter is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">goals</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="s2">&quot;but should be type Goals&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goals</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">goals</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">relevant_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current relevant_intervals&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relevant_intervals</span>
+
+    <span class="nd">@relevant_intervals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">relevant_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relevant_intervals</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set current relevant_intervals&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relevant_intervals</span> <span class="o">=</span> <span class="n">relevant_intervals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the inputs for this calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span>
+
+    <span class="nd">@inputs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the inputs for this calibration class&quot;&quot;&quot;</span>
+        <span class="c1"># Check correct index:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inputs need to be either TimeSeriesData &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;or pd.DataFrame, but you passed </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">):</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">convert_datetime_index_to_float_index</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="n">inputs</span></div>
+
+
+<div class="viewcode-block" id="merge_calibration_classes"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.merge_calibration_classes">[docs]</a><span class="k">def</span> <span class="nf">merge_calibration_classes</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a list of multiple calibration-classes, this function merges given</span>
+<span class="sd">    objects by the &quot;name&quot; attribute. Relevant intervals are set, in order</span>
+<span class="sd">    to maintain the start and stop-time info.</span>
+
+<span class="sd">    :param list calibration_classes:</span>
+<span class="sd">        List containing multiple CalibrationClass-Objects</span>
+<span class="sd">    :return: list cal_classes_merged:</span>
+<span class="sd">        A list containing one CalibrationClass-Object for each different</span>
+<span class="sd">        &quot;name&quot; of class.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; cal_classes = [CalibrationClass(&quot;on&quot;, 0, 100),</span>
+<span class="sd">    &gt;&gt;&gt;                CalibrationClass(&quot;off&quot;, 100, 200),</span>
+<span class="sd">    &gt;&gt;&gt;                CalibrationClass(&quot;on&quot;, 200, 300)]</span>
+<span class="sd">    &gt;&gt;&gt; merged_classes = merge_calibration_classes(cal_classes)</span>
+<span class="sd">    Is equal to:</span>
+<span class="sd">    &gt;&gt;&gt; merged_classes = [CalibrationClass(&quot;on&quot;, 0, 300,</span>
+<span class="sd">    &gt;&gt;&gt;                                    relevant_intervals=[(0,100), (200,300)]),</span>
+<span class="sd">    &gt;&gt;&gt;                   CalibrationClass(&quot;off&quot;, 100, 200)]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Use a dict for easy name-access</span>
+    <span class="n">temp_merged</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calibration_classes</span><span class="p">:</span>
+        <span class="n">_name</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># First create dictionary with all calibration classes</span>
+        <span class="k">if</span> <span class="n">_name</span> <span class="ow">in</span> <span class="n">temp_merged</span><span class="p">:</span>
+            <span class="n">temp_merged</span><span class="p">[</span><span class="n">_name</span><span class="p">][</span><span class="s2">&quot;intervals&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">relevant_intervals</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_merged</span><span class="p">[</span><span class="n">_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;goals&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="p">,</span>
+                                  <span class="s2">&quot;tuner_paras&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">,</span>
+                                  <span class="s2">&quot;intervals&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="p">),</span>
+                                  <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">),</span>
+                                  <span class="s2">&quot;input_kwargs&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">)</span>
+                                  <span class="p">}</span>
+                                  
+    <span class="c1"># Convert dict to actual calibration-classes</span>
+    <span class="n">cal_classes_merged</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">temp_merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Flatten the list of tuples and get the start- and stop-values</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;intervals&quot;</span><span class="p">],</span> <span class="p">()))</span>
+        <span class="n">stop_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;intervals&quot;</span><span class="p">],</span> <span class="p">()))</span>
+        <span class="n">cal_classes_merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CalibrationClass</span><span class="p">(</span>
+            <span class="n">_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">stop_time</span><span class="p">,</span>
+            <span class="n">goals</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;goals&quot;</span><span class="p">],</span>
+            <span class="n">tuner_paras</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;tuner_paras&quot;</span><span class="p">],</span>
+            <span class="n">relevant_intervals</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;intervals&quot;</span><span class="p">],</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">],</span>
+            <span class="n">input_kwargs</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;input_kwargs&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cal_classes_merged</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

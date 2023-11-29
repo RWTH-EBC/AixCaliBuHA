@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.sensitivity_analysis.morris &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.sensitivity_analysis.morris</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.sensitivity_analysis.morris</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Adds the MorrisAnalyzer to the available</span>
+<span class="sd">classes of sensitivity analysis.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">SALib.sample</span> <span class="kn">import</span> <span class="n">morris</span>
+<span class="kn">from</span> <span class="nn">SALib.analyze</span> <span class="kn">import</span> <span class="n">morris</span> <span class="k">as</span> <span class="n">analyze_morris</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha.sensitivity_analysis</span> <span class="kn">import</span> <span class="n">SenAnalyzer</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span>
+
+
+<div class="viewcode-block" id="MorrisAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">MorrisAnalyzer</span><span class="p">(</span><span class="n">SenAnalyzer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Additional arguments:</span>
+
+<span class="sd">    :keyword int num_levels:</span>
+<span class="sd">        Default 4, used for the morris-method</span>
+<span class="sd">    :keyword optimal_trajectories:</span>
+<span class="sd">        Used for the morris-method</span>
+<span class="sd">    :keyword bool local_optimization:</span>
+<span class="sd">        Default True, used for the morris-method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">sim_api</span><span class="o">=</span><span class="n">sim_api</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Set additional kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_levels&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimal_trajectories</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;optimal_trajectories&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_optimization</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;local_optimization&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">analysis_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The analysis variables of the sobol method&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;mu_star&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="s1">&#39;mu_star_conf&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MorrisAnalyzer.analysis_function"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.analysis_function">[docs]</a>    <span class="k">def</span> <span class="nf">analysis_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use the SALib.analyze.morris method to analyze the simulation results.</span>
+
+<span class="sd">        :param np.array x:</span>
+<span class="sd">            the `X` parameter of the morris method (The NumPy matrix containing the model inputs)</span>
+<span class="sd">        :param np.array y:</span>
+<span class="sd">            The NumPy array containing the model outputs</span>
+<span class="sd">        :return:</span>
+<span class="sd">            returns the result of the SALib.analyze.sobol method (from the documentation:</span>
+<span class="sd">            a dictionary with cols `mu`, `mu_star`, `sigma`, and `mu_star_conf`, where each</span>
+<span class="sd">            entry is a list of size D (the number of parameters) containing the indices in the</span>
+<span class="sd">            same order as the parameter file.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">analyze_morris</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                      <span class="n">num_levels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MorrisAnalyzer.create_sampler_demand"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.create_sampler_demand">[docs]</a>    <span class="k">def</span> <span class="nf">create_sampler_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to create the sampler parameters for the morris method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span><span class="p">,</span>
+                <span class="s1">&#39;optimal_trajectories&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimal_trajectories</span><span class="p">,</span>
+                <span class="s1">&#39;local_optimization&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_optimization</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="MorrisAnalyzer.generate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.generate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the sampler specified for morris and return the results.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The list of samples generated as a NumPy array with one row per sample</span>
+<span class="sd">            and each row containing one value for each variable name in `problem[&#39;names&#39;]`.</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">morris</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span>
+                             <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
+                             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the result object to a dict with the key</span>
+<span class="sd">        being the variable name and the value being the result</span>
+<span class="sd">        associated to self.analysis_variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span><span class="p">]))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

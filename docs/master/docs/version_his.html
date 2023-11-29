@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Version History &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Contribute as a user" href="contribution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Version History</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/version_his.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="version-history">
+<h1>Version History<a class="headerlink" href="#version-history" title="Permalink to this heading"></a></h1>
+<p><strong>v.0.1</strong>:</p>
+<ul class="simple">
+<li><p><strong>v0.1.0</strong>: Implemented.</p></li>
+<li><p><strong>v0.1.1</strong>: Split into different frameworks and adjust changes from based on new version of ebcpy</p></li>
+<li><p><strong>v0.1.2</strong>: Move CalibrationClass from ebcpy and add it to the general module aixcalibuha. Adjust Goals etc. based on changes in ebcpy.</p></li>
+<li><p><strong>v0.1.3</strong>: Remove Continuous Calibration methods and introduce new, better methods for calibration of multiple classes.</p>
+<ul>
+<li><p>Issue 43: Same class now optimizes to one optimum instead of multiple. If an intersection in tuner parameters occurs, the statistics are logged and plotted so the user can better decide with what values to go on.</p></li>
+<li><p>Issue 42: Visualizer is adjusted to better print the results more readable</p></li>
+<li><p>Issue 39: Several kwargs are added for better user-interaction and plotting of multiple classes</p></li>
+<li><p>Issue 46: Current best iterate is stored to ensure an interruption of a calibration won’t yield in a lost optimized value. Keyboard interrupt is now possible.</p></li>
+</ul>
+</li>
+<li><p><strong>v0.1.4</strong></p>
+<ul>
+<li><p>Add Goals from ebcpy</p></li>
+<li><p>Add new tutorial for a better start with the framework. (See Issue 49)</p></li>
+<li><p>Make changes based on new version 0.1.5 in ebcpy</p></li>
+</ul>
+</li>
+<li><p><strong>v0.1.5</strong></p>
+<ul>
+<li><p>Add new scripts in bin folder to ease the setup of the calibration for new users</p></li>
+<li><p>Add configuration files and save/load classes</p></li>
+<li><p>Issue 54: Skip failed simulations using two new kwargs in Calibrator class</p></li>
+<li><p>Issue 53: Save final plots despite abortion of calibration process via STRG+C</p></li>
+<li><p>Issue 51: Refactor reference_start_time to fix_start_time</p></li>
+<li><p>Issue 23: Model Wrapper for MoCaTe files.</p></li>
+</ul>
+</li>
+<li><p><strong>v0.1.6</strong></p>
+<ul>
+<li><p>Add Re-Calibration code from master thesis of Sebastian Borges</p></li>
+<li><p>Add fixed_parameters to calibration</p></li>
+<li><p>Re-add tunerParas from ebcpy</p></li>
+<li><p>Make changes based on ebcpy v.0.1.7</p></li>
+<li><p>Split SensivitiyAnalyzer class and use object oriented programming</p></li>
+</ul>
+</li>
+<li><p><strong>v0.2.0</strong></p>
+<ul>
+<li><p>Adjust based on ebcpy v 0.2.0</p></li>
+<li><p>Add examples and fix tutorial</p></li>
+<li><p>Improve validation output</p></li>
+<li><p>Fix version of SALib as 1.4 is not working</p></li>
+</ul>
+</li>
+<li><p><strong>v0.2.1</strong></p>
+<ul>
+<li><p>Unfix version of SALib as 1.4.0.2 and 1.4.4 are not working</p></li>
+</ul>
+</li>
+<li><p><strong>v0.2.2</strong></p>
+<ul>
+<li><p>Issue 21: Fix setup.py by removing the tests packages</p></li>
+</ul>
+</li>
+<li><p><strong>v0.2.3</strong></p>
+<ul>
+<li><p>Add workflows</p></li>
+</ul>
+</li>
+<li><p><strong>v0.3.0</strong></p>
+<ul>
+<li><p>Issue 20: Add parallelization for calibration and sensitivity analysis</p></li>
+<li><p>Issue 32: Add example converter to CI/CD</p></li>
+</ul>
+</li>
+<li><p><strong>v0.3.1</strong></p>
+<ul>
+<li><p>Issue 41: Fix logging and add kwarg</p></li>
+</ul>
+</li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="contribution.html" class="btn btn-neutral float-left" title="Contribute as a user" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
