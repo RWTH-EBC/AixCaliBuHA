@@ -1669,7 +1669,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):\n    \"\"\"\n    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)\n    package for the given model inside the simulation api.\n\n    :param str model_name:\n        Name of the model you want to calibrate.\n        If the model is a standalone model without a \"package.mo\" file,\n        you have to pass the path the model. Else the path is extracted\n        from the packages-list (see below)\n    :param os.path.normpath,str savepath:\n        Path to store the generated package\n    :param list packages:\n        List with filepath to the \"package.mo\" file of each package required\n        to simulate the given model_name.\n    :keyword str mocate_version\n        Version number of used Modelica Calibration Templates Library. Default is 0.0.4\n    :keyword str msl_version\n        Version number of used Modelica Calibration Templates Library. Default is 3.2.3\n    :return:\n    \"\"\"",
+            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
             "message-id": "R0801"
         },
         {
@@ -1691,7 +1691,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy `sim_target_data` with the same index:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy sim_target_data with the same index:",
             "message-id": "R0801"
         },
         {
@@ -1724,7 +1724,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
             "message-id": "R0801"
         },
         {
@@ -1735,7 +1735,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.\n    # Let's also define some different tuner parameters for the last stationary class.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
             "message-id": "R0801"
         },
         {
@@ -1746,7 +1746,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
             "message-id": "R0801"
         },
         {
@@ -1768,7 +1768,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from AixCaliBUhA\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_B_energy_system_analysis),\n    # we've changed two parameters in the model.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from aixcalibuha\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_A_energy_system_analysis),\n    # we've changed four parameters in the model. To show the usefulness\n    # of sensitivity analysis prior to calibration, we will add a fifth without\n    # any influence, the heating curve declination of the heat pump.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.\n    # How to load the data is up to you. To make the structure clear,\n    # we use a 3 element tuple in this example:",
             "message-id": "R0801"
         }
     ],
@@ -1983,9 +1983,9 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
+                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha",
-                "examples.e2_A_optimization_problem_definition",
-                "examples.e2_B_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
                 "run_modelica_calibration",
@@ -2000,16 +2000,16 @@
             ],
             "numpy": [
                 "tests.test_modelica_cal_sen",
-                "tests.test_data_types",
                 "examples.e4_calibration_example",
-                "aixcalibuha.data_types"
+                "aixcalibuha.data_types",
+                "tests.test_data_types"
             ],
             "ebcpy": [
                 "examples",
-                "examples.e2_B_optimization_problem_definition",
-                "tests.test_modelica_cal_sen",
                 "examples.e2_A_optimization_problem_definition",
+                "tests.test_modelica_cal_sen",
                 "examples.e1_A_energy_system_analysis",
+                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha.data_types"
             ],
             "ebcpy.utils.statistics_analyzer": [
@@ -2020,8 +2020,8 @@
             ],
             "ebcpy.data_types": [
                 "guided_setup",
-                "tests.test_data_types",
-                "run_modelica_calibration"
+                "run_modelica_calibration",
+                "tests.test_data_types"
             ],
             "ebcpy.simulationapi.dymola_api": [
                 "guided_setup"
@@ -2049,17 +2049,17 @@
             ],
             "examples": [
                 "examples.e1_B_energy_system_analysis",
-                "examples.e3_sensitivity_analysis_example",
-                "examples.e4_calibration_example"
+                "examples.e4_calibration_example",
+                "examples.e3_sensitivity_analysis_example"
             ],
             "aixcalibuha": [
-                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e4_calibration_example",
+                "tests.test_data_types",
                 "tests.test_modelica_cal_sen",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_config",
-                "examples.e2_A_optimization_problem_definition",
-                "tests.test_data_types",
-                "examples.e4_calibration_example"
+                "examples.e2_B_optimization_problem_definition",
+                "tests.test_config"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
@@ -2307,13 +2307,13 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
+                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha",
-                "examples.e2_A_optimization_problem_definition",
-                "examples.e2_B_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha",
-                "bin.run_modelica_calibration"
+                "bin.run_modelica_calibration",
+                "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
@@ -2324,16 +2324,16 @@
             ],
             "numpy": [
                 "tests.test_modelica_cal_sen",
-                "tests.test_data_types",
+                "aixcalibuha.data_types",
                 "examples.e4_calibration_example",
-                "aixcalibuha.data_types"
+                "tests.test_data_types"
             ],
             "ebcpy": [
                 "examples",
-                "examples.e2_B_optimization_problem_definition",
-                "tests.test_modelica_cal_sen",
                 "examples.e2_A_optimization_problem_definition",
+                "tests.test_modelica_cal_sen",
                 "examples.e1_A_energy_system_analysis",
+                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha.data_types"
             ],
             "ebcpy.utils.statistics_analyzer": [
@@ -2343,9 +2343,9 @@
                 "aixcalibuha.data_types"
             ],
             "ebcpy.data_types": [
-                "tests.test_data_types",
                 "bin.run_modelica_calibration",
-                "bin.guided_setup"
+                "bin.guided_setup",
+                "tests.test_data_types"
             ],
             "ebcpy.simulationapi.dymola_api": [
                 "bin.guided_setup"
@@ -2354,9 +2354,9 @@
                 "bin.guided_setup"
             ],
             "aixcalibuha.utils.configuration": [
-                "bin.guided_setup",
+                "tests.test_config",
                 "bin.run_modelica_calibration",
-                "tests.test_config"
+                "bin.guided_setup"
             ],
             "ebcpy.utils.conversion": [
                 "bin.run_modelica_calibration"
@@ -2377,13 +2377,13 @@
                 "examples.e4_calibration_example"
             ],
             "aixcalibuha": [
-                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e4_calibration_example",
+                "tests.test_data_types",
                 "tests.test_modelica_cal_sen",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_config",
-                "examples.e2_A_optimization_problem_definition",
-                "tests.test_data_types",
-                "examples.e4_calibration_example"
+                "examples.e2_B_optimization_problem_definition",
+                "tests.test_config"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"

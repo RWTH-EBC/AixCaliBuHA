@@ -279,7 +279,26 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err) (duplicate-code)
+        print(err)
+    # ## Calibration Classes
+    # We now are going to wrap everything up into a single object called
+    # `CalibrationClass`.
+    # Each class has a `name`, a `start_time`, `stop_time` and
+    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
+    # The latter three can be set for all
+    # classes if a distinction is not required.
+    # ### Why do we use a `CalibrationClass`?
+    # Because this class contains all information necessary
+    # to perform both sensitivity analysis and calibration automatically.
+    # ### Can there be multiple classes?
+    # Yes! Because we expect different tuner parameters
+    # to influence the outputs based on the state of the system,
+    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
+    # optimization problem, separating tuner parameters into time intervals
+    # can be handy. For example heat losses to the ambient may be most
+    # sensitive if the device is just turned off, while efficiency is more
+    # sensitive during runtime.
+    # Let's also define some different tuner parameters for the last stationary class. (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
@@ -302,13 +321,15 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
-
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
     #
-    # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
+    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:
+    #
+    # As the examples should work, and the cal_class example uses the other examples,
+    # we will test it here:
     data_dir = pathlib.Path(examples_dir).joinpath("data") (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[10:58]

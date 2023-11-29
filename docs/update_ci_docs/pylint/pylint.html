@@ -1753,27 +1753,7 @@
     return resulting_setting
 
 
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    &#34;&#34;&#34;
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a &#34;package.mo&#34; file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the &#34;package.mo&#34; file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    &#34;&#34;&#34;</pre></td>
+def main():</pre></td>
             </tr>
             
             <tr>
@@ -1824,7 +1804,7 @@ def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs
         weightings=[0.7, 0.3]
     )
     # Let&#39;s check if our evaluation is possible by creating some
-    # dummy `sim_target_data` with the same index:</pre></td>
+    # dummy sim_target_data with the same index:</pre></td>
             </tr>
             
             <tr>
@@ -1886,26 +1866,7 @@ if __name__ == &#39;__main__&#39;:
     except Exception as err:
         print(&#34;I knew this error was going to happen. Do you understand &#34;
               &#34;why this happens based on the following message?&#34;)
-        print(err)
-
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. &#39;On&#39; and &#39;Off&#39; more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime.</pre></td>
+        print(err)</pre></td>
             </tr>
             
             <tr>
@@ -1924,26 +1885,7 @@ if __name__ == &#39;__main__&#39;:
     except Exception as err:
         print(&#34;I knew this error was going to happen. Do you understand &#34;
               &#34;why this happens based on the following message?&#34;)
-        print(err)
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. &#39;On&#39; and &#39;Off&#39; more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime.
-    # Let&#39;s also define some different tuner parameters for the last stationary class.</pre></td>
+        print(err)</pre></td>
             </tr>
             
             <tr>
@@ -1957,6 +1899,7 @@ if __name__ == &#39;__main__&#39;:
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
+
     print(&#34;Goals data before setting simulation data:\n&#34;, goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print(&#34;Goals data after setting simulation data:\n&#34;, goals.get_goals_data())
@@ -2006,7 +1949,7 @@ if __name__ == &#39;__main__&#39;:
 import pathlib
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
-# Imports from AixCaliBUhA
+# Imports from aixcalibuha
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
@@ -2031,12 +1974,15 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     &#34;&#34;&#34;
+
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
     #
-    # As described in the first example (e1_B_energy_system_analysis),
-    # we&#39;ve changed two parameters in the model.
+    # As described in the first example (e1_A_energy_system_analysis),
+    # we&#39;ve changed four parameters in the model. To show the usefulness
+    # of sensitivity analysis prior to calibration, we will add a fifth without
+    # any influence, the heating curve declination of the heat pump.
     # To define tuner parameters, you have to specify
     # - the name of the parameter
     # - an initial guess
@@ -2045,7 +1991,9 @@ def main(
     # We&#39;ve chosen to make it a requirement to prevent blindly accepting
     # calibration results. If the result is very far away from your initial guess
     # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter.</pre></td>
+    # sensitive or influenced by another parameter.
+    # How to load the data is up to you. To make the structure clear,
+    # we use a 3 element tuple in this example:</pre></td>
             </tr>
             
         </table>
