@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha package &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="aixcalibuha.calibration package" href="aixcalibuha.calibration.html" />
+    <link rel="prev" title="aixcalibuha" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">aixcalibuha</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">aixcalibuha package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html">aixcalibuha.calibration package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html">aixcalibuha.sensitivity_analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html">aixcalibuha.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-aixcalibuha.data_types">aixcalibuha.data_types module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#aixcalibuha.data_types.CalibrationClass"><code class="docutils literal notranslate"><span class="pre">CalibrationClass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aixcalibuha.data_types.Goals"><code class="docutils literal notranslate"><span class="pre">Goals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aixcalibuha.data_types.TunerParas"><code class="docutils literal notranslate"><span class="pre">TunerParas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aixcalibuha.data_types.merge_calibration_classes"><code class="docutils literal notranslate"><span class="pre">merge_calibration_classes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">aixcalibuha</a></li>
+      <li class="breadcrumb-item active">aixcalibuha package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/code/aixcalibuha.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-aixcalibuha">
+<span id="aixcalibuha-package"></span><h1>aixcalibuha package<a class="headerlink" href="#module-aixcalibuha" title="Permalink to this heading"></a></h1>
+<p>Python package to calibrate models created in Modelica or possible
+other simulation software.</p>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="aixcalibuha.calibration.html">aixcalibuha.calibration package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.calibration.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.calibration.html#module-aixcalibuha.calibration.calibrator">aixcalibuha.calibration.calibrator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator"><code class="docutils literal notranslate"><span class="pre">Calibrator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.calibrate"><code class="docutils literal notranslate"><span class="pre">Calibrator.calibrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.calibration_class"><code class="docutils literal notranslate"><span class="pre">Calibrator.calibration_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.fixed_parameters"><code class="docutils literal notranslate"><span class="pre">Calibrator.fixed_parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.get_penalty"><code class="docutils literal notranslate"><span class="pre">Calibrator.get_penalty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.goals"><code class="docutils literal notranslate"><span class="pre">Calibrator.goals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.mp_obj"><code class="docutils literal notranslate"><span class="pre">Calibrator.mp_obj()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.obj"><code class="docutils literal notranslate"><span class="pre">Calibrator.obj()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.save_results"><code class="docutils literal notranslate"><span class="pre">Calibrator.save_results()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.tuner_paras"><code class="docutils literal notranslate"><span class="pre">Calibrator.tuner_paras</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.validate"><code class="docutils literal notranslate"><span class="pre">Calibrator.validate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.calibration.html#module-aixcalibuha.calibration.multi_class_calibrator">aixcalibuha.calibration.multi_class_calibrator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator"><code class="docutils literal notranslate"><span class="pre">MultipleClassCalibrator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate"><code class="docutils literal notranslate"><span class="pre">MultipleClassCalibrator.calibrate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters"><code class="docutils literal notranslate"><span class="pre">MultipleClassCalibrator.check_intersection_of_tuner_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.fix_start_time"><code class="docutils literal notranslate"><span class="pre">MultipleClassCalibrator.fix_start_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.merge_multiple_classes"><code class="docutils literal notranslate"><span class="pre">MultipleClassCalibrator.merge_multiple_classes</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html">aixcalibuha.sensitivity_analysis package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#module-aixcalibuha.sensitivity_analysis.morris">aixcalibuha.sensitivity_analysis.morris module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer"><code class="docutils literal notranslate"><span class="pre">MorrisAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.analysis_function"><code class="docutils literal notranslate"><span class="pre">MorrisAnalyzer.analysis_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.analysis_variables"><code class="docutils literal notranslate"><span class="pre">MorrisAnalyzer.analysis_variables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.create_sampler_demand"><code class="docutils literal notranslate"><span class="pre">MorrisAnalyzer.create_sampler_demand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer.generate_samples"><code class="docutils literal notranslate"><span class="pre">MorrisAnalyzer.generate_samples()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#module-aixcalibuha.sensitivity_analysis.sensitivity_analyzer">aixcalibuha.sensitivity_analysis.sensitivity_analyzer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.analysis_function"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.analysis_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.analysis_variables"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.analysis_variables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.create_problem()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_sampler_demand"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.create_sampler_demand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.generate_samples"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.generate_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.select_by_threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples"><code class="docutils literal notranslate"><span class="pre">SenAnalyzer.simulate_samples()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#module-aixcalibuha.sensitivity_analysis.sobol">aixcalibuha.sensitivity_analysis.sobol module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer"><code class="docutils literal notranslate"><span class="pre">SobolAnalyzer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.analysis_function"><code class="docutils literal notranslate"><span class="pre">SobolAnalyzer.analysis_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.analysis_variables"><code class="docutils literal notranslate"><span class="pre">SobolAnalyzer.analysis_variables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.create_sampler_demand"><code class="docutils literal notranslate"><span class="pre">SobolAnalyzer.create_sampler_demand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.generate_samples"><code class="docutils literal notranslate"><span class="pre">SobolAnalyzer.generate_samples()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="aixcalibuha.utils.html">aixcalibuha.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.MaxIterationsReached"><code class="docutils literal notranslate"><span class="pre">MaxIterationsReached</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.validate_cal_class_input"><code class="docutils literal notranslate"><span class="pre">validate_cal_class_input()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#module-aixcalibuha.utils.configuration">aixcalibuha.utils.configuration module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_calibration_classes_from_config"><code class="docutils literal notranslate"><span class="pre">get_calibration_classes_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_goals_from_config"><code class="docutils literal notranslate"><span class="pre">get_goals_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_tuner_paras_from_config"><code class="docutils literal notranslate"><span class="pre">get_tuner_paras_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.read_config"><code class="docutils literal notranslate"><span class="pre">read_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.write_config"><code class="docutils literal notranslate"><span class="pre">write_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#module-aixcalibuha.utils.visualizer">aixcalibuha.utils.visualizer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibrate_new_class"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.calibrate_new_class()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibration_callback_func"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.calibration_callback_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibration_class"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.calibration_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.cd"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.cd</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.decimal_prec"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.decimal_prec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.error"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.goals"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.goals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.integer_prec"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.integer_prec</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log_initial_names"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.log_initial_names()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.log_intersection_of_tuners"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.log_intersection_of_tuners()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.save_calibration_result"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.save_calibration_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.tuner_paras"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.tuner_paras</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.validation_callback_func"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.validation_callback_func()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.calibrate_new_class"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer.calibrate_new_class()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.calibration_callback_func"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer.calibration_callback_func()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.log_intersection_of_tuners"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer.log_intersection_of_tuners()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.save_calibration_result"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer.save_calibration_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.validation_callback_func"><code class="docutils literal notranslate"><span class="pre">CalibrationVisualizer.validation_callback_func()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-aixcalibuha.data_types">
+<span id="aixcalibuha-data-types-module"></span><h2>aixcalibuha.data_types module<a class="headerlink" href="#module-aixcalibuha.data_types" title="Permalink to this heading"></a></h2>
+<p>Module containing data types to enable an automatic usage of
+different other modules in the Python package.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">CalibrationClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuner_paras</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relevant_intervals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#CalibrationClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class used for calibration of time-series data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the class, e.g. ‘device on’</p></li>
+<li><p><strong>start_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Time at which the class starts</p></li>
+<li><p><strong>stop_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Time at which the class ends</p></li>
+<li><p><strong>goals</strong> (<a class="reference internal" href="#aixcalibuha.data_types.Goals" title="aixcalibuha.data_types.Goals"><em>Goals</em></a>) – Goals parameters which are relevant in this class.
+As this class may be used in the classifier, a Goals-Class
+may not be available at all times and can be added later.</p></li>
+<li><p><strong>tuner_paras</strong> (<a class="reference internal" href="#aixcalibuha.data_types.TunerParas" title="aixcalibuha.data_types.TunerParas"><em>TunerParas</em></a>) – As this class may be used in the classifier, a TunerParas-Class
+may not be available at all times and can be added later.</p></li>
+<li><p><strong>relevant_intervals</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List with time-intervals relevant for the calibration.
+Each list element has to be a tuple with the first element being
+the start-time as float/int and the second item being the end-time
+of the interval as float/int.
+E.g:
+For a class with start_time=0 and stop_time=1000, given following intervals
+[(0, 100), [150, 200), (500, 600)]
+will only evaluate the data between 0-100, 150-200 and 500-600.
+The given intervals may overlap. Furthermore the intervals do not need
+to be in an ascending order or be limited to
+the start_time and end_time parameters.</p></li>
+<li><p><strong>inputs</strong> (<em>(</em><em>pd.DataFrame</em><em>, </em><em>ebcpy.data_types.TimeSeriesData</em><em>)</em>) – TimeSeriesData or DataFrame that holds
+input data for the simulation to run.
+The time-index should be float index and match the overall
+ranges set by start- and stop-time.</p></li>
+<li><p><strong>input_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – If inputs are provided, additional input keyword-args passed to the
+simulation API can be specified.
+Using FMUs, you don’t need to specify anything.
+Using DymolaAPI, you have to specify ‘table_name’ and ‘file_name’</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.goals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">goals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#aixcalibuha.data_types.Goals" title="aixcalibuha.data_types.Goals"><span class="pre">Goals</span></a></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.goals" title="Permalink to this definition"></a></dt>
+<dd><p>Get current goals instance</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TimeSeriesData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Get the inputs for this calibration class</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.name" title="Permalink to this definition"></a></dt>
+<dd><p>Get name of calibration class</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.relevant_intervals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">relevant_intervals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.relevant_intervals" title="Permalink to this definition"></a></dt>
+<dd><p>Get current relevant_intervals</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.start_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.start_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get start time of calibration class</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.stop_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.stop_time" title="Permalink to this definition"></a></dt>
+<dd><p>Get stop time of calibration class</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.tuner_paras">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tuner_paras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#aixcalibuha.data_types.TunerParas" title="aixcalibuha.data_types.TunerParas"><span class="pre">TunerParas</span></a></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.tuner_paras" title="Permalink to this definition"></a></dt>
+<dd><p>Get the tuner parameters of the calibration-class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">Goals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meas_target_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TimeSeriesData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistical_measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weightings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for one or multiple goals. Used to evaluate the
+difference between current simulation and measured data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meas_target_data</strong> (<em>(</em><em>ebcpy.data_types.TimeSeriesData</em><em>, </em><em>pd.DataFrame</em><em>)</em>) – The dataset of the measurement. It acts as a point of reference
+for the simulation output. If the dimensions of the given DataFrame and later
+added simulation-data are not equal, an error is raised.
+Has to hold all variables listed under the MEASUREMENT_NAME variable in the
+variable_names dict.</p></li>
+<li><p><strong>variable_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – <p>A dictionary to construct the goals-DataFrame using pandas MultiIndex-Functionality.
+The dict has to follow the structure.
+<code class="docutils literal notranslate"><span class="pre">variable_names</span> <span class="pre">=</span> <span class="pre">{VARIABLE_NAME:</span> <span class="pre">[MEASUREMENT_NAME,</span> <span class="pre">SIMULATION_NAME]}</span></code></p>
+<ul>
+<li><p>VARIABLE_NAME: A string which holds the actual name
+of the variable you use as a goal.
+E.g.: <code class="docutils literal notranslate"><span class="pre">VARIABLE_NAME=&quot;Temperature_Condenser_Outflow&quot;</span></code></p></li>
+<li><p>MEASUREMENT_NAME: Is either a string or a tuple. Hold the name the variable
+has inside the given meas_target_data. If you want to specify a tag you have
+to pass a tuple, like: <code class="docutils literal notranslate"><span class="pre">(MEASUREMENT_NAME,</span> <span class="pre">TAG_NAME)</span></code>. Else just pass a string.
+E.g.: <code class="docutils literal notranslate"><span class="pre">MEASUREMENT_NAME=&quot;HydraulicBench[4].T_Out&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">MEASUREMENT_NAME=(&quot;HydraulicBench[4].T_Out&quot;,</span> <span class="pre">&quot;preprocessed&quot;)</span></code></p></li>
+<li><p>SIMULATION_NAME is either a string or a tuple, just like MEASUREMENT_NAME.
+E.g. (for Modelica): <code class="docutils literal notranslate"><span class="pre">SIMULATION_NAME=&quot;HeatPump.Condenser.Vol.T&quot;</span></code></p></li>
+</ul>
+<p>You may use a tuple instead of a list OR a dict
+with key “meas” for measurement and key “sim” for simulation. These options may be
+relevant for your own code readability.
+E.g. <code class="docutils literal notranslate"><span class="pre">variable_names</span> <span class="pre">=</span>
+<span class="pre">{VARIABLE_NAME:</span> <span class="pre">{&quot;meas&quot;:MEASUREMENT_NAME,</span> <span class="pre">&quot;sim&quot;:</span> <span class="pre">SIMULATION_NAME}}</span></code></p>
+</p></li>
+<li><p><strong>statistical_measure</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Measure to calculate the scalar of the objective,
+One of the supported methods in
+ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
+e.g. RMSE, MAE, NRMSE</p></li>
+<li><p><strong>weightings</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – Values between 0 and 1 to account for multiple Goals to be evaluated.
+If multiple goals are selected, and weightings is None, each
+weighting will be equal to 1/(Number of goals).
+The weighting is scaled so that the sum will equal 1.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.eval_difference">
+<span class="sig-name descname"><span class="pre">eval_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penaltyfactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.eval_difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.eval_difference" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate the difference of the measurement and simulated data based on the
+chosen statistical_measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>verbose</strong> (<em>boolean</em>) – If True, a dict with difference-values of for all goals and the
+corresponding weightings is returned together with the total difference.
+This can be useful to better understand which goals is performing
+well in an optimization and which goals needs further is not performing well.</p></li>
+<li><p><strong>penaltyfactor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Muliplty result with this factor to account for
+penatlies of some sort.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>float total_difference
+weighted ouput for all goals.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.get_goals_data">
+<span class="sig-name descname"><span class="pre">get_goals_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.get_goals_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.get_goals_data" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current time-series-data object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.get_goals_list">
+<span class="sig-name descname"><span class="pre">get_goals_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.get_goals_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.get_goals_list" title="Permalink to this definition"></a></dt>
+<dd><p>Get the internal list containing all goals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.get_meas_frequency">
+<span class="sig-name descname"><span class="pre">get_meas_frequency</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.get_meas_frequency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.get_meas_frequency" title="Permalink to this definition"></a></dt>
+<dd><p>Get the frequency of the measurement data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float: Mean frequency of the index</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.get_sim_var_names">
+<span class="sig-name descname"><span class="pre">get_sim_var_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.get_sim_var_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.get_sim_var_names" title="Permalink to this definition"></a></dt>
+<dd><p>Get the names of the simulation variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns list sim_var_names<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Names of the simulation variables as a list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.meas_tag_str">
+<span class="sig-name descname"><span class="pre">meas_tag_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meas'</span></em><a class="headerlink" href="#aixcalibuha.data_types.Goals.meas_tag_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.set_relevant_time_intervals">
+<span class="sig-name descname"><span class="pre">set_relevant_time_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intervals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.set_relevant_time_intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.set_relevant_time_intervals" title="Permalink to this definition"></a></dt>
+<dd><p>For many calibration-uses cases, different time-intervals of the measured
+and simulated data are relevant. Set the interval to be used with this function.
+This will change both measured and simulated data. Therefore, the eval_difference
+function can be called at every moment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>intervals</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List with time-intervals. Each list element has to be a tuple
+with the first element being the start_time as float or int and
+the second item being the end_time of the interval as float or int.
+E.g:
+[(0, 100), [150, 200), (500, 600)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.set_sim_target_data">
+<span class="sig-name descname"><span class="pre">set_sim_target_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_target_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals.set_sim_target_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals.set_sim_target_data" title="Permalink to this definition"></a></dt>
+<dd><p>Alter the object with new simulation data
+self._sim_target_data based on the given dataframe
+sim_target_data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sim_target_data</strong> (<em>TimeSeriesData</em>) – Object with simulation target data. This data should be
+the output of a simulation, hence “sim”-target-data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.sim_tag_str">
+<span class="sig-name descname"><span class="pre">sim_tag_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sim'</span></em><a class="headerlink" href="#aixcalibuha.data_types.Goals.sim_tag_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.Goals.statistical_measure">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">statistical_measure</span></span><a class="headerlink" href="#aixcalibuha.data_types.Goals.statistical_measure" title="Permalink to this definition"></a></dt>
+<dd><p>The statistical measure of this Goal instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">TunerParas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for tuner parameters.
+Tuner parameters are parameters of a model which are
+constant during simulation but are varied during calibration
+or other analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of names of the tuner parameters</p></li>
+<li><p><strong>initial_values</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Initial values for optimization.
+Even though some optimization methods don’t require an
+initial guess, specifying a initial guess based on
+expected values or experience is helpful to better
+check the results of the calibration</p></li>
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – Tuple or list of float or ints for lower and upper bound to the tuner parameter.
+The bounds object is optional, however highly recommend
+for calibration or optimization in general. As soon as you
+tune parameters with different units, such as Capacity and
+heat conductivity, the solver will fail to find good solutions.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">TunerParas</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;m_flow_2&quot;</span><span class="p">,</span> <span class="s2">&quot;heatConv_a&quot;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                         <span class="n">initial_values</span><span class="o">=</span><span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                         <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">6000</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">300</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span>
+<span class="go">            initial_value      min     max    scale</span>
+<span class="go">names</span>
+<span class="go">C                 5000.00  4000.00  6000.0  2000.00</span>
+<span class="go">m_flow_2             0.02     0.01     0.1     0.09</span>
+<span class="go">heatConv_a         200.00    10.00   300.0   290.00</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.bounds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Get property bounds</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.descale">
+<span class="sig-name descname"><span class="pre">descale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.descale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.descale" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the given scaled value to an descaled one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scaled</strong> (<em>np.array</em><em>,</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – Scaled input value between 0 and 1</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array descaled:
+descaled value based on bounds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.get_bounds">
+<span class="sig-name descname"><span class="pre">get_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.get_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.get_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Return the bound-values of the tuner parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.get_initial_values">
+<span class="sig-name descname"><span class="pre">get_initial_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.get_initial_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.get_initial_values" title="Permalink to this definition"></a></dt>
+<dd><p>Return the initial values of the tuner parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.get_names">
+<span class="sig-name descname"><span class="pre">get_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.get_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.get_names" title="Permalink to this definition"></a></dt>
+<dd><p>Return the names of the tuner parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.get_value">
+<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.get_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.get_value" title="Permalink to this definition"></a></dt>
+<dd><p>Function to get a value of a specific tuner parameter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.remove_names">
+<span class="sig-name descname"><span class="pre">remove_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.remove_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.remove_names" title="Permalink to this definition"></a></dt>
+<dd><p>Remove gives list of names from the Tuner-parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List with names inside of the TunerParas-dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descaled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.scale" title="Permalink to this definition"></a></dt>
+<dd><p>Scales the given value to the bounds of the tuner parameter between 0 and 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>descaled</strong> (<em>np.array</em><em>,</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – Value to be scaled</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array scaled:
+Scaled value between 0 and 1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.TunerParas.set_value">
+<span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#TunerParas.set_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.TunerParas.set_value" title="Permalink to this definition"></a></dt>
+<dd><p>Function to set a value of a specific tuner parameter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.data_types.merge_calibration_classes">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">merge_calibration_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#merge_calibration_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.merge_calibration_classes" title="Permalink to this definition"></a></dt>
+<dd><p>Given a list of multiple calibration-classes, this function merges given
+objects by the “name” attribute. Relevant intervals are set, in order
+to maintain the start and stop-time info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>calibration_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List containing multiple CalibrationClass-Objects</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list cal_classes_merged:
+A list containing one CalibrationClass-Object for each different
+“name” of class.</p>
+</dd>
+</dl>
+<p>Example:
+&gt;&gt;&gt; cal_classes = [CalibrationClass(“on”, 0, 100),
+&gt;&gt;&gt;                CalibrationClass(“off”, 100, 200),
+&gt;&gt;&gt;                CalibrationClass(“on”, 200, 300)]
+&gt;&gt;&gt; merged_classes = merge_calibration_classes(cal_classes)
+Is equal to:
+&gt;&gt;&gt; merged_classes = [CalibrationClass(“on”, 0, 300,
+&gt;&gt;&gt;                                    relevant_intervals=[(0,100), (200,300)]),
+&gt;&gt;&gt;                   CalibrationClass(“off”, 100, 200)]</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="aixcalibuha" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aixcalibuha.calibration.html" class="btn btn-neutral float-right" title="aixcalibuha.calibration package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

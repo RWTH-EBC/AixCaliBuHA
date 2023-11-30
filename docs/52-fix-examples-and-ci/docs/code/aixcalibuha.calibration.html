@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.calibration package &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="aixcalibuha.sensitivity_analysis package" href="aixcalibuha.sensitivity_analysis.html" />
+    <link rel="prev" title="aixcalibuha package" href="aixcalibuha.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">aixcalibuha</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="aixcalibuha.html">aixcalibuha package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="aixcalibuha.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">aixcalibuha.calibration package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.sensitivity_analysis.html">aixcalibuha.sensitivity_analysis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html">aixcalibuha.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.html#module-aixcalibuha.data_types">aixcalibuha.data_types module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">aixcalibuha</a></li>
+          <li class="breadcrumb-item"><a href="aixcalibuha.html">aixcalibuha package</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.calibration package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/code/aixcalibuha.calibration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-aixcalibuha.calibration">
+<span id="aixcalibuha-calibration-package"></span><h1>aixcalibuha.calibration package<a class="headerlink" href="#module-aixcalibuha.calibration" title="Permalink to this heading"></a></h1>
+<p>Package containing modules and classes to perform
+calibration tasks.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-aixcalibuha.calibration.calibrator">
+<span id="aixcalibuha-calibration-calibrator-module"></span><h2>aixcalibuha.calibration.calibrator module<a class="headerlink" href="#module-aixcalibuha.calibration.calibrator" title="Permalink to this heading"></a></h2>
+<p>Module containing the basic class to calibrate
+a dynamic model, e.g. a modelica model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.calibration.calibrator.</span></span><span class="sig-name descname"><span class="pre">Calibrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SimulationAPI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></p>
+<p>This class can Calibrator be used for single
+time-intervals of calibration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>,</em><em>os.path.normpath</em>) – Working directory</p></li>
+<li><p><strong>sim_api</strong> (<em>ebcpy.simulationapi.SimulationAPI</em>) – Simulation-API for running the models</p></li>
+<li><p><strong>calibration_class</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a>) – Class with information on Goals and tuner-parameters for calibration</p></li>
+<li><p><strong>result_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – If given, then the resulting parameter values will be stored in a JSON file
+at the given path.</p></li>
+<li><p><strong>timedelta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – If you use this class for calibrating a single time-interval,
+you can set the timedelta to instantiate the simulation before
+actually evaluating it for the objective.
+The given float (default is 0) is subtracted from the start_time
+of your calibration_class. You can find a visualisation of said timedelta
+in the img folder of the project.</p></li>
+<li><p><strong>save_files</strong> (<em>boolean</em>) – If true, all simulation files for each iteration will be saved!</p></li>
+<li><p><strong>verbose_logging</strong> (<em>boolean</em>) – Default is True. If False, the standard Logger without
+Visualization in Form of plots is used.
+If you use this, the following keyword arguments below will help
+to further adjust the logging.</p></li>
+<li><p><strong>show_plot</strong> (<em>boolean</em>) – Default is True. If False, all created plots are not shown during
+calibration but only stored at the end of the process.</p></li>
+<li><p><strong>create_tsd_plot</strong> (<em>boolean</em>) – Default is True. If False, the plot of the time series data (goals)
+is not created and thus shown in during calibration. It therefore is
+also not stored, even if you set the save_tsd_plot keyword-argument to true.</p></li>
+<li><p><strong>save_tsd_plot</strong> (<em>boolean</em>) – Default is False. If True, at each iteration the created plot of the
+time-series is saved. This may make the process much slower</p></li>
+<li><p><strong>fail_on_error</strong> (<em>boolean</em>) – Default is False. If True, the calibration will stop with an error if
+the simulation fails. See also: <code class="docutils literal notranslate"><span class="pre">ret_val_on_error</span></code></p></li>
+<li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>,</em><em>np.NAN</em>) – Default is np.NAN. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
+which value to return in the case of a failed simulation. Possible
+options are np.NaN, np.inf or some other high numbers. be aware that this
+max influence the solver.</p></li>
+<li><p><strong>fixed_parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – Default is an empty dict. This dict may be used to add certain parameters
+to the simulation which are not tuned / variable during calibration.
+Such parameters may be used if the default values in the model don’t
+represent the parameter values you want to use.</p></li>
+<li><p><strong>apply_penalty</strong> (<em>boolean</em>) – Default is true. Specifies if a penalty function should be applied or not.</p></li>
+<li><p><strong>penalty_factor</strong> (<em>boolean</em>) – Default is 0. Quantifies the impact of the penalty term on the objective function.
+The penalty factor is added to the objective function.</p></li>
+<li><p><strong>recalibration_count</strong> (<em>boolean</em>) – Default is 0. Works as a counter and specifies the current cycle of recalibration.</p></li>
+<li><p><strong>perform_square_deviation</strong> (<em>boolean</em>) – Default is false.
+If true the penalty function will evaluate the penalty factor with a quadratic approach.</p></li>
+<li><p><strong>max_itercount</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is Infinity.
+Maximum number of iterations of calibration.
+This may be useful to explicitly limit the calibration
+time.</p></li>
+<li><p><strong>plot_file_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – File ending of created plots.
+Any supported option in matplotlib, e.g. svg, png, pdf …
+Default is png</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.calibrate">
+<span class="sig-name descname"><span class="pre">calibrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">framework</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.calibrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.calibrate" title="Permalink to this definition"></a></dt>
+<dd><p>Start the calibration process of the calibration classes, visualize and save the results.</p>
+<p>The arguments of this function are equal to the
+arguments in Optimizer.optimize(). Look at the docstring
+in ebcpy to know which options are available.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.calibration_class">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calibration_class</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a></em><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.calibration_class" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current calibration class</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.fixed_parameters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fixed_parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></em><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.fixed_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Get the currently fixed parameters during calibration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.get_penalty">
+<span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_tuners</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_tuners_scaled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.get_penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.get_penalty" title="Permalink to this definition"></a></dt>
+<dd><p>Get penalty factor for evaluation of current objective. The penaltyfactor
+considers deviations of the tuner parameters in the objective function.
+First the relative deviation between the current best values
+of the tuner parameters from the recalibration steps and
+the tuner parameters obtained in the current iteration step is determined.
+Then the penaltyfactor is being increased according to the relative deviation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>current_tuner_values</strong> (<em>pd.series</em>) – To add</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>float penalty
+Penaltyfactor for evaluation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.goals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">goals</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.Goals" title="aixcalibuha.data_types.Goals"><span class="pre">Goals</span></a></em><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.goals" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current goals of the calibration class</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.mp_obj">
+<span class="sig-name descname"><span class="pre">mp_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.mp_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.mp_obj" title="Permalink to this definition"></a></dt>
+<dd><p>Objective function for Multiprocessing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – Array with parameters for optimization.
+Shape of the array is (number_of_evaluations x number_of_variables).
+For instance, optimizating 10 variables and evaluating
+900 objectives in parallel, the shape would be 900 x 10.</p></li>
+<li><p><strong>n_cpu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of logical Processors to run optimization on.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.obj">
+<span class="sig-name descname"><span class="pre">obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xk</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.obj" title="Permalink to this definition"></a></dt>
+<dd><p>Default objective function.
+The usual function will be implemented here:</p>
+<ol class="arabic simple">
+<li><p>Convert the set to modelica-units</p></li>
+<li><p>Simulate the converted-set</p></li>
+<li><p>Get data as a dataFrame</p></li>
+<li><p>Get penalty factor for the penalty function</p></li>
+<li><p>Calculate the objective based on statistical values</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xk</strong> (<em>np.array</em>) – Array with normalized values for the minimizer</p></li>
+<li><p><strong>work_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – id for worker in Multiprocessing</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Objective value based on the used quality measurement</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.save_results">
+<span class="sig-name descname"><span class="pre">save_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.save_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.save_results" title="Permalink to this definition"></a></dt>
+<dd><p>Saves the given dict into a file with path
+self.result_path and name filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.tuner_paras">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tuner_paras</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.TunerParas" title="aixcalibuha.data_types.TunerParas"><span class="pre">TunerParas</span></a></em><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.tuner_paras" title="Permalink to this definition"></a></dt>
+<dd><p>Get the current tuner parameters of the calibration class</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.calibrator.Calibrator.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/calibrator.html#Calibrator.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.calibrator.Calibrator.validate" title="Permalink to this definition"></a></dt>
+<dd><p>Validate the given calibration class based on the given
+values for tuner_parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>validation_class</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a>) – The class to validate on</p></li>
+<li><p><strong>calibration_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – The calibration result to apply to the validation class on.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-aixcalibuha.calibration.multi_class_calibrator">
+<span id="aixcalibuha-calibration-multi-class-calibrator-module"></span><h2>aixcalibuha.calibration.multi_class_calibrator module<a class="headerlink" href="#module-aixcalibuha.calibration.multi_class_calibrator" title="Permalink to this heading"></a></h2>
+<p>Module containing a class for
+calibrating multiple calibration classes at once.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.calibration.multi_class_calibrator.</span></span><span class="sig-name descname"><span class="pre">MultipleClassCalibrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fixstart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibration_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'parallel'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/multi_class_calibrator.html#MultipleClassCalibrator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aixcalibuha.calibration.calibrator.Calibrator" title="aixcalibuha.calibration.calibrator.Calibrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Calibrator</span></code></a></p>
+<p>Class for calibration of multiple calibration classes.
+When passing multiple classes of the same name, all names
+are merged into one class with so called relevant time intervals.
+These time intervals are used for the evaluation of the objective
+function. Please have a look at the file in docsimgtypeOfContinouusCalibration.pdf
+for a better understanding on how this class works.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Default is ‘fixstart’. Method you want to use to
+specify the start time of your simulation. If ‘fixstart’ is selected,
+the keyword argument fixstart is used for all classes (Default is 0).
+If ‘timedelta’ is used, the keyword argument timedelta specifies the
+time being subtracted from each start time of each calibration class.
+Please have a look at the file in docsimgtypeOfContinouusCalibration.pdf
+for a better visualization.</p></li>
+<li><p><strong>calibration_strategy</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Default is ‘parallel’. Strategy you want to use for multi-class calibration.
+If ‘parallel’ is used, parameters will be calibrated on the respective time intervals
+independently. If ‘sequential’ is used, the order of the calibration classes matters:
+The resulting parameter values of one class will be used as starting values for calibration
+on the next class.</p></li>
+<li><p><strong>fix_start_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Value for the fix start time if start_time_method=”fixstart”. Default is zero.</p></li>
+<li><p><strong>timedelta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Value for timedelta if start_time_method=”timedelta”. Default is zero.</p></li>
+<li><p><strong>merge_multiple_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Default True. If False, the given list of calibration-classes
+is handeled as-is. This means if you pass two CalibrationClass objects
+with the same name (e.g. “device on”), the calibration process will run
+for both these classes stand-alone.
+This will automatically yield an intersection of tuner-parameters, however may
+have advantages in some cases.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate">
+<span class="sig-name descname"><span class="pre">calibrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">framework</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/aixcalibuha/calibration/multi_class_calibrator.html#MultipleClassCalibrator.calibrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate" title="Permalink to this definition"></a></dt>
+<dd><p>Start the calibration process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict self.res_tuner<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of the optimized tuner parameter names and values.</p>
+</dd>
+<dt class="field-even">Return dict self._current_best_iterate<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of the current best results of tuner parameter,
+iteration step, objective value, information
+about the goals object and the penaltyfactor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters">
+<span class="sig-name descname"><span class="pre">check_intersection_of_tuner_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/calibration/multi_class_calibrator.html#MultipleClassCalibrator.check_intersection_of_tuner_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Checks intersections between tuner parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return dict res_tuner<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of the optimized tuner parameter names and values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.fix_start_time">
+<span class="sig-name descname"><span class="pre">fix_start_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.fix_start_time" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.merge_multiple_classes">
+<span class="sig-name descname"><span class="pre">merge_multiple_classes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.merge_multiple_classes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="aixcalibuha.html" class="btn btn-neutral float-left" title="aixcalibuha package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="aixcalibuha.sensitivity_analysis.html" class="btn btn-neutral float-right" title="aixcalibuha.sensitivity_analysis package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

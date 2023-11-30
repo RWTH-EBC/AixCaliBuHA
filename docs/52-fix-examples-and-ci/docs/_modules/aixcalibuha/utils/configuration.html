@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.utils.configuration &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../utils.html">aixcalibuha.utils</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.utils.configuration</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.utils.configuration</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module to with configs and functions to read configs for objects in this repository.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">toml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">Goals</span><span class="p">,</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">TunerParas</span>
+
+
+<span class="n">tsd_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the path to the target values measured&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="s2">&quot;sheet_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="s2">&quot;sep&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="p">}</span>
+
+<span class="n">kwargs_calibrator</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;timedelta&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="s2">&quot;save_files&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s2">&quot;verbose_logging&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;show_plot&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;create_tsd_plot&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;save_tsd_plot&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;fail_on_error&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">}</span>
+
+<span class="c1"># Specify kwargs for multiple-class-calibration</span>
+<span class="n">kwargs_multiple_classes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;merge_multiple_classes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                           <span class="s2">&quot;fix_start_time&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                           <span class="s2">&quot;timedelta&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">default_input_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sim_input_names&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s2">&quot;sim_data_path&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s2">&quot;meas_input_names&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s2">&quot;meas_input_data&quot;</span><span class="p">:</span> <span class="n">tsd_config</span><span class="p">,</span>
+                        <span class="p">}</span>
+
+<span class="n">default_cal_class_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the name of the calibration class&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the start time of the class - e.g 0&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the end time of the class&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;goals&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;meas_target_data&quot;</span><span class="p">:</span> <span class="n">tsd_config</span><span class="p">,</span>
+                                      <span class="s2">&quot;variable_names&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify variable names&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;weightings&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Insert null if you don´t need special weightings. &quot;</span>
+                                                    <span class="s2">&quot;Else specify which goal get´s which weighting through a list&quot;</span><span class="p">},</span>
+                            <span class="s2">&quot;tuner_paras&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;names&quot;</span><span class="p">:</span>
+                                                <span class="s2">&quot;TODO: Specify the names of the tuner parameters list&quot;</span><span class="p">,</span>
+                                            <span class="s2">&quot;initial_values&quot;</span><span class="p">:</span>
+                                                <span class="s2">&quot;TODO: Specify the inital values of the tuner parameters list&quot;</span><span class="p">,</span>
+                                            <span class="s2">&quot;bounds&quot;</span><span class="p">:</span>
+                                                <span class="s2">&quot;TODO: Specify the boundaries of the tuner parameters as a list of tuples&quot;</span><span class="p">}}</span>
+
+<span class="n">default_calibration_config</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;statistical_measure&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the statistical &quot;</span>
+                                           <span class="s2">&quot;measure for calibration (RMSE, MAE, etc.)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;calibration_classes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">default_cal_class_config</span><span class="p">],</span>
+                    <span class="s2">&quot;start_time_method&quot;</span><span class="p">:</span> <span class="s1">&#39;fixstart&#39;</span><span class="p">,</span>
+                    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="n">kwargs_calibrator</span><span class="p">,</span>
+                    <span class="s2">&quot;settings multiple classes&quot;</span><span class="p">:</span> <span class="n">kwargs_multiple_classes</span>
+                    <span class="p">}</span>
+
+<span class="n">kwargs_scipy_dif_evo</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+                        <span class="s2">&quot;popsize&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                        <span class="s2">&quot;mutation&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                        <span class="s2">&quot;recombination&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+                        <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s2">&quot;polish&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s2">&quot;init&quot;</span><span class="p">:</span> <span class="s1">&#39;latinhypercube&#39;</span><span class="p">,</span>
+                        <span class="s2">&quot;atol&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">kwargs_dlib_min</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_function_calls&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">),</span>
+                   <span class="s2">&quot;solver_epsilon&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="n">kwargs_scipy_min</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tol&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;maxfun&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+                    <span class="s2">&quot;constraints&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;jac&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;hess&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;hessp&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+<span class="n">default_optimization_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;framework&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Choose the framework for calibration&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Choose the method of the framework&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                   <span class="s2">&quot;scipy_differential_evolution&quot;</span><span class="p">:</span> <span class="n">kwargs_scipy_dif_evo</span><span class="p">,</span>
+                                   <span class="s2">&quot;dlib_minimize&quot;</span><span class="p">:</span> <span class="n">kwargs_dlib_min</span><span class="p">,</span>
+                                   <span class="s2">&quot;scipy_minimize&quot;</span><span class="p">:</span> <span class="n">kwargs_scipy_min</span><span class="p">}</span>
+                               <span class="p">}</span>
+
+<span class="n">default_sim_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;packages&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;DymolaAPI&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;dymola_path&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="s2">&quot;dymola_interface_path&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="s2">&quot;equidistant_output&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="s2">&quot;show_window&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="s2">&quot;get_structural_parameters&quot;</span><span class="p">:</span> <span class="kc">True</span>
+                      <span class="p">}</span>
+
+<span class="n">default_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Working Directory&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Add the path where you want to work here&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SimulationAPI&quot;</span><span class="p">:</span> <span class="n">default_sim_config</span><span class="p">,</span>
+    <span class="s2">&quot;Optimization&quot;</span><span class="p">:</span> <span class="n">default_optimization_config</span><span class="p">,</span>
+    <span class="s2">&quot;Input Data&quot;</span><span class="p">:</span> <span class="n">default_input_config</span><span class="p">,</span>
+    <span class="s2">&quot;Calibration&quot;</span><span class="p">:</span> <span class="n">default_calibration_config</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_goals_from_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_goals_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_goals_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the data for a Goals object.</span>
+
+<span class="sd">    :param dict config:</span>
+<span class="sd">        Config holding the following cols for</span>
+<span class="sd">        - meas_target_data</span>
+<span class="sd">        - variable_names</span>
+<span class="sd">        - Optional: weightings</span>
+<span class="sd">    :return: Goals goals</span>
+<span class="sd">        Loaded Goals object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_mtd</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;meas_target_data&quot;</span><span class="p">]</span>
+    <span class="n">mtd</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="o">**</span><span class="n">config_mtd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Goals</span><span class="p">(</span><span class="n">meas_target_data</span><span class="o">=</span><span class="n">mtd</span><span class="p">,</span>
+                 <span class="n">variable_names</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;variable_names&quot;</span><span class="p">],</span>
+                 <span class="n">statistical_measure</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;statistical_measure&quot;</span><span class="p">],</span>
+                 <span class="n">weightings</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weightings&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_tuner_paras_from_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_tuner_paras_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_tuner_paras_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the data for a TunerParas object.</span>
+
+<span class="sd">    :param dict config:</span>
+<span class="sd">        Config holding the following cols for</span>
+<span class="sd">        - names</span>
+<span class="sd">        - initial_values</span>
+<span class="sd">        - bounds</span>
+<span class="sd">    :return: TunerParas tuner_paras</span>
+<span class="sd">        Loaded Goals object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">TunerParas</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;names&quot;</span><span class="p">],</span>
+                      <span class="n">initial_values</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;initial_values&quot;</span><span class="p">],</span>
+                      <span class="n">bounds</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;bounds&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_calibration_classes_from_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_calibration_classes_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_calibration_classes_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the data for a CalibrationClass object.</span>
+
+<span class="sd">    :param list config:</span>
+<span class="sd">        List of dicts with configs holding the following cols for</span>
+<span class="sd">        - names</span>
+<span class="sd">        - start_time</span>
+<span class="sd">        - stop_time</span>
+<span class="sd">        - Optional: goals, tuner_paras, relevant_intervals</span>
+<span class="sd">    :return: TunerParas tuner_paras</span>
+<span class="sd">        Loaded Goals object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cal_class_config</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="n">goals</span><span class="p">,</span> <span class="n">tuner_paras</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;goals&quot;</span> <span class="ow">in</span> <span class="n">cal_class_config</span><span class="p">:</span>
+            <span class="n">goals</span> <span class="o">=</span> <span class="n">get_goals_from_config</span><span class="p">(</span><span class="n">cal_class_config</span><span class="p">[</span><span class="s2">&quot;goals&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;tuner_paras&quot;</span> <span class="ow">in</span> <span class="n">cal_class_config</span><span class="p">:</span>
+            <span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">get_tuner_paras_from_config</span><span class="p">(</span><span class="n">cal_class_config</span><span class="p">[</span><span class="s2">&quot;tuner_paras&quot;</span><span class="p">])</span>
+        <span class="n">cal_classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">CalibrationClass</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cal_class_config</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                             <span class="n">start_time</span><span class="o">=</span><span class="n">cal_class_config</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">],</span>
+                             <span class="n">stop_time</span><span class="o">=</span><span class="n">cal_class_config</span><span class="p">[</span><span class="s2">&quot;stop_time&quot;</span><span class="p">],</span>
+                             <span class="n">goals</span><span class="o">=</span><span class="n">goals</span><span class="p">,</span>
+                             <span class="n">tuner_paras</span><span class="o">=</span><span class="n">tuner_paras</span><span class="p">,</span>
+                             <span class="n">relevant_intervals</span><span class="o">=</span><span class="n">cal_class_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;relevant_intervals&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">cal_classes</span></div>
+
+
+<div class="viewcode-block" id="write_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.write_config">[docs]</a><span class="k">def</span> <span class="nf">write_config</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write the given config to the filepath.</span>
+<span class="sd">    If the file already exists, the data is recursively</span>
+<span class="sd">    updated.</span>
+
+<span class="sd">    :param str,os.path.normpath filepath:</span>
+<span class="sd">        Filepath with the config.</span>
+<span class="sd">    :param: dict config:</span>
+<span class="sd">        Config to be saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+        <span class="n">existing_config</span> <span class="o">=</span> <span class="n">read_config</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">existing_config</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">_update</span><span class="p">(</span><span class="n">existing_config</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;a+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span>
+        <span class="n">toml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.read_config">[docs]</a><span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the given file and return the toml-config</span>
+
+<span class="sd">    :param str,os.path.normpath filepath:</span>
+<span class="sd">        Filepath with the config.</span>
+<span class="sd">    :return: dict config:</span>
+<span class="sd">        Loaded config</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">new_dic</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively update a given dictionary with a new one&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">new_dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_update</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">dic</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

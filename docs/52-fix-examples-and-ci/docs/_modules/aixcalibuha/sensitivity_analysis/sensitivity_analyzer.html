@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.sensitivity_analysis.sensitivity_analyzer &mdash; AixCaliBuHa 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                0.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.sensitivity_analysis.sensitivity_analyzer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.sensitivity_analysis.sensitivity_analyzer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Package containing modules for sensitivity analysis.</span>
+<span class="sd">The module contains the relevant base-classes.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">ebcpy.utils</span> <span class="kn">import</span> <span class="n">setup_logger</span>
+<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span>
+<span class="kn">from</span> <span class="nn">ebcpy.simulationapi</span> <span class="kn">import</span> <span class="n">SimulationAPI</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<div class="viewcode-block" id="SenAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SenAnalyzer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to perform a Sensitivity Analysis.</span>
+
+<span class="sd">    :param SimulationAPI sim_api:</span>
+<span class="sd">        Simulation-API used to simulate the samples</span>
+<span class="sd">    :param int num_samples:</span>
+<span class="sd">        The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the</span>
+<span class="sd">        the number of samples produced, but relates to the total number of samples produced in</span>
+<span class="sd">        a manner dependent on the sampler method used. See the documentation of sobol and</span>
+<span class="sd">        morris in the SALib for more information.</span>
+<span class="sd">    :keyword str analysis_function:</span>
+<span class="sd">        Used to automatically select result values.</span>
+<span class="sd">    :keyword str,os.path.normpath cd:</span>
+<span class="sd">        The path for the current working directory.</span>
+<span class="sd">    :keyword boolean fail_on_error:</span>
+<span class="sd">        Default is False. If True, the calibration will stop with an error if</span>
+<span class="sd">        the simulation fails. See also: ``ret_val_on_error``</span>
+<span class="sd">    :keyword float,np.NAN ret_val_on_error:</span>
+<span class="sd">        Default is np.NAN. If ``fail_on_error`` is false, you can specify here</span>
+<span class="sd">        which value to return in the case of a failed simulation. Possible</span>
+<span class="sd">        options are np.NaN, np.inf or some other high numbers. be aware that this</span>
+<span class="sd">        max influence the solver.</span>
+<span class="sd">    :keyword boolean save_files:</span>
+<span class="sd">        If true, all simulation files for each iteration will be saved!</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">sim_api</span><span class="p">:</span> <span class="n">SimulationAPI</span><span class="p">,</span>
+                 <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate class parameters&quot;&quot;&quot;</span>
+        <span class="c1"># Setup the instance attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span> <span class="o">=</span> <span class="n">sim_api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">=</span> <span class="n">num_samples</span>
+
+        <span class="c1"># Update kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fail_on_error&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_files&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cd</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cd&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;analysis_variable&#39;</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given analysis_variable &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span><span class="si">}</span><span class="s1">&quot; not &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;supported for class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">. &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;Supported options are: </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Setup the logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="c1"># Setup default values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">analysis_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicate which variables are</span>
+<span class="sd">        able to be selected for analysis</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            A list of strings</span>
+<span class="sd">        :rtype: List[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.analysis_variables &#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;property is not defined yet&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SenAnalyzer.analysis_function"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.analysis_function">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">analysis_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use the method to analyze the simulation results.</span>
+
+<span class="sd">        :param np.array x:</span>
+<span class="sd">            the `X` parameter of the method (The NumPy matrix containing the model inputs)</span>
+<span class="sd">        :param np.array y:</span>
+<span class="sd">            The NumPy array containing the model outputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.analysis_function &#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;function is not defined yet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.create_sampler_demand"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_sampler_demand">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_sampler_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the sampler parameters</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            dict: A dict with the sampler demand</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.analysis_function &#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;function is not defined yet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.generate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.generate_samples">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the sampler specified by `method` and return the results.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The list of samples generated as a NumPy array with one row per sample</span>
+<span class="sd">            and each row containing one value for each variable name in `problem[&#39;names&#39;]`.</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.generate_samples &#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;function is not defined yet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.simulate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Put the parameters in the model and simulate it.</span>
+
+<span class="sd">        :param Union[list, np.ndarray] samples:</span>
+<span class="sd">            Output variables in dymola</span>
+<span class="sd">        :param cal_class:</span>
+<span class="sd">            One class for calibration. Goals and tuner_paras have to be set</span>
+
+<span class="sd">        :returns: np.array</span>
+<span class="sd">            An array containing the evaluated differences for each sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Set the output interval according the given Goals</span>
+        <span class="n">mean_freq</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_meas_frequency</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting output_interval of simulation according &quot;</span>
+                         <span class="s2">&quot;to measurement target data frequency: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mean_freq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">=</span> <span class="n">mean_freq</span>
+        <span class="n">initial_names</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_sim_setup</span><span class="p">({</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
+                                    <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_sim_var_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting </span><span class="si">%s</span><span class="s1"> parameter variations on </span><span class="si">%s</span><span class="s1"> cores&#39;</span><span class="p">,</span>
+                         <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">n_cpu</span><span class="p">)</span>
+        <span class="c1"># Simulate the current values</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">initial_values</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">)})</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">))]</span>
+            <span class="n">_filepaths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
+                <span class="n">savepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">result_file_name</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">,</span>
+                <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="n">cal_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+            <span class="p">)</span>
+            <span class="c1"># Load results</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="n">cal_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished </span><span class="si">%s</span><span class="s1"> simulations&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_sim_target_data</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_relevant_time_intervals</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="p">)</span>
+                <span class="c1"># Evaluate the current objective</span>
+                <span class="n">total_res</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">eval_difference</span><span class="p">()</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_res</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.run"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">,</span> <span class="n">merge_multiple_classes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the sensitivity analysis for each class and</span>
+<span class="sd">        return the result.</span>
+
+<span class="sd">        :param CalibrationClass,list calibration_classes:</span>
+<span class="sd">            Either one or multiple classes for calibration</span>
+<span class="sd">        :param bool merge_multiple_classes:</span>
+<span class="sd">            Default True. If False, the given list of calibration-classes</span>
+<span class="sd">            is handeled as-is. This means if you pass two CalibrationClass objects</span>
+<span class="sd">            with the same name (e.g. &quot;device on&quot;), the calibration process will run</span>
+<span class="sd">            for both these classes stand-alone.</span>
+<span class="sd">            This will automatically yield an intersection of tuner-parameters, however may</span>
+<span class="sd">            have advantages in some cases.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Returns a list of dictionaries. One dict is the SALib-result for</span>
+<span class="sd">            one calibration-class. The order is based on the order of the</span>
+<span class="sd">            calibration-class list.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check correct input</span>
+        <span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">validate_cal_class_input</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
+        <span class="c1"># Merge the classes for avoiding possible intersection of tuner-parameters</span>
+        <span class="k">if</span> <span class="n">merge_multiple_classes</span><span class="p">:</span>
+            <span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">merge_calibration_classes</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
+
+        <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calibration_classes</span><span class="p">:</span>
+            <span class="n">t_sen_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start sensitivity analysis of class: </span><span class="si">%s</span><span class="s1">, &#39;</span>
+                             <span class="s1">&#39;Time-Interval: </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1"> s&#39;</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_samples</span><span class="p">()</span>
+            <span class="c1"># Generate list with metrics of every parameter variation</span>
+            <span class="n">output_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulate_samples</span><span class="p">(</span>
+                <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_function</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">output_array</span>
+            <span class="p">)</span>
+            <span class="n">t_sen_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;duration[s]&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_sen_stop</span> <span class="o">-</span> <span class="n">t_sen_start</span>
+            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conv_local_results</span><span class="p">(</span><span class="n">results</span><span class="o">=</span><span class="n">all_results</span><span class="p">,</span>
+                                          <span class="n">local_classes</span><span class="o">=</span><span class="n">calibration_classes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">calibration_classes</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.create_problem"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_problem</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create function for later access if multiple calibration-classes are used.&quot;&quot;&quot;</span>
+        <span class="n">num_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">())</span>
+        <span class="n">problem</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;num_vars&#39;</span><span class="p">:</span> <span class="n">num_vars</span><span class="p">,</span>
+                   <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">(),</span>
+                   <span class="s1">&#39;bounds&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">bounds</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">problem</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.select_by_threshold"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">select_by_threshold</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automatically select sensitive tuner parameters based on a given threshold</span>
+<span class="sd">        and a key-word of the result.</span>
+
+<span class="sd">        :param list calibration_classes:</span>
+<span class="sd">            List of aixcalibuha.data_types.CalibrationClass objects that you want to</span>
+<span class="sd">            automatically select sensitive tuner-parameters.</span>
+<span class="sd">        :param pd.DataFrame result:</span>
+<span class="sd">            Result object of sensitivity analysis run</span>
+<span class="sd">        :param float threshold:</span>
+<span class="sd">            Minimal required value of given key</span>
+<span class="sd">        :return: list calibration_classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">num_class</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">):</span>
+            <span class="n">class_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
+            <span class="n">select_names</span> <span class="o">=</span> <span class="n">class_result</span><span class="p">[</span><span class="n">class_result</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">tuner_paras</span><span class="o">.</span><span class="n">remove_names</span><span class="p">(</span><span class="n">select_names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Automatic selection removed all tuner parameter &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;from class </span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> after &#39;</span>
+                    <span class="s1">&#39;SensitivityAnalysis was done. Please adjust the &#39;</span>
+                    <span class="s1">&#39;threshold in json or manually chose tuner &#39;</span>
+                    <span class="s1">&#39;parameters for the calibration.&#39;</span><span class="p">)</span>
+            <span class="c1"># cal_class.set_tuner_paras(tuner_paras)</span>
+            <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
+        <span class="k">return</span> <span class="n">calibration_classes</span></div>
+
+    <span class="k">def</span> <span class="nf">_conv_global_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+        <span class="n">glo_res_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">glo_res_dict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_conv_local_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">_conv_results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">=</span><span class="n">local_class</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">result</span><span class="p">,</span> <span class="n">local_class</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">)]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_conv_results</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">local_classes</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the result object to a dict with the key</span>
+<span class="sd">        being the variable name and the value being the result</span>
+<span class="sd">        associated to self.analysis_variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
