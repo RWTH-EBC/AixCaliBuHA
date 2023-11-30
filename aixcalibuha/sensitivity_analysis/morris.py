@@ -2,7 +2,7 @@
 Adds the MorrisAnalyzer to the available
 classes of sensitivity analysis.
 """
-
+import numpy as np
 from SALib.sample import morris
 from SALib.analyze import morris as analyze_morris
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
@@ -82,4 +82,8 @@ class MorrisAnalyzer(SenAnalyzer):
         being the variable name and the value being the result
         associated to self.analysis_variable.
         """
-        return dict(zip(result['names'], result[analysis_variable]))
+        if result is None:
+            names = cal_class.tuner_paras.get_names()
+            return dict(zip(names, np.zeros(len(names))))
+        else:
+            return dict(zip(result['names'], result[analysis_variable]))

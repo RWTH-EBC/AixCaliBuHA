@@ -134,19 +134,29 @@ class SobolAnalyzer(SenAnalyzer):
         """
         names = self.create_problem(cal_class.tuner_paras)['names']
         if analysis_variable in self.__analysis_variables_1:
-            res_dict_1 = {var_name: np.abs(res_val)
-                          for var_name, res_val in zip(names,
-                                                       result[analysis_variable])}
+            if result is None:
+                res_dict_1 = {var_name: np.abs(res_val)
+                              for var_name, res_val in zip(names,
+                                                           np.zeros(len(names)))}
+            else:
+                res_dict_1 = {var_name: np.abs(res_val)
+                              for var_name, res_val in zip(names,
+                                                           result[analysis_variable])}
             return res_dict_1
         if analysis_variable in self.__analysis_variables_2:
-            result_av = result[analysis_variable]
-            for i in range(len(result_av)):
-                for j in range(len(result_av)):
-                    if i > j:
-                        result_av[i][j] = result_av[j][i]
-            res_dict_2 = {var_name: dict(zip(names, np.abs(res_val)))
-                          for var_name, res_val in zip(names,
-                                                       result_av)}
+            if result is None:
+                res_dict_2 = {var_name: dict(zip(names, np.abs(res_val)))
+                              for var_name, res_val in zip(names,
+                                                           np.zeros((len(names), len(names))))}
+            else:
+                result_av = result[analysis_variable]
+                for i in range(len(result_av)):
+                    for j in range(len(result_av)):
+                        if i > j:
+                            result_av[i][j] = result_av[j][i]
+                res_dict_2 = {var_name: dict(zip(names, np.abs(res_val)))
+                              for var_name, res_val in zip(names,
+                                                           result_av)}
             return res_dict_2
 
     @staticmethod

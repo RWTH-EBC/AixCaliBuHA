@@ -95,10 +95,13 @@ def run_sensitivity_analysis(
         num_samples=2,
         calc_second_order=True,
         cd=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
-        save_files=True,
-        load_files=False,
+        save_files=False,
         savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_{example}', 'files'),
         suffix_files='csv'
+    )
+
+    sen_analyzer.run_time_dependent(
+        cal_class=merged_calibration_classes[0],
     )
 
     # Now we run the sensitivity analysis with the verbose option.
@@ -127,7 +130,8 @@ def run_sensitivity_analysis(
                                        use_first_sim=True,
                                        plot_result=False,
                                        save_results=True,
-                                       n_cpu=n_cpu)
+                                       n_cpu=n_cpu,
+                                       scale=False)
     # After running the sensitivity analysis you can see
     # that the working directory was created and the result
     # files were saved here. First the folder "files" was
@@ -381,7 +385,7 @@ if __name__ == "__main__":
 
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
-    N_CPU = 2
+    N_CPU = 1
 
     # Sensitivity analysis:
     run_sensitivity_analysis(

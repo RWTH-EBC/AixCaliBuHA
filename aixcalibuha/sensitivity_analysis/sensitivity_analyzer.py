@@ -347,6 +347,8 @@ class SenAnalyzer(abc.ABC):
             Default False. If True, all sensitivity measures of the SALib function are calculated
             and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
+        :keyword scale:
+            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
         :keyword bool use_fist_sim:
             Default False. If True, the simulations of the first calibration class will be used for
             all other calibration classes with their relevant time intervals.
@@ -357,7 +359,7 @@ class SenAnalyzer(abc.ABC):
             For n_cpu > 1 only one simulation file is loaded at once in a process and dumped directly
             after the evaluation of the statistical measure, so that only minimal memory is used.
             Use this option for large analyses.
-            Only implemented for save_files=True or load_files=True.
+            Only implemented for save_files=True or load_sim_files=True.
         :keyword bool load_sim_files:
             Default False. If True, no new simulations are done and old simulations are loaded.
             The simulations and corresponding samples will be loaded from self.savepath_sim like they
@@ -403,7 +405,7 @@ class SenAnalyzer(abc.ABC):
                 raise AttributeError(f'To use the simulations of the first calibration class '
                                      f'for all classes the simulation files must be saved. '
                                      f'Either set save_files=True or load already exiting files '
-                                     f'with load_files=True.')
+                                     f'with load_sim_files=True.')
             start_time = 0
             stop_time = 0
             for idx, cal_class in enumerate(calibration_classes):
@@ -607,6 +609,118 @@ class SenAnalyzer(abc.ABC):
         else:
             calibration_class.tuner_paras = tuner_paras
         return calibration_class
+
+    def run_time_dependent(self, cal_class: CalibrationClass, **kwargs):
+        """
+        Calculate the time dependent sensitivity
+
+        :param CalibrationClass cal_class:
+            Calibration class with tuner-parameters to calculate sensitivity for.
+            Can include dummy target date.
+        :keyword bool verbose:
+            Default False. If True, all sensitivity measures of the SALib function are calculated
+            and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
+            the sensitivity measures of the individual Goals will also be calculated and returned.
+        :keyword scale:
+            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
+        :keyword int n_cpu:
+            Default is 1. The number of processes to use for the evaluation of the statistical measure.
+            For n_cpu > 1 only one simulation file is loaded at once in a process and dumped directly
+            after the evaluation of the statistical measure, so that only minimal memory is used.
+            Use this option for large analyses.
+            Only implemented for save_files=True or load_files=True.
+        :keyword bool load_sim_files:
+            Default False. If True, no new simulations are done and old simulations are loaded.
+            The simulations and corresponding samples will be loaded from self.savepath_sim like they
+            were saved from self.save_files. Currently, the name of the sim folder must be
+            "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
+            The usage of the same simulations for different calibration classes is not supported yet.
+        :keyword bool save_results:
+            Default True. If True, all results are saved as a csv in cd.
+            (samples and analysis variables).
+        :keyword bool plot_result:
+            Default True. If True, the results will be plotted.
+        :return:
+            Returns a pandas.DataFrame.
+        :rtype: pandas.DataFrame
+        """
+        verbose = kwargs.pop('verbose', False)
+        scale = kwargs.pop('scale', False)
+        n_cpu = kwargs.pop('n_cpu', 1)
+        save_results = kwargs.pop('save_results', True)
+        plot_result = kwargs.pop('plot_result', True)
+        load_sim_files = kwargs.pop('load_sim_files', False)
+
+        # Check n_cpu
+        if n_cpu > mp.cpu_count():
+            raise ValueError(f"Given n_cpu '{n_cpu}' is greater "
+                             "than the available number of "
+                             f"cpus on your machine '{mp.cpu_count()}'")
+
+        if load_sim_files:
+            self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
+            sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
+            samples_path = self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv')
+            samples = pd.read_csv(samples_path,
+                                  header=0,
+                                  index_col=0)
+            samples = samples.to_numpy()
+            result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
+            _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
+            self._analyze_time_step(_filepaths)
+        else:
+            results, samples = self.simulate_samples(
+                cal_class=cal_class,
+                scale=scale
+            )
+            if self.save_files:
+                self._analyze_time_step(results)
+            else:
+                results_df = [r.to_df() for r in results]
+                total_result = pd.concat(results_df, keys=range(len(results_df)), axis='columns')
+                total_result = total_result.swaplevel(axis=1).sort_index(axis=1)
+                print(total_result)
+                total_result.columns.set_names(['Variables', 'Tags'], inplace=True)
+                print(total_result)
+                total_result = data_types.TimeSeriesData(total_result)
+                time_index = total_result.index.to_numpy()
+                sen_time_dependent_list = []
+                for time_step in time_index:
+                    result_dict_tstep = {}
+                    for var in total_result.get_variable_names():
+                        result_tstep_var = total_result[var].loc[time_step].to_numpy()
+                        if np.all(result_tstep_var == result_tstep_var[0]):
+                            sen_tstep_var = None
+                        else:
+                            sen_tstep_var = self.analysis_function(
+                                x=samples,
+                                y=result_tstep_var
+                            )
+                        result_dict_tstep[var] = sen_tstep_var
+                    result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
+                                                               local_classes=[cal_class],
+                                                               verbose=verbose)
+                    # sobol with second order returns a tuple
+                    if isinstance(result_df_tstep,tuple):
+                        result_df_tstep = result_df_tstep[0]
+
+                    sen_time_dependent_list.append(result_df_tstep)
+                sen_time_dependent_df = pd.concat(sen_time_dependent_list,keys=time_index,axis=0)
+                sen_time_dependent_df = sen_time_dependent_df.droplevel('Class',axis='index')
+                sen_time_dependent_df = sen_time_dependent_df.swaplevel(0,1)
+                sen_time_dependent_df = sen_time_dependent_df.swaplevel(1, 2).sort_index(axis=0)
+                sen_time_dependent_df.index.set_names(['Goal','Analysis variable','time'],inplace=True)
+                print(sen_time_dependent_df.to_string())
+                print('break point')
+
+    def _analyse_single_time_step_var(self, results_single_time_var):
+        pass
+
+    def _analyze_time_step(self, filepaths):
+        pass
+
+    def _load_time_step(self, filepaths):
+        pass
 
     def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)

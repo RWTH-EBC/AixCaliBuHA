@@ -80,6 +80,11 @@ class FASTAnalyzer(SenAnalyzer):
         associated to self.analysis_variable.
         """
         names = self.create_problem(cal_class.tuner_paras)['names']
-        return {var_name: np.abs(res_val)
-                for var_name, res_val in zip(names,
-                                             result[analysis_variable])}
+        if result is None:
+            return {var_name: np.abs(res_val)
+                    for var_name, res_val in zip(names,
+                                                 np.zeros(len(names)))}
+        else:
+            return {var_name: np.abs(res_val)
+                    for var_name, res_val in zip(names,
+                                                 result[analysis_variable])}
