@@ -45,6 +45,26 @@ def _restruct_verbose(list_output_verbose):
     return output_verbose
 
 
+def _restruct_time_dependent(sen_time_dependent_list, time_index):
+    def _restruct_single(sen_time_dependent_list_s, second_order=False):
+        sen_time_dependent_df = pd.concat(sen_time_dependent_list_s, keys=time_index, axis=0)
+        sen_time_dependent_df = sen_time_dependent_df.droplevel('Class', axis='index')
+        sen_time_dependent_df = sen_time_dependent_df.swaplevel(0, 1)
+        sen_time_dependent_df = sen_time_dependent_df.swaplevel(1, 2).sort_index(axis=0)
+        if second_order:
+            sen_time_dependent_df = sen_time_dependent_df.swaplevel(2, 3).sort_index(axis=0)
+            sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'Interaction', 'time'], inplace=True)
+        else:
+            sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'time'], inplace=True)
+        return sen_time_dependent_df
+
+    if isinstance(sen_time_dependent_list[0],tuple):
+        sen_time_dependent_list1, sen_time_dependent_list2 = zip(*sen_time_dependent_list)
+        return _restruct_single(sen_time_dependent_list1), _restruct_single(sen_time_dependent_list2, True)
+    else:
+        return _restruct_single(sen_time_dependent_list)
+
+
 class SenAnalyzer(abc.ABC):
     """
     Class to perform a Sensitivity Analysis.
@@ -657,6 +677,7 @@ class SenAnalyzer(abc.ABC):
                              "than the available number of "
                              f"cpus on your machine '{mp.cpu_count()}'")
 
+        sen_time_dependent_df = None
         if load_sim_files:
             self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
             sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
@@ -700,18 +721,9 @@ class SenAnalyzer(abc.ABC):
                     result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
                                                                local_classes=[cal_class],
                                                                verbose=verbose)
-                    # sobol with second order returns a tuple
-                    if isinstance(result_df_tstep,tuple):
-                        result_df_tstep = result_df_tstep[0]
-
                     sen_time_dependent_list.append(result_df_tstep)
-                sen_time_dependent_df = pd.concat(sen_time_dependent_list,keys=time_index,axis=0)
-                sen_time_dependent_df = sen_time_dependent_df.droplevel('Class',axis='index')
-                sen_time_dependent_df = sen_time_dependent_df.swaplevel(0,1)
-                sen_time_dependent_df = sen_time_dependent_df.swaplevel(1, 2).sort_index(axis=0)
-                sen_time_dependent_df.index.set_names(['Goal','Analysis variable','time'],inplace=True)
-                print(sen_time_dependent_df.to_string())
-                print('break point')
+                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+        return sen_time_dependent_df
 
     def _analyse_single_time_step_var(self, results_single_time_var):
         pass

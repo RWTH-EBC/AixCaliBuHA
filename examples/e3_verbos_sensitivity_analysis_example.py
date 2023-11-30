@@ -100,10 +100,10 @@ def run_sensitivity_analysis(
         suffix_files='csv'
     )
 
-    sen_analyzer.run_time_dependent(
+    result = sen_analyzer.run_time_dependent(
         cal_class=merged_calibration_classes[0],
     )
-
+    print(result)
     # Now we run the sensitivity analysis with the verbose option.
     # With that we not only get the results for combined target values,
     # we also get the results for every target value alone.
