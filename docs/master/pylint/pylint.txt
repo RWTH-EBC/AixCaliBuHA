@@ -182,27 +182,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     return resulting_setting
 
 
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    """
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a "package.mo" file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the "package.mo" file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    """ (duplicate-code)
+def main(): (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:131]
 ==examples.e2_B_optimization_problem_definition:[113:122]
@@ -270,7 +250,26 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err) (duplicate-code)
+        print(err)
+
+    # ## Calibration Classes
+    # We now are going to wrap everything up into a single object called
+    # `CalibrationClass`.
+    # Each class has a `name`, a `start_time`, `stop_time` and
+    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
+    # The latter three can be set for all
+    # classes if a distinction is not required.
+    # ### Why do we use a `CalibrationClass`?
+    # Because this class contains all information necessary
+    # to perform both sensitivity analysis and calibration automatically.
+    # ### Can there be multiple classes?
+    # Yes! Because we expect different tuner parameters
+    # to influence the outputs based on the state of the system,
+    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
+    # optimization problem, separating tuner parameters into time intervals
+    # can be handy. For example heat losses to the ambient may be most
+    # sensitive if the device is just turned off, while efficiency is more
+    # sensitive during runtime. (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:129]
 ==examples.e2_B_optimization_problem_definition:[123:149]
@@ -285,7 +284,6 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
-
     print("Goals data before setting simulation data:\n", goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print("Goals data after setting simulation data:\n", goals.get_goals_data())
@@ -317,7 +315,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 import pathlib
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
-# Imports from AixCaliBUhA
+# Imports from aixcalibuha
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
@@ -342,12 +340,15 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     """
+
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
     #
-    # As described in the first example (e1_B_energy_system_analysis),
-    # we've changed two parameters in the model.
+    # As described in the first example (e1_A_energy_system_analysis),
+    # we've changed four parameters in the model. To show the usefulness
+    # of sensitivity analysis prior to calibration, we will add a fifth without
+    # any influence, the heating curve declination of the heat pump.
     # To define tuner parameters, you have to specify
     # - the name of the parameter
     # - an initial guess
@@ -356,7 +357,9 @@ def main(
     # We've chosen to make it a requirement to prevent blindly accepting
     # calibration results. If the result is very far away from your initial guess
     # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter. (duplicate-code)
+    # sensitive or influenced by another parameter.
+    # How to load the data is up to you. To make the structure clear,
+    # we use a 3 element tuple in this example: (duplicate-code)
 
 -----------------------------------
 Your code has been rated at 8.92/10

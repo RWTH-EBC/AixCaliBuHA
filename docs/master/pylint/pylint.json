@@ -794,7 +794,7 @@
         },
         {
             "type": "convention",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "",
             "line": 314,
             "column": 0,
@@ -805,7 +805,7 @@
         },
         {
             "type": "convention",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "",
             "line": 374,
             "column": 0,
@@ -816,7 +816,7 @@
         },
         {
             "type": "convention",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "",
             "line": 404,
             "column": 0,
@@ -827,7 +827,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "",
             "line": 295,
             "column": 9,
@@ -838,7 +838,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_handle_tsd_input",
             "line": 34,
             "column": 12,
@@ -849,7 +849,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_handle_argv",
             "line": 72,
             "column": 12,
@@ -860,7 +860,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_handle_argv",
             "line": 77,
             "column": 12,
@@ -871,7 +871,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 82,
             "column": 0,
@@ -882,7 +882,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 153,
             "column": 9,
@@ -893,7 +893,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 157,
             "column": 9,
@@ -904,7 +904,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 159,
             "column": 9,
@@ -915,7 +915,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 172,
             "column": 9,
@@ -926,7 +926,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 182,
             "column": 9,
@@ -937,7 +937,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 184,
             "column": 9,
@@ -948,7 +948,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 186,
             "column": 9,
@@ -959,7 +959,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 196,
             "column": 9,
@@ -970,7 +970,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 199,
             "column": 9,
@@ -981,7 +981,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 201,
             "column": 9,
@@ -992,7 +992,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 210,
             "column": 9,
@@ -1003,7 +1003,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "_automatically_generate_mocate",
             "line": 82,
             "column": 0,
@@ -1014,7 +1014,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 226,
             "column": 0,
@@ -1025,7 +1025,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 232,
             "column": 4,
@@ -1036,7 +1036,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 255,
             "column": 12,
@@ -1047,7 +1047,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 484,
             "column": 11,
@@ -1058,7 +1058,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 363,
             "column": 13,
@@ -1069,7 +1069,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 369,
             "column": 28,
@@ -1080,7 +1080,7 @@
         },
         {
             "type": "warning",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 371,
             "column": 33,
@@ -1091,7 +1091,7 @@
         },
         {
             "type": "error",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 453,
             "column": 45,
@@ -1102,7 +1102,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 226,
             "column": 0,
@@ -1113,7 +1113,7 @@
         },
         {
             "type": "refactor",
-            "module": "guided_setup",
+            "module": "bin.guided_setup",
             "obj": "main",
             "line": 226,
             "column": 0,
@@ -1124,7 +1124,7 @@
         },
         {
             "type": "refactor",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "_handle_argv",
             "line": 34,
             "column": 12,
@@ -1135,7 +1135,7 @@
         },
         {
             "type": "warning",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "_handle_argv",
             "line": 39,
             "column": 12,
@@ -1146,7 +1146,7 @@
         },
         {
             "type": "convention",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 44,
             "column": 0,
@@ -1157,7 +1157,7 @@
         },
         {
             "type": "refactor",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 44,
             "column": 0,
@@ -1168,7 +1168,7 @@
         },
         {
             "type": "warning",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 112,
             "column": 8,
@@ -1179,7 +1179,7 @@
         },
         {
             "type": "warning",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 46,
             "column": 4,
@@ -1190,7 +1190,7 @@
         },
         {
             "type": "convention",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 78,
             "column": 4,
@@ -1201,7 +1201,7 @@
         },
         {
             "type": "warning",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 80,
             "column": 8,
@@ -1212,7 +1212,7 @@
         },
         {
             "type": "error",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 108,
             "column": 14,
@@ -1223,7 +1223,7 @@
         },
         {
             "type": "error",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 121,
             "column": 8,
@@ -1234,7 +1234,7 @@
         },
         {
             "type": "refactor",
-            "module": "run_modelica_calibration",
+            "module": "bin.run_modelica_calibration",
             "obj": "main",
             "line": 44,
             "column": 0,
@@ -1669,7 +1669,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
+            "message": "Similar lines in 2 files\n==bin.guided_setup:[64:102]\n==bin.run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
             "message-id": "R0801"
         },
         {
@@ -1724,7 +1724,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
             "message-id": "R0801"
         },
         {
@@ -1735,7 +1735,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.\n    # Let's also define some different tuner parameters for the last stationary class.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
             "message-id": "R0801"
         },
         {
@@ -1746,7 +1746,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
             "message-id": "R0801"
         },
         {
@@ -1768,7 +1768,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from aixcalibuha\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_A_energy_system_analysis),\n    # we've changed four parameters in the model. To show the usefulness\n    # of sensitivity analysis prior to calibration, we will add a fifth without\n    # any influence, the heating curve declination of the heat pump.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.\n    # How to load the data is up to you. To make the structure clear,\n    # we use a 3 element tuple in this example:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from AixCaliBUhA\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_B_energy_system_analysis),\n    # we've changed two parameters in the model.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.",
             "message-id": "R0801"
         }
     ],
@@ -1807,7 +1807,7 @@
                 "statement": 255,
                 "warning": 0
             },
-            "guided_setup": {
+            "bin.guided_setup": {
                 "convention": 3,
                 "error": 1,
                 "fatal": 0,
@@ -1816,7 +1816,7 @@
                 "statement": 223,
                 "warning": 19
             },
-            "run_modelica_calibration": {
+            "bin.run_modelica_calibration": {
                 "convention": 2,
                 "error": 2,
                 "fatal": 0,
@@ -1983,13 +1983,13 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "examples.e2_A_optimization_problem_definition",
                 "examples.e2_B_optimization_problem_definition",
-                "aixcalibuha"
+                "aixcalibuha",
+                "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
-                "run_modelica_calibration",
-                "aixcalibuha"
+                "aixcalibuha",
+                "bin.run_modelica_calibration"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
@@ -1999,18 +1999,18 @@
                 "tests.test_modelica_cal_sen"
             ],
             "numpy": [
-                "tests.test_data_types",
                 "examples.e4_calibration_example",
                 "aixcalibuha.data_types",
+                "tests.test_data_types",
                 "tests.test_modelica_cal_sen"
             ],
             "ebcpy": [
-                "aixcalibuha.data_types",
                 "examples.e2_B_optimization_problem_definition",
+                "examples",
+                "aixcalibuha.data_types",
                 "examples.e2_A_optimization_problem_definition",
                 "examples.e1_A_energy_system_analysis",
-                "tests.test_modelica_cal_sen",
-                "examples"
+                "tests.test_modelica_cal_sen"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2020,22 +2020,22 @@
             ],
             "ebcpy.data_types": [
                 "tests.test_data_types",
-                "guided_setup",
-                "run_modelica_calibration"
+                "bin.guided_setup",
+                "bin.run_modelica_calibration"
             ],
             "ebcpy.simulationapi.dymola_api": [
-                "guided_setup"
+                "bin.guided_setup"
             ],
             "ebcpy.modelica": [
-                "guided_setup"
+                "bin.guided_setup"
             ],
             "aixcalibuha.utils.configuration": [
                 "tests.test_config",
-                "guided_setup",
-                "run_modelica_calibration"
+                "bin.guided_setup",
+                "bin.run_modelica_calibration"
             ],
             "ebcpy.utils.conversion": [
-                "run_modelica_calibration"
+                "bin.run_modelica_calibration"
             ],
             "examples.e2_A_optimization_problem_definition": [
                 "examples"
@@ -2048,18 +2048,18 @@
                 "examples.e1_A_energy_system_analysis"
             ],
             "examples": [
-                "examples.e3_sensitivity_analysis_example",
                 "examples.e1_B_energy_system_analysis",
+                "examples.e3_sensitivity_analysis_example",
                 "examples.e4_calibration_example"
             ],
             "aixcalibuha": [
                 "examples.e2_B_optimization_problem_definition",
-                "tests.test_data_types",
-                "tests.test_config",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_modelica_cal_sen",
+                "tests.test_config",
+                "examples.e4_calibration_example",
                 "examples.e2_A_optimization_problem_definition",
-                "examples.e4_calibration_example"
+                "tests.test_modelica_cal_sen",
+                "tests.test_data_types"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
@@ -2307,13 +2307,13 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "examples.e2_A_optimization_problem_definition",
+                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha",
-                "examples.e2_B_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
-                "run_modelica_calibration",
-                "aixcalibuha"
+                "aixcalibuha",
+                "run_modelica_calibration"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
@@ -2323,18 +2323,18 @@
                 "tests.test_modelica_cal_sen"
             ],
             "numpy": [
-                "tests.test_data_types",
                 "examples.e4_calibration_example",
                 "aixcalibuha.data_types",
+                "tests.test_data_types",
                 "tests.test_modelica_cal_sen"
             ],
             "ebcpy": [
-                "aixcalibuha.data_types",
                 "examples.e2_B_optimization_problem_definition",
+                "examples",
+                "aixcalibuha.data_types",
                 "examples.e2_A_optimization_problem_definition",
                 "examples.e1_A_energy_system_analysis",
-                "tests.test_modelica_cal_sen",
-                "examples"
+                "tests.test_modelica_cal_sen"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2343,9 +2343,9 @@
                 "aixcalibuha.data_types"
             ],
             "ebcpy.data_types": [
-                "tests.test_data_types",
                 "guided_setup",
-                "run_modelica_calibration"
+                "run_modelica_calibration",
+                "tests.test_data_types"
             ],
             "ebcpy.simulationapi.dymola_api": [
                 "guided_setup"
@@ -2372,18 +2372,18 @@
                 "examples.e1_A_energy_system_analysis"
             ],
             "examples": [
-                "examples.e3_sensitivity_analysis_example",
                 "examples.e1_B_energy_system_analysis",
-                "examples.e4_calibration_example"
+                "examples.e4_calibration_example",
+                "examples.e3_sensitivity_analysis_example"
             ],
             "aixcalibuha": [
                 "examples.e2_B_optimization_problem_definition",
-                "tests.test_data_types",
-                "tests.test_config",
+                "examples.e4_calibration_example",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_modelica_cal_sen",
+                "tests.test_config",
                 "examples.e2_A_optimization_problem_definition",
-                "examples.e4_calibration_example"
+                "tests.test_modelica_cal_sen",
+                "tests.test_data_types"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
