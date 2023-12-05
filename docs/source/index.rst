@@ -12,7 +12,7 @@ Welcome to AixCaliBuHa's documentation!
    :maxdepth: 2
 
    examples
-   aixcalibuha
+   code/modules
    contribution
    version_his
 

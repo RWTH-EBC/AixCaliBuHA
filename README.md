@@ -128,7 +128,7 @@ We provide different plots to make the process of calibration clearer to you. We
 Please use the following metadata to cite `AixCaliBuHA` in your research:
 
 ```
-@article{Wüllhorst2022,
+@article{Wuellhorst2022,
   doi = {10.21105/joss.03861},
   url = {https://doi.org/10.21105/joss.03861},
   year = {2022},

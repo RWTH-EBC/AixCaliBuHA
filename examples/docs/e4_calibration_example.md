@@ -1,52 +1,19 @@
- # Example 3 sensitivity analysis
- Goals of this part of the examples:
- 1. Learn the settings for a calibration
- 2. Learn how to use both Single- and MultiClassCalibration
- 3. Learn how to validate your calibration
+
+# Example 3 sensitivity analysis
+
+Goals of this part of the examples:
+1. Learn the settings for a calibration
+2. Learn how to use both Single- and MultiClassCalibration
+3. Learn how to validate your calibration
+
 ```python
 import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 ```
- Please define the missing TODOs in the section below according to the docstrings.
-```python
-"""
-Run an example for a calibration. Make sure you have Dymola installed
-on your device and a working licence. All output data will be stored in
-the current working directory of python. Look at the logs and plots
-to better understand what is happening in the calibration. If you want, you
-can switch the methods to other supported methods or change the framework and
-try the global optimizer of dlib.
 
-:param [pathlib.Path, str] examples_dir:
-    Path to the examples folder of AixCaliBuHA
-:param str example:
-    Which example to run, "A" or "B"
-:param int n_cpu:
-    Number of cores to use
+## Setup
+Start by loading the simulation api and the calibration classes
 
-Optional, for the fully automated process
-:param ebcpy.simulationapi.SimulationAPI sim_api:
-    Simulation API to simulate the models
-:param list[CalibrationClass] cal_classes:
-    List with multiple CalibrationClass objects for calibration. Goals and
-    TunerParameters have to be set. If only one class is provided (either
-    a list with one entry or a CalibrationClass object) the single-class
-    Calibrator is used.
-:param CalibrationClass framework:
-    See Documentation of ebcpy on available optimization frameworks
-:param str method:
-    See Documentation of ebcpy on available optimization framework methods
-"""
-examples_dir = "TODO: Add a valid input according to the docstring above"
-example = "B"
-n_cpu: int  =  1
-sim_api = None
-cal_classes = None
-framework: str  =  "scipy_differential_evolution"
-method: str  =  "best1bin"
-```
- ## Setup
- Start by loading the simulation api and the calibration classes
 ```python
 from examples import setup_fmu, setup_calibration_classes
 if sim_api is None:
@@ -59,10 +26,12 @@ default_cal_classes, validation_class = setup_calibration_classes(
 if cal_classes is None:
     cal_classes = default_cal_classes
 ```
- ## Calibration and optimization settings
- We refer to the docstrings on more information on each setting.
- Specify values for keyword-arguments to customize
- the Calibration process for a single-class calibration
+
+## Calibration and optimization settings
+We refer to the docstrings on more information on each setting.
+Specify values for keyword-arguments to customize
+the Calibration process for a single-class calibration
+
 ```python
 kwargs_calibrator = {"timedelta": 0,
                      "save_files": False,
@@ -78,12 +47,16 @@ kwargs_calibrator = {"timedelta": 0,
                      "max_itercount": 100
                      }
 ```
- Specify values for keyword-arguments to customize
- the Calibration process for a multiple-class calibration
+
+Specify values for keyword-arguments to customize
+the Calibration process for a multiple-class calibration
+
 ```python
 kwargs_multiple_classes = {"merge_multiple_classes": True}
 ```
- Specify solver-specific keyword-arguments depending on the solver and method you will use
+
+Specify solver-specific keyword-arguments depending on the solver and method you will use
+
 ```python
 kwargs_scipy_dif_evo = {"maxiter": 30,
                         "popsize": 5,
@@ -109,8 +82,10 @@ kwargs_pymoo = {"pop_size": 20,
                 "eliminate_duplicates": True,
                 "n_offsprings": None}
 ```
- Merge the dictionaries into one.
- If you change the solver, also change the solver-kwargs-dict in the line below
+
+Merge the dictionaries into one.
+If you change the solver, also change the solver-kwargs-dict in the line below
+
 ```python
 if framework == "scipy_differential_evolution":
     kwargs_optimization = kwargs_scipy_dif_evo
@@ -123,13 +98,17 @@ elif framework == "pymoo":
 else:
     kwargs_optimization = {}
 ```
- Check if pymoo is being used for Multiprocessing
+
+Check if pymoo is being used for Multiprocessing
+
 ```python
 if framework != "pymoo" and sim_api.n_cpu > 1:
     raise TypeError(f"Given framework {framework} does not support Multiprocessing."
                     f"Please use pymoo as your framework.")
 ```
- Select between single or multiple class calibration
+
+Select between single or multiple class calibration
+
 ```python
 if isinstance(cal_classes, CalibrationClass):
     modelica_calibrator = Calibrator(
@@ -147,8 +126,10 @@ else:
         start_time_method="fixstart",
         **kwargs_calibrator)
 ```
- ## Calibration
- Start the calibration process
+
+## Calibration
+Start the calibration process
+
 ```python
 result = modelica_calibrator.calibrate(
     framework=framework,
@@ -156,15 +137,19 @@ result = modelica_calibrator.calibrate(
     **kwargs_optimization
 )
 ```
- ## Validation
- Start the validation process
+
+## Validation
+Start the validation process
+
 ```python
 modelica_calibrator.validate(
     validation_class=validation_class,
     calibration_result=result
 )
 ```
- Don't forget to close the simulation api:
+
+Don't forget to close the simulation api:
+
 ```python
 sim_api.close()
 ```
