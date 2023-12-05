@@ -667,7 +667,34 @@ class SenAnalyzer(abc.ABC):
             samples = samples.to_numpy()
             result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
             _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
-            self._analyze_time_step(_filepaths)
+
+            sim1 = _load_single_file(_filepaths[0])
+            time_index = sim1.index.to_numpy()
+            variables = sim1.get_variable_names()
+            sen_time_dependent_list = []
+            for tstep in time_index:
+                result_tstep = dict(zip(variables, [[]]*len(variables)))
+                for _filepath in _filepaths:
+                    for var in variables:
+                        sim = _load_single_file(_filepath)
+                        result_tstep[var].append(sim[var].loc[tstep])
+                result_dict_tstep = {}
+                for var in variables:
+                    if np.all(result_tstep[var] == result_tstep[var][0]):
+                        sen_tstep_var = None
+                    else:
+                        sen_tstep_var = self.analysis_function(
+                            x=samples,
+                            y=result_tstep[var]
+                        )
+                    result_dict_tstep[var] = sen_tstep_var
+                result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
+                                                           local_classes=[cal_class],
+                                                           verbose=verbose)
+                sen_time_dependent_list.append(result_df_tstep)
+
+
+
         else:
             results, samples = self.simulate_samples(
                 cal_class=cal_class,
@@ -837,6 +864,13 @@ class SenAnalyzer(abc.ABC):
             plt.show()
 
         return figs, axes
+
+    @staticmethod
+    def plot_time_dependent(result: pd.DataFrame, **kwargs):
+        """
+        Plot time dependent sensitivity results from run_time_dependent().
+        """
+        pass
 
     def plot(self, result):
         """
