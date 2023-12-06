@@ -694,11 +694,11 @@ class SenAnalyzer(abc.ABC):
             variables = sim1.get_variable_names()
             sen_time_dependent_list = []
             for tstep in time_index:
-                result_tstep = dict(zip(variables, [[]]*len(variables)))
-                for _filepath in _filepaths:
-                    for var in variables:
-                        sim = _load_single_file(_filepath)
-                        result_tstep[var].append(sim[var].loc[tstep])
+                result_tstep = dict(zip(variables, np.empty((len(variables),len(_filepaths)))))
+                for sim_i, _filepath in enumerate(_filepaths):
+                    sim = _load_single_file(_filepath)
+                    for var_i, var in enumerate(variables):
+                        result_tstep[var][sim_i] = sim[var,'sim'].loc[tstep]
                 result_dict_tstep = {}
                 for var in variables:
                     if np.all(result_tstep[var] == result_tstep[var][0]):
@@ -713,9 +713,7 @@ class SenAnalyzer(abc.ABC):
                                                            local_classes=[cal_class],
                                                            verbose=verbose)
                 sen_time_dependent_list.append(result_df_tstep)
-
-
-
+            sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
         else:
             results, samples = self.simulate_samples(
                 cal_class=cal_class,

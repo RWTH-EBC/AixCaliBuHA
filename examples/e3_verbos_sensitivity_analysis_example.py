@@ -102,6 +102,7 @@ def run_sensitivity_analysis(
 
     result = sen_analyzer.run_time_dependent(
         cal_class=merged_calibration_classes[0],
+        load_sim_files=True,
     )
     print(result)
     # Now we run the sensitivity analysis with the verbose option.
