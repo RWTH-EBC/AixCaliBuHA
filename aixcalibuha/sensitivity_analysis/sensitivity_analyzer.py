@@ -19,6 +19,7 @@ import multiprocessing as mp
 import time
 from icecream import ic
 import sys
+from datetime import timedelta
 
 
 def _load_single_file(_filepath, parquet_engine='pyarrow'):
@@ -66,6 +67,22 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
         return _restruct_single(sen_time_dependent_list1), _restruct_single(sen_time_dependent_list2, True)
     else:
         return _restruct_single(sen_time_dependent_list)
+
+
+def _remaining_time(t1, n_counter, n_total, n_cpu):
+    """
+    Helper function to calculate the remaining simulation time and log the finished simulations.
+    The function can first be used when a simulation has finished on each used cpu, so that the
+    translation of the model is not considered in the time estimation.
+
+    :param float t1:
+        Start time after n_cpu simulations.
+    """
+    t_remaining = (time.time() - t1) / n_counter * (
+            n_total - n_counter)
+    p_finished = n_counter / n_total * 100
+    sys.stderr.write(f"\rFinished {np.round(p_finished, 1)} %. "
+                     f"Approximately remaining time: {timedelta(seconds=int(t_remaining))} ")
 
 
 class SenAnalyzer(abc.ABC):
@@ -701,27 +718,45 @@ class SenAnalyzer(abc.ABC):
             time_index = sim1.index.to_numpy()
             variables = sim1.get_variable_names()
             sen_time_dependent_list = []
+            # for tstep in time_index:
+            #     result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
+            #     for sim_i, _filepath in enumerate(_filepaths):
+            #         sim = _load_single_file(_filepath)
+            #         for var_i, var in enumerate(variables):
+            #             result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
+            #     result_dict_tstep = {}
+            #     for var in variables:
+            #         if np.all(result_tstep[var] == result_tstep[var][0]):
+            #             sen_tstep_var = None
+            #         else:
+            #             sen_tstep_var = self.analysis_function(
+            #                 x=samples,
+            #                 y=result_tstep[var]
+            #             )
+            #         result_dict_tstep[var] = sen_tstep_var
+            #     result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
+            #                                                local_classes=[cal_class],
+            #                                                verbose=verbose)
+            kwargs_tstep = []
             for tstep in time_index:
-                result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
-                for sim_i, _filepath in enumerate(_filepaths):
-                    sim = _load_single_file(_filepath)
-                    for var_i, var in enumerate(variables):
-                        result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
-                result_dict_tstep = {}
-                for var in variables:
-                    if np.all(result_tstep[var] == result_tstep[var][0]):
-                        sen_tstep_var = None
-                    else:
-                        sen_tstep_var = self.analysis_function(
-                            x=samples,
-                            y=result_tstep[var]
-                        )
-                    result_dict_tstep[var] = sen_tstep_var
-                result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
-                                                           local_classes=[cal_class],
-                                                           verbose=verbose)
-                sen_time_dependent_list.append(result_df_tstep)
-            ic(time.time()-t_start_load_single)
+                kwargs_tstep.append({
+                    'tstep': tstep,
+                    'variables': variables,
+                    '_filepaths': _filepaths,
+                    'samples': samples,
+                    'cal_class': cal_class,
+                    'verbose': verbose
+                })
+            n_total = len(time_index)
+            n_counter = 0
+            t1 = time.time()
+            with mp.Pool(processes=n_cpu) as pool:
+                for result_df_tstep in pool.imap(self._analyze_time_step, kwargs_tstep):
+                    sen_time_dependent_list.append(result_df_tstep)
+                    n_counter += 1
+                    _remaining_time(t1, n_counter, n_total, n_cpu)
+                sys.stderr.write("\r")
+            ic(time.time() - t_start_load_single)
             sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
             ic(sys.getsizeof(sen_time_dependent_df))
         else:
@@ -758,7 +793,7 @@ class SenAnalyzer(abc.ABC):
                                                                local_classes=[cal_class],
                                                                verbose=verbose)
                     sen_time_dependent_list.append(result_df_tstep)
-                ic(time.time()-t_start_load_all)
+                ic(time.time() - t_start_load_all)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
                 ic(sys.getsizeof(sen_time_dependent_df))
             else:
@@ -790,11 +825,32 @@ class SenAnalyzer(abc.ABC):
             self._save(sen_time_dependent_df, time_dependent=True)
         return sen_time_dependent_df
 
-    def _analyse_single_time_step_var(self, results_single_time_var):
-        pass
-
-    def _analyze_time_step(self, filepaths):
-        pass
+    def _analyze_time_step(self, kwargs):
+        variables = kwargs.pop('variables')
+        _filepaths = kwargs.pop('_filepaths')
+        samples = kwargs.pop('samples')
+        cal_class = kwargs.pop('cal_class')
+        verbose = kwargs.pop('verbose')
+        tstep = kwargs.pop('tstep')
+        result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
+        for sim_i, _filepath in enumerate(_filepaths):
+            sim = _load_single_file(_filepath)
+            for var_i, var in enumerate(variables):
+                result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
+        result_dict_tstep = {}
+        for var in variables:
+            if np.all(result_tstep[var] == result_tstep[var][0]):
+                sen_tstep_var = None
+            else:
+                sen_tstep_var = self.analysis_function(
+                    x=samples,
+                    y=result_tstep[var]
+                )
+            result_dict_tstep[var] = sen_tstep_var
+        result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
+                                                   local_classes=[cal_class],
+                                                   verbose=verbose)
+        return result_df_tstep
 
     def _load_time_step(self, filepaths):
         pass

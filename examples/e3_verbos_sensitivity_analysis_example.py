@@ -95,14 +95,15 @@ def run_sensitivity_analysis(
         num_samples=1024,
         calc_second_order=True,
         cd=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
-        save_files=True,
+        save_files=False,
         savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_{example}', 'files'),
         suffix_files='csv'
     )
 
     result = sen_analyzer.run_time_dependent(
         cal_class=merged_calibration_classes[0],
-        load_sim_files=False,
+        load_sim_files=True,
+        n_cpu=4
     )
     print(result)
     # Now we run the sensitivity analysis with the verbose option.
