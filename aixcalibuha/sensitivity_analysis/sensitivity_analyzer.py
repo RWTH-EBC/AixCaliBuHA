@@ -16,6 +16,9 @@ from aixcalibuha import utils
 import matplotlib.pyplot as plt
 from SALib.plotting.bar import plot as barplot
 import multiprocessing as mp
+import time
+from icecream import ic
+import sys
 
 
 def _load_single_file(_filepath, parquet_engine='pyarrow'):
@@ -58,7 +61,7 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
             sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'time'], inplace=True)
         return sen_time_dependent_df
 
-    if isinstance(sen_time_dependent_list[0],tuple):
+    if isinstance(sen_time_dependent_list[0], tuple):
         sen_time_dependent_list1, sen_time_dependent_list2 = zip(*sen_time_dependent_list)
         return _restruct_single(sen_time_dependent_list1), _restruct_single(sen_time_dependent_list2, True)
     else:
@@ -689,19 +692,21 @@ class SenAnalyzer(abc.ABC):
                                   header=0,
                                   index_col=0)
             samples = samples.to_numpy()
+            t_start_load_single = time.time()
             result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
             _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
 
             sim1 = _load_single_file(_filepaths[0])
+            ic(sys.getsizeof(sim1))
             time_index = sim1.index.to_numpy()
             variables = sim1.get_variable_names()
             sen_time_dependent_list = []
             for tstep in time_index:
-                result_tstep = dict(zip(variables, np.empty((len(variables),len(_filepaths)))))
+                result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
                 for sim_i, _filepath in enumerate(_filepaths):
                     sim = _load_single_file(_filepath)
                     for var_i, var in enumerate(variables):
-                        result_tstep[var][sim_i] = sim[var,'sim'].loc[tstep]
+                        result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
                 result_dict_tstep = {}
                 for var in variables:
                     if np.all(result_tstep[var] == result_tstep[var][0]):
@@ -716,21 +721,51 @@ class SenAnalyzer(abc.ABC):
                                                            local_classes=[cal_class],
                                                            verbose=verbose)
                 sen_time_dependent_list.append(result_df_tstep)
+            ic(time.time()-t_start_load_single)
             sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+            ic(sys.getsizeof(sen_time_dependent_df))
         else:
             results, samples = self.simulate_samples(
                 cal_class=cal_class,
                 scale=scale
             )
             if self.save_files:
-                self._analyze_time_step(results)
+                t_start_load_all = time.time()
+                results = _load_files(results)
+                ic(sys.getsizeof(results))
+                results_df = [r.to_df() for r in results]
+                ic(sys.getsizeof(results_df))
+                total_result = pd.concat(results_df, keys=range(len(results_df)), axis='columns')
+                total_result = total_result.swaplevel(axis=1).sort_index(axis=1)
+                total_result.columns.set_names(['Variables', 'Tags'], inplace=True)
+                total_result = data_types.TimeSeriesData(total_result)
+                ic(sys.getsizeof(total_result))
+                time_index = total_result.index.to_numpy()
+                sen_time_dependent_list = []
+                for time_step in time_index:
+                    result_dict_tstep = {}
+                    for var in total_result.get_variable_names():
+                        result_tstep_var = total_result[var].loc[time_step].to_numpy()
+                        if np.all(result_tstep_var == result_tstep_var[0]):
+                            sen_tstep_var = None
+                        else:
+                            sen_tstep_var = self.analysis_function(
+                                x=samples,
+                                y=result_tstep_var
+                            )
+                        result_dict_tstep[var] = sen_tstep_var
+                    result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
+                                                               local_classes=[cal_class],
+                                                               verbose=verbose)
+                    sen_time_dependent_list.append(result_df_tstep)
+                ic(time.time()-t_start_load_all)
+                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+                ic(sys.getsizeof(sen_time_dependent_df))
             else:
                 results_df = [r.to_df() for r in results]
                 total_result = pd.concat(results_df, keys=range(len(results_df)), axis='columns')
                 total_result = total_result.swaplevel(axis=1).sort_index(axis=1)
-                print(total_result)
                 total_result.columns.set_names(['Variables', 'Tags'], inplace=True)
-                print(total_result)
                 total_result = data_types.TimeSeriesData(total_result)
                 time_index = total_result.index.to_numpy()
                 sen_time_dependent_list = []
