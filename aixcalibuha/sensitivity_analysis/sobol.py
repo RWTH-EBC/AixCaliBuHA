@@ -85,13 +85,17 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
-    def _save(self, result):
-        if not result[0].empty:
+    def _save(self, result, time_dependent=False):
+        if time_dependent:
+            savepath_result_1 = self.cd.joinpath(f'{self.__class__.__name__}_results_time.csv')
+            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order_time.csv')
+        else:
             savepath_result_1 = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
+            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv')
+        if not result[0].empty:
             result[0].to_csv(savepath_result_1)
             self.reproduction_files.append(savepath_result_1)
         if not result[1].empty:
-            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv')
             result[1].to_csv(savepath_result_2)
             self.reproduction_files.append(savepath_result_2)
 

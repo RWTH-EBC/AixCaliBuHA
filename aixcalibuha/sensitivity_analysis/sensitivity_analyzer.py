@@ -518,12 +518,15 @@ class SenAnalyzer(abc.ABC):
             self.plot(result)
         return result, calibration_classes
 
-    def _save(self, result):
+    def _save(self, result, time_dependent=False):
         """
         Saves the result DataFrame of run.
         Needs to be overwritten for Sobol results.
         """
-        savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
+        if time_dependent:
+            savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results_time.csv')
+        else:
+            savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
         result.to_csv(savepath_result)
         self.reproduction_files.append(savepath_result)
 
@@ -748,6 +751,8 @@ class SenAnalyzer(abc.ABC):
                                                                verbose=verbose)
                     sen_time_dependent_list.append(result_df_tstep)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+        if save_results:
+            self._save(sen_time_dependent_df, time_dependent=True)
         return sen_time_dependent_df
 
     def _analyse_single_time_step_var(self, results_single_time_var):
