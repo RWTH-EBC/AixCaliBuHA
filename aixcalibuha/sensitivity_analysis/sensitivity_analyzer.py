@@ -852,8 +852,16 @@ class SenAnalyzer(abc.ABC):
                                                    verbose=verbose)
         return result_df_tstep
 
-    def _load_time_step(self, filepaths):
-        pass
+    def _load_tsteps(self, tsteps, variables, _filepaths):
+        list_result_tsteps = []
+        for sim_i, _filepath in enumerate(_filepaths):
+            sim = _load_single_file(_filepath)
+            for tstep in tsteps:
+                result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
+                for var_i, var in enumerate(variables):
+                    result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
+                list_result_tsteps.append(result_tstep)
+        return list_result_tsteps
 
     def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)
