@@ -49,6 +49,16 @@ def _restruct_verbose(list_output_verbose):
     return output_verbose
 
 
+def _concat_all_sims(sim_results_list):
+    sim_results_list = [r.to_df() for r in sim_results_list]
+    ic(sys.getsizeof(sim_results_list))
+    sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)), axis='columns')
+    sim_results_list = sim_results_list.swaplevel(axis=1).sort_index(axis=1)
+    sim_results_list.columns.set_names(['Variables', 'Tags'], inplace=True)
+    sim_results_list = data_types.TimeSeriesData(sim_results_list)
+    return sim_results_list
+
+
 def _restruct_time_dependent(sen_time_dependent_list, time_index):
     def _restruct_single(sen_time_dependent_list_s, second_order=False):
         sen_time_dependent_df = pd.concat(sen_time_dependent_list_s, keys=time_index, axis=0)
@@ -69,6 +79,11 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
         return _restruct_single(sen_time_dependent_list)
 
 
+def _divide_chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
 def _remaining_time(t1, n_counter, n_total, n_cpu):
     """
     Helper function to calculate the remaining simulation time and log the finished simulations.
@@ -83,6 +98,16 @@ def _remaining_time(t1, n_counter, n_total, n_cpu):
     p_finished = n_counter / n_total * 100
     sys.stderr.write(f"\rFinished {np.round(p_finished, 1)} %. "
                      f"Approximately remaining time: {timedelta(seconds=int(t_remaining))} ")
+
+
+def _load_tsteps_df(tsteps, _filepaths):
+    tsteps_sim_results = []
+    for _filepath in _filepaths:
+        sim = _load_single_file(_filepath)
+        tsteps_sim_results.append(sim.loc[tsteps[0]:tsteps[-1]])
+    tsteps_sim_results = _concat_all_sims(tsteps_sim_results)
+    ic(sys.getsizeof(tsteps_sim_results))
+    return tsteps_sim_results
 
 
 class SenAnalyzer(abc.ABC):
@@ -666,12 +691,6 @@ class SenAnalyzer(abc.ABC):
             the sensitivity measures of the individual Goals will also be calculated and returned.
         :keyword scale:
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
-        :keyword int n_cpu:
-            Default is 1. The number of processes to use for the evaluation of the statistical measure.
-            For n_cpu > 1 only one simulation file is loaded at once in a process and dumped directly
-            after the evaluation of the statistical measure, so that only minimal memory is used.
-            Use this option for large analyses.
-            Only implemented for save_files=True or load_files=True.
         :keyword bool load_sim_files:
             Default False. If True, no new simulations are done and old simulations are loaded.
             The simulations and corresponding samples will be loaded from self.savepath_sim like they
@@ -689,18 +708,11 @@ class SenAnalyzer(abc.ABC):
         """
         verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
-        n_cpu = kwargs.pop('n_cpu', 1)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
         load_sim_files = kwargs.pop('load_sim_files', False)
+        n_steps = kwargs.pop('n_steps', 'all')
 
-        # Check n_cpu
-        if n_cpu > mp.cpu_count():
-            raise ValueError(f"Given n_cpu '{n_cpu}' is greater "
-                             "than the available number of "
-                             f"cpus on your machine '{mp.cpu_count()}'")
-
-        sen_time_dependent_df = None
         if load_sim_files:
             self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
             sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
@@ -713,49 +725,12 @@ class SenAnalyzer(abc.ABC):
             result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
             _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
 
-            sim1 = _load_single_file(_filepaths[0])
-            ic(sys.getsizeof(sim1))
-            time_index = sim1.index.to_numpy()
-            variables = sim1.get_variable_names()
-            sen_time_dependent_list = []
-            # for tstep in time_index:
-            #     result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
-            #     for sim_i, _filepath in enumerate(_filepaths):
-            #         sim = _load_single_file(_filepath)
-            #         for var_i, var in enumerate(variables):
-            #             result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
-            #     result_dict_tstep = {}
-            #     for var in variables:
-            #         if np.all(result_tstep[var] == result_tstep[var][0]):
-            #             sen_tstep_var = None
-            #         else:
-            #             sen_tstep_var = self.analysis_function(
-            #                 x=samples,
-            #                 y=result_tstep[var]
-            #             )
-            #         result_dict_tstep[var] = sen_tstep_var
-            #     result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
-            #                                                local_classes=[cal_class],
-            #                                                verbose=verbose)
-            kwargs_tstep = []
-            for tstep in time_index:
-                kwargs_tstep.append({
-                    'tstep': tstep,
-                    'variables': variables,
-                    '_filepaths': _filepaths,
-                    'samples': samples,
-                    'cal_class': cal_class,
-                    'verbose': verbose
-                })
-            n_total = len(time_index)
-            n_counter = 0
-            t1 = time.time()
-            with mp.Pool(processes=n_cpu) as pool:
-                for result_df_tstep in pool.imap(self._analyze_time_step, kwargs_tstep):
-                    sen_time_dependent_list.append(result_df_tstep)
-                    n_counter += 1
-                    _remaining_time(t1, n_counter, n_total, n_cpu)
-                sys.stderr.write("\r")
+            sen_time_dependent_list, time_index = self._load_analyze_tsteps(_filepaths=_filepaths,
+                                                                            samples=samples,
+                                                                            n_steps=n_steps,
+                                                                            cal_class=cal_class,
+                                                                            verbose=verbose)
+
             ic(time.time() - t_start_load_single)
             sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
             ic(sys.getsizeof(sen_time_dependent_df))
@@ -766,85 +741,41 @@ class SenAnalyzer(abc.ABC):
             )
             if self.save_files:
                 t_start_load_all = time.time()
-                results = _load_files(results)
-                ic(sys.getsizeof(results))
-                results_df = [r.to_df() for r in results]
-                ic(sys.getsizeof(results_df))
-                total_result = pd.concat(results_df, keys=range(len(results_df)), axis='columns')
-                total_result = total_result.swaplevel(axis=1).sort_index(axis=1)
-                total_result.columns.set_names(['Variables', 'Tags'], inplace=True)
-                total_result = data_types.TimeSeriesData(total_result)
-                ic(sys.getsizeof(total_result))
-                time_index = total_result.index.to_numpy()
-                sen_time_dependent_list = []
-                for time_step in time_index:
-                    result_dict_tstep = {}
-                    for var in total_result.get_variable_names():
-                        result_tstep_var = total_result[var].loc[time_step].to_numpy()
-                        if np.all(result_tstep_var == result_tstep_var[0]):
-                            sen_tstep_var = None
-                        else:
-                            sen_tstep_var = self.analysis_function(
-                                x=samples,
-                                y=result_tstep_var
-                            )
-                        result_dict_tstep[var] = sen_tstep_var
-                    result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
-                                                               local_classes=[cal_class],
-                                                               verbose=verbose)
-                    sen_time_dependent_list.append(result_df_tstep)
+                sen_time_dependent_list, time_index = self._load_analyze_tsteps(_filepaths=results,
+                                                                                samples=samples,
+                                                                                n_steps=n_steps,
+                                                                                cal_class=cal_class,
+                                                                                verbose=verbose)
                 ic(time.time() - t_start_load_all)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
                 ic(sys.getsizeof(sen_time_dependent_df))
             else:
-                results_df = [r.to_df() for r in results]
-                total_result = pd.concat(results_df, keys=range(len(results_df)), axis='columns')
-                total_result = total_result.swaplevel(axis=1).sort_index(axis=1)
-                total_result.columns.set_names(['Variables', 'Tags'], inplace=True)
-                total_result = data_types.TimeSeriesData(total_result)
+                total_result = _concat_all_sims(results)
                 time_index = total_result.index.to_numpy()
                 sen_time_dependent_list = []
                 for time_step in time_index:
-                    result_dict_tstep = {}
-                    for var in total_result.get_variable_names():
-                        result_tstep_var = total_result[var].loc[time_step].to_numpy()
-                        if np.all(result_tstep_var == result_tstep_var[0]):
-                            sen_tstep_var = None
-                        else:
-                            sen_tstep_var = self.analysis_function(
-                                x=samples,
-                                y=result_tstep_var
-                            )
-                        result_dict_tstep[var] = sen_tstep_var
-                    result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
-                                                               local_classes=[cal_class],
-                                                               verbose=verbose)
+                    result_df_tstep = self._analyze_tstep_df(time_step=time_step,
+                                                             tsteps_sim_results=total_result,
+                                                             variables=total_result.get_variable_names(),
+                                                             samples=samples,
+                                                             cal_class=cal_class,
+                                                             verbose=verbose)
                     sen_time_dependent_list.append(result_df_tstep)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
         if save_results:
             self._save(sen_time_dependent_df, time_dependent=True)
         return sen_time_dependent_df
 
-    def _analyze_time_step(self, kwargs):
-        variables = kwargs.pop('variables')
-        _filepaths = kwargs.pop('_filepaths')
-        samples = kwargs.pop('samples')
-        cal_class = kwargs.pop('cal_class')
-        verbose = kwargs.pop('verbose')
-        tstep = kwargs.pop('tstep')
-        result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
-        for sim_i, _filepath in enumerate(_filepaths):
-            sim = _load_single_file(_filepath)
-            for var_i, var in enumerate(variables):
-                result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
+    def _analyze_tstep_df(self, time_step, tsteps_sim_results, variables, samples, cal_class, verbose):
         result_dict_tstep = {}
         for var in variables:
-            if np.all(result_tstep[var] == result_tstep[var][0]):
+            result_tstep_var = tsteps_sim_results[var].loc[time_step].to_numpy()
+            if np.all(result_tstep_var == result_tstep_var[0]):
                 sen_tstep_var = None
             else:
                 sen_tstep_var = self.analysis_function(
                     x=samples,
-                    y=result_tstep[var]
+                    y=result_tstep_var
                 )
             result_dict_tstep[var] = sen_tstep_var
         result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
@@ -852,16 +783,30 @@ class SenAnalyzer(abc.ABC):
                                                    verbose=verbose)
         return result_df_tstep
 
-    def _load_tsteps(self, tsteps, variables, _filepaths):
-        list_result_tsteps = []
-        for sim_i, _filepath in enumerate(_filepaths):
-            sim = _load_single_file(_filepath)
-            for tstep in tsteps:
-                result_tstep = dict(zip(variables, np.empty((len(variables), len(_filepaths)))))
-                for var_i, var in enumerate(variables):
-                    result_tstep[var][sim_i] = sim[var, 'sim'].loc[tstep]
-                list_result_tsteps.append(result_tstep)
-        return list_result_tsteps
+    def _load_analyze_tsteps(self, _filepaths, samples, n_steps, cal_class, verbose):
+        sim1 = _load_single_file(_filepaths[0])
+        ic(sys.getsizeof(sim1))
+        time_index = sim1.index.to_numpy()
+        variables = sim1.get_variable_names()
+        sen_time_dependent_list = []
+        if n_steps == 'all':
+            list_tsteps = [time_index]
+        elif isinstance(n_steps, int) and not (n_steps <= 0 or n_steps > len(time_index)):
+            list_tsteps = _divide_chunks(time_index, n_steps)
+        else:
+            raise ValueError(f"n_steps can only be between 1 and {len(time_index)} or the string all.")
+
+        for tsteps in list_tsteps:
+            tsteps_sim_results = _load_tsteps_df(tsteps=tsteps, _filepaths=_filepaths)
+            for t in tsteps:
+                result_df_tstep = self._analyze_tstep_df(time_step=t,
+                                                         tsteps_sim_results=tsteps_sim_results,
+                                                         variables=variables,
+                                                         samples=samples,
+                                                         cal_class=cal_class,
+                                                         verbose=verbose)
+                sen_time_dependent_list.append(result_df_tstep)
+        return sen_time_dependent_list, time_index
 
     def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)

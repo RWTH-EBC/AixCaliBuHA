@@ -103,7 +103,7 @@ def run_sensitivity_analysis(
     result = sen_analyzer.run_time_dependent(
         cal_class=merged_calibration_classes[0],
         load_sim_files=True,
-        n_cpu=4
+        n_steps='all'
     )
     print(result)
     # Now we run the sensitivity analysis with the verbose option.
@@ -387,7 +387,7 @@ if __name__ == "__main__":
 
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
-    N_CPU = 4
+    N_CPU = 1
 
     # Sensitivity analysis:
     run_sensitivity_analysis(
