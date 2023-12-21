@@ -766,7 +766,10 @@ class SenAnalyzer(abc.ABC):
         if save_results:
             self._save(sen_time_dependent_df, time_dependent=True)
         if plot_result:
-            self.plot_time_dependent(sen_time_dependent_df)
+            if isinstance(sen_time_dependent_df, pd.DataFrame):
+                self.plot_time_dependent(sen_time_dependent_df)
+            else:
+                self.plot_time_dependent(sen_time_dependent_df[0])
         return sen_time_dependent_df
 
     def _analyze_tstep_df(self, time_step, tsteps_sim_results, variables, samples, cal_class, verbose):
@@ -993,6 +996,66 @@ class SenAnalyzer(abc.ABC):
         if show_plot:
             plt.show()
         return figs, axes
+
+    @staticmethod
+    def plot_parameter_verbose(parameter, single_result, second_order_result=None, **kwargs):
+        plot_conf = kwargs.pop('plot_conf', False)
+        show_plot = kwargs.pop('show_plot', True)
+        # kwargs for the design
+        use_suffix = kwargs.pop('use_suffix', False)
+        fig_axes = kwargs.pop('fig_axes', None)
+
+        goals = kwargs.pop('goals', None)
+        if goals is None:
+            goals = SenAnalyzer._del_duplicates(list(single_result.index.get_level_values(0)))
+        all_analysis_variables = SenAnalyzer._del_duplicates(list(single_result.index.get_level_values(1)))
+        analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
+
+        # rename tuner_names in result to the suffix of their variable name
+        if use_suffix:
+            single_result = SenAnalyzer._rename_tuner_names(single_result)
+            # when the index is not sorted pandas throws a performance warning
+            single_result = single_result.sort_index()
+            if second_order_result is not None:
+                second_order_result = SenAnalyzer._rename_tuner_names(second_order_result)
+                second_order_result = second_order_result.sort_index()
+
+        if fig_axes is None:
+            fig, ax = plt.subplots(len(goals), sharex='all')
+        else:
+            fig = fig_axes[0]
+            ax = fig_axes[1]
+        fig.suptitle(parameter)
+        if not isinstance(ax, np.ndarray):
+            ax = [ax]
+        for g_i, goal in enumerate(goals):
+            if second_order_result is not None:
+                result_2_goal = second_order_result.loc[goal, 'S2', parameter]
+                mean = result_2_goal.mean().drop(['time', parameter])
+                mean.sort_values(ascending=False, inplace=True)
+                sorted_interactions = list(mean.index)
+                time_ar = result_2_goal['time'].to_numpy()
+                value = single_result.loc[goal, 'S1'][parameter].to_numpy()
+                ax[g_i].plot(single_result.loc[goal, 'S1'][parameter], label='S1')
+                ax[g_i].fill_between(time_ar, np.zeros_like(value), value, alpha=0.1)
+                for para in sorted_interactions:
+                    value_2 = value + result_2_goal[para].to_numpy()
+                    ax[g_i].plot(time_ar, value_2, label='S2 ' + para)
+                    ax[g_i].fill_between(time_ar, value, value_2, alpha=0.1)
+                    value = value_2
+                ax[g_i].plot(single_result.loc[goal, 'ST'][parameter], label='ST')
+                legend = ['S1']
+                legend.extend(analysis_variables)
+                legend.append('ST')
+                ax[g_i].set_title(goal)
+                ax[g_i].legend()
+            else:
+                for av_i, av in enumerate(analysis_variables):
+                    ax[g_i].plot(single_result.loc[goal, av][parameter])
+                ax[g_i].legend(analysis_variables)
+        if show_plot:
+            plt.show()
+        return fig, ax
 
     def plot(self, result):
         """
