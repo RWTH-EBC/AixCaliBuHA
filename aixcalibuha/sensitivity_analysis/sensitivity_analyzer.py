@@ -20,6 +20,7 @@ import time
 from icecream import ic
 import sys
 from datetime import timedelta
+import warnings
 
 
 def _load_single_file(_filepath, parquet_engine='pyarrow'):
@@ -764,6 +765,8 @@ class SenAnalyzer(abc.ABC):
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
         if save_results:
             self._save(sen_time_dependent_df, time_dependent=True)
+        if plot_result:
+            self.plot_time_dependent(sen_time_dependent_df)
         return sen_time_dependent_df
 
     def _analyze_tstep_df(self, time_step, tsteps_sim_results, variables, samples, cal_class, verbose):
@@ -929,7 +932,67 @@ class SenAnalyzer(abc.ABC):
         """
         Plot time dependent sensitivity results from run_time_dependent().
         """
-        pass
+        plot_conf = kwargs.pop('plot_conf', False)
+        show_plot = kwargs.pop('show_plot', True)
+        # kwargs for the design
+        use_suffix = kwargs.pop('use_suffix', False)
+        figs_axes = kwargs.pop('figs_axes', None)
+
+        goals = kwargs.pop('goals', None)
+        if goals is None:
+            goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
+        all_analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+        analysis_variables = kwargs.pop('analysis_variables', None)
+        if analysis_variables is None:
+            analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
+
+        # rename tuner_names in result to the suffix of their variable name
+        if use_suffix:
+            result = SenAnalyzer._rename_tuner_names(result)
+
+        # when the index is not sorted pandas throws a performance warning
+        result = result.sort_index()
+        parameters = kwargs.pop('parameters', result.columns.values)
+
+        figs = []
+        axes = []
+        for g_i, goal in enumerate(goals):
+            if figs_axes is None:
+                fig, ax = plt.subplots(len(analysis_variables), sharex='all')
+            else:
+                fig = figs_axes[0][g_i]
+                ax = figs_axes[1][g_i]
+            fig.suptitle(goal)
+            figs.append(fig)
+            if not isinstance(ax, np.ndarray):
+                ax = [ax]
+            axes.append(ax)
+            for av_i, av in enumerate(analysis_variables):
+                axes[g_i][av_i].plot(result.loc[goal, av][parameters])
+                axes[g_i][av_i].set_ylabel(av)
+                axes[g_i][av_i].legend(parameters)
+                if plot_conf and av + '_conf' in all_analysis_variables:
+                    for p in parameters:
+                        y = result.loc[goal, av][p]
+                        x = y.index.to_numpy()
+                        ci = result.loc[goal, av + '_conf'][p]
+                        large_values_indices = ci[ci > 1].index
+                        if list(large_values_indices):
+                            warnings.warn(
+                                f"Confidence interval for {goal}, {av}, {p} was at the "
+                                f"following times {list(large_values_indices)} lager than 1 "
+                                f"and is smoothed out in the plot.")
+                        for idx in large_values_indices:
+                            prev_idx = ci.index.get_loc(idx) - 1
+                            if prev_idx >= 0:
+                                ci.iloc[ci.index.get_loc(idx)] = ci.iloc[prev_idx]
+                            else:
+                                ci.iloc[ci.index.get_loc(idx)] = 1
+                        axes[g_i][av_i].fill_between(x, (y - ci), (y + ci), alpha=.1)
+            axes[g_i][-1].set_xlabel('time')
+        if show_plot:
+            plt.show()
+        return figs, axes
 
     def plot(self, result):
         """
