@@ -933,7 +933,30 @@ class SenAnalyzer(abc.ABC):
     @staticmethod
     def plot_time_dependent(result: pd.DataFrame, **kwargs):
         """
-        Plot time dependent sensitivity results from run_time_dependent().
+        Plot time dependent sensitivity results without interactions from run_time_dependent().
+
+        For each goal one figure is created with one axes for each analysis variable.
+        In these plots the time dependent sensitivity of the parameters is plotted.
+        The confidence interval can also be plotted.
+
+        :param pd.DataFrame result:
+            A result from run_time_dependent without second order results.
+        :keyword [str] parameters:
+            Default all parameters. List of parameters to plot the sensitivity.
+        :keyword bool plot_conf:
+            Default False. If true, the confidence intervals for each parameter are plotted.
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :keyword bool use_suffix:
+            Default is True: If True, the last part after the last point
+            of Modelica variables is used for the x ticks.
+        :keyword [str] goals:
+            Default are all possible goal names. If a list of specific
+            goal names is given only these will be plotted.
+        :keyword ([fig], [ax]) figs_axes:
+            Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).
+        :return:
+            Returns all created figures and axes in lists like [fig], [ax]
         """
         plot_conf = kwargs.pop('plot_conf', False)
         show_plot = kwargs.pop('show_plot', True)
@@ -999,7 +1022,34 @@ class SenAnalyzer(abc.ABC):
 
     @staticmethod
     def plot_parameter_verbose(parameter, single_result, second_order_result=None, **kwargs):
-        plot_conf = kwargs.pop('plot_conf', False)
+        """
+        Plot all time dependent sensitivity measure for one parameter.
+        For each goal an axes is created within one figure.
+
+        If second_order_results form SobolAnalyzer.run_time_dependent are given
+        the S2 results of the interaction with each other parameter are added on top
+        of each other and the first order result.
+
+        :param str parameter:
+            Parameter to plot all sensitivity results for. If use_suffix=True, then
+            the name must also be only the suffix.
+        :param pd.DataFrame single_result:
+            First and total order result form run_time_dependent.
+        :param pd.DataFrame second_order_result:
+            Default None. Second order result of SobolAnalyzer.run_time_dependent.
+        :keyword bool show_plot:
+            Default is True. If False, all created plots are not shown.
+        :keyword bool use_suffix:
+            Default is True: If True, the last part after the last point
+            of Modelica variables is used for the x ticks.
+        :keyword [str] goals:
+            Default are all possible goal names. If a list of specific
+            goal names is given only these will be plotted.
+        :keyword (fig, [ax]) fig_axes:
+            Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).
+        :return:
+            Returns all created figures and axes in lists like [fig], [ax]
+        """
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
         use_suffix = kwargs.pop('use_suffix', False)
