@@ -17,7 +17,7 @@ def run_sensitivity_analysis(
     Example process of a sensitivity analysis.
     First, the sensitivity problem is constructed, in this example
     the `morris` method is chosen.
-    Afterwards, the sen_analyzer class is instantiated to run the
+    Afterward, the sen_analyzer class is instantiated to run the
     sensitivity analysis in the next step.
     The result of this analysis is then printed to the user.
     The automatic_select function is presented as-well, using a threshold of 1
@@ -44,8 +44,7 @@ def run_sensitivity_analysis(
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
             num_samples=10,
-            cd=sim_api.cd,
-            analysis_variable='S1'
+            cd=sim_api.cd
         )
     # Now perform the analysis for the one of the given calibration classes.
     calibration_classes = setup_calibration_classes(
