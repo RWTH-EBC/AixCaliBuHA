@@ -712,13 +712,14 @@ class SenAnalyzer(abc.ABC):
                                                                                 cal_class=cal_class)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
             else:
+                variables = results[0].get_variable_names()
+                time_index = results[0].index.to_numpy()
                 total_result = _concat_all_sims(results)
-                time_index = total_result.index.to_numpy()
                 sen_time_dependent_list = []
                 for time_step in time_index:
                     result_df_tstep = self._analyze_tstep_df(time_step=time_step,
                                                              tsteps_sim_results=total_result,
-                                                             variables=total_result.get_variable_names(),
+                                                             variables=variables,
                                                              samples=samples,
                                                              cal_class=cal_class)
                     sen_time_dependent_list.append(result_df_tstep)
