@@ -17,9 +17,6 @@ import matplotlib.pyplot as plt
 from SALib.plotting.bar import plot as barplot
 import multiprocessing as mp
 import time
-from icecream import ic
-import sys
-from datetime import timedelta
 import warnings
 
 
@@ -51,16 +48,16 @@ def _restruct_verbose(list_output_verbose):
 
 
 def _concat_all_sims(sim_results_list):
+    """Helper function that concat all results in a list to one DataFrame."""
     sim_results_list = [r.to_df() for r in sim_results_list]
-    ic(sys.getsizeof(sim_results_list))
     sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)), axis='columns')
     sim_results_list = sim_results_list.swaplevel(axis=1).sort_index(axis=1)
-    sim_results_list.columns.set_names(['Variables', 'Tags'], inplace=True)
-    sim_results_list = data_types.TimeSeriesData(sim_results_list)
     return sim_results_list
 
 
 def _restruct_time_dependent(sen_time_dependent_list, time_index):
+    """Helper function that restructures the time dependent sensitivity results."""
+
     def _restruct_single(sen_time_dependent_list_s, second_order=False):
         sen_time_dependent_df = pd.concat(sen_time_dependent_list_s, keys=time_index, axis=0)
         sen_time_dependent_df = sen_time_dependent_df.droplevel('Class', axis='index')
@@ -80,35 +77,10 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
         return _restruct_single(sen_time_dependent_list)
 
 
-def _divide_chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-
-def _remaining_time(t1, n_counter, n_total, n_cpu):
-    """
-    Helper function to calculate the remaining simulation time and log the finished simulations.
-    The function can first be used when a simulation has finished on each used cpu, so that the
-    translation of the model is not considered in the time estimation.
-
-    :param float t1:
-        Start time after n_cpu simulations.
-    """
-    t_remaining = (time.time() - t1) / n_counter * (
-            n_total - n_counter)
-    p_finished = n_counter / n_total * 100
-    sys.stderr.write(f"\rFinished {np.round(p_finished, 1)} %. "
-                     f"Approximately remaining time: {timedelta(seconds=int(t_remaining))} ")
-
-
-def _load_tsteps_df(tsteps, _filepaths):
-    tsteps_sim_results = []
-    for _filepath in _filepaths:
-        sim = _load_single_file(_filepath)
-        tsteps_sim_results.append(sim.loc[tsteps[0]:tsteps[-1]])
-    tsteps_sim_results = _concat_all_sims(tsteps_sim_results)
-    ic(sys.getsizeof(tsteps_sim_results))
-    return tsteps_sim_results
+def _divide_chunks(long_list, chunk_length):
+    """Helper function that divides all list into multiple list with a specific chunk length."""
+    for i in range(0, len(long_list), chunk_length):
+        yield long_list[i:i + chunk_length]
 
 
 class SenAnalyzer(abc.ABC):
@@ -410,8 +382,7 @@ class SenAnalyzer(abc.ABC):
             This will automatically yield an intersection of tuner-parameters, however may
             have advantages in some cases.
         :keyword bool verbose:
-            Default False. If True, all sensitivity measures of the SALib function are calculated
-            and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
+            Default False. If True, in addition to the combined Goals of the Classes (saved under index Goal: all),
             the sensitivity measures of the individual Goals will also be calculated and returned.
         :keyword scale:
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
@@ -681,15 +652,11 @@ class SenAnalyzer(abc.ABC):
 
     def run_time_dependent(self, cal_class: CalibrationClass, **kwargs):
         """
-        Calculate the time dependent sensitivity
+        Calculate the time dependent sensitivity for all the single goals in the calibration class.
 
         :param CalibrationClass cal_class:
             Calibration class with tuner-parameters to calculate sensitivity for.
             Can include dummy target date.
-        :keyword bool verbose:
-            Default False. If True, all sensitivity measures of the SALib function are calculated
-            and returned. In addition to the combined Goals of the Classes (saved under index Goal: all),
-            the sensitivity measures of the individual Goals will also be calculated and returned.
         :keyword scale:
             Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
         :keyword bool load_sim_files:
@@ -697,23 +664,26 @@ class SenAnalyzer(abc.ABC):
             The simulations and corresponding samples will be loaded from self.savepath_sim like they
             were saved from self.save_files. Currently, the name of the sim folder must be
             "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
-            The usage of the same simulations for different calibration classes is not supported yet.
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples and analysis variables).
+        :keyword int n_steps:
+            Default is all time steps. If the problem is large, the evaluation of all time steps at once
+            can cause a memory error. Then n_steps defines how many time_steps are evaluated at once in chunks.
+            This increases the needed time exponentially and the simulation files must be saved.
         :keyword bool plot_result:
             Default True. If True, the results will be plotted.
         :return:
             Returns a pandas.DataFrame.
         :rtype: pandas.DataFrame
         """
-        verbose = kwargs.pop('verbose', False)
         scale = kwargs.pop('scale', False)
         save_results = kwargs.pop('save_results', True)
         plot_result = kwargs.pop('plot_result', True)
         load_sim_files = kwargs.pop('load_sim_files', False)
         n_steps = kwargs.pop('n_steps', 'all')
 
+        self.logger.info("Start time dependent sensitivity analysis.")
         if load_sim_files:
             self.problem = self.create_problem(cal_class.tuner_paras, scale=scale)
             sim_dir = self.savepath_sim.joinpath(f'simulations_{cal_class.name}')
@@ -722,34 +692,25 @@ class SenAnalyzer(abc.ABC):
                                   header=0,
                                   index_col=0)
             samples = samples.to_numpy()
-            t_start_load_single = time.time()
             result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
             _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
 
             sen_time_dependent_list, time_index = self._load_analyze_tsteps(_filepaths=_filepaths,
                                                                             samples=samples,
                                                                             n_steps=n_steps,
-                                                                            cal_class=cal_class,
-                                                                            verbose=verbose)
-
-            ic(time.time() - t_start_load_single)
+                                                                            cal_class=cal_class)
             sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
-            ic(sys.getsizeof(sen_time_dependent_df))
         else:
             results, samples = self.simulate_samples(
                 cal_class=cal_class,
                 scale=scale
             )
             if self.save_files:
-                t_start_load_all = time.time()
                 sen_time_dependent_list, time_index = self._load_analyze_tsteps(_filepaths=results,
                                                                                 samples=samples,
                                                                                 n_steps=n_steps,
-                                                                                cal_class=cal_class,
-                                                                                verbose=verbose)
-                ic(time.time() - t_start_load_all)
+                                                                                cal_class=cal_class)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
-                ic(sys.getsizeof(sen_time_dependent_df))
             else:
                 total_result = _concat_all_sims(results)
                 time_index = total_result.index.to_numpy()
@@ -759,10 +720,10 @@ class SenAnalyzer(abc.ABC):
                                                              tsteps_sim_results=total_result,
                                                              variables=total_result.get_variable_names(),
                                                              samples=samples,
-                                                             cal_class=cal_class,
-                                                             verbose=verbose)
+                                                             cal_class=cal_class)
                     sen_time_dependent_list.append(result_df_tstep)
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+        self.logger.info("Finished time dependent sensitivity analysys.")
         if save_results:
             self._save(sen_time_dependent_df, time_dependent=True)
         if plot_result:
@@ -772,7 +733,8 @@ class SenAnalyzer(abc.ABC):
                 self.plot_time_dependent(sen_time_dependent_df[0])
         return sen_time_dependent_df
 
-    def _analyze_tstep_df(self, time_step, tsteps_sim_results, variables, samples, cal_class, verbose):
+    def _analyze_tstep_df(self, time_step, tsteps_sim_results, variables, samples, cal_class):
+        """Analyze the sensitivity at a single time step."""
         result_dict_tstep = {}
         for var in variables:
             result_tstep_var = tsteps_sim_results[var].loc[time_step].to_numpy()
@@ -786,12 +748,24 @@ class SenAnalyzer(abc.ABC):
             result_dict_tstep[var] = sen_tstep_var
         result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
                                                    local_classes=[cal_class],
-                                                   verbose=verbose)
+                                                   verbose=True)
         return result_df_tstep
 
-    def _load_analyze_tsteps(self, _filepaths, samples, n_steps, cal_class, verbose):
+    def _load_tsteps_df(self, tsteps: list[float], _filepaths: list[str]):
+        """Load all simulations and extract and concat the sim results of the time steps in tsteps."""
+        self.logger.info(f"Loading time steps from {tsteps[0]} to {tsteps[-1]} of the simulation files.")
+        tsteps_sim_results = []
+        for _filepath in _filepaths:
+            sim = _load_single_file(_filepath)
+            tsteps_sim_results.append(sim.loc[tsteps[0]:tsteps[-1]])
+        tsteps_sim_results = _concat_all_sims(tsteps_sim_results)
+        return tsteps_sim_results
+
+    def _load_analyze_tsteps(self, _filepaths, samples, n_steps, cal_class):
+        """
+        Load and analyze all time steps in chunks with n_steps time steps.
+        """
         sim1 = _load_single_file(_filepaths[0])
-        ic(sys.getsizeof(sim1))
         time_index = sim1.index.to_numpy()
         variables = sim1.get_variable_names()
         sen_time_dependent_list = []
@@ -803,14 +777,14 @@ class SenAnalyzer(abc.ABC):
             raise ValueError(f"n_steps can only be between 1 and {len(time_index)} or the string all.")
 
         for tsteps in list_tsteps:
-            tsteps_sim_results = _load_tsteps_df(tsteps=tsteps, _filepaths=_filepaths)
+            tsteps_sim_results = self._load_tsteps_df(tsteps=tsteps, _filepaths=_filepaths)
+            self.logger.info(f"Analyzing these time steps.")
             for t in tsteps:
                 result_df_tstep = self._analyze_tstep_df(time_step=t,
                                                          tsteps_sim_results=tsteps_sim_results,
                                                          variables=variables,
                                                          samples=samples,
-                                                         cal_class=cal_class,
-                                                         verbose=verbose)
+                                                         cal_class=cal_class)
                 sen_time_dependent_list.append(result_df_tstep)
         return sen_time_dependent_list, time_index
 
@@ -944,7 +918,7 @@ class SenAnalyzer(abc.ABC):
         :keyword [str] parameters:
             Default all parameters. List of parameters to plot the sensitivity.
         :keyword bool plot_conf:
-            Default False. If true, the confidence intervals for each parameter are plotted.
+            Default True. If true, the confidence intervals for each parameter are plotted.
         :keyword bool show_plot:
             Default is True. If False, all created plots are not shown.
         :keyword bool use_suffix:
@@ -958,7 +932,7 @@ class SenAnalyzer(abc.ABC):
         :return:
             Returns all created figures and axes in lists like [fig], [ax]
         """
-        plot_conf = kwargs.pop('plot_conf', False)
+        plot_conf = kwargs.pop('plot_conf', True)
         show_plot = kwargs.pop('show_plot', True)
         # kwargs for the design
         use_suffix = kwargs.pop('use_suffix', False)
@@ -1081,10 +1055,10 @@ class SenAnalyzer(abc.ABC):
         for g_i, goal in enumerate(goals):
             if second_order_result is not None:
                 result_2_goal = second_order_result.loc[goal, 'S2', parameter]
-                mean = result_2_goal.mean().drop(['time', parameter])
+                mean = result_2_goal.mean().drop([parameter])
                 mean.sort_values(ascending=False, inplace=True)
                 sorted_interactions = list(mean.index)
-                time_ar = result_2_goal['time'].to_numpy()
+                time_ar = SenAnalyzer._del_duplicates(list(result_2_goal.index.get_level_values(0)))
                 value = single_result.loc[goal, 'S1'][parameter].to_numpy()
                 ax[g_i].plot(single_result.loc[goal, 'S1'][parameter], label='S1')
                 ax[g_i].fill_between(time_ar, np.zeros_like(value), value, alpha=0.1)
