@@ -346,6 +346,49 @@ class TestSenAnalyzer(unittest.TestCase):
         SobolAnalyzer.heatmaps(sen_result,
                                show_plot=False)
 
+    def test_sa_time_dependent(self):
+        sen_ana = SobolAnalyzer(
+            sim_api=self.sim_api,
+            num_samples=1,
+            cd=self.sim_api.cd
+        )
+        sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],
+                                                plot_result=True)
+        self.assertIsInstance(sen_result, tuple)
+        self.assertIsInstance(sen_result[0], pd.DataFrame)
+        self.assertIsInstance(sen_result[1], pd.DataFrame)
+        sen_ana = MorrisAnalyzer(
+            sim_api=self.sim_api,
+            num_samples=2,
+            cd=self.sim_api.cd,
+            save_files=True
+        )
+        sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],
+                                                plot_result=False)
+        self.assertIsInstance(sen_result, pd.DataFrame)
+        sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],
+                                                load_sim_files=True,
+                                                n_steps=120,
+                                                plot_result=True)
+        self.assertIsInstance(sen_result, pd.DataFrame)
+        with self.assertRaises(ValueError):
+            sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],
+                                                    load_sim_files=True,
+                                                    n_steps=100000000,
+                                                    plot_result=True)
+
+    def test_plot_parameter_verbose(self):
+        result_sobol_time = SobolAnalyzer.load_from_csv(
+            self.data_dir.joinpath('SobolAnalyzer_results_time_A.csv')
+        )
+        result_sobol_2_time = SobolAnalyzer.load_second_order_from_csv(
+            self.data_dir.joinpath('SobolAnalyzer_results_second_order_time_A.csv')
+        )
+        SobolAnalyzer.plot_parameter_verbose(parameter='G',
+                                             single_result=result_sobol_time,
+                                             second_order_result=result_sobol_2_time,
+                                             use_suffix=True)
+
     def _check_sen_run_return(self, sen_ana, sen_result, classes):
         if sen_ana.__class__.__name__ == 'SobolAnalyzer':
             self.assertIsInstance(sen_result, tuple)
