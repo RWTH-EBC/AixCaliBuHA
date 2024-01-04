@@ -1895,7 +1895,27 @@
     return resulting_setting
 
 
-def main():</pre></td>
+def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
+    &#34;&#34;&#34;
+    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
+    package for the given model inside the simulation api.
+
+    :param str model_name:
+        Name of the model you want to calibrate.
+        If the model is a standalone model without a &#34;package.mo&#34; file,
+        you have to pass the path the model. Else the path is extracted
+        from the packages-list (see below)
+    :param os.path.normpath,str savepath:
+        Path to store the generated package
+    :param list packages:
+        List with filepath to the &#34;package.mo&#34; file of each package required
+        to simulate the given model_name.
+    :keyword str mocate_version
+        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
+    :keyword str msl_version
+        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
+    :return:
+    &#34;&#34;&#34;</pre></td>
             </tr>
             
             <tr>
@@ -1913,11 +1933,13 @@ def main():</pre></td>
     )[0]
     merged_calibration_classes = merge_calibration_classes(calibration_classes)
     merged_calibration_classes[0].name = &#39;global&#39;
+    # Now we add the calibration classes for the different states of the system
     calibration_classes = setup_calibration_classes(
         examples_dir=examples_dir, example=example, multiple_classes=True
     )[0]
     merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))
-</pre></td>
+    # Now we have the following calibration classes and merged them direct.
+    # We could have also merged them with an option in the SenAnalyzer.run function.</pre></td>
             </tr>
             
             <tr>
@@ -2143,6 +2165,7 @@ if __name__ == &#34;__main__&#34;:
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
+
     print(&#34;Goals data before setting simulation data:\n&#34;, goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print(&#34;Goals data after setting simulation data:\n&#34;, goals.get_goals_data())

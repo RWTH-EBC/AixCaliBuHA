@@ -264,7 +264,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
         weightings=[0.7, 0.3]
     )
     # Let's check if our evaluation is possible by creating some
-    # dummy `sim_target_data` with the same index: (duplicate-code)
+    # dummy sim_target_data with the same index: (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[213:222]
 ==examples.e2_B_optimization_problem_definition:[188:197]
@@ -299,26 +299,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err)
-
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime. (duplicate-code)
+        print(err) (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:129]
 ==examples.e2_B_optimization_problem_definition:[123:149]
@@ -388,12 +369,36 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]
 ==examples.e3_verbos_sensitivity_analysis_example:[150:181]
     print("Result of the sensitivity analysis")
+    # The first result has as columns the tuner-parameters
+    # and a multi level index with three levels.
+    # The first level defines the calibration class.
+    # The second level defines the Goals (target values). The index 'all'
+    # is for the result of the combined target values in the goals.
+    # The last level defines the result of the
+    # sensitivity measure for each class and goal.
+    # These analysis variables are specific for each method.
+    # For their exact meaning I refer to the documentation of the SALib or the literature.
+    # In this example you get a short overview in the comparison later.
     print('First and total order results of sobol method')
     print(result[0].to_string())
+    # The specific second result of the sobol method is for second order sensitive measures.
+    # These describe the interaction between two parameters,
+    # so this dataframe has a fourth index level "Interaction".
+    # In this level the tuner-parameters are listed again.
     print('Second order results of sobol method')
     print(result[1].to_string())
+    # For a better understanding of the results we will now plot them.
 
-    # remove input file (duplicate-code)
+    # ## Plotting Sensitivity results
+    # We start with the result which were calculated with the small sample size.
+    # First we plot the first and total order results. These results
+    # are specific for each single parameter
+    # Here for each calibration class a figure is created
+    # which shows for each goal the first order sensitivity S1
+    # and the total order sensitivity combined. For the small
+    # sample size the results show in the plots huge confidence
+    # intervals, which show that these results are false as we
+    # expected which the small sample size. (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[10:58]
 ==examples.e2_B_optimization_problem_definition:[10:53]
