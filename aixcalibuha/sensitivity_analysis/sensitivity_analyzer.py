@@ -752,7 +752,7 @@ class SenAnalyzer(abc.ABC):
                                                    verbose=True)
         return result_df_tstep
 
-    def _load_tsteps_df(self, tsteps: list[float], _filepaths: list[str]):
+    def _load_tsteps_df(self, tsteps, _filepaths):
         """Load all simulations and extract and concat the sim results of the time steps in tsteps."""
         self.logger.info(f"Loading time steps from {tsteps[0]} to {tsteps[-1]} of the simulation files.")
         tsteps_sim_results = []
