@@ -58,4 +58,5 @@
     - It is now possible to use verbose sensitivity analysis for an automatic selection of tuner parameters
     - Enables multiprocessing for the entire sensitivity process
     - Sensitivity analysis is now usable for large models and data
+    - Add time dependent sensitivity analysis
     - Ends support vor python 3.7

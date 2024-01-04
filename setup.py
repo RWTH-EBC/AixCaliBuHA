@@ -39,8 +39,10 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11'
     ],
     keywords=[
         'calibration', 'building', 'energy',
