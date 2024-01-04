@@ -1812,7 +1812,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):\n    \"\"\"\n    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)\n    package for the given model inside the simulation api.\n\n    :param str model_name:\n        Name of the model you want to calibrate.\n        If the model is a standalone model without a \"package.mo\" file,\n        you have to pass the path the model. Else the path is extracted\n        from the packages-list (see below)\n    :param os.path.normpath,str savepath:\n        Path to store the generated package\n    :param list packages:\n        List with filepath to the \"package.mo\" file of each package required\n        to simulate the given model_name.\n    :keyword str mocate_version\n        Version number of used Modelica Calibration Templates Library. Default is 0.0.4\n    :keyword str msl_version\n        Version number of used Modelica Calibration Templates Library. Default is 3.2.3\n    :return:\n    \"\"\"",
+            "message": "Similar lines in 2 files\n==guided_setup:[64:102]\n==run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
             "message-id": "R0801"
         },
         {
@@ -1823,7 +1823,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[40:50]\n==examples.e3_verbos_sensitivity_analysis_example:[54:66]\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=False\n    )[0]\n    merged_calibration_classes = merge_calibration_classes(calibration_classes)\n    merged_calibration_classes[0].name = 'global'\n    # Now we add the calibration classes for the different states of the system\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=True\n    )[0]\n    merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))\n    # Now we have the following calibration classes and merged them direct.\n    # We could have also merged them with an option in the SenAnalyzer.run function.",
+            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[40:50]\n==examples.e3_verbos_sensitivity_analysis_example:[54:66]\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=False\n    )[0]\n    merged_calibration_classes = merge_calibration_classes(calibration_classes)\n    merged_calibration_classes[0].name = 'global'\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=True\n    )[0]\n    merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))\n",
             "message-id": "R0801"
         },
         {
@@ -1845,7 +1845,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy `sim_target_data` with the same index:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy sim_target_data with the same index:",
             "message-id": "R0801"
         },
         {
@@ -1889,7 +1889,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    # ## Calibration Classes\n    # We now are going to wrap everything up into a single object called\n    # `CalibrationClass`.\n    # Each class has a `name`, a `start_time`, `stop_time` and\n    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.\n    # The latter three can be set for all\n    # classes if a distinction is not required.\n    # ### Why do we use a `CalibrationClass`?\n    # Because this class contains all information necessary\n    # to perform both sensitivity analysis and calibration automatically.\n    # ### Can there be multiple classes?\n    # Yes! Because we expect different tuner parameters\n    # to influence the outputs based on the state of the system,\n    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the\n    # optimization problem, separating tuner parameters into time intervals\n    # can be handy. For example heat losses to the ambient may be most\n    # sensitive if the device is just turned off, while efficiency is more\n    # sensitive during runtime.\n    # Let's also define some different tuner parameters for the last stationary class.",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
             "message-id": "R0801"
         },
         {
@@ -1944,7 +1944,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]\n==examples.e3_verbos_sensitivity_analysis_example:[150:181]\n    print(\"Result of the sensitivity analysis\")\n    # The first result has as columns the tuner-parameters\n    # and a multi level index with three levels.\n    # The first level defines the calibration class.\n    # The second level defines the Goals (target values). The index 'all'\n    # is for the result of the combined target values in the goals.\n    # The last level defines the result of the\n    # sensitivity measure for each class and goal.\n    # These analysis variables are specific for each method.\n    # For their exact meaning I refer to the documentation of the SALib or the literature.\n    # In this example you get a short overview in the comparison later.\n    print('First and total order results of sobol method')\n    print(result[0].to_string())\n    # The specific second result of the sobol method is for second order sensitive measures.\n    # These describe the interaction between two parameters,\n    # so this dataframe has a fourth index level \"Interaction\".\n    # In this level the tuner-parameters are listed again.\n    print('Second order results of sobol method')\n    print(result[1].to_string())\n    # For a better understanding of the results we will now plot them.\n\n    # ## Plotting Sensitivity results\n    # We start with the result which were calculated with the small sample size.\n    # First we plot the first and total order results. These results\n    # are specific for each single parameter\n    # Here for each calibration class a figure is created\n    # which shows for each goal the first order sensitivity S1\n    # and the total order sensitivity combined. For the small\n    # sample size the results show in the plots huge confidence\n    # intervals, which show that these results are false as we\n    # expected which the small sample size.",
+            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]\n==examples.e3_verbos_sensitivity_analysis_example:[150:181]\n    print(\"Result of the sensitivity analysis\")\n    print('First and total order results of sobol method')\n    print(result[0].to_string())\n    print('Second order results of sobol method')\n    print(result[1].to_string())\n\n    # remove input file",
             "message-id": "R0801"
         },
         {
@@ -2191,35 +2191,35 @@
         "dependencies": {
             "aixcalibuha.data_types": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "aixcalibuha",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
                 "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
-                "run_modelica_calibration",
-                "aixcalibuha"
+                "aixcalibuha",
+                "run_modelica_calibration"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
             ],
             "pandas": [
-                "aixcalibuha.data_types",
-                "tests.test_modelica_cal_sen"
+                "tests.test_modelica_cal_sen",
+                "aixcalibuha.data_types"
             ],
             "numpy": [
-                "tests.test_data_types",
-                "aixcalibuha.data_types",
                 "examples.e4_calibration_example",
-                "tests.test_modelica_cal_sen"
+                "tests.test_data_types",
+                "tests.test_modelica_cal_sen",
+                "aixcalibuha.data_types"
             ],
             "ebcpy": [
                 "examples",
+                "tests.test_modelica_cal_sen",
                 "aixcalibuha.data_types",
                 "examples.e2_B_optimization_problem_definition",
-                "examples.e1_A_energy_system_analysis",
-                "tests.test_modelica_cal_sen",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e1_A_energy_system_analysis"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2254,27 +2254,27 @@
                 "examples"
             ],
             "matplotlib.pyplot": [
-                "examples.e3_verbos_sensitivity_analysis_example",
                 "examples.e1_B_energy_system_analysis",
+                "examples.e3_verbos_sensitivity_analysis_example",
                 "examples.e1_A_energy_system_analysis"
             ],
             "examples": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e1_B_energy_system_analysis",
                 "examples.e4_calibration_example",
                 "examples.e3_sensitivity_analysis_example",
-                "examples.e1_B_energy_system_analysis"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example"
             ],
             "aixcalibuha": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "tests.test_config",
-                "examples.e4_calibration_example",
-                "examples.e2_B_optimization_problem_definition",
                 "tests.test_modelica_cal_sen",
+                "examples.e4_calibration_example",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_data_types",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "tests.test_data_types"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
@@ -2543,35 +2543,35 @@
         "dependencies": {
             "aixcalibuha.data_types": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "aixcalibuha",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
                 "examples.e2_A_optimization_problem_definition"
             ],
             "aixcalibuha.calibration": [
-                "bin.run_modelica_calibration",
-                "aixcalibuha"
+                "aixcalibuha",
+                "bin.run_modelica_calibration"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
             ],
             "pandas": [
-                "aixcalibuha.data_types",
-                "tests.test_modelica_cal_sen"
+                "tests.test_modelica_cal_sen",
+                "aixcalibuha.data_types"
             ],
             "numpy": [
                 "examples.e4_calibration_example",
+                "tests.test_modelica_cal_sen",
                 "aixcalibuha.data_types",
-                "tests.test_data_types",
-                "tests.test_modelica_cal_sen"
+                "tests.test_data_types"
             ],
             "ebcpy": [
                 "examples",
-                "examples.e1_A_energy_system_analysis",
-                "aixcalibuha.data_types",
                 "tests.test_modelica_cal_sen",
+                "aixcalibuha.data_types",
                 "examples.e2_B_optimization_problem_definition",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e1_A_energy_system_analysis"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2592,8 +2592,8 @@
             ],
             "aixcalibuha.utils.configuration": [
                 "bin.run_modelica_calibration",
-                "bin.guided_setup",
-                "tests.test_config"
+                "tests.test_config",
+                "bin.guided_setup"
             ],
             "ebcpy.utils.conversion": [
                 "bin.run_modelica_calibration",
@@ -2606,27 +2606,27 @@
                 "examples"
             ],
             "matplotlib.pyplot": [
-                "examples.e3_verbos_sensitivity_analysis_example",
                 "examples.e1_B_energy_system_analysis",
+                "examples.e3_verbos_sensitivity_analysis_example",
                 "examples.e1_A_energy_system_analysis"
             ],
             "examples": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e1_B_energy_system_analysis",
                 "examples.e4_calibration_example",
                 "examples.e3_sensitivity_analysis_example",
-                "examples.e1_B_energy_system_analysis"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example"
             ],
             "aixcalibuha": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "tests.test_config",
-                "examples.e4_calibration_example",
-                "examples.e2_B_optimization_problem_definition",
                 "tests.test_modelica_cal_sen",
+                "examples.e4_calibration_example",
                 "examples.e3_sensitivity_analysis_example",
-                "tests.test_data_types",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e2_B_optimization_problem_definition",
+                "examples.e2_A_optimization_problem_definition",
+                "tests.test_data_types"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"

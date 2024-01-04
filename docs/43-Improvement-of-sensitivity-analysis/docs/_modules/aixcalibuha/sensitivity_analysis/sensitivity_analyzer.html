@@ -117,6 +117,26 @@
     <span class="k">return</span> <span class="n">results</span>
 
 
+<span class="k">def</span> <span class="nf">_del_duplicates</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_get_suffix</span><span class="p">(</span><span class="n">modelica_var_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">index_last_dot</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="p">[</span><span class="n">index_last_dot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">suffix</span>
+
+
+<span class="k">def</span> <span class="nf">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">tuner_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">rename_tuner_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_get_suffix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tuner_names</span><span class="p">}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
 <span class="k">def</span> <span class="nf">_restruct_verbose</span><span class="p">(</span><span class="n">list_output_verbose</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
     <span class="n">output_verbose</span> <span class="o">=</span> <span class="p">{}</span>
@@ -897,23 +917,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_del_duplicates</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_suffix</span><span class="p">(</span><span class="n">modelica_var_name</span><span class="p">):</span>
-        <span class="n">index_last_dot</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">suffix</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="p">[</span><span class="n">index_last_dot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
-        <span class="k">return</span> <span class="n">suffix</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-        <span class="n">tuner_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">rename_tuner_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_get_suffix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tuner_names</span><span class="p">}</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
-
 <div class="viewcode-block" id="SenAnalyzer.plot_single"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.plot_single">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">plot_single</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -948,14 +951,14 @@
         <span class="c1"># get lists of the calibration classes and their goals in the result dataframe</span>
         <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_classes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cal_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+            <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
         <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">goals</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
 
         <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
         <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
@@ -1022,15 +1025,15 @@
 
         <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">goals</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
-        <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
         <span class="n">analysis_variables</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;analysis_variables&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">analysis_variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">av</span> <span class="k">for</span> <span class="n">av</span> <span class="ow">in</span> <span class="n">all_analysis_variables</span> <span class="k">if</span> <span class="s1">&#39;_conf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">av</span><span class="p">]</span>
 
         <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
         <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
@@ -1113,17 +1116,17 @@
 
         <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">goals</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
-        <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+            <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
         <span class="n">analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">av</span> <span class="k">for</span> <span class="n">av</span> <span class="ow">in</span> <span class="n">all_analysis_variables</span> <span class="k">if</span> <span class="s1">&#39;_conf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">av</span><span class="p">]</span>
 
         <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
         <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
-            <span class="n">single_result</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">single_result</span><span class="p">)</span>
+            <span class="n">single_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">single_result</span><span class="p">)</span>
             <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
             <span class="n">single_result</span> <span class="o">=</span> <span class="n">single_result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">second_order_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">second_order_result</span><span class="p">)</span>
+                <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">second_order_result</span><span class="p">)</span>
                 <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">second_order_result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">fig_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1140,7 +1143,7 @@
                 <span class="n">mean</span> <span class="o">=</span> <span class="n">result_2_goal</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">parameter</span><span class="p">])</span>
                 <span class="n">mean</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">sorted_interactions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-                <span class="n">time_ar</span> <span class="o">=</span> <span class="n">SenAnalyzer</span><span class="o">.</span><span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result_2_goal</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+                <span class="n">time_ar</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result_2_goal</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S1&#39;</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
                 <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S1&#39;</span><span class="p">][</span><span class="n">parameter</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S1&#39;</span><span class="p">)</span>
                 <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">time_ar</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -1175,6 +1178,11 @@
 
 <div class="viewcode-block" id="SenAnalyzer.load_from_csv"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.load_from_csv">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load sensitivity results which were saved with the run() or run_time_dependent() function.</span>
+
+<span class="sd">        For second order results use the load_second_order_from_csv() function of the SobolAnalyzer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
