@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.calibration.calibrator &mdash; AixCaliBuHa 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.calibration.calibrator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.calibration.calibrator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing the basic class to calibrate</span>
+<span class="sd">a dynamic model, e.g. a modelica model.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span><span class="p">,</span> <span class="n">Optimizer</span>
+<span class="kn">from</span> <span class="nn">ebcpy.simulationapi</span> <span class="kn">import</span> <span class="n">SimulationAPI</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha.utils</span> <span class="kn">import</span> <span class="n">visualizer</span><span class="p">,</span> <span class="n">MaxIterationsReached</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">Goals</span><span class="p">,</span> <span class="n">TunerParas</span>
+
+
+<div class="viewcode-block" id="Calibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator">[docs]</a><span class="k">class</span> <span class="nc">Calibrator</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class can Calibrator be used for single</span>
+<span class="sd">    time-intervals of calibration.</span>
+
+<span class="sd">    :param str,os.path.normpath cd:</span>
+<span class="sd">        Working directory</span>
+<span class="sd">    :param ebcpy.simulationapi.SimulationAPI sim_api:</span>
+<span class="sd">        Simulation-API for running the models</span>
+<span class="sd">    :param CalibrationClass calibration_class:</span>
+<span class="sd">        Class with information on Goals and tuner-parameters for calibration</span>
+<span class="sd">    :keyword str result_path:</span>
+<span class="sd">        If given, then the resulting parameter values will be stored in a JSON file</span>
+<span class="sd">        at the given path.</span>
+<span class="sd">    :keyword float timedelta:</span>
+<span class="sd">        If you use this class for calibrating a single time-interval,</span>
+<span class="sd">        you can set the timedelta to instantiate the simulation before</span>
+<span class="sd">        actually evaluating it for the objective.</span>
+<span class="sd">        The given float (default is 0) is subtracted from the start_time</span>
+<span class="sd">        of your calibration_class. You can find a visualisation of said timedelta</span>
+<span class="sd">        in the img folder of the project.</span>
+<span class="sd">    :keyword boolean save_files:</span>
+<span class="sd">        If true, all simulation files for each iteration will be saved!</span>
+<span class="sd">    :keyword boolean verbose_logging:</span>
+<span class="sd">        Default is True. If False, the standard Logger without</span>
+<span class="sd">        Visualization in Form of plots is used.</span>
+<span class="sd">        If you use this, the following keyword arguments below will help</span>
+<span class="sd">        to further adjust the logging.</span>
+<span class="sd">    :keyword boolean show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown during</span>
+<span class="sd">        calibration but only stored at the end of the process.</span>
+<span class="sd">    :keyword boolean create_tsd_plot:</span>
+<span class="sd">        Default is True. If False, the plot of the time series data (goals)</span>
+<span class="sd">        is not created and thus shown in during calibration. It therefore is</span>
+<span class="sd">        also not stored, even if you set the save_tsd_plot keyword-argument to true.</span>
+<span class="sd">    :keyword boolean save_tsd_plot:</span>
+<span class="sd">        Default is False. If True, at each iteration the created plot of the</span>
+<span class="sd">        time-series is saved. This may make the process much slower</span>
+<span class="sd">    :keyword boolean fail_on_error:</span>
+<span class="sd">        Default is False. If True, the calibration will stop with an error if</span>
+<span class="sd">        the simulation fails. See also: ``ret_val_on_error``</span>
+<span class="sd">    :keyword float,np.NAN ret_val_on_error:</span>
+<span class="sd">        Default is np.NAN. If ``fail_on_error`` is false, you can specify here</span>
+<span class="sd">        which value to return in the case of a failed simulation. Possible</span>
+<span class="sd">        options are np.NaN, np.inf or some other high numbers. be aware that this</span>
+<span class="sd">        max influence the solver.</span>
+<span class="sd">    :keyword dict fixed_parameters:</span>
+<span class="sd">        Default is an empty dict. This dict may be used to add certain parameters</span>
+<span class="sd">        to the simulation which are not tuned / variable during calibration.</span>
+<span class="sd">        Such parameters may be used if the default values in the model don&#39;t</span>
+<span class="sd">        represent the parameter values you want to use.</span>
+<span class="sd">    :keyword boolean apply_penalty:</span>
+<span class="sd">        Default is true. Specifies if a penalty function should be applied or not.</span>
+<span class="sd">    :keyword boolean penalty_factor:</span>
+<span class="sd">        Default is 0. Quantifies the impact of the penalty term on the objective function.</span>
+<span class="sd">        The penalty factor is added to the objective function.</span>
+<span class="sd">    :keyword boolean recalibration_count:</span>
+<span class="sd">        Default is 0. Works as a counter and specifies the current cycle of recalibration.</span>
+<span class="sd">    :keyword boolean perform_square_deviation:</span>
+<span class="sd">        Default is false.</span>
+<span class="sd">        If true the penalty function will evaluate the penalty factor with a quadratic approach.</span>
+<span class="sd">    :keyword int max_itercount:</span>
+<span class="sd">        Default is Infinity.</span>
+<span class="sd">        Maximum number of iterations of calibration.</span>
+<span class="sd">        This may be useful to explicitly limit the calibration</span>
+<span class="sd">        time.</span>
+<span class="sd">    :keyword str plot_file_type:</span>
+<span class="sd">        File ending of created plots.</span>
+<span class="sd">        Any supported option in matplotlib, e.g. svg, png, pdf ...</span>
+<span class="sd">        Default is png</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">cd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">sim_api</span><span class="p">:</span> <span class="n">SimulationAPI</span><span class="p">,</span>
+                 <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate instance attributes&quot;&quot;&quot;</span>
+        <span class="c1">#%% Kwargs</span>
+        <span class="c1"># Initialize supported keywords with default value</span>
+        <span class="c1"># Pop the items so they wont be added when calling the</span>
+        <span class="c1"># __init__ of the parent class. Always pop with a default value in case</span>
+        <span class="c1"># the keyword is not passed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;verbose_logging&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_files&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fail_on_error&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fixed_parameters&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_penalty</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;apply_penalty&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">penalty_factor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;penalty_factor&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recalibration_count</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;recalibration_count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perform_square_deviation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;square_deviation&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;result_path&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_itercount&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Boolean to indicate if validating or calibrating</span>
+        <span class="c1"># Extract kwargs for the visualizer</span>
+        <span class="n">visualizer_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;save_tsd_plot&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_tsd_plot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s2">&quot;create_tsd_plot&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;create_tsd_plot&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="s2">&quot;show_plot&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;show_plot&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="s2">&quot;show_plot_pause_time&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;show_plot_pause_time&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span>
+            <span class="s2">&quot;file_type&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;plot_file_type&quot;</span><span class="p">,</span> <span class="s2">&quot;png&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Check if types are correct:</span>
+        <span class="c1"># Booleans:</span>
+        <span class="n">_bool_kwargs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;save_files&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">bool_keyword</span> <span class="ow">in</span> <span class="n">_bool_kwargs</span><span class="p">:</span>
+            <span class="n">keyword_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">bool_keyword</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keyword_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given </span><span class="si">{</span><span class="n">bool_keyword</span><span class="si">}</span><span class="s2"> is of type &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">keyword_value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> but should be type bool&quot;</span><span class="p">)</span>
+
+        <span class="c1">#%% Initialize all public parameters</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Set sim_api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span> <span class="o">=</span> <span class="n">sim_api</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">,</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;calibration_classes is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;but should be CalibrationClass&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span> <span class="o">=</span> <span class="n">calibration_class</span>
+        <span class="c1"># Scale tuner on boundaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_initial_values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># As tuner-parameters are scaled between 0 and 1, the scaled bounds are always 0 and 1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">))]</span>
+        <span class="c1"># Add the values to the simulation setup.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_sim_setup</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span><span class="p">,</span>
+             <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="c1">#%% Setup the logger</span>
+        <span class="c1"># De-register the logger setup in the optimization class:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">CalibrationVisualizer</span><span class="p">(</span>
+                <span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">calibration_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
+                <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">visualizer_kwargs</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">CalibrationLogger</span><span class="p">(</span>
+                <span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">calibration_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
+                <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span> <span class="o">=</span> <span class="n">cd</span>  <span class="c1"># Single class does not need an extra folder</span>
+
+        <span class="c1"># Set the output interval according the the given Goals</span>
+        <span class="n">mean_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_meas_frequency</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Setting output_interval of simulation according &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;to measurement target data frequency: </span><span class="si">{</span><span class="n">mean_freq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">=</span> <span class="n">mean_freq</span>
+
+<div class="viewcode-block" id="Calibrator.obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.obj">[docs]</a>    <span class="k">def</span> <span class="nf">obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default objective function.</span>
+<span class="sd">        The usual function will be implemented here:</span>
+
+<span class="sd">        1. Convert the set to modelica-units</span>
+<span class="sd">        2. Simulate the converted-set</span>
+<span class="sd">        3. Get data as a dataFrame</span>
+<span class="sd">        4. Get penalty factor for the penalty function</span>
+<span class="sd">        5. Calculate the objective based on statistical values</span>
+
+<span class="sd">        :param np.array xk:</span>
+<span class="sd">            Array with normalized values for the minimizer</span>
+<span class="sd">        :param int work_id:</span>
+<span class="sd">            id for worker in Multiprocessing</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Objective value based on the used quality measurement</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Info: This function is called by the optimization framework (scipy, dlib, etc.)</span>
+        <span class="c1"># Initialize class objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_iterate</span> <span class="o">=</span> <span class="n">xk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Convert set if multiple goals of different scales are used</span>
+        <span class="n">xk_descaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">descale</span><span class="p">(</span><span class="n">xk</span><span class="p">)</span>
+
+        <span class="c1"># Set initial values of variable and fixed parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_sim_var_names</span><span class="p">()</span>
+        <span class="n">initial_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="o">.</span><span class="n">values</span><span class="p">)})</span>
+        <span class="c1"># Simulate</span>
+        <span class="c1"># pylint: disable=broad-except</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Generate the folder name for the calibration</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+                <span class="n">savepath_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                                              <span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                    <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
+                    <span class="n">savepath</span><span class="o">=</span><span class="n">savepath_files</span><span class="p">,</span>
+                    <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+                <span class="p">)</span>
+                <span class="c1"># %% Load results and write to goals object</span>
+                <span class="n">sim_target_data</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sim_target_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+                    <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Simulation failed. Raising the error.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Simulation failed. Returning &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;for the optimization. Error message: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span>
+
+        <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kpi_and_logging_calculation</span><span class="p">(</span>
+            <span class="n">xk_descaled</span><span class="o">=</span><span class="n">xk_descaled</span><span class="p">,</span>
+            <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="p">,</span>
+            <span class="n">results</span><span class="o">=</span><span class="n">sim_target_data</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span></div>
+
+<div class="viewcode-block" id="Calibrator.mp_obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.mp_obj">[docs]</a>    <span class="k">def</span> <span class="nf">mp_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># Initialize list for results</span>
+        <span class="n">num_evals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">total_res_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">num_evals</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># Set initial values of variable and fixed parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_sim_var_names</span><span class="p">()</span>
+        <span class="n">initial_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">parameter_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">xk_descaled_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_xk_single</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+            <span class="c1"># Convert set if multiple goals of different scales are used</span>
+            <span class="n">xk_descaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">descale</span><span class="p">(</span><span class="n">_xk_single</span><span class="p">)</span>
+            <span class="n">xk_descaled_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xk_descaled</span><span class="p">)</span>
+            <span class="c1"># Update Parameters</span>
+            <span class="n">parameter_copy</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">parameter_copy</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="o">.</span><span class="n">values</span><span class="p">)})</span>
+            <span class="n">parameter_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter_copy</span><span class="p">)</span>
+
+        <span class="c1"># Simulate</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameter_list</span><span class="p">))]</span>
+            <span class="n">_filepaths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameter_list</span><span class="p">,</span>
+                <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
+                <span class="n">savepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">result_file_name</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">,</span>
+                <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+            <span class="p">)</span>
+            <span class="c1"># Load results</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameter_list</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_iterate</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">total_res_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span>
+                <span class="k">continue</span>
+            <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kpi_and_logging_calculation</span><span class="p">(</span>
+                <span class="n">xk_descaled</span><span class="o">=</span><span class="n">xk_descaled_list</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="p">,</span>
+                <span class="n">results</span><span class="o">=</span><span class="n">result</span>
+            <span class="p">)</span>
+            <span class="c1"># Add single objective to objective list of total Population</span>
+            <span class="n">total_res_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_res</span>
+
+        <span class="k">return</span> <span class="n">total_res_list</span></div>
+
+    <span class="k">def</span> <span class="nf">_kpi_and_logging_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="p">,</span> <span class="n">counter</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to calculate everything needed in the obj or mp_obj</span>
+<span class="sd">        function after the simulation finished.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">xk_descaled</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_sim_target_data</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="c1"># Trim results based on start and end-time of cal class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_relevant_time_intervals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="p">)</span>
+
+        <span class="c1"># %% Evaluate the current objective</span>
+        <span class="c1"># Penalty function (get penalty factor)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recalibration_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_penalty</span><span class="p">:</span>
+            <span class="c1"># There is no benchmark in the first iteration or</span>
+            <span class="c1"># first iterations were skipped, so no penalty is applied</span>
+            <span class="n">penaltyfactor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_penalty</span><span class="p">(</span><span class="n">xk_descaled</span><span class="p">,</span> <span class="n">xk</span><span class="p">)</span>
+            <span class="c1"># Evaluate with penalty</span>
+            <span class="n">penalty</span> <span class="o">=</span> <span class="n">penaltyfactor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Evaluate without penalty</span>
+            <span class="n">penaltyfactor</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">penalty</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">eval_difference</span><span class="p">(</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">penaltyfactor</span><span class="o">=</span><span class="n">penaltyfactor</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span><span class="p">:</span>  <span class="c1"># Only plot if at_calibration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">calibration_callback_func</span><span class="p">(</span>
+                <span class="n">xk</span><span class="o">=</span><span class="n">xk</span><span class="p">,</span>
+                <span class="n">obj</span><span class="o">=</span><span class="n">total_res</span><span class="p">,</span>
+                <span class="n">verbose_information</span><span class="o">=</span><span class="n">unweighted_objective</span><span class="p">,</span>
+                <span class="n">penalty</span><span class="o">=</span><span class="n">penalty</span>
+            <span class="p">)</span>
+        <span class="c1"># current best iteration step of current calibration class</span>
+        <span class="k">if</span> <span class="n">total_res</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s2">&quot;Objective&quot;</span><span class="p">]:</span>
+            <span class="c1"># self.best_goals = self.goals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Iterate&quot;</span><span class="p">:</span> <span class="n">counter</span><span class="p">,</span>
+                <span class="s2">&quot;Objective&quot;</span><span class="p">:</span> <span class="n">total_res</span><span class="p">,</span>
+                <span class="s2">&quot;Unweighted Objective&quot;</span><span class="p">:</span> <span class="n">unweighted_objective</span><span class="p">,</span>
+                <span class="s2">&quot;Parameters&quot;</span><span class="p">:</span> <span class="n">xk_descaled</span><span class="p">,</span>
+                <span class="s2">&quot;Goals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="p">,</span>
+                <span class="c1"># For penalty function and for saving goals as csv</span>
+                <span class="s2">&quot;better_current_result&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="c1"># Changed to false in this script after calling function &quot;save_calibration_results&quot;</span>
+                <span class="s2">&quot;Penaltyfactor&quot;</span><span class="p">:</span> <span class="n">penalty</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MaxIterationsReached</span><span class="p">(</span>
+                <span class="s2">&quot;Terminating calibration as the maximum number &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of iterations </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="si">}</span><span class="s2"> has been reached.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span>
+
+<div class="viewcode-block" id="Calibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.calibrate">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the calibration process of the calibration classes, visualize and save the results.</span>
+
+<span class="sd">        The arguments of this function are equal to the</span>
+<span class="sd">        arguments in Optimizer.optimize(). Look at the docstring</span>
+<span class="sd">        in ebcpy to know which options are available.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#%% Start Calibration:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start calibration of model: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; with framework-class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Class: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, Start and Stop-Time &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;of simulation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">stop_time</span><span class="si">}</span><span class="s2"> s</span><span class="se">\n</span><span class="s2"> Time-Intervals used&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; for objective: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Setup the visualizer for plotting and logging:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
+                                        <span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">,</span>
+                                        <span class="n">for_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_initial_names</span><span class="p">()</span>
+
+        <span class="c1"># Duration of Calibration</span>
+        <span class="n">t_cal_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Run optimization</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+                <span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">n_cpu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">n_cpu</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MaxIterationsReached</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+        <span class="n">t_cal_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">t_cal</span> <span class="o">=</span> <span class="n">t_cal_stop</span> <span class="o">-</span> <span class="n">t_cal_start</span>
+
+        <span class="c1"># Check if optimization worked correctly</span>
+        <span class="k">if</span> <span class="s2">&quot;Iterate&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Some error during calibration yielded no successful iteration. &quot;</span>
+                <span class="s2">&quot;Can&#39;t save or return any results.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1">#%% Save the relevant results.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">save_calibration_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                                            <span class="n">duration</span><span class="o">=</span><span class="n">t_cal</span><span class="p">,</span>
+                                            <span class="n">itercount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recalibration_count</span><span class="p">)</span>
+        <span class="c1"># Reset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;better_current_result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Save calibrated parameter values in JSON</span>
+        <span class="n">parameter_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">p_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">parameter_values</span><span class="o">=</span><span class="n">parameter_values</span><span class="p">,</span>
+                          <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter_values</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalibrationClass</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_class</span>
+
+    <span class="nd">@calibration_class</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current calibration class&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_sim_setup</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_start_time_method</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">),</span>
+             <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="n">calibration_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cal_class</span> <span class="o">=</span> <span class="n">calibration_class</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerParas</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current tuner parameters of the calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span>
+
+    <span class="nd">@tuner_paras</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner_paras</span><span class="p">:</span> <span class="n">TunerParas</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current tuner parameters of the calibration class&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Goals</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current goals of the calibration class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span>
+
+    <span class="nd">@goals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goals</span><span class="p">:</span> <span class="n">Goals</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current goals of the calibration class&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span> <span class="o">=</span> <span class="n">goals</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the currently fixed parameters during calibration&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_pars</span>
+
+    <span class="nd">@fixed_parameters</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fixed_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the currently fixed parameters during calibration&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_pars</span> <span class="o">=</span> <span class="n">fixed_parameters</span>
+
+<div class="viewcode-block" id="Calibrator.save_results"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.save_results">[docs]</a>    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the given dict into a file with path</span>
+<span class="sd">        self.result_path and name filename.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">s_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">.json&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">s_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">parameter_values</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Calibrator.validate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">calibration_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the given calibration class based on the given</span>
+<span class="sd">        values for tuner_parameters.</span>
+
+<span class="sd">        :param CalibrationClass validation_class:</span>
+<span class="sd">            The class to validate on</span>
+<span class="sd">        :param dict calibration_result:</span>
+<span class="sd">            The calibration result to apply to the validation class on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Start Validation:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start validation of model: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> with &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;framework-class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Use start-time of calibration class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span> <span class="o">=</span> <span class="n">validation_class</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_start_time_method</span><span class="p">(</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="p">)</span>
+        <span class="n">old_tuner_paras</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
+        <span class="n">tuner_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">calibration_result</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">TunerParas</span><span class="p">(</span>
+            <span class="n">names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">calibration_result</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+            <span class="n">initial_values</span><span class="o">=</span><span class="n">tuner_values</span><span class="p">,</span>
+            <span class="c1"># Dummy bounds as they are scaled anyway</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tuner_values</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set the start-time for the simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
+                                        <span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">,</span>
+                                        <span class="n">for_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Use the results parameter vector to simulate again.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Reset to one</span>
+        <span class="c1"># Scale the tuner parameters</span>
+        <span class="n">xk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">tuner_values</span><span class="p">)</span>
+        <span class="c1"># Evaluate objective</span>
+        <span class="n">obj</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">xk</span><span class="o">=</span><span class="n">xk</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">validation_callback_func</span><span class="p">(</span>
+            <span class="n">obj</span><span class="o">=</span><span class="n">obj</span>
+        <span class="p">)</span>
+        <span class="c1"># Reset tuner_parameters to avoid unwanted behaviour</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">old_tuner_paras</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">objectives</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+            <span class="n">goals</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">goal</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">unweighted_objective</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">objectives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">goals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span>
+                <span class="p">[[</span><span class="n">validation_class</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">goals</span><span class="p">],</span>
+                <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Goal&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">obj_verbos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="n">weights</span><span class="p">,</span> <span class="n">validation_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="p">:</span> <span class="n">objectives</span><span class="p">},</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">index</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">obj_verbos</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+    <span class="k">def</span> <span class="nf">_handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Also save the plots if an error occurs.</span>
+<span class="sd">        See ebcpy.optimization.Optimizer._handle_error for more info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This error is our own, we handle it in the calibrate() function</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">MaxIterationsReached</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">save_calibration_result</span><span class="p">(</span><span class="n">best_iterate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
+                                            <span class="n">model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+                                            <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                            <span class="n">itercount</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Calibrator.get_penalty"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.get_penalty">[docs]</a>    <span class="k">def</span> <span class="nf">get_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_tuners</span><span class="p">,</span> <span class="n">current_tuners_scaled</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get penalty factor for evaluation of current objective. The penaltyfactor</span>
+<span class="sd">        considers deviations of the tuner parameters in the objective function.</span>
+<span class="sd">        First the relative deviation between the current best values</span>
+<span class="sd">        of the tuner parameters from the recalibration steps and</span>
+<span class="sd">        the tuner parameters obtained in the current iteration step is determined.</span>
+<span class="sd">        Then the penaltyfactor is being increased according to the relative deviation.</span>
+
+<span class="sd">        :param pd.series current_tuner_values:</span>
+<span class="sd">            To add</span>
+<span class="sd">        :return: float penalty</span>
+<span class="sd">            Penaltyfactor for evaluation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TO-DO: Add possibility to consider the sensitivity of tuner parameters</span>
+
+        <span class="c1"># Get lists of tuner values (latest best (with all other tuners) &amp; current values)</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">all_tuners_dict</span>
+        <span class="n">previous_scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">all_tuners_dict_scaled</span>
+        <span class="c1"># previous_scaled = list(self.sim_api.all_tuners_dict.keys())</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">current_tuners</span>
+        <span class="n">current_scaled</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">current_tuners_scaled</span><span class="p">)</span>
+
+        <span class="c1"># Apply penalty function</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">current_scaled</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Add corresponding function for penaltyfactor here</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">perform_square_deviation</span><span class="p">:</span>
+                <span class="c1"># Apply quadratic deviation</span>
+                <span class="n">dev_square</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">previous_scaled</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">penalty</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty_factor</span> <span class="o">*</span> <span class="n">dev_square</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Apply relative deviation</span>
+                <span class="c1"># Ingore tuner parameter whose current best value is 0</span>
+                <span class="k">if</span> <span class="n">previous</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># Get relative deviation of tuner values (reference: previous)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">dev</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">previous</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">penalty</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">penalty_factor</span> <span class="o">*</span> <span class="n">dev</span>
+                <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">penalty</span></div>
+
+    <span class="k">def</span> <span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to be calculate the start_time based on the used</span>
+<span class="sd">        timedelta method.</span>
+
+<span class="sd">        :param float start_time:</span>
+<span class="sd">            Start time which was specified by the user in the TOML file.</span>
+<span class="sd">        :return float start_time - self.timedelta:</span>
+<span class="sd">            Calculated &quot;timedelta&quot;, if specified in the TOML file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
