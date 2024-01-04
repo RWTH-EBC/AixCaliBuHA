@@ -6,7 +6,7 @@ import pandas as pd
 from SALib.sample import sobol
 from SALib.analyze import sobol as analyze_sobol
 import numpy as np
-from aixcalibuha.sensitivity_analysis import SenAnalyzer
+from aixcalibuha.sensitivity_analysis import SenAnalyzer, _del_duplicates, _rename_tuner_names
 from aixcalibuha import CalibrationClass
 import matplotlib.pyplot as plt
 
@@ -196,14 +196,14 @@ class SobolAnalyzer(SenAnalyzer):
         figs = kwargs.pop('figs', None)
         result = result.fillna(0)
         # get lists of the calibration classes and their goals in the result dataframe
-        cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
-        goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+        cal_classes = _del_duplicates(list(result.index.get_level_values(0)))
+        goals = _del_duplicates(list(result.index.get_level_values(1)))
         cal_classes = kwargs.pop('cal_classes', cal_classes)
         goals = kwargs.pop('goals', goals)
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
-            result = SenAnalyzer._rename_tuner_names(result)
+            result = _rename_tuner_names(result)
 
         tuner_names = result.columns
         if len(tuner_names) < 2:
@@ -308,7 +308,7 @@ class SobolAnalyzer(SenAnalyzer):
             Returns axes
         """
         if use_suffix:
-            result = SenAnalyzer._rename_tuner_names(result)
+            result = _rename_tuner_names(result)
         if ax is None:
             fig, ax = plt.subplots()
         data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
@@ -378,5 +378,8 @@ class SobolAnalyzer(SenAnalyzer):
 
     @staticmethod
     def load_second_order_from_csv(path):
+        """
+        Load second order sensitivity results which were saved with the run() or run_time_dependent() function.
+        """
         result = pd.read_csv(path, index_col=[0, 1, 2, 3])
         return result

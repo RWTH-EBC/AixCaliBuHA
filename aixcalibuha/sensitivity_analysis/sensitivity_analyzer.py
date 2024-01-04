@@ -36,6 +36,26 @@ def _load_files(_filepaths, parquet_engine='pyarrow'):
     return results
 
 
+def _del_duplicates(x):
+    """Helper function"""
+    return list(dict.fromkeys(x))
+
+
+def _get_suffix(modelica_var_name):
+    """Helper function"""
+    index_last_dot = modelica_var_name.rfind('.')
+    suffix = modelica_var_name[index_last_dot + 1:]
+    return suffix
+
+
+def _rename_tuner_names(result):
+    """Helper function"""
+    tuner_names = list(result.columns)
+    rename_tuner_names = {name: _get_suffix(name) for name in tuner_names}
+    result = result.rename(columns=rename_tuner_names, index=rename_tuner_names)
+    return result
+
+
 def _restruct_verbose(list_output_verbose):
     """Helper function"""
     output_verbose = {}
@@ -817,23 +837,6 @@ class SenAnalyzer(abc.ABC):
         raise NotImplementedError
 
     @staticmethod
-    def _del_duplicates(x):
-        return list(dict.fromkeys(x))
-
-    @staticmethod
-    def _get_suffix(modelica_var_name):
-        index_last_dot = modelica_var_name.rfind('.')
-        suffix = modelica_var_name[index_last_dot + 1:]
-        return suffix
-
-    @staticmethod
-    def _rename_tuner_names(result):
-        tuner_names = list(result.columns)
-        rename_tuner_names = {name: SenAnalyzer._get_suffix(name) for name in tuner_names}
-        result = result.rename(columns=rename_tuner_names, index=rename_tuner_names)
-        return result
-
-    @staticmethod
     def plot_single(result: pd.DataFrame, **kwargs):
         """
         Plot sensitivity results of first and total order analysis variables.
@@ -867,14 +870,14 @@ class SenAnalyzer(abc.ABC):
         # get lists of the calibration classes and their goals in the result dataframe
         cal_classes = kwargs.pop('cal_classes', None)
         if cal_classes is None:
-            cal_classes = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
+            cal_classes = _del_duplicates(list(result.index.get_level_values(0)))
         goals = kwargs.pop('goals', None)
         if goals is None:
-            goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+            goals = _del_duplicates(list(result.index.get_level_values(1)))
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
-            result = SenAnalyzer._rename_tuner_names(result)
+            result = _rename_tuner_names(result)
 
         # when the index is not sorted pandas throws a performance warning
         result = result.sort_index()
@@ -941,15 +944,15 @@ class SenAnalyzer(abc.ABC):
 
         goals = kwargs.pop('goals', None)
         if goals is None:
-            goals = SenAnalyzer._del_duplicates(list(result.index.get_level_values(0)))
-        all_analysis_variables = SenAnalyzer._del_duplicates(list(result.index.get_level_values(1)))
+            goals = _del_duplicates(list(result.index.get_level_values(0)))
+        all_analysis_variables = _del_duplicates(list(result.index.get_level_values(1)))
         analysis_variables = kwargs.pop('analysis_variables', None)
         if analysis_variables is None:
             analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
-            result = SenAnalyzer._rename_tuner_names(result)
+            result = _rename_tuner_names(result)
 
         # when the index is not sorted pandas throws a performance warning
         result = result.sort_index()
@@ -1032,17 +1035,17 @@ class SenAnalyzer(abc.ABC):
 
         goals = kwargs.pop('goals', None)
         if goals is None:
-            goals = SenAnalyzer._del_duplicates(list(single_result.index.get_level_values(0)))
-        all_analysis_variables = SenAnalyzer._del_duplicates(list(single_result.index.get_level_values(1)))
+            goals = _del_duplicates(list(single_result.index.get_level_values(0)))
+        all_analysis_variables = _del_duplicates(list(single_result.index.get_level_values(1)))
         analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
 
         # rename tuner_names in result to the suffix of their variable name
         if use_suffix:
-            single_result = SenAnalyzer._rename_tuner_names(single_result)
+            single_result = _rename_tuner_names(single_result)
             # when the index is not sorted pandas throws a performance warning
             single_result = single_result.sort_index()
             if second_order_result is not None:
-                second_order_result = SenAnalyzer._rename_tuner_names(second_order_result)
+                second_order_result = _rename_tuner_names(second_order_result)
                 second_order_result = second_order_result.sort_index()
 
         if fig_axes is None:
@@ -1059,7 +1062,7 @@ class SenAnalyzer(abc.ABC):
                 mean = result_2_goal.mean().drop([parameter])
                 mean.sort_values(ascending=False, inplace=True)
                 sorted_interactions = list(mean.index)
-                time_ar = SenAnalyzer._del_duplicates(list(result_2_goal.index.get_level_values(0)))
+                time_ar = _del_duplicates(list(result_2_goal.index.get_level_values(0)))
                 value = single_result.loc[goal, 'S1'][parameter].to_numpy()
                 ax[g_i].plot(single_result.loc[goal, 'S1'][parameter], label='S1')
                 ax[g_i].fill_between(time_ar, np.zeros_like(value), value, alpha=0.1)
@@ -1094,6 +1097,11 @@ class SenAnalyzer(abc.ABC):
 
     @staticmethod
     def load_from_csv(path):
+        """
+        Load sensitivity results which were saved with the run() or run_time_dependent() function.
+
+        For second order results use the load_second_order_from_csv() function of the SobolAnalyzer.
+        """
         result = pd.read_csv(path, index_col=[0, 1, 2])
         return result
 
