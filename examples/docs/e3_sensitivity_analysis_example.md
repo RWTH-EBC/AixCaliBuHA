@@ -24,8 +24,7 @@ sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 sen_analyzer = SobolAnalyzer(
         sim_api=sim_api,
         num_samples=10,
-        cd=sim_api.cd,
-        analysis_variable='S1'
+        cd=sim_api.cd
     )
 ```
 
