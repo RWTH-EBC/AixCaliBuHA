@@ -72,7 +72,7 @@ aixcalibuha/data_types.py:19:0: R0902: Too many instance attributes (9/7) (too-m
 aixcalibuha/data_types.py:67:4: R0912: Too many branches (17/12) (too-many-branches)
 aixcalibuha/data_types.py:504:0: R0902: Too many instance attributes (14/7) (too-many-instance-attributes)
 aixcalibuha/data_types.py:545:4: R0913: Too many arguments (7/5) (too-many-arguments)
-************* Module bin.guided_setup
+************* Module guided_setup
 bin/guided_setup.py:314:0: C0301: Line too long (102/100) (line-too-long)
 bin/guided_setup.py:374:0: C0301: Line too long (103/100) (line-too-long)
 bin/guided_setup.py:404:0: C0301: Line too long (104/100) (line-too-long)
@@ -103,7 +103,7 @@ bin/guided_setup.py:371:33: W0212: Access to a protected member _make_modelica_n
 bin/guided_setup.py:453:45: E1101: Instance of 'DymolaAPI' has no 'dymola_path' member (no-member)
 bin/guided_setup.py:226:0: R0912: Too many branches (19/12) (too-many-branches)
 bin/guided_setup.py:226:0: R0915: Too many statements (108/50) (too-many-statements)
-************* Module bin.run_modelica_calibration
+************* Module run_modelica_calibration
 bin/run_modelica_calibration.py:34:12: R1720: Unnecessary "else" after "raise", remove the "else" and de-indent the code inside it (no-else-raise)
 bin/run_modelica_calibration.py:39:12: W0707: Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\n{_handle_argv.__doc__}') from exc' (raise-missing-from)
 bin/run_modelica_calibration.py:44:0: C0116: Missing function or method docstring (missing-function-docstring)
@@ -158,10 +158,20 @@ examples/e3_verbos_dymola_sensitivity_analysis_example.py:1:0: C0114: Missing mo
 examples/e3_verbos_dymola_sensitivity_analysis_example.py:83:12: W0212: Access to a protected member _inputs of a client class (protected-access)
 examples/e3_verbos_dymola_sensitivity_analysis_example.py:11:0: C0411: third party import "from ebcpy.utils.conversion import convert_tsd_to_modelica_txt" should be placed before "from examples import setup_dym_api, setup_calibration_classes" (wrong-import-order)
 ************* Module examples.e3_verbos_sensitivity_analysis_example
-examples/e3_verbos_sensitivity_analysis_example.py:400:0: C0301: Line too long (101/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:401:0: C0301: Line too long (105/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:402:0: C0301: Line too long (113/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:291:5: W0511: See issue # TODO: Open issue in SAlib for false ST results of the FAST method (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:75:0: C0301: Line too long (111/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:168:0: C0301: Line too long (227/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:206:0: C0301: Line too long (104/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:210:0: C0301: Line too long (101/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:288:0: C0301: Line too long (134/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:405:0: C0301: Line too long (101/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:10:1: W0511: TODO: Add this file and the other verbose example to the files under examples\converter.toml (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:52:5: W0511: TODO: Directly say why it is necessary or refer to the section (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:75:5: W0511: the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:118:5: W0511: TODO: The following sentence is not clear to me (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:168:35: W0511: TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script. (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:206:25: W0511: TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this? (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:210:5: W0511: ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or? (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:296:5: W0511: See issue # TODO: Open issue in SAlib for false ST results of the FAST method (fixme)
 examples/e3_verbos_sensitivity_analysis_example.py:17:0: R0914: Too many local variables (28/15) (too-many-locals)
 examples/e3_verbos_sensitivity_analysis_example.py:17:0: R0915: Too many statements (58/50) (too-many-statements)
 ************* Module examples.e4_calibration_example
@@ -179,8 +189,8 @@ tests/test_modelica_cal_sen.py:146:15: C2801: Unnecessarily calls dunder method 
 tests/test_modelica_cal_sen.py:349:4: C0116: Missing function or method docstring (missing-function-docstring)
 tests/test_modelica_cal_sen.py:380:4: C0116: Missing function or method docstring (missing-function-docstring)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==bin.guided_setup:[64:102]
-==bin.run_modelica_calibration:[26:44]
+==guided_setup:[64:102]
+==run_modelica_calibration:[26:44]
     __supported_argv = ["--config"]
     # Path to the script is irrelevant
     resulting_setting = {}
@@ -198,42 +208,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     return resulting_setting
 
 
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    """
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a "package.mo" file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the "package.mo" file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    """ (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e3_verbos_dymola_sensitivity_analysis_example:[40:50]
-==examples.e3_verbos_sensitivity_analysis_example:[54:66]
-    calibration_classes = setup_calibration_classes(
-        examples_dir=examples_dir, example=example, multiple_classes=False
-    )[0]
-    merged_calibration_classes = merge_calibration_classes(calibration_classes)
-    merged_calibration_classes[0].name = 'global'
-    # Now we add the calibration classes for the different states of the system
-    calibration_classes = setup_calibration_classes(
-        examples_dir=examples_dir, example=example, multiple_classes=True
-    )[0]
-    merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))
-    # Now we have the following calibration classes and merged them direct.
-    # We could have also merged them with an option in the SenAnalyzer.run function. (duplicate-code)
+def main(): (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:131]
 ==examples.e2_B_optimization_problem_definition:[113:122]
@@ -266,7 +241,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
         weightings=[0.7, 0.3]
     )
     # Let's check if our evaluation is possible by creating some
-    # dummy `sim_target_data` with the same index: (duplicate-code)
+    # dummy sim_target_data with the same index: (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[213:222]
 ==examples.e2_B_optimization_problem_definition:[188:197]
@@ -330,10 +305,29 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err) (duplicate-code)
+        print(err)
+    # ## Calibration Classes
+    # We now are going to wrap everything up into a single object called
+    # `CalibrationClass`.
+    # Each class has a `name`, a `start_time`, `stop_time` and
+    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
+    # The latter three can be set for all
+    # classes if a distinction is not required.
+    # ### Why do we use a `CalibrationClass`?
+    # Because this class contains all information necessary
+    # to perform both sensitivity analysis and calibration automatically.
+    # ### Can there be multiple classes?
+    # Yes! Because we expect different tuner parameters
+    # to influence the outputs based on the state of the system,
+    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
+    # optimization problem, separating tuner parameters into time intervals
+    # can be handy. For example heat losses to the ambient may be most
+    # sensitive if the device is just turned off, while efficiency is more
+    # sensitive during runtime.
+    # Let's also define some different tuner parameters for the last stationary class. (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]
-==examples.e3_verbos_sensitivity_analysis_example:[422:432]
+==examples.e3_verbos_sensitivity_analysis_example:[428:438]
 if __name__ == "__main__":
     import pathlib
 
@@ -346,7 +340,7 @@ if __name__ == "__main__":
         examples_dir=pathlib.Path(__file__).parent, (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_sensitivity_analysis_example:[78:86]
-==examples.e3_verbos_sensitivity_analysis_example:[427:435]
+==examples.e3_verbos_sensitivity_analysis_example:[433:441]
     N_CPU = 2
 
     # Sensitivity analysis:
@@ -359,6 +353,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
+
     print("Goals data before setting simulation data:\n", goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print("Goals data after setting simulation data:\n", goals.get_goals_data())
@@ -386,7 +381,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     data_dir = pathlib.Path(examples_dir).joinpath("data") (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]
-==examples.e3_verbos_sensitivity_analysis_example:[150:181]
+==examples.e3_verbos_sensitivity_analysis_example:[155:186]
     print("Result of the sensitivity analysis")
     print('First and total order results of sobol method')
     print(result[0].to_string())
@@ -442,5 +437,5 @@ def main(
     # sensitive or influenced by another parameter. (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 8.96/10
+Your code has been rated at 8.89/10
 

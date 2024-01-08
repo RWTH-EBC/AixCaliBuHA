@@ -1632,7 +1632,40 @@
             "type": "convention",
             "module": "examples.e3_verbos_sensitivity_analysis_example",
             "obj": "",
-            "line": 400,
+            "line": 75,
+            "column": 0,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (111/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 168,
+            "column": 0,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (227/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 206,
+            "column": 0,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (104/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 210,
             "column": 0,
             "path": "examples/e3_verbos_sensitivity_analysis_example.py",
             "symbol": "line-too-long",
@@ -1643,29 +1676,106 @@
             "type": "convention",
             "module": "examples.e3_verbos_sensitivity_analysis_example",
             "obj": "",
-            "line": 401,
+            "line": 288,
             "column": 0,
             "path": "examples/e3_verbos_sensitivity_analysis_example.py",
             "symbol": "line-too-long",
-            "message": "Line too long (105/100)",
+            "message": "Line too long (134/100)",
             "message-id": "C0301"
         },
         {
             "type": "convention",
             "module": "examples.e3_verbos_sensitivity_analysis_example",
             "obj": "",
-            "line": 402,
+            "line": 405,
             "column": 0,
             "path": "examples/e3_verbos_sensitivity_analysis_example.py",
             "symbol": "line-too-long",
-            "message": "Line too long (113/100)",
+            "message": "Line too long (101/100)",
             "message-id": "C0301"
         },
         {
             "type": "warning",
             "module": "examples.e3_verbos_sensitivity_analysis_example",
             "obj": "",
-            "line": 291,
+            "line": 10,
+            "column": 1,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "TODO: Add this file and the other verbose example to the files under examples\\converter.toml",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 52,
+            "column": 5,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "TODO: Directly say why it is necessary or refer to the section",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 75,
+            "column": 5,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 118,
+            "column": 5,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "TODO: The following sentence is not clear to me",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 168,
+            "column": 35,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 206,
+            "column": 25,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this?",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 210,
+            "column": 5,
+            "path": "examples/e3_verbos_sensitivity_analysis_example.py",
+            "symbol": "fixme",
+            "message": "## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or?",
+            "message-id": "W0511"
+        },
+        {
+            "type": "warning",
+            "module": "examples.e3_verbos_sensitivity_analysis_example",
+            "obj": "",
+            "line": 296,
             "column": 5,
             "path": "examples/e3_verbos_sensitivity_analysis_example.py",
             "symbol": "fixme",
@@ -1823,17 +1933,6 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[40:50]\n==examples.e3_verbos_sensitivity_analysis_example:[54:66]\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=False\n    )[0]\n    merged_calibration_classes = merge_calibration_classes(calibration_classes)\n    merged_calibration_classes[0].name = 'global'\n    calibration_classes = setup_calibration_classes(\n        examples_dir=examples_dir, example=example, multiple_classes=True\n    )[0]\n    merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))\n",
-            "message-id": "R0801"
-        },
-        {
-            "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
             "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:131]\n==examples.e2_B_optimization_problem_definition:[113:122]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    new_index = meas_target_data.index.values.copy()\n    new_index[-10] += 0.05  # Change some value",
             "message-id": "R0801"
         },
@@ -1845,7 +1944,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy sim_target_data with the same index:",
+            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy `sim_target_data` with the same index:",
             "message-id": "R0801"
         },
         {
@@ -1900,7 +1999,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]\n==examples.e3_verbos_sensitivity_analysis_example:[422:432]\nif __name__ == \"__main__\":\n    import pathlib\n\n    # Parameters for sen-analysis:\n    EXAMPLE = \"A\"  # Or choose B\n    N_CPU = 2\n\n    # Sensitivity analysis:\n    run_sensitivity_analysis(\n        examples_dir=pathlib.Path(__file__).parent,",
+            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]\n==examples.e3_verbos_sensitivity_analysis_example:[428:438]\nif __name__ == \"__main__\":\n    import pathlib\n\n    # Parameters for sen-analysis:\n    EXAMPLE = \"A\"  # Or choose B\n    N_CPU = 2\n\n    # Sensitivity analysis:\n    run_sensitivity_analysis(\n        examples_dir=pathlib.Path(__file__).parent,",
             "message-id": "R0801"
         },
         {
@@ -1911,7 +2010,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_sensitivity_analysis_example:[78:86]\n==examples.e3_verbos_sensitivity_analysis_example:[427:435]\n    N_CPU = 2\n\n    # Sensitivity analysis:\n    run_sensitivity_analysis(\n        examples_dir=pathlib.Path(__file__).parent,\n        example=EXAMPLE,\n        n_cpu=N_CPU\n    )",
+            "message": "Similar lines in 2 files\n==examples.e3_sensitivity_analysis_example:[78:86]\n==examples.e3_verbos_sensitivity_analysis_example:[433:441]\n    N_CPU = 2\n\n    # Sensitivity analysis:\n    run_sensitivity_analysis(\n        examples_dir=pathlib.Path(__file__).parent,\n        example=EXAMPLE,\n        n_cpu=N_CPU\n    )",
             "message-id": "R0801"
         },
         {
@@ -1944,7 +2043,7 @@
             "column": 0,
             "path": "tests/test_modelica_cal_sen.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]\n==examples.e3_verbos_sensitivity_analysis_example:[150:181]\n    print(\"Result of the sensitivity analysis\")\n    print('First and total order results of sobol method')\n    print(result[0].to_string())\n    print('Second order results of sobol method')\n    print(result[1].to_string())\n\n    # remove input file",
+            "message": "Similar lines in 2 files\n==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]\n==examples.e3_verbos_sensitivity_analysis_example:[155:186]\n    print(\"Result of the sensitivity analysis\")\n    # The first result has as columns the tuner-parameters\n    # and a multi level index with three levels.\n    # The first level defines the calibration class.\n    # The second level defines the Goals (target values). The index 'all'\n    # is for the result of the combined target values in the goals.\n    # The last level defines the result of the\n    # sensitivity measure for each class and goal.\n    # These analysis variables are specific for each method.\n    # For their exact meaning I refer to the documentation of the SALib or the literature.\n    # In this example you get a short overview in the comparison later.\n    print('First and total order results of sobol method')\n    print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.\n    # The second result of the sobol method is for second order sensitive measures.\n    # These describe the interaction between two parameters,\n    # so this dataframe has a fourth index level \"Interaction\".\n    # In this level, the tuner-parameters are listed again.\n    print('Second order results of sobol method')\n    print(result[1].to_string())\n    # For a better understanding of the results we will now plot them.\n\n    # ## Plotting Sensitivity results\n    # We start with the result which were calculated with the small sample size.\n    # Let's plot the first and total order results. These results\n    # are specific for each single parameter\n    # For each calibration class, a figure is created\n    # which shows for each goal the first order sensitivity `S1`\n    # and the total order sensitivity combined. For the small\n    # sample size the results have huge confidence\n    # intervals, which show that these results are inaccurate as we\n    # noted earlier due to the small sample size.",
             "message-id": "R0801"
         },
         {
@@ -2076,13 +2175,13 @@
                 "warning": 1
             },
             "examples.e3_verbos_sensitivity_analysis_example": {
-                "convention": 3,
+                "convention": 6,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 2,
                 "statement": 67,
-                "warning": 1
+                "warning": 8
             },
             "examples.e4_calibration_example": {
                 "convention": 3,
@@ -2143,7 +2242,7 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 14,
+                "refactor": 13,
                 "statement": 151,
                 "warning": 0
             }
@@ -2153,8 +2252,8 @@
             "too-many-instance-attributes": 2,
             "too-many-branches": 2,
             "too-many-arguments": 2,
-            "line-too-long": 10,
-            "fixme": 2,
+            "line-too-long": 13,
+            "fixme": 9,
             "lost-exception": 1,
             "no-else-raise": 2,
             "raise-missing-from": 3,
@@ -2179,7 +2278,7 @@
             "unused-import": 2,
             "wrong-import-order": 1,
             "unnecessary-dunder-call": 1,
-            "duplicate-code": 14
+            "duplicate-code": 13
         },
         "code_type_count": {
             "code": 0,
@@ -2191,14 +2290,14 @@
         "dependencies": {
             "aixcalibuha.data_types": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "aixcalibuha",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "aixcalibuha"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha",
-                "run_modelica_calibration"
+                "run_modelica_calibration",
+                "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
@@ -2208,18 +2307,18 @@
                 "aixcalibuha.data_types"
             ],
             "numpy": [
-                "examples.e4_calibration_example",
-                "tests.test_data_types",
-                "tests.test_modelica_cal_sen",
-                "aixcalibuha.data_types"
-            ],
-            "ebcpy": [
-                "examples",
                 "tests.test_modelica_cal_sen",
                 "aixcalibuha.data_types",
+                "tests.test_data_types",
+                "examples.e4_calibration_example"
+            ],
+            "ebcpy": [
                 "examples.e2_B_optimization_problem_definition",
+                "examples",
                 "examples.e2_A_optimization_problem_definition",
-                "examples.e1_A_energy_system_analysis"
+                "examples.e1_A_energy_system_analysis",
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2229,8 +2328,8 @@
             ],
             "ebcpy.data_types": [
                 "run_modelica_calibration",
-                "tests.test_data_types",
-                "guided_setup"
+                "guided_setup",
+                "tests.test_data_types"
             ],
             "ebcpy.simulationapi.dymola_api": [
                 "guided_setup"
@@ -2239,13 +2338,13 @@
                 "guided_setup"
             ],
             "aixcalibuha.utils.configuration": [
-                "run_modelica_calibration",
                 "tests.test_config",
+                "run_modelica_calibration",
                 "guided_setup"
             ],
             "ebcpy.utils.conversion": [
-                "run_modelica_calibration",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "run_modelica_calibration"
             ],
             "examples.e2_A_optimization_problem_definition": [
                 "examples"
@@ -2254,27 +2353,27 @@
                 "examples"
             ],
             "matplotlib.pyplot": [
-                "examples.e1_B_energy_system_analysis",
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e1_A_energy_system_analysis"
+                "examples.e1_A_energy_system_analysis",
+                "examples.e1_B_energy_system_analysis"
             ],
             "examples": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e1_B_energy_system_analysis",
-                "examples.e4_calibration_example",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e3_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example"
+                "examples.e1_B_energy_system_analysis",
+                "examples.e4_calibration_example"
             ],
             "aixcalibuha": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "tests.test_config",
-                "tests.test_modelica_cal_sen",
-                "examples.e4_calibration_example",
-                "examples.e3_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
+                "tests.test_config",
+                "tests.test_data_types",
                 "examples.e2_A_optimization_problem_definition",
-                "tests.test_data_types"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e3_sensitivity_analysis_example",
+                "tests.test_modelica_cal_sen",
+                "examples.e4_calibration_example"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
@@ -2300,16 +2399,16 @@
             "method": 2,
             "module": 8
         },
-        "convention": 37,
+        "convention": 40,
         "error": 3,
         "fatal": 0,
         "info": 0,
-        "refactor": 33,
+        "refactor": 32,
         "statement": 1186,
-        "warning": 38,
+        "warning": 45,
         "global_note": 0,
-        "nb_duplicated_lines": 101,
-        "percent_duplicated_lines": 2.7800715661987336
+        "nb_duplicated_lines": 92,
+        "percent_duplicated_lines": 2.528167078867821
     },
     "previous": {
         "bad_names": {
@@ -2346,7 +2445,7 @@
                 "statement": 255,
                 "warning": 0
             },
-            "bin.guided_setup": {
+            "guided_setup": {
                 "convention": 3,
                 "error": 1,
                 "fatal": 0,
@@ -2355,7 +2454,7 @@
                 "statement": 223,
                 "warning": 19
             },
-            "bin.run_modelica_calibration": {
+            "run_modelica_calibration": {
                 "convention": 2,
                 "error": 2,
                 "fatal": 0,
@@ -2428,13 +2527,13 @@
                 "warning": 1
             },
             "examples.e3_verbos_sensitivity_analysis_example": {
-                "convention": 3,
+                "convention": 6,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 2,
                 "statement": 67,
-                "warning": 1
+                "warning": 8
             },
             "examples.e4_calibration_example": {
                 "convention": 3,
@@ -2495,7 +2594,7 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 14,
+                "refactor": 13,
                 "statement": 151,
                 "warning": 0
             }
@@ -2505,8 +2604,8 @@
             "too-many-instance-attributes": 2,
             "too-many-branches": 2,
             "too-many-arguments": 2,
-            "line-too-long": 10,
-            "fixme": 2,
+            "line-too-long": 13,
+            "fixme": 9,
             "lost-exception": 1,
             "no-else-raise": 2,
             "raise-missing-from": 3,
@@ -2531,7 +2630,7 @@
             "unused-import": 2,
             "wrong-import-order": 1,
             "unnecessary-dunder-call": 1,
-            "duplicate-code": 14
+            "duplicate-code": 13
         },
         "code_type_count": {
             "code": 0,
@@ -2543,14 +2642,14 @@
         "dependencies": {
             "aixcalibuha.data_types": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "aixcalibuha",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
-                "examples.e2_A_optimization_problem_definition"
+                "examples.e2_A_optimization_problem_definition",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "aixcalibuha"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha",
-                "bin.run_modelica_calibration"
+                "run_modelica_calibration",
+                "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
                 "aixcalibuha"
@@ -2560,18 +2659,18 @@
                 "aixcalibuha.data_types"
             ],
             "numpy": [
-                "examples.e4_calibration_example",
                 "tests.test_modelica_cal_sen",
                 "aixcalibuha.data_types",
-                "tests.test_data_types"
+                "tests.test_data_types",
+                "examples.e4_calibration_example"
             ],
             "ebcpy": [
-                "examples",
-                "tests.test_modelica_cal_sen",
-                "aixcalibuha.data_types",
                 "examples.e2_B_optimization_problem_definition",
+                "examples",
                 "examples.e2_A_optimization_problem_definition",
-                "examples.e1_A_energy_system_analysis"
+                "examples.e1_A_energy_system_analysis",
+                "aixcalibuha.data_types",
+                "tests.test_modelica_cal_sen"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2580,24 +2679,24 @@
                 "aixcalibuha.data_types"
             ],
             "ebcpy.data_types": [
-                "bin.run_modelica_calibration",
-                "bin.guided_setup",
+                "run_modelica_calibration",
+                "guided_setup",
                 "tests.test_data_types"
             ],
             "ebcpy.simulationapi.dymola_api": [
-                "bin.guided_setup"
+                "guided_setup"
             ],
             "ebcpy.modelica": [
-                "bin.guided_setup"
+                "guided_setup"
             ],
             "aixcalibuha.utils.configuration": [
-                "bin.run_modelica_calibration",
                 "tests.test_config",
-                "bin.guided_setup"
+                "run_modelica_calibration",
+                "guided_setup"
             ],
             "ebcpy.utils.conversion": [
-                "bin.run_modelica_calibration",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "run_modelica_calibration"
             ],
             "examples.e2_A_optimization_problem_definition": [
                 "examples"
@@ -2606,27 +2705,27 @@
                 "examples"
             ],
             "matplotlib.pyplot": [
-                "examples.e1_B_energy_system_analysis",
                 "examples.e3_verbos_sensitivity_analysis_example",
+                "examples.e1_B_energy_system_analysis",
                 "examples.e1_A_energy_system_analysis"
             ],
             "examples": [
                 "examples.e3_verbos_sensitivity_analysis_example",
-                "examples.e1_B_energy_system_analysis",
-                "examples.e4_calibration_example",
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e3_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example"
+                "examples.e1_B_energy_system_analysis",
+                "examples.e4_calibration_example"
             ],
             "aixcalibuha": [
                 "examples.e3_verbos_sensitivity_analysis_example",
                 "tests.test_config",
-                "tests.test_modelica_cal_sen",
-                "examples.e4_calibration_example",
-                "examples.e3_sensitivity_analysis_example",
-                "examples.e3_verbos_dymola_sensitivity_analysis_example",
                 "examples.e2_B_optimization_problem_definition",
+                "tests.test_data_types",
                 "examples.e2_A_optimization_problem_definition",
-                "tests.test_data_types"
+                "examples.e3_verbos_dymola_sensitivity_analysis_example",
+                "examples.e3_sensitivity_analysis_example",
+                "tests.test_modelica_cal_sen",
+                "examples.e4_calibration_example"
             ],
             "examples.e3_sensitivity_analysis_example": [
                 "examples.e5_automated_process"
@@ -2652,15 +2751,15 @@
             "method": 2,
             "module": 8
         },
-        "convention": 37,
+        "convention": 40,
         "error": 3,
         "fatal": 0,
         "info": 0,
-        "refactor": 33,
+        "refactor": 32,
         "statement": 1186,
-        "warning": 38,
-        "global_note": 8.962900505902192,
-        "nb_duplicated_lines": 101,
-        "percent_duplicated_lines": 2.7800715661987336
+        "warning": 45,
+        "global_note": 8.887015177065766,
+        "nb_duplicated_lines": 92,
+        "percent_duplicated_lines": 2.528167078867821
     }
 }
