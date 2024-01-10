@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
 from examples import setup_fmu, setup_calibration_classes
+from aixcalibuha import plotting
 
 
 def run_sensitivity_analysis(
@@ -165,7 +166,8 @@ def run_sensitivity_analysis(
     # For their exact meaning I refer to the documentation of the SALib or the literature.
     # In this example you get a short overview in the comparison later.
     print('First and total order results of sobol method')
-    print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
+    print(result[
+              0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
     # The second result of the sobol method is for second order sensitive measures.
     # These describe the interaction between two parameters,
     # so this dataframe has a fourth index level "Interaction".
@@ -184,7 +186,7 @@ def run_sensitivity_analysis(
     # sample size the results have huge confidence
     # intervals, which show that these results are inaccurate as we
     # noted earlier due to the small sample size.
-    SobolAnalyzer.plot_single(result[0])
+    plotting.plot_single(result[0])
 
     # The plotting of second order results is only useful
     # and working for more than 2 parameters.
@@ -204,8 +206,8 @@ def run_sensitivity_analysis(
     # so now we will load results which were calculated with
     # a much higher sample number.
     if example == 'A':  # TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this?
-        SobolAnalyzer.heatmaps(result[1])
-        SobolAnalyzer.plot_single_second_order(result[1], 'rad.n')
+        plotting.heatmaps(result[1])
+        plotting.plot_single_second_order(result[1], 'rad.n')
 
     # ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or?
     # These results were produced with a samples number N=1024 and calc_second_order=True
@@ -228,7 +230,7 @@ def run_sensitivity_analysis(
     subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
     # plotting S1 and ST
     ax0 = subfigs[0].subplots()
-    SobolAnalyzer.plot_single(
+    plotting.plot_single(
         result=result_sobol,
         cal_classes=['global'],
         goals=['Electricity'],
@@ -238,7 +240,7 @@ def run_sensitivity_analysis(
     )
     # plotting heatmap
     ax1 = subfigs[1].subplots()
-    SobolAnalyzer.heatmap(
+    plotting.heatmap(
         result_sobol_2,
         cal_class='global',
         goal='Electricity',
@@ -248,7 +250,7 @@ def run_sensitivity_analysis(
     )
     # plotting the interactions of one single parameter
     ax2 = subfigs[2].subplots()
-    SobolAnalyzer.plot_single_second_order(
+    plotting.plot_single_second_order(
         result=result_sobol_2,
         para_name='rad.n',
         show_plot=False,
@@ -318,7 +320,7 @@ def run_sensitivity_analysis(
     fig_comp = plt.figure(figsize=plt.figaspect(1. / 4.))
     subfigs_comp = fig_comp.subfigures(1, 3, wspace=0)
     ax0_comp = subfigs_comp[0].subplots(3, 1, sharex=True)
-    SobolAnalyzer.plot_single(
+    plotting.plot_single(
         result=result_sobol,
         cal_classes=[global_class.name],
         show_plot=False,
@@ -326,7 +328,7 @@ def run_sensitivity_analysis(
     )
     subfigs_comp[0].suptitle("Sobol")
     ax1_comp = subfigs_comp[1].subplots(3, 1, sharex=True)
-    FASTAnalyzer.plot_single(
+    plotting.plot_single(
         result=result_fast,
         cal_classes=[global_class.name],
         show_plot=False,
@@ -334,7 +336,7 @@ def run_sensitivity_analysis(
     )
     subfigs_comp[1].suptitle("FAST")
     ax2_comp = subfigs_comp[2].subplots(3, 1, sharex=True)
-    SobolAnalyzer.plot_single(
+    plotting.plot_single(
         result=result_morris,
         show_plot=False,
         cal_classes=[global_class.name],
@@ -401,17 +403,17 @@ def run_sensitivity_analysis(
     result_sobol_2_time = SobolAnalyzer.load_second_order_from_csv(
         examples_dir.joinpath('data', 'SobolAnalyzer_results_second_order_time_A.csv')
     )
-    SobolAnalyzer.plot_time_dependent(result=result_sobol_time, plot_conf=True, show_plot=False)
+    plotting.plot_time_dependent(result=result_sobol_time, plot_conf=True, show_plot=False)
     # Now the confidence intervals are smaller and only at one time step they are still lager than 1.
     # We can also see that the parameter `theCon.G` has the biggest influence.
     # So we can take a closer look at this parameter with another plot
     # function where all available sensitivity measures are plotted together.
     # Second order results are plotted cumulative on top of S1.
     # This resembles the definition of ST = S1 + sum(S2_i) + sum(S3_i) + ...
-    SobolAnalyzer.plot_parameter_verbose(parameter='theCon.G',
-                                         single_result=result_sobol_time,
-                                         second_order_result=result_sobol_2_time,
-                                         use_suffix=False)
+    plotting.plot_parameter_verbose(parameter='theCon.G',
+                                    single_result=result_sobol_time,
+                                    second_order_result=result_sobol_2_time,
+                                    use_suffix=False)
 
     # At the end we also can create a reproduction
     # archive which saves all settings and all created files

@@ -7,11 +7,13 @@ import sys
 import os
 import pathlib
 import shutil
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from ebcpy import FMU_API, TimeSeriesData
 from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, FASTAnalyzer, PAWNAnalyzer, \
-    MultipleClassCalibrator, Calibrator, CalibrationClass, TunerParas, Goals
+    MultipleClassCalibrator, Calibrator, CalibrationClass, TunerParas, Goals, plotting
 
 
 def _set_up():
@@ -328,9 +330,9 @@ class TestSenAnalyzer(unittest.TestCase):
         """
         sen_result = MorrisAnalyzer.load_from_csv(
             self.data_dir.joinpath("MorrisAnalyzer_results_B.csv"))
-        MorrisAnalyzer.plot_single(result=sen_result,
-                                   show_plot=False,
-                                   use_suffix=True)
+        plotting.plot_single(result=sen_result,
+                             show_plot=False,
+                             use_suffix=True)
 
     def test_plot_sobol_s2(self):
         """
@@ -338,13 +340,13 @@ class TestSenAnalyzer(unittest.TestCase):
         """
         sen_result = SobolAnalyzer.load_second_order_from_csv(
             self.data_dir.joinpath("SobolAnalyzer_results_second_order_A.csv"))
-        SobolAnalyzer.plot_second_order(sen_result,
-                                        use_suffix=True,
-                                        show_plot=False)
-        SobolAnalyzer.plot_single_second_order(sen_result, "rad.n",
-                                               show_plot=False)
-        SobolAnalyzer.heatmaps(sen_result,
-                               show_plot=False)
+        plotting.plot_second_order(sen_result,
+                                   use_suffix=True,
+                                   show_plot=False)
+        plotting.plot_single_second_order(sen_result, "rad.n",
+                                          show_plot=False)
+        plotting.heatmaps(sen_result,
+                          show_plot=False)
 
     def test_sa_time_dependent(self):
         sen_ana = SobolAnalyzer(
@@ -384,10 +386,10 @@ class TestSenAnalyzer(unittest.TestCase):
         result_sobol_2_time = SobolAnalyzer.load_second_order_from_csv(
             self.data_dir.joinpath('SobolAnalyzer_results_second_order_time_A.csv')
         )
-        SobolAnalyzer.plot_parameter_verbose(parameter='G',
-                                             single_result=result_sobol_time,
-                                             second_order_result=result_sobol_2_time,
-                                             use_suffix=True)
+        plotting.plot_parameter_verbose(parameter='G',
+                                        single_result=result_sobol_time,
+                                        second_order_result=result_sobol_2_time,
+                                        use_suffix=True)
 
     def _check_sen_run_return(self, sen_ana, sen_result, classes):
         if sen_ana.__class__.__name__ == 'SobolAnalyzer':

@@ -4,5 +4,5 @@ other simulation software.
 """
 from .data_types import CalibrationClass, TunerParas, Goals
 from .calibration import Calibrator, MultipleClassCalibrator
-from .sensitivity_analysis import SobolAnalyzer, MorrisAnalyzer, FASTAnalyzer, PAWNAnalyzer
+from .sensitivity_analysis import SobolAnalyzer, MorrisAnalyzer, FASTAnalyzer, PAWNAnalyzer, plotting
 __version__ = "1.0.0"

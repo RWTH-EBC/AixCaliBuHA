@@ -6,9 +6,9 @@ import pandas as pd
 from SALib.sample import sobol
 from SALib.analyze import sobol as analyze_sobol
 import numpy as np
-from aixcalibuha.sensitivity_analysis import SenAnalyzer, _del_duplicates, _rename_tuner_names
+from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
-import matplotlib.pyplot as plt
+from aixcalibuha.sensitivity_analysis.plotting import plot_single, heatmaps
 
 
 class SobolAnalyzer(SenAnalyzer):
@@ -167,208 +167,6 @@ class SobolAnalyzer(SenAnalyzer):
                                                            result_av)}
             return res_dict_2
 
-    @staticmethod
-    def plot_second_order(result: pd.DataFrame, **kwargs):
-        """
-        Plot sensitivity results of second order analysis variables.
-        For each calibration class and goal one figure of a 3d plot is created
-        with the barplots of the interactions for each parameter.
-        Only working for more than 2 parameter.
-
-        :param pd.DataFrame result:
-            A result from run
-        :keyword bool show_plot:
-            Default is True. If False, all created plots are not shown.
-        :keyword bool use_suffix:
-            Default is True: If True, the last part after the last point
-            of Modelica variables is used for the x ticks.
-        :keyword [str] cal_classes:
-            Default are all possible calibration classes. If a list of
-            names of calibration classes is given only plots for these
-            classes are created.
-        :keyword [str] goals:
-            Default are all possible goal names. If a list of specific
-            goal names is given only these will be plotted.
-        :keyword [[fig]] figs:
-            Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
-        :return:
-            Returns all created figures and axes in lists like [fig], [ax]
-        """
-        show_plot = kwargs.pop('show_plot', True)
-        # kwargs for the design
-        use_suffix = kwargs.pop('use_suffix', False)
-        figs = kwargs.pop('figs', None)
-        result = result.fillna(0)
-        # get lists of the calibration classes and their goals in the result dataframe
-        cal_classes = _del_duplicates(list(result.index.get_level_values(0)))
-        goals = _del_duplicates(list(result.index.get_level_values(1)))
-        cal_classes = kwargs.pop('cal_classes', cal_classes)
-        goals = kwargs.pop('goals', goals)
-
-        # rename tuner_names in result to the suffix of their variable name
-        if use_suffix:
-            result = _rename_tuner_names(result)
-
-        tuner_names = result.columns
-        if len(tuner_names) < 2:
-            return None
-        xticks = np.arange(len(tuner_names))
-
-        # when the index is not sorted pandas throws a performance warning
-        result = result.sort_index()
-
-        # plot of S2 without S2_conf
-        all_figs = []
-        all_axes = []
-        for class_idx, cal_class in enumerate(cal_classes):
-            class_figs = []
-            class_axes = []
-            for goal_idx, goal in enumerate(goals):
-                if figs is None:
-                    fig = plt.figure()
-                else:
-                    fig = figs[class_idx][goal_idx]
-                ax = fig.add_subplot(projection='3d')
-                for idx, name in enumerate(tuner_names):
-                    ax.bar(tuner_names, result.loc[cal_class, goal, 'S2', name].to_numpy(), zs=idx, zdir='y', alpha=0.8)
-                    ax.set_title(f"{cal_class} {goal}")
-                    ax.set_zlabel('S2 [-]')
-                    ax.set_yticks(xticks)
-                    ax.set_yticklabels(tuner_names)
-                    # rotate tick labels for better readability
-                    plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
-                    plt.setp(ax.get_yticklabels(), rotation=90, ha="right", rotation_mode="anchor")
-                class_figs.append(fig)
-                class_axes.append(ax)
-            all_figs.append(class_figs)
-            all_axes.append(class_axes)
-        if show_plot:
-            plt.show()
-        return all_figs, all_axes
-
-    @staticmethod
-    def plot_single_second_order(result, para_name, **kwargs):
-        """
-        Plot the value of S2 from one parameter with all other parameters.
-
-        :param pd.DataFrame result:
-            Second order result from run.
-        :param str para_name:
-            Name of the parameter of which the results should be plotted.
-        :keyword [str] cal_classes:
-            Default are all possible calibration classes. If a list of
-            names of calibration classes is given only plots for these
-            classes are created.
-        :keyword [str] goals:
-            Default are all possible goal names. If a list of specific
-            goal names is given only these will be plotted.
-        :keyword bool show_plot:
-            Default is True. If False, all created plots are not shown.
-        :keyword ([fig], [ax]) axes:
-            Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
-        :return:
-            Returns all created figures and axes in lists like [fig], [ax]
-        """
-        cal_classes = kwargs.pop('cal_classes', None)
-        goals = kwargs.pop('goals', None)
-        figs_axes = kwargs.pop('figs_axes', None)
-        show_plot = kwargs.pop('show_plot', True)
-        use_suffix = kwargs.pop('use_suffix', False)
-        result = result.loc[:, :, :, para_name][:].fillna(0)
-        figs, axes = SenAnalyzer.plot_single(
-            result=result,
-            show_plot=False,
-            cal_classes=cal_classes,
-            goals=goals,
-            figs_axes=figs_axes,
-            use_suffix=use_suffix
-        )
-        # set new title for the figures of each calibration class
-        for fig in figs:
-            fig.suptitle(f"Interaction of {para_name} in class {fig._suptitle.get_text()}")
-        if show_plot:
-            plt.show()
-        return figs, axes
-
-    @staticmethod
-    def heatmap(result, cal_class, goal, ax=None, show_plot=True, use_suffix=False):
-        """
-        Plot S2 sensitivity results from one calibration class and goal as a heatmap.
-
-        :param pd.DataFrame result:
-            A second order result from run
-        :param str cal_class:
-            Name of the class to plot S2 from.
-        :param str goal:
-            Name of the goal to plot S2 from.
-        :param matplotlib.axes ax:
-            Default is None. If an axes is given the heatmap will be plotted on it else
-            a new figure and axes is created.
-        :param bool show_plot:
-            Default is True. If False, all created plots are not shown.
-        :param bool use_suffix:
-            Default is False. If True, only the last suffix of a Modelica variable is displayed.
-        :return:
-            Returns axes
-        """
-        if use_suffix:
-            result = _rename_tuner_names(result)
-        if ax is None:
-            fig, ax = plt.subplots()
-        data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
-            index=result.columns)
-        im = ax.imshow(data, cmap='Reds')
-        ax.set_title(f'Class: {cal_class} Goal: {goal}')
-        ax.set_xticks(np.arange(len(data.columns)))
-        ax.set_yticks(np.arange(len(data.index)))
-        ax.set_xticklabels(data.columns)
-        ax.set_yticklabels(data.index)
-        ax.spines[:].set_color('black')
-        plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
-        cbar = ax.figure.colorbar(im, ax=ax)
-        cbar.ax.set_ylabel("S2", rotation=90)
-        if show_plot:
-            plt.show()
-        return ax
-
-    @staticmethod
-    def heatmaps(result, **kwargs):
-        """
-        Plot S2 sensitivity results as a heatmap for multiple
-        calibration classes and goals in one figure.
-
-        :param pd.DataFrame result:
-            A second order result from run
-        :keyword [str] cal_class:
-            Default is a list of all calibration classes in the result.
-            If a list of classes is given only these classes are plotted.
-        :keyword [str] goal:
-            Default is a list of all goals in the result.
-            If a list of goals is given only these goals are plotted.
-        :keyword bool show_plot:
-            Default is True. If False, all created plots are not shown.
-        """
-        show_plot = kwargs.pop('show_plot', True)
-        cal_classes = kwargs.pop('cal_class', None)
-        goals = kwargs.pop('goals', None)
-        if cal_classes is None:
-            cal_classes = result.index.get_level_values("Class").unique()
-        if goals is None:
-            goals = result.index.get_level_values("Goal").unique()
-
-        fig, axes = plt.subplots(ncols=len(cal_classes), nrows=len(goals), sharex='all', sharey='all')
-        if len(goals) == 1:
-            axes = [axes]
-        if len(cal_classes) == 1:
-            for idx, ax in enumerate(axes):
-                axes[idx] = [ax]
-
-        for col, class_name in enumerate(cal_classes):
-            for row, goal_name in enumerate(goals):
-                SobolAnalyzer.heatmap(result, class_name, goal_name, ax=axes[row][col], show_plot=False)
-        if show_plot:
-            plt.show()
-
     def plot(self, result):
         """
         Plot the results of the sensitivity analysis method from run().
@@ -377,8 +175,8 @@ class SobolAnalyzer(SenAnalyzer):
             Dataframe of the results like from the run() function.
         :return tuple of matplotlib objects (fig, ax):
         """
-        SobolAnalyzer.plot_single(result=result[0])
-        SobolAnalyzer.heatmaps(result=result[1])
+        plot_single(result=result[0])
+        heatmaps(result=result[1])
 
     @staticmethod
     def load_second_order_from_csv(path):
