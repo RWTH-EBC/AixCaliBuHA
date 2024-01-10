@@ -58,11 +58,11 @@ def plot_single(result: pd.DataFrame,
     axes = []
     for col, cal_class in enumerate(cal_classes):
         if figs_axes is None:
-            fig, ax = plt.subplots(len(goals), sharex='all')
+            fig, ax = plt.subplots(len(goals), sharex='all', layout="constrained")
         else:
             fig = figs_axes[0][col]
             ax = figs_axes[1][col]
-        fig.suptitle(cal_class)
+        fig.suptitle(f"Class: {cal_class}")
         figs.append(fig)
         if not isinstance(ax, np.ndarray):
             ax = [ax]
@@ -71,7 +71,7 @@ def plot_single(result: pd.DataFrame,
             result_df = result.loc[cal_class, goal]
             axes[col][row].grid(True, which='both', axis='y')
             barplot(result_df.T, ax=axes[col][row])
-            axes[col][row].set_title(goal)
+            axes[col][row].set_title(f"Goal: {goal}")
             axes[col][row].legend()
 
     if show_plot:
@@ -142,8 +142,10 @@ def plot_second_order(result: pd.DataFrame,
                 fig = figs[class_idx][goal_idx]
             ax = fig.add_subplot(projection='3d')
             for idx, name in enumerate(tuner_names):
-                ax.bar(tuner_names, result.loc[cal_class, goal, 'S2', name].to_numpy(), zs=idx, zdir='y', alpha=0.8)
-                ax.set_title(f"{cal_class} {goal}")
+                ax.bar(tuner_names,
+                       result.loc[cal_class, goal, 'S2', name].to_numpy(),
+                       zs=idx, zdir='y', alpha=0.8)
+                ax.set_title(f"Class: {cal_class} Goal: {goal}")
                 ax.set_zlabel('S2 [-]')
                 ax.set_yticks(xticks)
                 ax.set_yticklabels(tuner_names)
@@ -165,7 +167,8 @@ def plot_single_second_order(result: pd.DataFrame,
                              goals: [str] = None,
                              show_plot: bool = True,
                              use_suffix: bool = False,
-                             figs_axes: [[matplotlib.figure.Figure], [matplotlib.axes.Axes]] = None):
+                             figs_axes: [[matplotlib.figure.Figure],
+                                         [matplotlib.axes.Axes]] = None):
     """
     Plot the value of S2 from one parameter with all other parameters.
 
@@ -235,10 +238,10 @@ def heatmap(result: pd.DataFrame,
     if use_suffix:
         result = _rename_tuner_names(result)
     if ax is None:
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots(layout="constrained")
     data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
         index=result.columns)
-    im = ax.imshow(data, cmap='Reds')
+    image = ax.imshow(data, cmap='Reds')
     ax.set_title(f'Class: {cal_class} Goal: {goal}')
     ax.set_xticks(np.arange(len(data.columns)))
     ax.set_yticks(np.arange(len(data.index)))
@@ -246,7 +249,7 @@ def heatmap(result: pd.DataFrame,
     ax.set_yticklabels(data.index)
     ax.spines[:].set_color('black')
     plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
-    cbar = ax.figure.colorbar(im, ax=ax)
+    cbar = ax.figure.colorbar(image, ax=ax)
     cbar.ax.set_ylabel("S2", rotation=90)
     if show_plot:
         plt.show()
@@ -280,7 +283,8 @@ def heatmaps(result: pd.DataFrame,
     if goals is None:
         goals = result.index.get_level_values("Goal").unique()
 
-    fig, axes = plt.subplots(ncols=len(cal_classes), nrows=len(goals), sharex='all', sharey='all')
+    _, axes = plt.subplots(ncols=len(cal_classes), nrows=len(goals), sharex='all', sharey='all',
+                           layout="constrained")
     if len(goals) == 1:
         axes = [axes]
     if len(cal_classes) == 1:
@@ -289,7 +293,12 @@ def heatmaps(result: pd.DataFrame,
 
     for col, class_name in enumerate(cal_classes):
         for row, goal_name in enumerate(goals):
-            heatmap(result, class_name, goal_name, ax=axes[row][col], show_plot=False, use_suffix=use_suffix)
+            heatmap(result,
+                    class_name,
+                    goal_name,
+                    ax=axes[row][col],
+                    show_plot=False,
+                    use_suffix=use_suffix)
     if show_plot:
         plt.show()
 
@@ -305,7 +314,8 @@ def plot_time_dependent(result: pd.DataFrame,
     """
     Plot time dependent sensitivity results without interactions from run_time_dependent().
 
-    For each goal one figure is created with one axes for each analysis variable. In these plots the time dependent sensitivity of the parameters is plotted.
+    For each goal one figure is created with one axes for each analysis variable.
+    In these plots the time dependent sensitivity of the parameters is plotted.
     The confidence interval can also be plotted.
 
     :param pd.DataFrame result:
@@ -325,7 +335,8 @@ def plot_time_dependent(result: pd.DataFrame,
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
     :param ([fig], [ax]) figs_axes:
-        Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).
+        Default None. Optional custom figures and axes
+        (see example for verbose sensitivity analysis).
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
     """
@@ -346,40 +357,40 @@ def plot_time_dependent(result: pd.DataFrame,
 
     figs = []
     axes = []
-    for g_i, goal in enumerate(goals):
+    for idx_goal, goal in enumerate(goals):
         if figs_axes is None:
-            fig, ax = plt.subplots(len(analysis_variables), sharex='all')
+            fig, ax = plt.subplots(len(analysis_variables), sharex='all', layout="constrained")
         else:
-            fig = figs_axes[0][g_i]
-            ax = figs_axes[1][g_i]
-        fig.suptitle(goal)
+            fig = figs_axes[0][idx_goal]
+            ax = figs_axes[1][idx_goal]
+        fig.suptitle(f"Goal: {goal}")
         figs.append(fig)
         if not isinstance(ax, np.ndarray):
             ax = [ax]
         axes.append(ax)
-        for av_i, av in enumerate(analysis_variables):
-            axes[g_i][av_i].plot(result.loc[goal, av][parameters])
-            axes[g_i][av_i].set_ylabel(av)
-            axes[g_i][av_i].legend(parameters)
-            if plot_conf and av + '_conf' in all_analysis_variables:
-                for p in parameters:
-                    y = result.loc[goal, av][p]
+        for idx_av, analysis_var in enumerate(analysis_variables):
+            axes[idx_goal][idx_av].plot(result.loc[goal, analysis_var][parameters])
+            axes[idx_goal][idx_av].set_ylabel(analysis_var)
+            axes[idx_goal][idx_av].legend(parameters)
+            if plot_conf and analysis_var + '_conf' in all_analysis_variables:
+                for para in parameters:
+                    y = result.loc[goal, analysis_var][para]
                     x = y.index.to_numpy()
-                    ci = result.loc[goal, av + '_conf'][p]
-                    large_values_indices = ci[ci > 1].index
+                    conv_int = result.loc[goal, analysis_var + '_conf'][para]
+                    large_values_indices = conv_int[conv_int > 1].index
                     if list(large_values_indices):
                         warnings.warn(
-                            f"Confidence interval for {goal}, {av}, {p} was at the "
+                            f"Confidence interval for {goal}, {analysis_var}, {para} was at the "
                             f"following times {list(large_values_indices)} lager than 1 "
                             f"and is smoothed out in the plot.")
                     for idx in large_values_indices:
-                        prev_idx = ci.index.get_loc(idx) - 1
+                        prev_idx = conv_int.index.get_loc(idx) - 1
                         if prev_idx >= 0:
-                            ci.iloc[ci.index.get_loc(idx)] = ci.iloc[prev_idx]
+                            conv_int.iloc[conv_int.index.get_loc(idx)] = conv_int.iloc[prev_idx]
                         else:
-                            ci.iloc[ci.index.get_loc(idx)] = 1
-                    axes[g_i][av_i].fill_between(x, (y - ci), (y + ci), alpha=.1)
-        axes[g_i][-1].set_xlabel('time')
+                            conv_int.iloc[conv_int.index.get_loc(idx)] = 1
+                    axes[idx_goal][idx_av].fill_between(x, (y - conv_int), (y + conv_int), alpha=.1)
+        axes[idx_goal][-1].set_xlabel('time')
     if show_plot:
         plt.show()
     return figs, axes
@@ -416,7 +427,8 @@ def plot_parameter_verbose(parameter: str,
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
     :param (fig, [ax]) fig_axes:
-        Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).
+        Default None. Optional custom figures and axes
+        (see example for verbose sensitivity analysis).
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
     """
@@ -435,11 +447,11 @@ def plot_parameter_verbose(parameter: str,
             second_order_result = second_order_result.sort_index()
 
     if fig_axes is None:
-        fig, ax = plt.subplots(len(goals), sharex='all')
+        fig, ax = plt.subplots(len(goals), sharex='all', layout="constrained")
     else:
         fig = fig_axes[0]
         ax = fig_axes[1]
-    fig.suptitle(parameter)
+    fig.suptitle(f"Parameter: {parameter}")
     if not isinstance(ax, np.ndarray):
         ax = [ax]
     for g_i, goal in enumerate(goals):
@@ -461,7 +473,7 @@ def plot_parameter_verbose(parameter: str,
             legend = ['S1']
             legend.extend(analysis_variables)
             legend.append('ST')
-            ax[g_i].set_title(goal)
+            ax[g_i].set_title(f"Goal: {goal}")
             ax[g_i].legend()
         else:
             for av_i, av in enumerate(analysis_variables):

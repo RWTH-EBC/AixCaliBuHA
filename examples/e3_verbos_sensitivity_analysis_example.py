@@ -226,7 +226,7 @@ def run_sensitivity_analysis(
     # visibility. This show how you can easily customize
     # these plots, and you can also chang everything
     # on the axes of the plots.
-    fig = plt.figure(figsize=plt.figaspect(1. / 4.))  # creating one figure
+    fig = plt.figure(figsize=plt.figaspect(1. / 4.), layout="constrained")  # creating one figure
     subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
     # plotting S1 and ST
     ax0 = subfigs[0].subplots()
@@ -317,7 +317,7 @@ def run_sensitivity_analysis(
     )
 
     global_class = classes[0]
-    fig_comp = plt.figure(figsize=plt.figaspect(1. / 4.))
+    fig_comp = plt.figure(figsize=plt.figaspect(1. / 4.), layout="constrained")
     subfigs_comp = fig_comp.subfigures(1, 3, wspace=0)
     ax0_comp = subfigs_comp[0].subplots(3, 1, sharex=True)
     plotting.plot_single(
