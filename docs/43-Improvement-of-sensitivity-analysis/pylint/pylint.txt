@@ -339,7 +339,6 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
-
     print("Goals data before setting simulation data:\n", goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print("Goals data after setting simulation data:\n", goals.get_goals_data())
@@ -373,7 +372,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 import pathlib
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
-# Imports from aixcalibuha
+# Imports from AixCaliBUhA
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
@@ -398,15 +397,12 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     """
-
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
     #
-    # As described in the first example (e1_A_energy_system_analysis),
-    # we've changed four parameters in the model. To show the usefulness
-    # of sensitivity analysis prior to calibration, we will add a fifth without
-    # any influence, the heating curve declination of the heat pump.
+    # As described in the first example (e1_B_energy_system_analysis),
+    # we've changed two parameters in the model.
     # To define tuner parameters, you have to specify
     # - the name of the parameter
     # - an initial guess
@@ -415,9 +411,7 @@ def main(
     # We've chosen to make it a requirement to prevent blindly accepting
     # calibration results. If the result is very far away from your initial guess
     # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter.
-    # How to load the data is up to you. To make the structure clear,
-    # we use a 3 element tuple in this example: (duplicate-code)
+    # sensitive or influenced by another parameter. (duplicate-code)
 
 -----------------------------------
 Your code has been rated at 8.87/10
