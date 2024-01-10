@@ -814,6 +814,7 @@ class SenAnalyzer(abc.ABC):
     def _conv_local_results(self, results: list, local_classes: list):
         """
         Convert the result dictionaries form SALib of each class and goal into one DataFrame.
+        Overwritten for Sobol.
         """
         _conv_results = []
         tuples = []
