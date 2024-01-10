@@ -66,6 +66,8 @@ pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pyli
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'non-ascii-bytes-literal' (unknown-option-value)
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'locally-enabled' (unknown-option-value)
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'eq-without-hash' (unknown-option-value)
+************* Module aixcalibuha.__init__
+aixcalibuha/__init__.py:7:0: C0301: Line too long (101/100) (line-too-long)
 ************* Module aixcalibuha.data_types
 aixcalibuha/data_types.py:707:0: C0303: Trailing whitespace (trailing-whitespace)
 aixcalibuha/data_types.py:19:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
@@ -158,22 +160,23 @@ examples/e3_verbos_dymola_sensitivity_analysis_example.py:1:0: C0114: Missing mo
 examples/e3_verbos_dymola_sensitivity_analysis_example.py:83:12: W0212: Access to a protected member _inputs of a client class (protected-access)
 examples/e3_verbos_dymola_sensitivity_analysis_example.py:11:0: C0411: third party import "from ebcpy.utils.conversion import convert_tsd_to_modelica_txt" should be placed before "from examples import setup_dym_api, setup_calibration_classes" (wrong-import-order)
 ************* Module examples.e3_verbos_sensitivity_analysis_example
-examples/e3_verbos_sensitivity_analysis_example.py:75:0: C0301: Line too long (111/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:168:0: C0301: Line too long (227/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:206:0: C0301: Line too long (104/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:210:0: C0301: Line too long (101/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:288:0: C0301: Line too long (134/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:405:0: C0301: Line too long (101/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:76:0: C0301: Line too long (111/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:170:0: C0301: Line too long (224/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:208:0: C0301: Line too long (104/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:212:0: C0301: Line too long (101/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:290:0: C0301: Line too long (134/100) (line-too-long)
+examples/e3_verbos_sensitivity_analysis_example.py:407:0: C0301: Line too long (101/100) (line-too-long)
 examples/e3_verbos_sensitivity_analysis_example.py:10:1: W0511: TODO: Add this file and the other verbose example to the files under examples\converter.toml (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:52:5: W0511: TODO: Directly say why it is necessary or refer to the section (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:75:5: W0511: the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:118:5: W0511: TODO: The following sentence is not clear to me (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:168:35: W0511: TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script. (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:206:25: W0511: TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this? (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:210:5: W0511: ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or? (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:296:5: W0511: See issue # TODO: Open issue in SAlib for false ST results of the FAST method (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:17:0: R0914: Too many local variables (28/15) (too-many-locals)
-examples/e3_verbos_sensitivity_analysis_example.py:17:0: R0915: Too many statements (58/50) (too-many-statements)
+examples/e3_verbos_sensitivity_analysis_example.py:53:5: W0511: TODO: Directly say why it is necessary or refer to the section (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:76:5: W0511: the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:119:5: W0511: TODO: The following sentence is not clear to me (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:170:32: W0511: TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script. (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:208:25: W0511: TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this? (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:212:5: W0511: ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or? (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:298:5: W0511: See issue # TODO: Open issue in SAlib for false ST results of the FAST method (fixme)
+examples/e3_verbos_sensitivity_analysis_example.py:18:0: R0914: Too many local variables (28/15) (too-many-locals)
+examples/e3_verbos_sensitivity_analysis_example.py:18:0: R0915: Too many statements (58/50) (too-many-statements)
+examples/e3_verbos_sensitivity_analysis_example.py:15:0: C0412: Imports from package aixcalibuha are not grouped (ungrouped-imports)
 ************* Module examples.e4_calibration_example
 examples/e4_calibration_example.py:101:0: C0301: Line too long (108/100) (line-too-long)
 examples/e4_calibration_example.py:1:0: C0114: Missing module docstring (missing-module-docstring)
@@ -185,9 +188,10 @@ examples/e5_automated_process.py:1:0: C0114: Missing module docstring (missing-m
 ************* Module tests.test_data_types
 tests/test_data_types.py:89:17: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
 ************* Module tests.test_modelica_cal_sen
-tests/test_modelica_cal_sen.py:146:15: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
-tests/test_modelica_cal_sen.py:349:4: C0116: Missing function or method docstring (missing-function-docstring)
-tests/test_modelica_cal_sen.py:380:4: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_modelica_cal_sen.py:148:15: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
+tests/test_modelica_cal_sen.py:351:4: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_modelica_cal_sen.py:382:4: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_modelica_cal_sen.py:11:0: W0611: Unused matplotlib.pyplot imported as plt (unused-import)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==guided_setup:[64:102]
 ==run_modelica_calibration:[26:44]
@@ -208,7 +212,27 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     return resulting_setting
 
 
-def main(): (duplicate-code)
+def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
+    """
+    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
+    package for the given model inside the simulation api.
+
+    :param str model_name:
+        Name of the model you want to calibrate.
+        If the model is a standalone model without a "package.mo" file,
+        you have to pass the path the model. Else the path is extracted
+        from the packages-list (see below)
+    :param os.path.normpath,str savepath:
+        Path to store the generated package
+    :param list packages:
+        List with filepath to the "package.mo" file of each package required
+        to simulate the given model_name.
+    :keyword str mocate_version
+        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
+    :keyword str msl_version
+        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
+    :return:
+    """ (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:131]
 ==examples.e2_B_optimization_problem_definition:[113:122]
@@ -276,26 +300,7 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err)
-
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime. (duplicate-code)
+        print(err) (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:129]
 ==examples.e2_B_optimization_problem_definition:[123:149]
@@ -305,29 +310,10 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
-        print(err)
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. 'On' and 'Off' more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime.
-    # Let's also define some different tuner parameters for the last stationary class. (duplicate-code)
+        print(err) (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]
-==examples.e3_verbos_sensitivity_analysis_example:[428:438]
+==examples.e3_verbos_sensitivity_analysis_example:[430:440]
 if __name__ == "__main__":
     import pathlib
 
@@ -340,7 +326,7 @@ if __name__ == "__main__":
         examples_dir=pathlib.Path(__file__).parent, (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_sensitivity_analysis_example:[78:86]
-==examples.e3_verbos_sensitivity_analysis_example:[433:441]
+==examples.e3_verbos_sensitivity_analysis_example:[435:443]
     N_CPU = 2
 
     # Sensitivity analysis:
@@ -371,31 +357,23 @@ tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
-
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
     #
-    # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
+    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:
+    #
+    # As the examples should work, and the cal_class example uses the other examples,
+    # we will test it here:
     data_dir = pathlib.Path(examples_dir).joinpath("data") (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e3_verbos_dymola_sensitivity_analysis_example:[91:98]
-==examples.e3_verbos_sensitivity_analysis_example:[155:186]
-    print("Result of the sensitivity analysis")
-    print('First and total order results of sobol method')
-    print(result[0].to_string())
-    print('Second order results of sobol method')
-    print(result[1].to_string())
-
-    # remove input file (duplicate-code)
 tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[10:58]
 ==examples.e2_B_optimization_problem_definition:[10:53]
 import pathlib
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
-# Imports from AixCaliBUhA
+# Imports from aixcalibuha
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
@@ -420,12 +398,15 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     """
+
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
     #
-    # As described in the first example (e1_B_energy_system_analysis),
-    # we've changed two parameters in the model.
+    # As described in the first example (e1_A_energy_system_analysis),
+    # we've changed four parameters in the model. To show the usefulness
+    # of sensitivity analysis prior to calibration, we will add a fifth without
+    # any influence, the heating curve declination of the heat pump.
     # To define tuner parameters, you have to specify
     # - the name of the parameter
     # - an initial guess
@@ -434,8 +415,10 @@ def main(
     # We've chosen to make it a requirement to prevent blindly accepting
     # calibration results. If the result is very far away from your initial guess
     # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter. (duplicate-code)
+    # sensitive or influenced by another parameter.
+    # How to load the data is up to you. To make the structure clear,
+    # we use a 3 element tuple in this example: (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 8.89/10
+Your code has been rated at 8.87/10
 

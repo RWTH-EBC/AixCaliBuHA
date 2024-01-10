@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aixcalibuha.sensitivity_analysis.plotting &mdash; AixCaliBuHa 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            AixCaliBuHa
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html#what-can-i-learn-in-the-examples">What can I learn in the examples?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code/modules.html">aixcalibuha</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html">Contribute as a user</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution.html#contribute-as-a-developer">Contribute as a developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../version_his.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">AixCaliBuHa</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">aixcalibuha.sensitivity_analysis.plotting</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for aixcalibuha.sensitivity_analysis.plotting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing functions for plotting sensitivity results</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">SALib.plotting.bar</span> <span class="kn">import</span> <span class="n">plot</span> <span class="k">as</span> <span class="n">barplot</span>
+
+
+<div class="viewcode-block" id="plot_single"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_single">[docs]</a><span class="k">def</span> <span class="nf">plot_single</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot sensitivity results of first and total order analysis variables.</span>
+<span class="sd">    For each calibration class one figure is created, which shows for each goal an axis</span>
+<span class="sd">    with a barplot of the values of the analysis variables.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        A result from run</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :keyword bool use_suffix:</span>
+<span class="sd">        Default is True: If True, the last part after the last point</span>
+<span class="sd">        of Modelica variables is used for the x ticks.</span>
+<span class="sd">    :keyword [str] cal_classes:</span>
+<span class="sd">        Default are all possible calibration classes. If a list of</span>
+<span class="sd">        names of calibration classes is given only plots for these</span>
+<span class="sd">        classes are created.</span>
+<span class="sd">    :keyword [str] goals:</span>
+<span class="sd">        Default are all possible goal names. If a list of specific</span>
+<span class="sd">        goal names is given only these will be plotted.</span>
+<span class="sd">    :keyword ([fig], [ax]) figs_axes:</span>
+<span class="sd">        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns all created figures and axes in lists like [fig], [ax]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># kwargs for the design</span>
+    <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">figs_axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figs_axes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># get lists of the calibration classes and their goals in the result dataframe</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_classes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cal_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
+    <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+    <span class="c1"># plotting with simple plot function of the SALib</span>
+    <span class="n">figs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">figs_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">goals</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">figs_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">figs_axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">cal_class</span><span class="p">)</span>
+        <span class="n">figs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
+            <span class="n">result_df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="p">,</span> <span class="n">goal</span><span class="p">]</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+            <span class="n">barplot</span><span class="p">(</span><span class="n">result_df</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">])</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">figs</span><span class="p">,</span> <span class="n">axes</span></div>
+
+
+<div class="viewcode-block" id="plot_second_order"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_second_order">[docs]</a><span class="k">def</span> <span class="nf">plot_second_order</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot sensitivity results of second order analysis variables.</span>
+<span class="sd">    For each calibration class and goal one figure of a 3d plot is created</span>
+<span class="sd">    with the barplots of the interactions for each parameter.</span>
+<span class="sd">    Only working for more than 2 parameter.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        A result from run</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :keyword bool use_suffix:</span>
+<span class="sd">        Default is True: If True, the last part after the last point</span>
+<span class="sd">        of Modelica variables is used for the x ticks.</span>
+<span class="sd">    :keyword [str] cal_classes:</span>
+<span class="sd">        Default are all possible calibration classes. If a list of</span>
+<span class="sd">        names of calibration classes is given only plots for these</span>
+<span class="sd">        classes are created.</span>
+<span class="sd">    :keyword [str] goals:</span>
+<span class="sd">        Default are all possible goal names. If a list of specific</span>
+<span class="sd">        goal names is given only these will be plotted.</span>
+<span class="sd">    :keyword [[fig]] figs:</span>
+<span class="sd">        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns all created figures and axes in lists like [fig], [ax]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># kwargs for the design</span>
+    <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">figs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># get lists of the calibration classes and their goals in the result dataframe</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_classes&#39;</span><span class="p">,</span> <span class="n">cal_classes</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="n">goals</span><span class="p">)</span>
+
+    <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
+    <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">tuner_names</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">xticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">))</span>
+
+    <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+    <span class="c1"># plot of S2 without S2_conf</span>
+    <span class="n">all_figs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_axes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">class_idx</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">):</span>
+        <span class="n">class_figs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">class_axes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">goal_idx</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">figs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">figs</span><span class="p">[</span><span class="n">class_idx</span><span class="p">][</span><span class="n">goal_idx</span><span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">):</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">zs</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span> <span class="n">zdir</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">goal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;S2 [-]&#39;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">)</span>
+                <span class="c1"># rotate tick labels for better readability</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">rotation_mode</span><span class="o">=</span><span class="s2">&quot;anchor&quot;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">rotation_mode</span><span class="o">=</span><span class="s2">&quot;anchor&quot;</span><span class="p">)</span>
+            <span class="n">class_figs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+            <span class="n">class_axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">all_figs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">class_figs</span><span class="p">)</span>
+        <span class="n">all_axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">class_axes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">all_figs</span><span class="p">,</span> <span class="n">all_axes</span></div>
+
+
+<div class="viewcode-block" id="plot_single_second_order"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_single_second_order">[docs]</a><span class="k">def</span> <span class="nf">plot_single_second_order</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">para_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot the value of S2 from one parameter with all other parameters.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        Second order result from run.</span>
+<span class="sd">    :param str para_name:</span>
+<span class="sd">        Name of the parameter of which the results should be plotted.</span>
+<span class="sd">    :keyword [str] cal_classes:</span>
+<span class="sd">        Default are all possible calibration classes. If a list of</span>
+<span class="sd">        names of calibration classes is given only plots for these</span>
+<span class="sd">        classes are created.</span>
+<span class="sd">    :keyword [str] goals:</span>
+<span class="sd">        Default are all possible goal names. If a list of specific</span>
+<span class="sd">        goal names is given only these will be plotted.</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :keyword ([fig], [ax]) axes:</span>
+<span class="sd">        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns all created figures and axes in lists like [fig], [ax]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_classes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">figs_axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figs_axes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">para_name</span><span class="p">][:]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">figs</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plot_single</span><span class="p">(</span>
+        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+        <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">cal_classes</span><span class="o">=</span><span class="n">cal_classes</span><span class="p">,</span>
+        <span class="n">goals</span><span class="o">=</span><span class="n">goals</span><span class="p">,</span>
+        <span class="n">figs_axes</span><span class="o">=</span><span class="n">figs_axes</span><span class="p">,</span>
+        <span class="n">use_suffix</span><span class="o">=</span><span class="n">use_suffix</span>
+    <span class="p">)</span>
+    <span class="c1"># set new title for the figures of each calibration class</span>
+    <span class="k">for</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">figs</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interaction of </span><span class="si">{</span><span class="n">para_name</span><span class="si">}</span><span class="s2"> in class </span><span class="si">{</span><span class="n">fig</span><span class="o">.</span><span class="n">_suptitle</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">figs</span><span class="p">,</span> <span class="n">axes</span></div>
+
+
+<div class="viewcode-block" id="heatmap"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.heatmap">[docs]</a><span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot S2 sensitivity results from one calibration class and goal as a heatmap.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        A second order result from run</span>
+<span class="sd">    :param str cal_class:</span>
+<span class="sd">        Name of the class to plot S2 from.</span>
+<span class="sd">    :param str goal:</span>
+<span class="sd">        Name of the goal to plot S2 from.</span>
+<span class="sd">    :param matplotlib.axes ax:</span>
+<span class="sd">        Default is None. If an axes is given the heatmap will be plotted on it else</span>
+<span class="sd">        a new figure and axes is created.</span>
+<span class="sd">    :param bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :param bool use_suffix:</span>
+<span class="sd">        Default is False. If True, only the last suffix of a Modelica variable is displayed.</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns axes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Class: </span><span class="si">{</span><span class="n">cal_class</span><span class="si">}</span><span class="s1"> Goal: </span><span class="si">{</span><span class="n">goal</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[:]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">rotation_mode</span><span class="o">=</span><span class="s2">&quot;anchor&quot;</span><span class="p">)</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;S2&quot;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="heatmaps"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.heatmaps">[docs]</a><span class="k">def</span> <span class="nf">heatmaps</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot S2 sensitivity results as a heatmap for multiple</span>
+<span class="sd">    calibration classes and goals in one figure.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        A second order result from run</span>
+<span class="sd">    :keyword [str] cal_class:</span>
+<span class="sd">        Default is a list of all calibration classes in the result.</span>
+<span class="sd">        If a list of classes is given only these classes are plotted.</span>
+<span class="sd">    :keyword [str] goal:</span>
+<span class="sd">        Default is a list of all goals in the result.</span>
+<span class="sd">        If a list of goals is given only these goals are plotted.</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_class&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cal_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cal_classes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;Class&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">goals</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;Goal&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">),</span> <span class="n">nrows</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">goals</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">goals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
+            <span class="n">heatmap</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">goal_name</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">],</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_time_dependent"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_time_dependent">[docs]</a><span class="k">def</span> <span class="nf">plot_time_dependent</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot time dependent sensitivity results without interactions from run_time_dependent().</span>
+
+<span class="sd">    For each goal one figure is created with one axes for each analysis variable.</span>
+<span class="sd">    In these plots the time dependent sensitivity of the parameters is plotted.</span>
+<span class="sd">    The confidence interval can also be plotted.</span>
+
+<span class="sd">    :param pd.DataFrame result:</span>
+<span class="sd">        A result from run_time_dependent without second order results.</span>
+<span class="sd">    :keyword [str] parameters:</span>
+<span class="sd">        Default all parameters. List of parameters to plot the sensitivity.</span>
+<span class="sd">    :keyword bool plot_conf:</span>
+<span class="sd">        Default True. If true, the confidence intervals for each parameter are plotted.</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :keyword bool use_suffix:</span>
+<span class="sd">        Default is True: If True, the last part after the last point</span>
+<span class="sd">        of Modelica variables is used for the x ticks.</span>
+<span class="sd">    :keyword [str] goals:</span>
+<span class="sd">        Default are all possible goal names. If a list of specific</span>
+<span class="sd">        goal names is given only these will be plotted.</span>
+<span class="sd">    :keyword ([fig], [ax]) figs_axes:</span>
+<span class="sd">        Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns all created figures and axes in lists like [fig], [ax]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plot_conf</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;plot_conf&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># kwargs for the design</span>
+    <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">figs_axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figs_axes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">analysis_variables</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;analysis_variables&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">analysis_variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">av</span> <span class="k">for</span> <span class="n">av</span> <span class="ow">in</span> <span class="n">all_analysis_variables</span> <span class="k">if</span> <span class="s1">&#39;_conf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">av</span><span class="p">]</span>
+
+    <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
+    <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">figs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">g_i</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">figs_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">figs_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">g_i</span><span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">figs_axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">g_i</span><span class="p">]</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+        <span class="n">figs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">av_i</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">):</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">g_i</span><span class="p">][</span><span class="n">av_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">av</span><span class="p">][</span><span class="n">parameters</span><span class="p">])</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">g_i</span><span class="p">][</span><span class="n">av_i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">av</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">g_i</span><span class="p">][</span><span class="n">av_i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">plot_conf</span> <span class="ow">and</span> <span class="n">av</span> <span class="o">+</span> <span class="s1">&#39;_conf&#39;</span> <span class="ow">in</span> <span class="n">all_analysis_variables</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">av</span><span class="p">][</span><span class="n">p</span><span class="p">]</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                    <span class="n">ci</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">av</span> <span class="o">+</span> <span class="s1">&#39;_conf&#39;</span><span class="p">][</span><span class="n">p</span><span class="p">]</span>
+                    <span class="n">large_values_indices</span> <span class="o">=</span> <span class="n">ci</span><span class="p">[</span><span class="n">ci</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+                    <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">large_values_indices</span><span class="p">):</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Confidence interval for </span><span class="si">{</span><span class="n">goal</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">av</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2"> was at the &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;following times </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">large_values_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> lager than 1 &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;and is smoothed out in the plot.&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">large_values_indices</span><span class="p">:</span>
+                        <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">ci</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">prev_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">ci</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ci</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ci</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">prev_idx</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">ci</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ci</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">axes</span><span class="p">[</span><span class="n">g_i</span><span class="p">][</span><span class="n">av_i</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">ci</span><span class="p">),</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">ci</span><span class="p">),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
+        <span class="n">axes</span><span class="p">[</span><span class="n">g_i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">figs</span><span class="p">,</span> <span class="n">axes</span></div>
+
+
+<div class="viewcode-block" id="plot_parameter_verbose"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_parameter_verbose">[docs]</a><span class="k">def</span> <span class="nf">plot_parameter_verbose</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">single_result</span><span class="p">,</span> <span class="n">second_order_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot all time dependent sensitivity measure for one parameter.</span>
+<span class="sd">    For each goal an axes is created within one figure.</span>
+
+<span class="sd">    If second_order_results form SobolAnalyzer.run_time_dependent are given</span>
+<span class="sd">    the S2 results of the interaction with each other parameter are added on top</span>
+<span class="sd">    of each other and the first order result.</span>
+
+<span class="sd">    :param str parameter:</span>
+<span class="sd">        Parameter to plot all sensitivity results for. If use_suffix=True, then</span>
+<span class="sd">        the name must also be only the suffix.</span>
+<span class="sd">    :param pd.DataFrame single_result:</span>
+<span class="sd">        First and total order result form run_time_dependent.</span>
+<span class="sd">    :param pd.DataFrame second_order_result:</span>
+<span class="sd">        Default None. Second order result of SobolAnalyzer.run_time_dependent.</span>
+<span class="sd">    :keyword bool show_plot:</span>
+<span class="sd">        Default is True. If False, all created plots are not shown.</span>
+<span class="sd">    :keyword bool use_suffix:</span>
+<span class="sd">        Default is True: If True, the last part after the last point</span>
+<span class="sd">        of Modelica variables is used for the x ticks.</span>
+<span class="sd">    :keyword [str] goals:</span>
+<span class="sd">        Default are all possible goal names. If a list of specific</span>
+<span class="sd">        goal names is given only these will be plotted.</span>
+<span class="sd">    :keyword (fig, [ax]) fig_axes:</span>
+<span class="sd">        Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Returns all created figures and axes in lists like [fig], [ax]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># kwargs for the design</span>
+    <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">fig_axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fig_axes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">goals</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;goals&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+    <span class="n">all_analysis_variables</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">av</span> <span class="k">for</span> <span class="n">av</span> <span class="ow">in</span> <span class="n">all_analysis_variables</span> <span class="k">if</span> <span class="s1">&#39;_conf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">av</span><span class="p">]</span>
+
+    <span class="c1"># rename tuner_names in result to the suffix of their variable name</span>
+    <span class="k">if</span> <span class="n">use_suffix</span><span class="p">:</span>
+        <span class="n">single_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">single_result</span><span class="p">)</span>
+        <span class="c1"># when the index is not sorted pandas throws a performance warning</span>
+        <span class="n">single_result</span> <span class="o">=</span> <span class="n">single_result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">second_order_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">second_order_result</span><span class="p">)</span>
+            <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">second_order_result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">fig_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">goals</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">fig_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig_axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">g_i</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">second_order_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result_2_goal</span> <span class="o">=</span> <span class="n">second_order_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="n">parameter</span><span class="p">]</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">result_2_goal</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="n">parameter</span><span class="p">])</span>
+            <span class="n">mean</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sorted_interactions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">time_ar</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result_2_goal</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S1&#39;</span><span class="p">][</span><span class="n">parameter</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S1&#39;</span><span class="p">][</span><span class="n">parameter</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S1&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">time_ar</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">value</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">para</span> <span class="ow">in</span> <span class="n">sorted_interactions</span><span class="p">:</span>
+                <span class="n">value_2</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">result_2_goal</span><span class="p">[</span><span class="n">para</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_ar</span><span class="p">,</span> <span class="n">value_2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S2 &#39;</span> <span class="o">+</span> <span class="n">para</span><span class="p">)</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">time_ar</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value_2</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">][</span><span class="n">parameter</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ST&#39;</span><span class="p">)</span>
+            <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">]</span>
+            <span class="n">legend</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">)</span>
+            <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ST&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">av_i</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">):</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">av</span><span class="p">][</span><span class="n">parameter</span><span class="p">])</span>
+            <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+
+
+<span class="k">def</span> <span class="nf">_del_duplicates</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">tuner_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">rename_tuner_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_get_suffix</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tuner_names</span><span class="p">}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">_get_suffix</span><span class="p">(</span><span class="n">modelica_var_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">index_last_dot</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="n">modelica_var_name</span><span class="p">[</span><span class="n">index_last_dot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">suffix</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, EON EBC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

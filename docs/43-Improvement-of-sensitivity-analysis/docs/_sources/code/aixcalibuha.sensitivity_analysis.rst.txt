@@ -33,6 +33,14 @@ aixcalibuha.sensitivity\_analysis.pawn module
    :undoc-members:
    :show-inheritance:
 
+aixcalibuha.sensitivity\_analysis.plotting module
+-------------------------------------------------
+
+.. automodule:: aixcalibuha.sensitivity_analysis.plotting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 aixcalibuha.sensitivity\_analysis.sensitivity\_analyzer module
 --------------------------------------------------------------
 
