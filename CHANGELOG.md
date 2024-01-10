@@ -59,4 +59,4 @@
     - Enables multiprocessing for the entire sensitivity process
     - Sensitivity analysis is now usable for large models and data
     - Add time dependent sensitivity analysis
-    - Ends support vor python 3.7
+    - Ends support for python 3.7

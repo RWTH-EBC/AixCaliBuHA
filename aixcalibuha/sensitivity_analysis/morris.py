@@ -12,7 +12,7 @@ from aixcalibuha import CalibrationClass
 class MorrisAnalyzer(SenAnalyzer):
     """
     Moris method from SALib https://salib.readthedocs.io/en/latest/api.html#method-of-morris
-    An elementary effects (O-a-T) method which computes the sensitivity
+    An elementary effects (One-At-A-Time) method which computes the sensitivity
     measures 'mu', 'mu_star' and 'sigma' with a confidence interval for mu_star.
 
     Additional arguments:
