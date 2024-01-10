@@ -28,15 +28,15 @@
 
         
         <h2>Score</h2>
-        8.87 / 10
+        8.89 / 10
             
-            (previous score: 8.87 / 10)
+            (previous score: 8.88 / 10)
             
         
 
         <h2>Messages</h2>
         
-        <h3>Module <code>aixcalibuha.__init__</code> (<code>aixcalibuha/__init__.py</code>)</h3>
+        <h3>Module <code>aixcalibuha</code> (<code>aixcalibuha/__init__.py</code>)</h3>
         <table>
             <tr>
                 <th>Line</th>
@@ -56,6 +56,331 @@
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.calibration.calibrator</code> (<code>aixcalibuha/calibration/calibrator.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>20</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-instance-attributes</code></td>
+                <td>R0902</td>
+                <td>Calibrator</td>
+                <td><pre>Too many instance attributes (24/7)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>214</td>
+                <td>26</td>
+                <td>refactor</td>
+                <td><code>unnecessary-comprehension</code></td>
+                <td>R1721</td>
+                <td>Calibrator.obj</td>
+                <td><pre>Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead.</pre></td>
+            </tr>
+            
+            <tr>
+                <td>241</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>Calibrator.obj</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>255</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>Calibrator.mp_obj</td>
+                <td><pre>Too many local variables (20/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>272</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (106/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>272</td>
+                <td>34</td>
+                <td>refactor</td>
+                <td><code>unnecessary-comprehension</code></td>
+                <td>R1721</td>
+                <td>Calibrator.mp_obj</td>
+                <td><pre>Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead.</pre></td>
+            </tr>
+            
+            <tr>
+                <td>277</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (107/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>308</td>
+                <td>23</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>Calibrator.mp_obj</td>
+                <td><pre>Unused variable &#39;unweighted_objective&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>416</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>broad-exception-raised</code></td>
+                <td>W0719</td>
+                <td>Calibrator.calibrate</td>
+                <td><pre>Raising too general exception: Exception</pre></td>
+            </tr>
+            
+            <tr>
+                <td>487</td>
+                <td>17</td>
+                <td>warning</td>
+                <td><code>unspecified-encoding</code></td>
+                <td>W1514</td>
+                <td>Calibrator.save_results</td>
+                <td><pre>Using open without explicitly specifying an encoding</pre></td>
+            </tr>
+            
+            <tr>
+                <td>490</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>Calibrator.validate</td>
+                <td><pre>Too many local variables (17/15)</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.calibration.multi_class_calibrator</code> (<code>aixcalibuha/calibration/multi_class_calibrator.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>duplicate-code</code></td>
+                <td>R0801</td>
+                <td></td>
+                <td><pre>Similar lines in 2 files
+==aixcalibuha.sensitivity_analysis.morris:[84:89]
+==aixcalibuha.sensitivity_analysis.pawn:[122:127]
+        if result is None:
+            names = cal_class.tuner_paras.get_names()
+            return dict(zip(names, np.zeros(len(names))))
+        else:
+            return dict(zip(result[&#39;names&#39;], result[analysis_variable]))</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha.calibration -&gt; aixcalibuha.calibration.multi_class_calibrator)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.calibration -&gt; aixcalibuha.calibration.calibrator -&gt; aixcalibuha.utils.visualizer)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sensitivity_analyzer -&gt; aixcalibuha.utils)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sensitivity_analyzer)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>13</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-instance-attributes</code></td>
+                <td>R0902</td>
+                <td>MultipleClassCalibrator</td>
+                <td><pre>Too many instance attributes (13/7)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>53</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>MultipleClassCalibrator.__init__</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>62</td>
+                <td>28</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>MultipleClassCalibrator.__init__</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>94</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>MultipleClassCalibrator.calibrate</td>
+                <td><pre>Too many local variables (16/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>94</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-branches</code></td>
+                <td>R0912</td>
+                <td>MultipleClassCalibrator.calibrate</td>
+                <td><pre>Too many branches (14/12)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>198</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>MultipleClassCalibrator._apply_start_time_method</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+            <tr>
+                <td>261</td>
+                <td>28</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>MultipleClassCalibrator.check_intersection_of_tuner_parameters</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
             </tr>
             
         </table>
@@ -124,7 +449,7 @@
             
         </table>
         
-        <h3>Module <code>bin.guided_setup</code> (<code>bin/guided_setup.py</code>)</h3>
+        <h3>Module <code>aixcalibuha.sensitivity_analysis</code> (<code>aixcalibuha/sensitivity_analysis/__init__.py</code>)</h3>
         <table>
             <tr>
                 <th>Line</th>
@@ -137,855 +462,13 @@
             </tr>
             
             <tr>
-                <td>34</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>lost-exception</code></td>
-                <td>W0150</td>
-                <td>_handle_tsd_input</td>
-                <td><pre>break statement in finally block may swallow exception</pre></td>
-            </tr>
-            
-            <tr>
-                <td>72</td>
-                <td>12</td>
-                <td>refactor</td>
-                <td><code>no-else-raise</code></td>
-                <td>R1720</td>
-                <td>_handle_argv</td>
-                <td><pre>Unnecessary &#34;else&#34; after &#34;raise&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
-            </tr>
-            
-            <tr>
-                <td>77</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>raise-missing-from</code></td>
-                <td>W0707</td>
-                <td>_handle_argv</td>
-                <td><pre>Consider explicitly re-raising using &#39;except (ValueError, KeyError) as exc&#39; and &#39;raise ValueError(f&#39;Given argument is not supported.\n{_handle_argv.__doc__}&#39;) from exc&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>82</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-locals</code></td>
-                <td>R0914</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Too many local variables (18/15)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>82</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-statements</code></td>
-                <td>R0915</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Too many statements (55/50)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>153</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>157</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>159</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>172</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>182</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>184</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>186</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>196</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>199</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>201</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>210</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>_automatically_generate_mocate</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>226</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-locals</code></td>
-                <td>R0914</td>
-                <td>main</td>
-                <td><pre>Too many local variables (43/15)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>226</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-branches</code></td>
-                <td>R0912</td>
-                <td>main</td>
-                <td><pre>Too many branches (19/12)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>226</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-statements</code></td>
-                <td>R0915</td>
-                <td>main</td>
-                <td><pre>Too many statements (108/50)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>232</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unreachable</code></td>
-                <td>W0101</td>
-                <td>main</td>
-                <td><pre>Unreachable code</pre></td>
-            </tr>
-            
-            <tr>
-                <td>255</td>
-                <td>12</td>
-                <td>refactor</td>
-                <td><code>no-else-break</code></td>
-                <td>R1723</td>
-                <td>main</td>
-                <td><pre>Unnecessary &#34;elif&#34; after &#34;break&#34;, remove the leading &#34;el&#34; from &#34;elif&#34;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>295</td>
-                <td>9</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>TODO: Check if this still works for new installs</pre></td>
-            </tr>
-            
-            <tr>
-                <td>314</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (102/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>363</td>
-                <td>13</td>
-                <td>warning</td>
-                <td><code>unspecified-encoding</code></td>
-                <td>W1514</td>
-                <td>main</td>
-                <td><pre>Using open without explicitly specifying an encoding</pre></td>
-            </tr>
-            
-            <tr>
-                <td>369</td>
-                <td>28</td>
-                <td>warning</td>
-                <td><code>f-string-without-interpolation</code></td>
-                <td>W1309</td>
-                <td>main</td>
-                <td><pre>Using an f-string that does not have any interpolated variables</pre></td>
-            </tr>
-            
-            <tr>
-                <td>371</td>
-                <td>33</td>
-                <td>warning</td>
-                <td><code>protected-access</code></td>
-                <td>W0212</td>
-                <td>main</td>
-                <td><pre>Access to a protected member _make_modelica_normpath of a client class</pre></td>
-            </tr>
-            
-            <tr>
-                <td>374</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (103/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>404</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (104/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>453</td>
-                <td>45</td>
-                <td>error</td>
-                <td><code>no-member</code></td>
-                <td>E1101</td>
-                <td>main</td>
-                <td><pre>Instance of &#39;DymolaAPI&#39; has no &#39;dymola_path&#39; member</pre></td>
-            </tr>
-            
-            <tr>
-                <td>484</td>
                 <td>11</td>
-                <td>warning</td>
-                <td><code>broad-exception-caught</code></td>
-                <td>W0718</td>
-                <td>main</td>
-                <td><pre>Catching too general exception Exception</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>bin.run_modelica_calibration</code> (<code>bin/run_modelica_calibration.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>34</td>
-                <td>12</td>
-                <td>refactor</td>
-                <td><code>no-else-raise</code></td>
-                <td>R1720</td>
-                <td>_handle_argv</td>
-                <td><pre>Unnecessary &#34;else&#34; after &#34;raise&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
-            </tr>
-            
-            <tr>
-                <td>39</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>raise-missing-from</code></td>
-                <td>W0707</td>
-                <td>_handle_argv</td>
-                <td><pre>Consider explicitly re-raising using &#39;except (ValueError, KeyError) as exc&#39; and &#39;raise ValueError(f&#39;Given argument is not supported.\n{_handle_argv.__doc__}&#39;) from exc&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>44</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-function-docstring</code></td>
-                <td>C0116</td>
-                <td>main</td>
-                <td><pre>Missing function or method docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>44</td>
                 <td>0</td>
                 <td>refactor</td>
-                <td><code>too-many-locals</code></td>
-                <td>R0914</td>
-                <td>main</td>
-                <td><pre>Too many local variables (31/15)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>44</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-statements</code></td>
-                <td>R0915</td>
-                <td>main</td>
-                <td><pre>Too many statements (59/50)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>46</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unreachable</code></td>
-                <td>W0101</td>
-                <td>main</td>
-                <td><pre>Unreachable code</pre></td>
-            </tr>
-            
-            <tr>
-                <td>78</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td>main</td>
-                <td><pre>Variable name &#34;e&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>80</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>raise-missing-from</code></td>
-                <td>W0707</td>
-                <td>main</td>
-                <td><pre>Consider explicitly re-raising using &#39;raise KeyError(f&#39;Given config file does not contain {value_error}. You need to specify this value in order to run the calibration.&#39;) from e&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>108</td>
-                <td>14</td>
-                <td>error</td>
-                <td><code>no-member</code></td>
-                <td>E1101</td>
-                <td>main</td>
-                <td><pre>Module &#39;aixcalibuha.utils.configuration&#39; has no &#39;get_simulation_api_from_config&#39; member</pre></td>
-            </tr>
-            
-            <tr>
-                <td>112</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>redefined-builtin</code></td>
-                <td>W0622</td>
-                <td>main</td>
-                <td><pre>Redefining built-in &#39;map&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>121</td>
-                <td>8</td>
-                <td>error</td>
-                <td><code>no-member</code></td>
-                <td>E1101</td>
-                <td>main</td>
-                <td><pre>Module &#39;ebcpy.utils.conversion&#39; has no &#39;convert_hdf_to_modelica_txt&#39; member</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples</code> (<code>examples/__init__.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>41</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-function-docstring</code></td>
-                <td>C0116</td>
-                <td>setup_dym_api</td>
-                <td><pre>Missing function or method docstring</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e1_A_energy_system_analysis</code> (<code>examples/e1_A_energy_system_analysis.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
+                <td><code>consider-using-from-import</code></td>
+                <td>R0402</td>
                 <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td></td>
-                <td><pre>Module name &#34;e1_A_energy_system_analysis&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>45</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (107/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>46</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (108/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>101</td>
-                <td>10</td>
-                <td>convention</td>
-                <td><code>consider-using-f-string</code></td>
-                <td>C0209</td>
-                <td>main</td>
-                <td><pre>Formatting a regular string which could be a f-string</pre></td>
-            </tr>
-            
-            <tr>
-                <td>116</td>
-                <td>10</td>
-                <td>convention</td>
-                <td><code>consider-using-f-string</code></td>
-                <td>C0209</td>
-                <td>main</td>
-                <td><pre>Formatting a regular string which could be a f-string</pre></td>
-            </tr>
-            
-            <tr>
-                <td>121</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unused-variable</code></td>
-                <td>W0612</td>
-                <td>main</td>
-                <td><pre>Unused variable &#39;fig&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>124</td>
-                <td>25</td>
-                <td>warning</td>
-                <td><code>anomalous-backslash-in-string</code></td>
-                <td>W1401</td>
-                <td></td>
-                <td><pre>Anomalous backslash in string: &#39;\m&#39;. String constant might be missing an r prefix.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>127</td>
-                <td>25</td>
-                <td>warning</td>
-                <td><code>anomalous-backslash-in-string</code></td>
-                <td>W1401</td>
-                <td></td>
-                <td><pre>Anomalous backslash in string: &#39;\m&#39;. String constant might be missing an r prefix.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>130</td>
-                <td>25</td>
-                <td>warning</td>
-                <td><code>anomalous-backslash-in-string</code></td>
-                <td>W1401</td>
-                <td></td>
-                <td><pre>Anomalous backslash in string: &#39;\m&#39;. String constant might be missing an r prefix.</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e1_B_energy_system_analysis</code> (<code>examples/e1_B_energy_system_analysis.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td></td>
-                <td><pre>Module name &#34;e1_B_energy_system_analysis&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>28</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (108/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>39</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>import-outside-toplevel</code></td>
-                <td>C0415</td>
-                <td>main</td>
-                <td><pre>Import outside toplevel (examples.setup_fmu)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>66</td>
-                <td>10</td>
-                <td>convention</td>
-                <td><code>consider-using-f-string</code></td>
-                <td>C0209</td>
-                <td>main</td>
-                <td><pre>Formatting a regular string which could be a f-string</pre></td>
-            </tr>
-            
-            <tr>
-                <td>69</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unused-variable</code></td>
-                <td>W0612</td>
-                <td>main</td>
-                <td><pre>Unused variable &#39;fig&#39;</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e2_A_optimization_problem_definition</code> (<code>examples/e2_A_optimization_problem_definition.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td></td>
-                <td><pre>Module name &#34;e2_A_optimization_problem_definition&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>20</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>too-many-locals</code></td>
-                <td>R0914</td>
-                <td>main</td>
-                <td><pre>Too many local variables (17/15)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>126</td>
-                <td>11</td>
-                <td>warning</td>
-                <td><code>broad-exception-caught</code></td>
-                <td>W0718</td>
-                <td>main</td>
-                <td><pre>Catching too general exception Exception</pre></td>
-            </tr>
-            
-            <tr>
-                <td>136</td>
-                <td>11</td>
-                <td>warning</td>
-                <td><code>broad-exception-caught</code></td>
-                <td>W0718</td>
-                <td>main</td>
-                <td><pre>Catching too general exception Exception</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e2_B_optimization_problem_definition</code> (<code>examples/e2_B_optimization_problem_definition.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td></td>
-                <td><pre>Module name &#34;e2_B_optimization_problem_definition&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>117</td>
-                <td>11</td>
-                <td>warning</td>
-                <td><code>broad-exception-caught</code></td>
-                <td>W0718</td>
-                <td>main</td>
-                <td><pre>Catching too general exception Exception</pre></td>
-            </tr>
-            
-            <tr>
-                <td>127</td>
-                <td>11</td>
-                <td>warning</td>
-                <td><code>broad-exception-caught</code></td>
-                <td>W0718</td>
-                <td>main</td>
-                <td><pre>Catching too general exception Exception</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e3_sensitivity_analysis_example</code> (<code>examples/e3_sensitivity_analysis_example.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>41</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>redefined-outer-name</code></td>
-                <td>W0621</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Redefining name &#39;setup_fmu&#39; from outer scope (line 76)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>41</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>redefined-outer-name</code></td>
-                <td>W0621</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Redefining name &#39;setup_calibration_classes&#39; from outer scope (line 76)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>41</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>import-outside-toplevel</code></td>
-                <td>C0415</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>76</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unused-import</code></td>
-                <td>W0611</td>
-                <td></td>
-                <td><pre>Unused setup_fmu imported from examples</pre></td>
-            </tr>
-            
-            <tr>
-                <td>76</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unused-import</code></td>
-                <td>W0611</td>
-                <td></td>
-                <td><pre>Unused setup_calibration_classes imported from examples</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e3_verbos_dymola_sensitivity_analysis_example</code> (<code>examples/e3_verbos_dymola_sensitivity_analysis_example.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
+                <td><pre>Use &#39;from aixcalibuha.sensitivity_analysis import plotting&#39; instead</pre></td>
             </tr>
             
             <tr>
@@ -995,22 +478,12 @@
                 <td><code>wrong-import-order</code></td>
                 <td>C0411</td>
                 <td></td>
-                <td><pre>third party import &#34;from ebcpy.utils.conversion import convert_tsd_to_modelica_txt&#34; should be placed before &#34;from examples import setup_dym_api, setup_calibration_classes&#34;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>83</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>protected-access</code></td>
-                <td>W0212</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Access to a protected member _inputs of a client class</pre></td>
+                <td><pre>first party import &#34;import aixcalibuha.sensitivity_analysis.plotting as plotting&#34; should be placed before &#34;from .sensitivity_analyzer import SenAnalyzer&#34;</pre></td>
             </tr>
             
         </table>
         
-        <h3>Module <code>examples.e3_verbos_sensitivity_analysis_example</code> (<code>examples/e3_verbos_sensitivity_analysis_example.py</code>)</h3>
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.fast</code> (<code>aixcalibuha/sensitivity_analysis/fast.py</code>)</h3>
         <table>
             <tr>
                 <th>Line</th>
@@ -1024,56 +497,482 @@
             
             <tr>
                 <td>10</td>
-                <td>1</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>wrong-import-order</code></td>
+                <td>C0411</td>
                 <td></td>
-                <td><pre>TODO: Add this file and the other verbose example to the files under examples\converter.toml</pre></td>
+                <td><pre>standard import &#34;import warnings&#34; should be placed before &#34;from SALib.sample import fast_sampler as fast&#34;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>10</td>
+                <td>0</td>
+                <td>warning</td>
+                <td><code>unused-import</code></td>
+                <td>W0611</td>
+                <td></td>
+                <td><pre>Unused import warnings</pre></td>
             </tr>
             
             <tr>
                 <td>15</td>
                 <td>0</td>
                 <td>convention</td>
-                <td><code>ungrouped-imports</code></td>
-                <td>C0412</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
                 <td></td>
-                <td><pre>Imports from package aixcalibuha are not grouped</pre></td>
+                <td><pre>Line too long (114/100)</pre></td>
             </tr>
             
             <tr>
-                <td>18</td>
+                <td>32</td>
+                <td>8</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>FASTAnalyzer.__init__</td>
+                <td><pre>Attribute name &#34;M&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>83</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>FASTAnalyzer._get_res_dict</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.morris</code> (<code>aixcalibuha/sensitivity_analysis/morris.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>85</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>MorrisAnalyzer._get_res_dict</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.pawn</code> (<code>aixcalibuha/sensitivity_analysis/pawn.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>46</td>
+                <td>8</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>PAWNAnalyzer.__init__</td>
+                <td><pre>Attribute name &#34;s&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>51</td>
+                <td>8</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>PAWNAnalyzer.__init__</td>
+                <td><pre>Attribute name &#34;M&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>82</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>PAWNAnalyzer.create_sampler_demand</td>
+                <td><pre>Unnecessary &#34;elif&#34; after &#34;return&#34;, remove the leading &#34;el&#34; from &#34;elif&#34;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>102</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>PAWNAnalyzer.generate_samples</td>
+                <td><pre>Unnecessary &#34;elif&#34; after &#34;return&#34;, remove the leading &#34;el&#34; from &#34;elif&#34;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>107</td>
+                <td>19</td>
+                <td>error</td>
+                <td><code>unexpected-keyword-arg</code></td>
+                <td>E1123</td>
+                <td>PAWNAnalyzer.generate_samples</td>
+                <td><pre>Unexpected keyword argument &#39;calc_second_order&#39; in function call</pre></td>
+            </tr>
+            
+            <tr>
+                <td>111</td>
+                <td>19</td>
+                <td>error</td>
+                <td><code>unexpected-keyword-arg</code></td>
+                <td>E1123</td>
+                <td>PAWNAnalyzer.generate_samples</td>
+                <td><pre>Unexpected keyword argument &#39;calc_second_order&#39; in function call</pre></td>
+            </tr>
+            
+            <tr>
+                <td>123</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>PAWNAnalyzer._get_res_dict</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.plotting</code> (<code>aixcalibuha/sensitivity_analysis/plotting.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>12</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>plot_single</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>83</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>plot_second_order</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>83</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-locals</code></td>
                 <td>R0914</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Too many local variables (28/15)</pre></td>
+                <td>plot_second_order</td>
+                <td><pre>Too many local variables (20/15)</pre></td>
             </tr>
             
             <tr>
-                <td>18</td>
+                <td>145</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (116/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>162</td>
                 <td>0</td>
                 <td>refactor</td>
-                <td><code>too-many-statements</code></td>
-                <td>R0915</td>
-                <td>run_sensitivity_analysis</td>
-                <td><pre>Too many statements (58/50)</pre></td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>plot_single_second_order</td>
+                <td><pre>Too many arguments (7/5)</pre></td>
             </tr>
             
             <tr>
-                <td>53</td>
-                <td>5</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
+                <td>168</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
                 <td></td>
-                <td><pre>TODO: Directly say why it is necessary or refer to the section</pre></td>
+                <td><pre>Line too long (101/100)</pre></td>
             </tr>
             
             <tr>
-                <td>76</td>
+                <td>204</td>
+                <td>60</td>
+                <td>warning</td>
+                <td><code>protected-access</code></td>
+                <td>W0212</td>
+                <td>plot_single_second_order</td>
+                <td><pre>Access to a protected member _suptitle of a client class</pre></td>
+            </tr>
+            
+            <tr>
+                <td>210</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>heatmap</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>238</td>
+                <td>8</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>heatmap</td>
+                <td><pre>Unused variable &#39;fig&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>241</td>
+                <td>4</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>heatmap</td>
+                <td><pre>Variable name &#34;im&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>283</td>
+                <td>4</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>heatmaps</td>
+                <td><pre>Unused variable &#39;fig&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>292</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (109/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>297</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Too many arguments (8/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>297</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Too many local variables (24/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>297</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-branches</code></td>
+                <td>R0912</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Too many branches (16/12)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>308</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (157/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>328</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>349</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-nested-blocks</code></td>
+                <td>R1702</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Too many nested blocks (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>360</td>
+                <td>18</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Variable name &#34;av&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>365</td>
+                <td>20</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Variable name &#34;p&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>368</td>
+                <td>20</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>plot_time_dependent</td>
+                <td><pre>Variable name &#34;ci&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>388</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>plot_parameter_verbose</td>
+                <td><pre>Too many arguments (7/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>388</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>plot_parameter_verbose</td>
+                <td><pre>Too many local variables (23/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>419</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>467</td>
+                <td>22</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>plot_parameter_verbose</td>
+                <td><pre>Variable name &#34;av&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>467</td>
+                <td>16</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>plot_parameter_verbose</td>
+                <td><pre>Unused variable &#39;av_i&#39;</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.sensitivity_analyzer</code> (<code>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>14</td>
+                <td>0</td>
+                <td>warning</td>
+                <td><code>reimported</code></td>
+                <td>W0404</td>
+                <td></td>
+                <td><pre>Reimport &#39;data_types&#39; (imported line 12)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>16</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>wrong-import-order</code></td>
+                <td>C0411</td>
+                <td></td>
+                <td><pre>standard import &#34;import multiprocessing as mp&#34; should be placed before &#34;import numpy as np&#34;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>22</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>_load_single_file</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+            <tr>
+                <td>25</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -1083,47 +982,67 @@
             </tr>
             
             <tr>
-                <td>76</td>
-                <td>5</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary</pre></td>
-            </tr>
-            
-            <tr>
-                <td>119</td>
-                <td>5</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>TODO: The following sentence is not clear to me</pre></td>
-            </tr>
-            
-            <tr>
-                <td>170</td>
+                <td>50</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
                 <td>C0301</td>
                 <td></td>
-                <td><pre>Line too long (224/100)</pre></td>
+                <td><pre>Line too long (101/100)</pre></td>
             </tr>
             
             <tr>
-                <td>170</td>
-                <td>32</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
+                <td>65</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
                 <td></td>
-                <td><pre>TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.</pre></td>
+                <td><pre>Line too long (117/100)</pre></td>
             </tr>
             
             <tr>
-                <td>208</td>
+                <td>67</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>70</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>_restruct_time_dependent</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+            <tr>
+                <td>72</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (107/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>83</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-instance-attributes</code></td>
+                <td>R0902</td>
+                <td>SenAnalyzer</td>
+                <td><pre>Too many instance attributes (12/7)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>210</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -1133,121 +1052,257 @@
             </tr>
             
             <tr>
-                <td>208</td>
+                <td>239</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>SenAnalyzer.simulate_samples</td>
+                <td><pre>Unused variable &#39;i&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>242</td>
+                <td>30</td>
+                <td>refactor</td>
+                <td><code>unnecessary-comprehension</code></td>
+                <td>R1721</td>
+                <td>SenAnalyzer.simulate_samples</td>
+                <td><pre>Unnecessary use of a comprehension, use dict(zip(initial_names, initial_values)) instead.</pre></td>
+            </tr>
+            
+            <tr>
+                <td>250</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer.simulate_samples</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>279</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>279</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer._check_index</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>286</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer._check_index</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>297</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>SenAnalyzer._single_eval_statistical_measure</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+            <tr>
+                <td>299</td>
+                <td>22</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>SenAnalyzer._single_eval_statistical_measure</td>
+                <td><pre>Variable name &#34;w&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>299</td>
+                <td>65</td>
+                <td>warning</td>
+                <td><code>protected-access</code></td>
+                <td>W0212</td>
+                <td>SenAnalyzer._single_eval_statistical_measure</td>
+                <td><pre>Access to a protected member _weightings of a client class</pre></td>
+            </tr>
+            
+            <tr>
+                <td>312</td>
+                <td>8</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer.eval_statistical_measure</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>312</td>
                 <td>25</td>
                 <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this?</pre></td>
+                <td><code>f-string-without-interpolation</code></td>
+                <td>W1309</td>
+                <td>SenAnalyzer.eval_statistical_measure</td>
+                <td><pre>Using an f-string that does not have any interpolated variables</pre></td>
             </tr>
             
             <tr>
-                <td>212</td>
+                <td>336</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
                 <td>C0301</td>
                 <td></td>
-                <td><pre>Line too long (101/100)</pre></td>
+                <td><pre>Line too long (104/100)</pre></td>
             </tr>
             
             <tr>
-                <td>212</td>
-                <td>5</td>
+                <td>337</td>
+                <td>8</td>
                 <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or?</pre></td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer._mp_load_eval</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
-                <td>290</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (134/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>298</td>
-                <td>5</td>
-                <td>warning</td>
-                <td><code>fixme</code></td>
-                <td>W0511</td>
-                <td></td>
-                <td><pre>See issue # TODO: Open issue in SAlib for false ST results of the FAST method</pre></td>
-            </tr>
-            
-            <tr>
-                <td>407</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (101/100)</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>examples.e4_calibration_example</code> (<code>examples/e4_calibration_example.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
-                <td></td>
-                <td><pre>Missing module docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>12</td>
-                <td>0</td>
+                <td>356</td>
+                <td>8</td>
                 <td>refactor</td>
-                <td><code>too-many-arguments</code></td>
-                <td>R0913</td>
-                <td>run_calibration</td>
-                <td><pre>Too many arguments (7/5)</pre></td>
+                <td><code>no-else-return</code></td>
+                <td>R1705</td>
+                <td>SenAnalyzer._load_eval</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;return&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
             </tr>
             
             <tr>
-                <td>12</td>
-                <td>0</td>
+                <td>367</td>
+                <td>4</td>
                 <td>refactor</td>
                 <td><code>too-many-locals</code></td>
                 <td>R0914</td>
-                <td>run_calibration</td>
-                <td><pre>Too many local variables (20/15)</pre></td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Too many local variables (35/15)</pre></td>
             </tr>
             
             <tr>
-                <td>51</td>
+                <td>367</td>
                 <td>4</td>
-                <td>convention</td>
-                <td><code>import-outside-toplevel</code></td>
-                <td>C0415</td>
-                <td>run_calibration</td>
-                <td><pre>Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)</pre></td>
+                <td>refactor</td>
+                <td><code>too-many-branches</code></td>
+                <td>R0912</td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Too many branches (21/12)</pre></td>
             </tr>
             
             <tr>
-                <td>101</td>
+                <td>367</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-statements</code></td>
+                <td>R0915</td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Too many statements (74/50)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>382</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (115/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>385</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (104/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>392</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (103/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>393</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>399</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>402</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>439</td>
+                <td>37</td>
+                <td>warning</td>
+                <td><code>f-string-without-interpolation</code></td>
+                <td>W1309</td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Using an f-string that does not have any interpolated variables</pre></td>
+            </tr>
+            
+            <tr>
+                <td>473</td>
+                <td>16</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>478</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -1256,9 +1311,329 @@
                 <td><pre>Line too long (108/100)</pre></td>
             </tr>
             
+            <tr>
+                <td>479</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (107/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>480</td>
+                <td>16</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer.run</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>509</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (115/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>576</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>SenAnalyzer.select_by_threshold</td>
+                <td><pre>Unused variable &#39;num_class&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>621</td>
+                <td>11</td>
+                <td>convention</td>
+                <td><code>unneeded-not</code></td>
+                <td>C0113</td>
+                <td>SenAnalyzer.select_by_threshold_verbose</td>
+                <td><pre>Consider changing &#34;not Counter(calibration_class.tuner_paras.get_names()) == Counter(list(result.columns))&#34; to &#34;Counter(calibration_class.tuner_paras.get_names()) != Counter(list(result.columns))&#34;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>629</td>
+                <td>21</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>SenAnalyzer.select_by_threshold_verbose</td>
+                <td><pre>Variable name &#34;c&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>629</td>
+                <td>16</td>
+                <td>warning</td>
+                <td><code>unused-variable</code></td>
+                <td>W0612</td>
+                <td>SenAnalyzer.select_by_threshold_verbose</td>
+                <td><pre>Unused variable &#39;idx&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>643</td>
+                <td>8</td>
+                <td>refactor</td>
+                <td><code>no-else-raise</code></td>
+                <td>R1720</td>
+                <td>SenAnalyzer.select_by_threshold_verbose</td>
+                <td><pre>Unnecessary &#34;else&#34; after &#34;raise&#34;, remove the &#34;else&#34; and de-indent the code inside it</pre></td>
+            </tr>
+            
+            <tr>
+                <td>649</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>SenAnalyzer.run_time_dependent</td>
+                <td><pre>Too many local variables (21/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>657</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (104/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>660</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>667</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (104/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>668</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (111/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>691</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (104/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>692</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (103/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>709</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>722</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>733</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>SenAnalyzer._analyze_tstep_df</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>751</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>752</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (105/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>752</td>
+                <td>8</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer._load_tsteps_df</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>773</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (103/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>777</td>
+                <td>12</td>
+                <td>warning</td>
+                <td><code>logging-fstring-interpolation</code></td>
+                <td>W1203</td>
+                <td>SenAnalyzer._load_analyze_tsteps</td>
+                <td><pre>Use lazy % formatting in logging functions</pre></td>
+            </tr>
+            
+            <tr>
+                <td>777</td>
+                <td>29</td>
+                <td>warning</td>
+                <td><code>f-string-without-interpolation</code></td>
+                <td>W1309</td>
+                <td>SenAnalyzer._load_analyze_tsteps</td>
+                <td><pre>Using an f-string that does not have any interpolated variables</pre></td>
+            </tr>
+            
+            <tr>
+                <td>778</td>
+                <td>16</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>SenAnalyzer._load_analyze_tsteps</td>
+                <td><pre>Variable name &#34;t&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>787</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (101/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>788</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (114/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>800</td>
+                <td>20</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>SenAnalyzer._conv_local_results</td>
+                <td><pre>Variable name &#34;av&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>805</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>838</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-arguments</code></td>
+                <td>R0913</td>
+                <td>SenAnalyzer.save_for_reproduction</td>
+                <td><pre>Too many arguments (6/5)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>869</td>
+                <td>8</td>
+                <td>convention</td>
+                <td><code>import-outside-toplevel</code></td>
+                <td>C0415</td>
+                <td>SenAnalyzer.save_for_reproduction</td>
+                <td><pre>Import outside toplevel (ebcpy.utils.reproduction.CopyFile)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>878</td>
+                <td>39</td>
+                <td>convention</td>
+                <td><code>use-maxsplit-arg</code></td>
+                <td>C0207</td>
+                <td>SenAnalyzer.save_for_reproduction</td>
+                <td><pre>Use str(file_path).rsplit(self.cd.name, maxsplit=1)[-1] instead</pre></td>
+            </tr>
+            
         </table>
         
-        <h3>Module <code>examples.e5_automated_process</code> (<code>examples/e5_automated_process.py</code>)</h3>
+        <h3>Module <code>aixcalibuha.sensitivity_analysis.sobol</code> (<code>aixcalibuha/sensitivity_analysis/sobol.py</code>)</h3>
         <table>
             <tr>
                 <th>Line</th>
@@ -1271,13 +1646,431 @@
             </tr>
             
             <tr>
-                <td>1</td>
+                <td>16</td>
                 <td>0</td>
                 <td>convention</td>
-                <td><code>missing-module-docstring</code></td>
-                <td>C0114</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
                 <td></td>
-                <td><pre>Missing module docstring</pre></td>
+                <td><pre>Line too long (102/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>95</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (108/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>97</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (103/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>102</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>SobolAnalyzer._conv_local_results</td>
+                <td><pre>Too many local variables (18/15)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>104</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (105/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>114</td>
+                <td>20</td>
+                <td>convention</td>
+                <td><code>invalid-name</code></td>
+                <td>C0103</td>
+                <td>SobolAnalyzer._conv_local_results</td>
+                <td><pre>Variable name &#34;av&#34; doesn&#39;t conform to snake_case naming style</pre></td>
+            </tr>
+            
+            <tr>
+                <td>128</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (104/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>133</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>inconsistent-return-statements</code></td>
+                <td>R1710</td>
+                <td>SobolAnalyzer._get_res_dict</td>
+                <td><pre>Either all return statements in a function should return an expression, or none of them should.</pre></td>
+            </tr>
+            
+            <tr>
+                <td>161</td>
+                <td>16</td>
+                <td>convention</td>
+                <td><code>consider-using-enumerate</code></td>
+                <td>C0200</td>
+                <td>SobolAnalyzer._get_res_dict</td>
+                <td><pre>Consider using enumerate instead of iterating with range and len</pre></td>
+            </tr>
+            
+            <tr>
+                <td>162</td>
+                <td>20</td>
+                <td>convention</td>
+                <td><code>consider-using-enumerate</code></td>
+                <td>C0200</td>
+                <td>SobolAnalyzer._get_res_dict</td>
+                <td><pre>Consider using enumerate instead of iterating with range and len</pre></td>
+            </tr>
+            
+            <tr>
+                <td>184</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (111/100)</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.utils.configuration</code> (<code>aixcalibuha/utils/configuration.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>42</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (110/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>43</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (116/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>45</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (103/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>47</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (111/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>49</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (124/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>189</td>
+                <td>9</td>
+                <td>warning</td>
+                <td><code>unspecified-encoding</code></td>
+                <td>W1514</td>
+                <td>write_config</td>
+                <td><pre>Using open without explicitly specifying an encoding</pre></td>
+            </tr>
+            
+            <tr>
+                <td>204</td>
+                <td>9</td>
+                <td>warning</td>
+                <td><code>unspecified-encoding</code></td>
+                <td>W1514</td>
+                <td>read_config</td>
+                <td><pre>Using open without explicitly specifying an encoding</pre></td>
+            </tr>
+            
+        </table>
+        
+        <h3>Module <code>aixcalibuha.utils.visualizer</code> (<code>aixcalibuha/utils/visualizer.py</code>)</h3>
+        <table>
+            <tr>
+                <th>Line</th>
+                <th>Col.</th>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>ID</th>
+                <th>Obj</th>
+                <th>Message</th>
+            </tr>
+            
+            <tr>
+                <td>18</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-instance-attributes</code></td>
+                <td>R0902</td>
+                <td>CalibrationLogger</td>
+                <td><pre>Too many instance attributes (12/7)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>70</td>
+                <td>28</td>
+                <td>warning</td>
+                <td><code>nested-min-max</code></td>
+                <td>W3301</td>
+                <td>CalibrationLogger._set_prec_and_with_for_tuner_paras</td>
+                <td><pre>Do not use nested call of &#39;max&#39;; it&#39;s possible to do &#39;max(bounds_max, abs(bounds_min))&#39; instead</pre></td>
+            </tr>
+            
+            <tr>
+                <td>110</td>
+                <td>0</td>
+                <td>warning</td>
+                <td><code>unused-argument</code></td>
+                <td>W0613</td>
+                <td>CalibrationLogger.save_calibration_result</td>
+                <td><pre>Unused argument &#39;kwargs&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>138</td>
+                <td>62</td>
+                <td>warning</td>
+                <td><code>unused-argument</code></td>
+                <td>W0613</td>
+                <td>CalibrationLogger.calibrate_new_class</td>
+                <td><pre>Unused argument &#39;for_validation&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>169</td>
+                <td>4</td>
+                <td>convention</td>
+                <td><code>missing-function-docstring</code></td>
+                <td>C0116</td>
+                <td>CalibrationLogger.tuner_paras</td>
+                <td><pre>Missing function or method docstring</pre></td>
+            </tr>
+            
+            <tr>
+                <td>232</td>
+                <td>0</td>
+                <td>warning</td>
+                <td><code>unused-argument</code></td>
+                <td>W0613</td>
+                <td>CalibrationLogger.log_intersection_of_tuners</td>
+                <td><pre>Unused argument &#39;kwargs&#39;</pre></td>
+            </tr>
+            
+            <tr>
+                <td>256</td>
+                <td>22</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_names_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>264</td>
+                <td>16</td>
+                <td>refactor</td>
+                <td><code>consider-using-min-builtin</code></td>
+                <td>R1730</td>
+                <td>CalibrationLogger._get_tuner_para_names_as_string</td>
+                <td><pre>Consider using &#39;num_dots = min(num_dots, 3)&#39; instead of unnecessary if block</pre></td>
+            </tr>
+            
+            <tr>
+                <td>269</td>
+                <td>27</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_names_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>271</td>
+                <td>23</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_names_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>298</td>
+                <td>22</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>301</td>
+                <td>27</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>305</td>
+                <td>23</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>308</td>
+                <td>27</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>311</td>
+                <td>27</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>312</td>
+                <td>43</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationLogger._get_tuner_para_values_as_string</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>319</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>too-many-instance-attributes</code></td>
+                <td>R0902</td>
+                <td>CalibrationVisualizer</td>
+                <td><pre>Too many instance attributes (17/7)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>503</td>
+                <td>48</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationVisualizer.save_calibration_result</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>504</td>
+                <td>46</td>
+                <td>convention</td>
+                <td><code>consider-using-f-string</code></td>
+                <td>C0209</td>
+                <td>CalibrationVisualizer.save_calibration_result</td>
+                <td><pre>Formatting a regular string which could be a f-string</pre></td>
+            </tr>
+            
+            <tr>
+                <td>518</td>
+                <td>13</td>
+                <td>warning</td>
+                <td><code>unspecified-encoding</code></td>
+                <td>W1514</td>
+                <td>CalibrationVisualizer.save_calibration_result</td>
+                <td><pre>Using open without explicitly specifying an encoding</pre></td>
+            </tr>
+            
+            <tr>
+                <td>575</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (107/100)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>621</td>
+                <td>4</td>
+                <td>refactor</td>
+                <td><code>too-many-locals</code></td>
+                <td>R0914</td>
+                <td>CalibrationVisualizer._plot_goals</td>
+                <td><pre>Too many local variables (16/15)</pre></td>
             </tr>
             
         </table>
@@ -1966,415 +2759,6 @@
             
         </table>
         
-        <h3>Module <code>tests.test_data_types</code> (<code>tests/test_data_types.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>89</td>
-                <td>17</td>
-                <td>convention</td>
-                <td><code>consider-using-f-string</code></td>
-                <td>C0209</td>
-                <td>TestDataTypes.test_tuner_paras</td>
-                <td><pre>Formatting a regular string which could be a f-string</pre></td>
-            </tr>
-            
-        </table>
-        
-        <h3>Module <code>tests.test_modelica_cal_sen</code> (<code>tests/test_modelica_cal_sen.py</code>)</h3>
-        <table>
-            <tr>
-                <th>Line</th>
-                <th>Col.</th>
-                <th>Type</th>
-                <th>Symbol</th>
-                <th>ID</th>
-                <th>Obj</th>
-                <th>Message</th>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==bin.guided_setup:[64:102]
-==bin.run_modelica_calibration:[26:44]
-    __supported_argv = [&#34;--config&#34;]
-    # Path to the script is irrelevant
-    resulting_setting = {}
-    _rel_argv = argv[1:]
-    for arg in _rel_argv:
-        try:
-            name, value = arg.split(&#34;=&#34;)
-            if name not in __supported_argv:
-                raise KeyError
-            else:
-                resulting_setting[name] = value
-        except (ValueError, KeyError):
-            raise ValueError(f&#34;Given argument is not supported.\n{_handle_argv.__doc__}&#34;)
-
-    return resulting_setting
-
-
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    &#34;&#34;&#34;
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a &#34;package.mo&#34; file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the &#34;package.mo&#34; file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    &#34;&#34;&#34;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[122:131]
-==examples.e2_B_optimization_problem_definition:[113:122]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print(&#34;I knew this error was going to happen. Do you understand &#34;
-              &#34;why this happens based on the following message?&#34;)
-        print(err)
-    new_index = meas_target_data.index.values.copy()
-    new_index[-10] += 0.05  # Change some value</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[92:110]
-==examples.e2_B_optimization_problem_definition:[82:100]
-    }
-    # To match the measured data to simulated data,
-    # the index has to match with the simulation output
-    # Thus, convert it:
-    meas_target_data.to_float_index()
-    # Lastly, setup the goals object. Note that the statistical_measure
-    # is parameter of the python version of this example. It&#39;s a metric to
-    # compare two set&#39;s of time series data. Which one to choose is up to
-    # your expert knowledge. If you have no clue, raise an issue or read
-    # basic literature on calibration.
-    goals = Goals(
-        meas_target_data=meas_target_data,
-        variable_names=variable_names,
-        statistical_measure=statistical_measure,
-        weightings=[0.7, 0.3]
-    )
-    # Let&#39;s check if our evaluation is possible by creating some
-    # dummy sim_target_data with the same index:</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[213:222]
-==examples.e2_B_optimization_problem_definition:[188:197]
-    )
-    return calibration_classes, validation_class
-
-
-if __name__ == &#39;__main__&#39;:
-    main(
-        examples_dir=pathlib.Path(__file__).parent,
-        multiple_classes=True
-    )</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[197:207]
-==examples.e2_B_optimization_problem_definition:[173:183]
-    print([c.name for c in calibration_classes])
-    calibration_classes_merged = merge_calibration_classes(calibration_classes)
-    print([c.name for c in calibration_classes_merged])
-    # Don&#39;t worry, the relevant_time_interval object keeps track
-    # of which time intervals are relevant for the objective calculation
-    print(&#34;Relevant time interval for class&#34;,
-          calibration_classes_merged[0].name,
-          calibration_classes_merged[0].relevant_intervals)
-    # Let&#39;s also create an object to later validate our calibration:
-    validation_class = CalibrationClass(</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[132:158]
-==examples.e2_B_optimization_problem_definition:[113:120]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print(&#34;I knew this error was going to happen. Do you understand &#34;
-              &#34;why this happens based on the following message?&#34;)
-        print(err)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[122:129]
-==examples.e2_B_optimization_problem_definition:[123:149]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print(&#34;I knew this error was going to happen. Do you understand &#34;
-              &#34;why this happens based on the following message?&#34;)
-        print(err)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]
-==examples.e3_verbos_sensitivity_analysis_example:[430:440]
-if __name__ == &#34;__main__&#34;:
-    import pathlib
-
-    # Parameters for sen-analysis:
-    EXAMPLE = &#34;A&#34;  # Or choose B
-    N_CPU = 2
-
-    # Sensitivity analysis:
-    run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e3_sensitivity_analysis_example:[78:86]
-==examples.e3_verbos_sensitivity_analysis_example:[435:443]
-    N_CPU = 2
-
-    # Sensitivity analysis:
-    run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,
-        example=EXAMPLE,
-        n_cpu=N_CPU
-    )</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[111:120]
-==examples.e2_B_optimization_problem_definition:[101:111]
-                                     index=meas_target_data.index)
-    print(&#34;Goals data before setting simulation data:\n&#34;, goals.get_goals_data())
-    goals.set_sim_target_data(sim_target_data)
-    print(&#34;Goals data after setting simulation data:\n&#34;, goals.get_goals_data())
-    print(statistical_measure, &#34;of goals: &#34;, goals.eval_difference())
-    print(&#34;Verbose information on calculation&#34;, goals.eval_difference(verbose=True))
-    # Lastly we advice to play around with the index of the sim_target_data to
-    # understand the error messages of this framework a little bit better.
-    # Example:</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[70:84]
-==examples.e2_B_optimization_problem_definition:[57:73]
-    )
-    print(tuner_paras)
-    print(&#34;Names of parameters&#34;, tuner_paras.get_names())
-    print(&#34;Initial values&#34;, tuner_paras.get_initial_values())
-    # Scaling (will be done internally)
-    print(&#34;Scaled initial values:\n&#34;, tuner_paras.scale(tuner_paras.get_initial_values()))
-
-    # ## Goals
-    # The evaluation of your goals (or mathematically speaking &#39;objective function&#39;)
-    # depends on the difference of measured to simulated data.
-    # Thus, you need to specify both measured and simulated data.
-    #
-    # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
-    data_dir = pathlib.Path(examples_dir).joinpath(&#34;data&#34;)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>duplicate-code</code></td>
-                <td>R0801</td>
-                <td></td>
-                <td><pre>Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[10:58]
-==examples.e2_B_optimization_problem_definition:[10:53]
-import pathlib
-# Imports from ebcpy
-from ebcpy import TimeSeriesData
-# Imports from aixcalibuha
-from aixcalibuha import TunerParas, Goals, \
-    CalibrationClass
-from aixcalibuha.data_types import merge_calibration_classes
-
-
-def main(
-        examples_dir,
-        statistical_measure=&#34;NRMSE&#34;,
-        multiple_classes=True
-):
-    &#34;&#34;&#34;
-    Arguments of this example:
-
-    :param [pathlib.Path, str] examples_dir:
-        Path to the examples folder of AixCaliBuHA
-    :param str statistical_measure:
-        Measure to calculate the scalar of the objective,
-        One of the supported methods in
-        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
-        e.g. RMSE, MAE, NRMSE
-    :param bool multiple_classes:
-        If False, all CalibrationClasses will have the
-        same name
-    &#34;&#34;&#34;
-
-    # ## Tuner Parameters
-    # Tuner parameters are the optimization variables we will be
-    # changing to match the simulated onto the measured output.
-    #
-    # As described in the first example (e1_A_energy_system_analysis),
-    # we&#39;ve changed four parameters in the model. To show the usefulness
-    # of sensitivity analysis prior to calibration, we will add a fifth without
-    # any influence, the heating curve declination of the heat pump.
-    # To define tuner parameters, you have to specify
-    # - the name of the parameter
-    # - an initial guess
-    # - boundaries as a (min, max) tuple.
-    # Note that the initial guess is not always used by optimization routines.
-    # We&#39;ve chosen to make it a requirement to prevent blindly accepting
-    # calibration results. If the result is very far away from your initial guess
-    # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter.
-    # How to load the data is up to you. To make the structure clear,
-    # we use a 3 element tuple in this example:</pre></td>
-            </tr>
-            
-            <tr>
-                <td>11</td>
-                <td>0</td>
-                <td>warning</td>
-                <td><code>unused-import</code></td>
-                <td>W0611</td>
-                <td></td>
-                <td><pre>Unused matplotlib.pyplot imported as plt</pre></td>
-            </tr>
-            
-            <tr>
-                <td>148</td>
-                <td>15</td>
-                <td>convention</td>
-                <td><code>unnecessary-dunder-call</code></td>
-                <td>C2801</td>
-                <td>TestSenAnalyzer.test_sa_morris</td>
-                <td><pre>Unnecessarily calls dunder method __str__. Use str built-in function.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>351</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>missing-function-docstring</code></td>
-                <td>C0116</td>
-                <td>TestSenAnalyzer.test_sa_time_dependent</td>
-                <td><pre>Missing function or method docstring</pre></td>
-            </tr>
-            
-            <tr>
-                <td>382</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>missing-function-docstring</code></td>
-                <td>C0116</td>
-                <td>TestSenAnalyzer.test_plot_parameter_verbose</td>
-                <td><pre>Missing function or method docstring</pre></td>
-            </tr>
-            
-        </table>
-        
 
         <h2>Metrics</h2>
         
@@ -2388,22 +2772,22 @@ def main(
             
             <tr>
                 <td>error</td>
-                <td>4</td>
+                <td>3</td>
             </tr>
             
             <tr>
                 <td>refactor</td>
-                <td>91</td>
+                <td>121</td>
             </tr>
             
             <tr>
                 <td>warning</td>
-                <td>52</td>
+                <td>39</td>
             </tr>
             
             <tr>
                 <td>convention</td>
-                <td>42</td>
+                <td>89</td>
             </tr>
             
         </table>
@@ -2433,7 +2817,7 @@ def main(
             
             <tr>
                 <td>line-too-long</td>
-                <td>14</td>
+                <td>53</td>
             </tr>
             
             <tr>
@@ -2443,72 +2827,52 @@ def main(
             
             <tr>
                 <td>too-many-instance-attributes</td>
-                <td>2</td>
+                <td>7</td>
             </tr>
             
             <tr>
                 <td>too-many-branches</td>
-                <td>2</td>
-            </tr>
-            
-            <tr>
-                <td>too-many-arguments</td>
-                <td>2</td>
-            </tr>
-            
-            <tr>
-                <td>fixme</td>
-                <td>9</td>
-            </tr>
-            
-            <tr>
-                <td>lost-exception</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
-                <td>no-else-raise</td>
-                <td>2</td>
-            </tr>
-            
-            <tr>
-                <td>raise-missing-from</td>
-                <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>too-many-locals</td>
-                <td>6</td>
-            </tr>
-            
-            <tr>
-                <td>unspecified-encoding</td>
-                <td>12</td>
-            </tr>
-            
-            <tr>
-                <td>too-many-statements</td>
                 <td>4</td>
             </tr>
             
             <tr>
-                <td>unreachable</td>
-                <td>2</td>
+                <td>too-many-arguments</td>
+                <td>10</td>
             </tr>
             
             <tr>
-                <td>no-else-break</td>
+                <td>nested-min-max</td>
                 <td>1</td>
             </tr>
             
             <tr>
-                <td>broad-exception-caught</td>
-                <td>5</td>
+                <td>unused-argument</td>
+                <td>3</td>
             </tr>
             
             <tr>
-                <td>f-string-without-interpolation</td>
+                <td>missing-function-docstring</td>
                 <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>consider-using-f-string</td>
+                <td>13</td>
+            </tr>
+            
+            <tr>
+                <td>consider-using-min-builtin</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>unspecified-encoding</td>
+                <td>4</td>
+            </tr>
+            
+            <tr>
+                <td>too-many-locals</td>
+                <td>10</td>
             </tr>
             
             <tr>
@@ -2517,78 +2881,113 @@ def main(
             </tr>
             
             <tr>
-                <td>no-member</td>
-                <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>missing-function-docstring</td>
-                <td>4</td>
-            </tr>
-            
-            <tr>
-                <td>redefined-builtin</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
                 <td>invalid-name</td>
-                <td>5</td>
-            </tr>
-            
-            <tr>
-                <td>anomalous-backslash-in-string</td>
-                <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>missing-module-docstring</td>
-                <td>8</td>
-            </tr>
-            
-            <tr>
-                <td>consider-using-f-string</td>
-                <td>4</td>
+                <td>13</td>
             </tr>
             
             <tr>
                 <td>unused-variable</td>
-                <td>2</td>
+                <td>7</td>
+            </tr>
+            
+            <tr>
+                <td>too-many-nested-blocks</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>reimported</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>no-else-return</td>
+                <td>10</td>
+            </tr>
+            
+            <tr>
+                <td>unnecessary-comprehension</td>
+                <td>3</td>
+            </tr>
+            
+            <tr>
+                <td>logging-fstring-interpolation</td>
+                <td>10</td>
+            </tr>
+            
+            <tr>
+                <td>f-string-without-interpolation</td>
+                <td>3</td>
+            </tr>
+            
+            <tr>
+                <td>too-many-statements</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>unneeded-not</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>no-else-raise</td>
+                <td>1</td>
             </tr>
             
             <tr>
                 <td>import-outside-toplevel</td>
-                <td>3</td>
+                <td>1</td>
             </tr>
             
             <tr>
-                <td>redefined-outer-name</td>
-                <td>2</td>
-            </tr>
-            
-            <tr>
-                <td>unused-import</td>
-                <td>3</td>
+                <td>use-maxsplit-arg</td>
+                <td>1</td>
             </tr>
             
             <tr>
                 <td>wrong-import-order</td>
+                <td>3</td>
+            </tr>
+            
+            <tr>
+                <td>unused-import</td>
                 <td>1</td>
             </tr>
             
             <tr>
-                <td>ungrouped-imports</td>
+                <td>consider-using-from-import</td>
                 <td>1</td>
             </tr>
             
             <tr>
-                <td>unnecessary-dunder-call</td>
+                <td>unexpected-keyword-arg</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td>consider-using-enumerate</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td>inconsistent-return-statements</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>broad-exception-raised</td>
                 <td>1</td>
             </tr>
             
             <tr>
                 <td>duplicate-code</td>
-                <td>12</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>cyclic-import</td>
+                <td>10</td>
             </tr>
             
         </table>
@@ -2607,7 +3006,7 @@ def main(
             </tr>
             
             <tr>
-                <td>aixcalibuha.__init__</td>
+                <td>aixcalibuha</td>
                 <td>1</td>
             </tr>
             
@@ -2617,73 +3016,58 @@ def main(
             </tr>
             
             <tr>
-                <td>bin.guided_setup</td>
-                <td>30</td>
+                <td>aixcalibuha.utils.visualizer</td>
+                <td>22</td>
             </tr>
             
             <tr>
-                <td>bin.run_modelica_calibration</td>
+                <td>aixcalibuha.utils.configuration</td>
+                <td>7</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.plotting</td>
+                <td>26</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.sensitivity_analyzer</td>
+                <td>69</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.fast</td>
+                <td>5</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.pawn</td>
+                <td>7</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.morris</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha.sensitivity_analysis.sobol</td>
                 <td>11</td>
             </tr>
             
             <tr>
-                <td>examples</td>
-                <td>1</td>
+                <td>aixcalibuha.calibration.calibrator</td>
+                <td>11</td>
             </tr>
             
             <tr>
-                <td>examples.e1_A_energy_system_analysis</td>
-                <td>10</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e1_B_energy_system_analysis</td>
-                <td>6</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e2_A_optimization_problem_definition</td>
-                <td>5</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e2_B_optimization_problem_definition</td>
-                <td>4</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e3_sensitivity_analysis_example</td>
-                <td>6</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e3_verbos_dymola_sensitivity_analysis_example</td>
-                <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e3_verbos_sensitivity_analysis_example</td>
-                <td>17</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e4_calibration_example</td>
-                <td>5</td>
-            </tr>
-            
-            <tr>
-                <td>examples.e5_automated_process</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
-                <td>tests.test_data_types</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
-                <td>tests.test_modelica_cal_sen</td>
-                <td>16</td>
+                <td>aixcalibuha.calibration.multi_class_calibrator</td>
+                <td>18</td>
             </tr>
             
         </table>
@@ -2712,73 +3096,58 @@ def main(
             </tr>
             
             <tr>
-                <td>bin/guided_setup.py</td>
-                <td>30</td>
+                <td>aixcalibuha/utils/visualizer.py</td>
+                <td>22</td>
             </tr>
             
             <tr>
-                <td>bin/run_modelica_calibration.py</td>
+                <td>aixcalibuha/utils/configuration.py</td>
+                <td>7</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/plotting.py</td>
+                <td>26</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py</td>
+                <td>69</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/fast.py</td>
+                <td>5</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/__init__.py</td>
+                <td>2</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/pawn.py</td>
+                <td>7</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/morris.py</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
+                <td>aixcalibuha/sensitivity_analysis/sobol.py</td>
                 <td>11</td>
             </tr>
             
             <tr>
-                <td>examples/__init__.py</td>
-                <td>1</td>
+                <td>aixcalibuha/calibration/calibrator.py</td>
+                <td>11</td>
             </tr>
             
             <tr>
-                <td>examples/e1_A_energy_system_analysis.py</td>
-                <td>10</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e1_B_energy_system_analysis.py</td>
-                <td>6</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e2_A_optimization_problem_definition.py</td>
-                <td>5</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e2_B_optimization_problem_definition.py</td>
-                <td>4</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e3_sensitivity_analysis_example.py</td>
-                <td>6</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e3_verbos_dymola_sensitivity_analysis_example.py</td>
-                <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e3_verbos_sensitivity_analysis_example.py</td>
-                <td>17</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e4_calibration_example.py</td>
-                <td>5</td>
-            </tr>
-            
-            <tr>
-                <td>examples/e5_automated_process.py</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
-                <td>tests/test_data_types.py</td>
-                <td>1</td>
-            </tr>
-            
-            <tr>
-                <td>tests/test_modelica_cal_sen.py</td>
-                <td>16</td>
+                <td>aixcalibuha/calibration/multi_class_calibrator.py</td>
+                <td>18</td>
             </tr>
             
         </table>

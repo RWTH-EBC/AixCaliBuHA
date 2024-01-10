@@ -66,7 +66,7 @@ pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pyli
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'non-ascii-bytes-literal' (unknown-option-value)
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'locally-enabled' (unknown-option-value)
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'eq-without-hash' (unknown-option-value)
-************* Module aixcalibuha.__init__
+************* Module aixcalibuha
 aixcalibuha/__init__.py:7:0: C0301: Line too long (101/100) (line-too-long)
 ************* Module aixcalibuha.data_types
 aixcalibuha/data_types.py:707:0: C0303: Trailing whitespace (trailing-whitespace)
@@ -74,345 +74,205 @@ aixcalibuha/data_types.py:19:0: R0902: Too many instance attributes (9/7) (too-m
 aixcalibuha/data_types.py:67:4: R0912: Too many branches (17/12) (too-many-branches)
 aixcalibuha/data_types.py:504:0: R0902: Too many instance attributes (14/7) (too-many-instance-attributes)
 aixcalibuha/data_types.py:545:4: R0913: Too many arguments (7/5) (too-many-arguments)
-************* Module guided_setup
-bin/guided_setup.py:314:0: C0301: Line too long (102/100) (line-too-long)
-bin/guided_setup.py:374:0: C0301: Line too long (103/100) (line-too-long)
-bin/guided_setup.py:404:0: C0301: Line too long (104/100) (line-too-long)
-bin/guided_setup.py:295:9: W0511: TODO: Check if this still works for new installs (fixme)
-bin/guided_setup.py:34:12: W0150: break statement in finally block may swallow exception (lost-exception)
-bin/guided_setup.py:72:12: R1720: Unnecessary "else" after "raise", remove the "else" and de-indent the code inside it (no-else-raise)
-bin/guided_setup.py:77:12: W0707: Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\n{_handle_argv.__doc__}') from exc' (raise-missing-from)
-bin/guided_setup.py:82:0: R0914: Too many local variables (18/15) (too-many-locals)
-bin/guided_setup.py:153:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:157:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:159:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:172:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:182:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:184:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:186:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:196:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:199:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:201:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:210:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:82:0: R0915: Too many statements (55/50) (too-many-statements)
-bin/guided_setup.py:226:0: R0914: Too many local variables (43/15) (too-many-locals)
-bin/guided_setup.py:232:4: W0101: Unreachable code (unreachable)
-bin/guided_setup.py:255:12: R1723: Unnecessary "elif" after "break", remove the leading "el" from "elif" (no-else-break)
-bin/guided_setup.py:484:11: W0718: Catching too general exception Exception (broad-exception-caught)
-bin/guided_setup.py:363:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
-bin/guided_setup.py:369:28: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
-bin/guided_setup.py:371:33: W0212: Access to a protected member _make_modelica_normpath of a client class (protected-access)
-bin/guided_setup.py:453:45: E1101: Instance of 'DymolaAPI' has no 'dymola_path' member (no-member)
-bin/guided_setup.py:226:0: R0912: Too many branches (19/12) (too-many-branches)
-bin/guided_setup.py:226:0: R0915: Too many statements (108/50) (too-many-statements)
-************* Module run_modelica_calibration
-bin/run_modelica_calibration.py:34:12: R1720: Unnecessary "else" after "raise", remove the "else" and de-indent the code inside it (no-else-raise)
-bin/run_modelica_calibration.py:39:12: W0707: Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\n{_handle_argv.__doc__}') from exc' (raise-missing-from)
-bin/run_modelica_calibration.py:44:0: C0116: Missing function or method docstring (missing-function-docstring)
-bin/run_modelica_calibration.py:44:0: R0914: Too many local variables (31/15) (too-many-locals)
-bin/run_modelica_calibration.py:112:8: W0622: Redefining built-in 'map' (redefined-builtin)
-bin/run_modelica_calibration.py:46:4: W0101: Unreachable code (unreachable)
-bin/run_modelica_calibration.py:78:4: C0103: Variable name "e" doesn't conform to snake_case naming style (invalid-name)
-bin/run_modelica_calibration.py:80:8: W0707: Consider explicitly re-raising using 'raise KeyError(f'Given config file does not contain {value_error}. You need to specify this value in order to run the calibration.') from e' (raise-missing-from)
-bin/run_modelica_calibration.py:108:14: E1101: Module 'aixcalibuha.utils.configuration' has no 'get_simulation_api_from_config' member (no-member)
-bin/run_modelica_calibration.py:121:8: E1101: Module 'ebcpy.utils.conversion' has no 'convert_hdf_to_modelica_txt' member (no-member)
-bin/run_modelica_calibration.py:44:0: R0915: Too many statements (59/50) (too-many-statements)
-************* Module examples
-examples/__init__.py:41:0: C0116: Missing function or method docstring (missing-function-docstring)
-************* Module examples.e1_A_energy_system_analysis
-examples/e1_A_energy_system_analysis.py:45:0: C0301: Line too long (107/100) (line-too-long)
-examples/e1_A_energy_system_analysis.py:46:0: C0301: Line too long (108/100) (line-too-long)
-examples/e1_A_energy_system_analysis.py:124:25: W1401: Anomalous backslash in string: '\m'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
-examples/e1_A_energy_system_analysis.py:127:25: W1401: Anomalous backslash in string: '\m'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
-examples/e1_A_energy_system_analysis.py:130:25: W1401: Anomalous backslash in string: '\m'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
-examples/e1_A_energy_system_analysis.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e1_A_energy_system_analysis.py:1:0: C0103: Module name "e1_A_energy_system_analysis" doesn't conform to snake_case naming style (invalid-name)
-examples/e1_A_energy_system_analysis.py:101:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-examples/e1_A_energy_system_analysis.py:116:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-examples/e1_A_energy_system_analysis.py:121:4: W0612: Unused variable 'fig' (unused-variable)
-************* Module examples.e1_B_energy_system_analysis
-examples/e1_B_energy_system_analysis.py:28:0: C0301: Line too long (108/100) (line-too-long)
-examples/e1_B_energy_system_analysis.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e1_B_energy_system_analysis.py:1:0: C0103: Module name "e1_B_energy_system_analysis" doesn't conform to snake_case naming style (invalid-name)
-examples/e1_B_energy_system_analysis.py:39:4: C0415: Import outside toplevel (examples.setup_fmu) (import-outside-toplevel)
-examples/e1_B_energy_system_analysis.py:66:10: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-examples/e1_B_energy_system_analysis.py:69:4: W0612: Unused variable 'fig' (unused-variable)
-************* Module examples.e2_A_optimization_problem_definition
-examples/e2_A_optimization_problem_definition.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e2_A_optimization_problem_definition.py:1:0: C0103: Module name "e2_A_optimization_problem_definition" doesn't conform to snake_case naming style (invalid-name)
-examples/e2_A_optimization_problem_definition.py:20:0: R0914: Too many local variables (17/15) (too-many-locals)
-examples/e2_A_optimization_problem_definition.py:126:11: W0718: Catching too general exception Exception (broad-exception-caught)
-examples/e2_A_optimization_problem_definition.py:136:11: W0718: Catching too general exception Exception (broad-exception-caught)
-************* Module examples.e2_B_optimization_problem_definition
-examples/e2_B_optimization_problem_definition.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e2_B_optimization_problem_definition.py:1:0: C0103: Module name "e2_B_optimization_problem_definition" doesn't conform to snake_case naming style (invalid-name)
-examples/e2_B_optimization_problem_definition.py:117:11: W0718: Catching too general exception Exception (broad-exception-caught)
-examples/e2_B_optimization_problem_definition.py:127:11: W0718: Catching too general exception Exception (broad-exception-caught)
-************* Module examples.e3_sensitivity_analysis_example
-examples/e3_sensitivity_analysis_example.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e3_sensitivity_analysis_example.py:41:4: W0621: Redefining name 'setup_fmu' from outer scope (line 76) (redefined-outer-name)
-examples/e3_sensitivity_analysis_example.py:41:4: W0621: Redefining name 'setup_calibration_classes' from outer scope (line 76) (redefined-outer-name)
-examples/e3_sensitivity_analysis_example.py:41:4: C0415: Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes) (import-outside-toplevel)
-examples/e3_sensitivity_analysis_example.py:76:4: W0611: Unused setup_fmu imported from examples (unused-import)
-examples/e3_sensitivity_analysis_example.py:76:4: W0611: Unused setup_calibration_classes imported from examples (unused-import)
-************* Module examples.e3_verbos_dymola_sensitivity_analysis_example
-examples/e3_verbos_dymola_sensitivity_analysis_example.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e3_verbos_dymola_sensitivity_analysis_example.py:83:12: W0212: Access to a protected member _inputs of a client class (protected-access)
-examples/e3_verbos_dymola_sensitivity_analysis_example.py:11:0: C0411: third party import "from ebcpy.utils.conversion import convert_tsd_to_modelica_txt" should be placed before "from examples import setup_dym_api, setup_calibration_classes" (wrong-import-order)
-************* Module examples.e3_verbos_sensitivity_analysis_example
-examples/e3_verbos_sensitivity_analysis_example.py:76:0: C0301: Line too long (111/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:170:0: C0301: Line too long (224/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:208:0: C0301: Line too long (104/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:212:0: C0301: Line too long (101/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:290:0: C0301: Line too long (134/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:407:0: C0301: Line too long (101/100) (line-too-long)
-examples/e3_verbos_sensitivity_analysis_example.py:10:1: W0511: TODO: Add this file and the other verbose example to the files under examples\converter.toml (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:53:5: W0511: TODO: Directly say why it is necessary or refer to the section (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:76:5: W0511: the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:119:5: W0511: TODO: The following sentence is not clear to me (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:170:32: W0511: TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script. (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:208:25: W0511: TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this? (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:212:5: W0511: ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or? (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:298:5: W0511: See issue # TODO: Open issue in SAlib for false ST results of the FAST method (fixme)
-examples/e3_verbos_sensitivity_analysis_example.py:18:0: R0914: Too many local variables (28/15) (too-many-locals)
-examples/e3_verbos_sensitivity_analysis_example.py:18:0: R0915: Too many statements (58/50) (too-many-statements)
-examples/e3_verbos_sensitivity_analysis_example.py:15:0: C0412: Imports from package aixcalibuha are not grouped (ungrouped-imports)
-************* Module examples.e4_calibration_example
-examples/e4_calibration_example.py:101:0: C0301: Line too long (108/100) (line-too-long)
-examples/e4_calibration_example.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-examples/e4_calibration_example.py:12:0: R0913: Too many arguments (7/5) (too-many-arguments)
-examples/e4_calibration_example.py:12:0: R0914: Too many local variables (20/15) (too-many-locals)
-examples/e4_calibration_example.py:51:4: C0415: Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes) (import-outside-toplevel)
-************* Module examples.e5_automated_process
-examples/e5_automated_process.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module tests.test_data_types
-tests/test_data_types.py:89:17: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
-************* Module tests.test_modelica_cal_sen
-tests/test_modelica_cal_sen.py:148:15: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
-tests/test_modelica_cal_sen.py:351:4: C0116: Missing function or method docstring (missing-function-docstring)
-tests/test_modelica_cal_sen.py:382:4: C0116: Missing function or method docstring (missing-function-docstring)
-tests/test_modelica_cal_sen.py:11:0: W0611: Unused matplotlib.pyplot imported as plt (unused-import)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==guided_setup:[64:102]
-==run_modelica_calibration:[26:44]
-    __supported_argv = ["--config"]
-    # Path to the script is irrelevant
-    resulting_setting = {}
-    _rel_argv = argv[1:]
-    for arg in _rel_argv:
-        try:
-            name, value = arg.split("=")
-            if name not in __supported_argv:
-                raise KeyError
-            else:
-                resulting_setting[name] = value
-        except (ValueError, KeyError):
-            raise ValueError(f"Given argument is not supported.\n{_handle_argv.__doc__}")
-
-    return resulting_setting
-
-
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    """
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a "package.mo" file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the "package.mo" file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    """ (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[122:131]
-==examples.e2_B_optimization_problem_definition:[113:122]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print("I knew this error was going to happen. Do you understand "
-              "why this happens based on the following message?")
-        print(err)
-    new_index = meas_target_data.index.values.copy()
-    new_index[-10] += 0.05  # Change some value (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[92:110]
-==examples.e2_B_optimization_problem_definition:[82:100]
-    }
-    # To match the measured data to simulated data,
-    # the index has to match with the simulation output
-    # Thus, convert it:
-    meas_target_data.to_float_index()
-    # Lastly, setup the goals object. Note that the statistical_measure
-    # is parameter of the python version of this example. It's a metric to
-    # compare two set's of time series data. Which one to choose is up to
-    # your expert knowledge. If you have no clue, raise an issue or read
-    # basic literature on calibration.
-    goals = Goals(
-        meas_target_data=meas_target_data,
-        variable_names=variable_names,
-        statistical_measure=statistical_measure,
-        weightings=[0.7, 0.3]
-    )
-    # Let's check if our evaluation is possible by creating some
-    # dummy sim_target_data with the same index: (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[213:222]
-==examples.e2_B_optimization_problem_definition:[188:197]
-    )
-    return calibration_classes, validation_class
-
-
-if __name__ == '__main__':
-    main(
-        examples_dir=pathlib.Path(__file__).parent,
-        multiple_classes=True
-    ) (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[197:207]
-==examples.e2_B_optimization_problem_definition:[173:183]
-    print([c.name for c in calibration_classes])
-    calibration_classes_merged = merge_calibration_classes(calibration_classes)
-    print([c.name for c in calibration_classes_merged])
-    # Don't worry, the relevant_time_interval object keeps track
-    # of which time intervals are relevant for the objective calculation
-    print("Relevant time interval for class",
-          calibration_classes_merged[0].name,
-          calibration_classes_merged[0].relevant_intervals)
-    # Let's also create an object to later validate our calibration:
-    validation_class = CalibrationClass( (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[132:158]
-==examples.e2_B_optimization_problem_definition:[113:120]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print("I knew this error was going to happen. Do you understand "
-              "why this happens based on the following message?")
-        print(err) (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[122:129]
-==examples.e2_B_optimization_problem_definition:[123:149]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print("I knew this error was going to happen. Do you understand "
-              "why this happens based on the following message?")
-        print(err) (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e3_verbos_dymola_sensitivity_analysis_example:[104:114]
-==examples.e3_verbos_sensitivity_analysis_example:[430:440]
-if __name__ == "__main__":
-    import pathlib
-
-    # Parameters for sen-analysis:
-    EXAMPLE = "A"  # Or choose B
-    N_CPU = 2
-
-    # Sensitivity analysis:
-    run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent, (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e3_sensitivity_analysis_example:[78:86]
-==examples.e3_verbos_sensitivity_analysis_example:[435:443]
-    N_CPU = 2
-
-    # Sensitivity analysis:
-    run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,
-        example=EXAMPLE,
-        n_cpu=N_CPU
-    ) (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[111:120]
-==examples.e2_B_optimization_problem_definition:[101:111]
-                                     index=meas_target_data.index)
-    print("Goals data before setting simulation data:\n", goals.get_goals_data())
-    goals.set_sim_target_data(sim_target_data)
-    print("Goals data after setting simulation data:\n", goals.get_goals_data())
-    print(statistical_measure, "of goals: ", goals.eval_difference())
-    print("Verbose information on calculation", goals.eval_difference(verbose=True))
-    # Lastly we advice to play around with the index of the sim_target_data to
-    # understand the error messages of this framework a little bit better.
-    # Example: (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[70:84]
-==examples.e2_B_optimization_problem_definition:[57:73]
-    )
-    print(tuner_paras)
-    print("Names of parameters", tuner_paras.get_names())
-    print("Initial values", tuner_paras.get_initial_values())
-    # Scaling (will be done internally)
-    print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
-    # ## Goals
-    # The evaluation of your goals (or mathematically speaking 'objective function')
-    # depends on the difference of measured to simulated data.
-    # Thus, you need to specify both measured and simulated data.
-    #
-    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:
-    #
-    # As the examples should work, and the cal_class example uses the other examples,
-    # we will test it here:
-    data_dir = pathlib.Path(examples_dir).joinpath("data") (duplicate-code)
-tests/test_modelica_cal_sen.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[10:58]
-==examples.e2_B_optimization_problem_definition:[10:53]
-import pathlib
-# Imports from ebcpy
-from ebcpy import TimeSeriesData
-# Imports from AixCaliBUhA
-from aixcalibuha import TunerParas, Goals, \
-    CalibrationClass
-from aixcalibuha.data_types import merge_calibration_classes
-
-
-def main(
-        examples_dir,
-        statistical_measure="NRMSE",
-        multiple_classes=True
-):
-    """
-    Arguments of this example:
-
-    :param [pathlib.Path, str] examples_dir:
-        Path to the examples folder of AixCaliBuHA
-    :param str statistical_measure:
-        Measure to calculate the scalar of the objective,
-        One of the supported methods in
-        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer
-        e.g. RMSE, MAE, NRMSE
-    :param bool multiple_classes:
-        If False, all CalibrationClasses will have the
-        same name
-    """
-    # ## Tuner Parameters
-    # Tuner parameters are the optimization variables we will be
-    # changing to match the simulated onto the measured output.
-    #
-    # As described in the first example (e1_B_energy_system_analysis),
-    # we've changed two parameters in the model.
-    # To define tuner parameters, you have to specify
-    # - the name of the parameter
-    # - an initial guess
-    # - boundaries as a (min, max) tuple.
-    # Note that the initial guess is not always used by optimization routines.
-    # We've chosen to make it a requirement to prevent blindly accepting
-    # calibration results. If the result is very far away from your initial guess
-    # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter. (duplicate-code)
+************* Module aixcalibuha.utils.visualizer
+aixcalibuha/utils/visualizer.py:575:0: C0301: Line too long (107/100) (line-too-long)
+aixcalibuha/utils/visualizer.py:18:0: R0902: Too many instance attributes (12/7) (too-many-instance-attributes)
+aixcalibuha/utils/visualizer.py:70:28: W3301: Do not use nested call of 'max'; it's possible to do 'max(bounds_max, abs(bounds_min))' instead (nested-min-max)
+aixcalibuha/utils/visualizer.py:110:0: W0613: Unused argument 'kwargs' (unused-argument)
+aixcalibuha/utils/visualizer.py:138:62: W0613: Unused argument 'for_validation' (unused-argument)
+aixcalibuha/utils/visualizer.py:169:4: C0116: Missing function or method docstring (missing-function-docstring)
+aixcalibuha/utils/visualizer.py:232:0: W0613: Unused argument 'kwargs' (unused-argument)
+aixcalibuha/utils/visualizer.py:256:22: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:264:16: R1730: Consider using 'num_dots = min(num_dots, 3)' instead of unnecessary if block (consider-using-min-builtin)
+aixcalibuha/utils/visualizer.py:269:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:271:23: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:298:22: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:301:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:305:23: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:308:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:311:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:312:43: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:319:0: R0902: Too many instance attributes (17/7) (too-many-instance-attributes)
+aixcalibuha/utils/visualizer.py:503:48: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:504:46: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/utils/visualizer.py:518:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+aixcalibuha/utils/visualizer.py:621:4: R0914: Too many local variables (16/15) (too-many-locals)
+************* Module aixcalibuha.utils.configuration
+aixcalibuha/utils/configuration.py:42:0: C0301: Line too long (110/100) (line-too-long)
+aixcalibuha/utils/configuration.py:43:0: C0301: Line too long (116/100) (line-too-long)
+aixcalibuha/utils/configuration.py:45:0: C0301: Line too long (103/100) (line-too-long)
+aixcalibuha/utils/configuration.py:47:0: C0301: Line too long (111/100) (line-too-long)
+aixcalibuha/utils/configuration.py:49:0: C0301: Line too long (124/100) (line-too-long)
+aixcalibuha/utils/configuration.py:189:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+aixcalibuha/utils/configuration.py:204:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+************* Module aixcalibuha.sensitivity_analysis.plotting
+aixcalibuha/sensitivity_analysis/plotting.py:145:0: C0301: Line too long (116/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:168:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:292:0: C0301: Line too long (109/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:308:0: C0301: Line too long (157/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:328:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:419:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/plotting.py:12:0: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:83:0: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:83:0: R0914: Too many local variables (20/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/plotting.py:162:0: R0913: Too many arguments (7/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:204:60: W0212: Access to a protected member _suptitle of a client class (protected-access)
+aixcalibuha/sensitivity_analysis/plotting.py:210:0: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:241:4: C0103: Variable name "im" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/plotting.py:238:8: W0612: Unused variable 'fig' (unused-variable)
+aixcalibuha/sensitivity_analysis/plotting.py:283:4: W0612: Unused variable 'fig' (unused-variable)
+aixcalibuha/sensitivity_analysis/plotting.py:297:0: R0913: Too many arguments (8/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:297:0: R0914: Too many local variables (24/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/plotting.py:360:18: C0103: Variable name "av" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/plotting.py:365:20: C0103: Variable name "p" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/plotting.py:368:20: C0103: Variable name "ci" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/plotting.py:349:4: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+aixcalibuha/sensitivity_analysis/plotting.py:297:0: R0912: Too many branches (16/12) (too-many-branches)
+aixcalibuha/sensitivity_analysis/plotting.py:388:0: R0913: Too many arguments (7/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/plotting.py:388:0: R0914: Too many local variables (23/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/plotting.py:467:22: C0103: Variable name "av" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/plotting.py:467:16: W0612: Unused variable 'av_i' (unused-variable)
+************* Module aixcalibuha.sensitivity_analysis.sensitivity_analyzer
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:25:0: C0301: Line too long (111/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:50:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:65:0: C0301: Line too long (117/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:67:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:72:0: C0301: Line too long (107/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:210:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:279:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:336:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:382:0: C0301: Line too long (115/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:385:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:392:0: C0301: Line too long (103/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:393:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:399:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:402:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:478:0: C0301: Line too long (108/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:479:0: C0301: Line too long (107/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:509:0: C0301: Line too long (115/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:657:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:660:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:667:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:668:0: C0301: Line too long (111/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:691:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:692:0: C0301: Line too long (103/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:709:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:722:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:751:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:752:0: C0301: Line too long (105/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:773:0: C0301: Line too long (103/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:787:0: C0301: Line too long (101/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:788:0: C0301: Line too long (114/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:805:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:14:0: W0404: Reimport 'data_types' (imported line 12) (reimported)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:22:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:70:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:83:0: R0902: Too many instance attributes (12/7) (too-many-instance-attributes)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:242:30: R1721: Unnecessary use of a comprehension, use dict(zip(initial_names, initial_values)) instead. (unnecessary-comprehension)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:250:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:239:12: W0612: Unused variable 'i' (unused-variable)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:279:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:286:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:297:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:299:22: C0103: Variable name "w" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:299:65: W0212: Access to a protected member _weightings of a client class (protected-access)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:312:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:312:25: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:337:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:356:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:367:4: R0914: Too many local variables (35/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:439:37: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:473:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:480:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:367:4: R0912: Too many branches (21/12) (too-many-branches)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:367:4: R0915: Too many statements (74/50) (too-many-statements)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:576:12: W0612: Unused variable 'num_class' (unused-variable)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:621:11: C0113: Consider changing "not Counter(calibration_class.tuner_paras.get_names()) == Counter(list(result.columns))" to "Counter(calibration_class.tuner_paras.get_names()) != Counter(list(result.columns))" (unneeded-not)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:629:21: C0103: Variable name "c" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:643:8: R1720: Unnecessary "else" after "raise", remove the "else" and de-indent the code inside it (no-else-raise)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:629:16: W0612: Unused variable 'idx' (unused-variable)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:649:4: R0914: Too many local variables (21/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:733:4: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:752:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:777:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:777:29: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:778:16: C0103: Variable name "t" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:800:20: C0103: Variable name "av" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:838:4: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:869:8: C0415: Import outside toplevel (ebcpy.utils.reproduction.CopyFile) (import-outside-toplevel)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:878:39: C0207: Use str(file_path).rsplit(self.cd.name, maxsplit=1)[-1] instead (use-maxsplit-arg)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:16:0: C0411: standard import "import multiprocessing as mp" should be placed before "import numpy as np" (wrong-import-order)
+************* Module aixcalibuha.sensitivity_analysis.fast
+aixcalibuha/sensitivity_analysis/fast.py:15:0: C0301: Line too long (114/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/fast.py:32:8: C0103: Attribute name "M" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/fast.py:83:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/sensitivity_analysis/fast.py:10:0: C0411: standard import "import warnings" should be placed before "from SALib.sample import fast_sampler as fast" (wrong-import-order)
+aixcalibuha/sensitivity_analysis/fast.py:10:0: W0611: Unused import warnings (unused-import)
+************* Module aixcalibuha.sensitivity_analysis
+aixcalibuha/sensitivity_analysis/__init__.py:11:0: R0402: Use 'from aixcalibuha.sensitivity_analysis import plotting' instead (consider-using-from-import)
+aixcalibuha/sensitivity_analysis/__init__.py:11:0: C0411: first party import "import aixcalibuha.sensitivity_analysis.plotting as plotting" should be placed before "from .sensitivity_analyzer import SenAnalyzer" (wrong-import-order)
+************* Module aixcalibuha.sensitivity_analysis.pawn
+aixcalibuha/sensitivity_analysis/pawn.py:46:8: C0103: Attribute name "s" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/pawn.py:51:8: C0103: Attribute name "M" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/pawn.py:82:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+aixcalibuha/sensitivity_analysis/pawn.py:102:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+aixcalibuha/sensitivity_analysis/pawn.py:107:19: E1123: Unexpected keyword argument 'calc_second_order' in function call (unexpected-keyword-arg)
+aixcalibuha/sensitivity_analysis/pawn.py:111:19: E1123: Unexpected keyword argument 'calc_second_order' in function call (unexpected-keyword-arg)
+aixcalibuha/sensitivity_analysis/pawn.py:123:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+************* Module aixcalibuha.sensitivity_analysis.morris
+aixcalibuha/sensitivity_analysis/morris.py:85:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+************* Module aixcalibuha.sensitivity_analysis.sobol
+aixcalibuha/sensitivity_analysis/sobol.py:16:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:95:0: C0301: Line too long (108/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:97:0: C0301: Line too long (103/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:104:0: C0301: Line too long (105/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:128:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:184:0: C0301: Line too long (111/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sobol.py:102:4: R0914: Too many local variables (18/15) (too-many-locals)
+aixcalibuha/sensitivity_analysis/sobol.py:114:20: C0103: Variable name "av" doesn't conform to snake_case naming style (invalid-name)
+aixcalibuha/sensitivity_analysis/sobol.py:161:16: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+aixcalibuha/sensitivity_analysis/sobol.py:162:20: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+aixcalibuha/sensitivity_analysis/sobol.py:133:4: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+************* Module aixcalibuha.calibration.calibrator
+aixcalibuha/calibration/calibrator.py:272:0: C0301: Line too long (106/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:277:0: C0301: Line too long (107/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:20:0: R0902: Too many instance attributes (24/7) (too-many-instance-attributes)
+aixcalibuha/calibration/calibrator.py:214:26: R1721: Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead. (unnecessary-comprehension)
+aixcalibuha/calibration/calibrator.py:241:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+aixcalibuha/calibration/calibrator.py:255:4: R0914: Too many local variables (20/15) (too-many-locals)
+aixcalibuha/calibration/calibrator.py:272:34: R1721: Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead. (unnecessary-comprehension)
+aixcalibuha/calibration/calibrator.py:308:23: W0612: Unused variable 'unweighted_objective' (unused-variable)
+aixcalibuha/calibration/calibrator.py:416:12: W0719: Raising too general exception: Exception (broad-exception-raised)
+aixcalibuha/calibration/calibrator.py:487:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+aixcalibuha/calibration/calibrator.py:490:4: R0914: Too many local variables (17/15) (too-many-locals)
+************* Module aixcalibuha.calibration.multi_class_calibrator
+aixcalibuha/calibration/multi_class_calibrator.py:13:0: R0902: Too many instance attributes (13/7) (too-many-instance-attributes)
+aixcalibuha/calibration/multi_class_calibrator.py:53:4: R0913: Too many arguments (6/5) (too-many-arguments)
+aixcalibuha/calibration/multi_class_calibrator.py:62:28: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/calibration/multi_class_calibrator.py:94:4: R0914: Too many local variables (16/15) (too-many-locals)
+aixcalibuha/calibration/multi_class_calibrator.py:94:4: R0912: Too many branches (14/12) (too-many-branches)
+aixcalibuha/calibration/multi_class_calibrator.py:198:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+aixcalibuha/calibration/multi_class_calibrator.py:261:28: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0801: Similar lines in 2 files
+==aixcalibuha.sensitivity_analysis.morris:[84:89]
+==aixcalibuha.sensitivity_analysis.pawn:[122:127]
+        if result is None:
+            names = cal_class.tuner_paras.get_names()
+            return dict(zip(names, np.zeros(len(names))))
+        else:
+            return dict(zip(result['names'], result[analysis_variable])) (duplicate-code)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils.visualizer) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer -> aixcalibuha.utils) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 8.87/10
+Your code has been rated at 8.88/10
 
