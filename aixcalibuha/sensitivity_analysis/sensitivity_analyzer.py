@@ -547,17 +547,16 @@ class SenAnalyzer(abc.ABC):
                 results_goals[key] = result_goal
             all_results.append(results_goals)
         result = self._conv_local_results(results=all_results,
-                                          local_classes=calibration_classes,
-                                          verbose=verbose)
+                                          local_classes=calibration_classes)
         if save_results:
             self._save(result)
         if plot_result:
             self.plot(result)
         return result, calibration_classes
 
-    def _save(self, result, time_dependent=False):
+    def _save(self, result: pd.DataFrame, time_dependent: bool = False):
         """
-        Saves the result DataFrame of run.
+        Saves the result DataFrame of run and run_time_dependent.
         Needs to be overwritten for Sobol results.
         """
         if time_dependent:
@@ -768,8 +767,7 @@ class SenAnalyzer(abc.ABC):
                 )
             result_dict_tstep[var] = sen_tstep_var
         result_df_tstep = self._conv_local_results(results=[result_dict_tstep],
-                                                   local_classes=[cal_class],
-                                                   verbose=True)
+                                                   local_classes=[cal_class])
         return result_df_tstep
 
     def _load_tsteps_df(self, tsteps, _filepaths):
@@ -813,7 +811,10 @@ class SenAnalyzer(abc.ABC):
         glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)
         return pd.DataFrame(glo_res_dict, index=['global'])
 
-    def _conv_local_results(self, results: list, local_classes: list, verbose=False):
+    def _conv_local_results(self, results: list, local_classes: list):
+        """
+        Convert the result dictionaries form SALib of each class and goal into one DataFrame.
+        """
         _conv_results = []
         tuples = []
         for class_results, local_class in zip(results, local_classes):

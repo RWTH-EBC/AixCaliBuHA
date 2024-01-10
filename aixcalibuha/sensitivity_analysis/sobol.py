@@ -85,21 +85,26 @@ class SobolAnalyzer(SenAnalyzer):
                             N=self.num_samples,
                             **self.create_sampler_demand())
 
-    def _save(self, result, time_dependent=False):
+    def _save(self, result: tuple, time_dependent: bool = False):
+        """
+        Save the results of the run and run_time_dependent function of the SobolAnalyzer.
+        """
+        if not result[0].empty:
+            super()._save(result=result[0], time_dependent=time_dependent)
         if time_dependent:
-            savepath_result_1 = self.cd.joinpath(f'{self.__class__.__name__}_results_time.csv')
             savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order_time.csv')
         else:
-            savepath_result_1 = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
             savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv')
-        if not result[0].empty:
-            result[0].to_csv(savepath_result_1)
-            self.reproduction_files.append(savepath_result_1)
         if not result[1].empty:
             result[1].to_csv(savepath_result_2)
             self.reproduction_files.append(savepath_result_2)
 
-    def _conv_local_results(self, results: list, local_classes: list, verbose=False):
+    def _conv_local_results(self, results: list, local_classes: list):
+        """
+        Convert the result dictionaries form SALib of each class and goal into a tuple of two DataFrames.
+        First is the single order and second is the second order result.
+        If one of the results is not computed an empty list is returned.
+        """
         _conv_results = []
         _conv_results_2 = []
         tuples = []
@@ -123,8 +128,7 @@ class SobolAnalyzer(SenAnalyzer):
                                             names=['Class', 'Goal', 'Analysis variable', 'Interaction'])
         df = pd.DataFrame(_conv_results, index=index)
         df_2 = pd.DataFrame(_conv_results_2, index=index_2)
-        result = (df, df_2)
-        return result
+        return df, df_2
 
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
@@ -371,7 +375,7 @@ class SobolAnalyzer(SenAnalyzer):
 
         :param pd.DataFrame result:
             Dataframe of the results like from the run() function.
-        :return tuple of matplotlib objects (fig, ax)
+        :return tuple of matplotlib objects (fig, ax):
         """
         SobolAnalyzer.plot_single(result=result[0])
         SobolAnalyzer.heatmaps(result=result[1])
