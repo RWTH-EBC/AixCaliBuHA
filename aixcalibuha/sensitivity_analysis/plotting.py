@@ -334,6 +334,8 @@ def plot_time_dependent(result: pd.DataFrame,
     all_analysis_variables = _del_duplicates(list(result.index.get_level_values(1)))
     if analysis_variables is None:
         analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
+    if parameters is None:
+        parameters = result.columns.values
 
     # rename tuner_names in result to the suffix of their variable name
     if use_suffix:
