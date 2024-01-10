@@ -1123,72 +1123,6 @@
             "message-id": "W1514"
         },
         {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 145,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (116/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 168,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (101/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 292,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (109/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 308,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (157/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 328,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (102/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "",
-            "line": 419,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (102/100)",
-            "message-id": "C0301"
-        },
-        {
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_single",
@@ -1225,7 +1159,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_single_second_order",
-            "line": 162,
+            "line": 164,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-arguments",
@@ -1236,7 +1170,7 @@
             "type": "warning",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_single_second_order",
-            "line": 204,
+            "line": 207,
             "column": 60,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "protected-access",
@@ -1247,7 +1181,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "heatmap",
-            "line": 210,
+            "line": 213,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-arguments",
@@ -1255,43 +1189,10 @@
             "message-id": "R0913"
         },
         {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "heatmap",
-            "line": 241,
-            "column": 4,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "invalid-name",
-            "message": "Variable name \"im\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "heatmap",
-            "line": 238,
-            "column": 8,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "unused-variable",
-            "message": "Unused variable 'fig'",
-            "message-id": "W0612"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "heatmaps",
-            "line": 283,
-            "column": 4,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "unused-variable",
-            "message": "Unused variable 'fig'",
-            "message-id": "W0612"
-        },
-        {
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_time_dependent",
-            "line": 297,
+            "line": 306,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-arguments",
@@ -1302,7 +1203,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_time_dependent",
-            "line": 297,
+            "line": 306,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-locals",
@@ -1310,43 +1211,10 @@
             "message-id": "R0914"
         },
         {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "plot_time_dependent",
-            "line": 360,
-            "column": 18,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "invalid-name",
-            "message": "Variable name \"av\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "plot_time_dependent",
-            "line": 365,
-            "column": 20,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "invalid-name",
-            "message": "Variable name \"p\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.plotting",
-            "obj": "plot_time_dependent",
-            "line": 368,
-            "column": 20,
-            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
-            "symbol": "invalid-name",
-            "message": "Variable name \"ci\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_time_dependent",
-            "line": 349,
+            "line": 360,
             "column": 4,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-nested-blocks",
@@ -1357,7 +1225,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_time_dependent",
-            "line": 297,
+            "line": 306,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-branches",
@@ -1368,7 +1236,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_parameter_verbose",
-            "line": 388,
+            "line": 399,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-arguments",
@@ -1379,7 +1247,7 @@
             "type": "refactor",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_parameter_verbose",
-            "line": 388,
+            "line": 399,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-locals",
@@ -1390,7 +1258,7 @@
             "type": "convention",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_parameter_verbose",
-            "line": 467,
+            "line": 479,
             "column": 22,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "invalid-name",
@@ -1401,7 +1269,7 @@
             "type": "warning",
             "module": "aixcalibuha.sensitivity_analysis.plotting",
             "obj": "plot_parameter_verbose",
-            "line": 467,
+            "line": 479,
             "column": 16,
             "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "unused-variable",
@@ -1808,45 +1676,12 @@
             "type": "warning",
             "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
             "obj": "SenAnalyzer.simulate_samples",
-            "line": 250,
-            "column": 12,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer.simulate_samples",
             "line": 239,
             "column": 12,
             "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "unused-variable",
             "message": "Unused variable 'i'",
             "message-id": "W0612"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer._check_index",
-            "line": 279,
-            "column": 12,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer._check_index",
-            "line": 286,
-            "column": 12,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
         },
         {
             "type": "refactor",
@@ -1886,33 +1721,11 @@
             "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
             "obj": "SenAnalyzer.eval_statistical_measure",
             "line": 312,
-            "column": 8,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer.eval_statistical_measure",
-            "line": 312,
             "column": 25,
             "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "f-string-without-interpolation",
             "message": "Using an f-string that does not have any interpolated variables",
             "message-id": "W1309"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer._mp_load_eval",
-            "line": 337,
-            "column": 8,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
         },
         {
             "type": "refactor",
@@ -1946,28 +1759,6 @@
             "symbol": "f-string-without-interpolation",
             "message": "Using an f-string that does not have any interpolated variables",
             "message-id": "W1309"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer.run",
-            "line": 473,
-            "column": 16,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer.run",
-            "line": 480,
-            "column": 16,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
         },
         {
             "type": "refactor",
@@ -2067,28 +1858,6 @@
             "symbol": "too-many-arguments",
             "message": "Too many arguments (6/5)",
             "message-id": "R0913"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer._load_tsteps_df",
-            "line": 752,
-            "column": 8,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
-            "type": "warning",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "SenAnalyzer._load_analyze_tsteps",
-            "line": 777,
-            "column": 12,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
         },
         {
             "type": "warning",
@@ -2498,17 +2267,6 @@
             "message-id": "R1721"
         },
         {
-            "type": "warning",
-            "module": "aixcalibuha.calibration.calibrator",
-            "obj": "Calibrator.obj",
-            "line": 241,
-            "column": 12,
-            "path": "aixcalibuha/calibration/calibrator.py",
-            "symbol": "logging-fstring-interpolation",
-            "message": "Use lazy % formatting in logging functions",
-            "message-id": "W1203"
-        },
-        {
             "type": "refactor",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "Calibrator.mp_obj",
@@ -2670,18 +2428,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.multi_class_calibrator",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator)",
             "message-id": "R0401"
         },
         {
@@ -2703,7 +2450,29 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
             "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils.visualizer)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils)",
             "message-id": "R0401"
         },
         {
@@ -2725,7 +2494,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer)",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
             "message-id": "R0401"
         },
         {
@@ -2736,7 +2505,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
             "message-id": "R0401"
         },
         {
@@ -2748,17 +2517,6 @@
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
             "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.multi_class_calibrator",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
             "message-id": "R0401"
         },
         {
@@ -2785,7 +2543,7 @@
             "function": 0,
             "method": 0,
             "module": 0,
-            "variable": 10,
+            "variable": 6,
             "typevar": 0,
             "typealias": 0
         },
@@ -2836,13 +2594,13 @@
                 "warning": 0
             },
             "aixcalibuha.sensitivity_analysis.plotting": {
-                "convention": 11,
+                "convention": 1,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 11,
                 "statement": 217,
-                "warning": 4
+                "warning": 2
             },
             "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
                 "convention": 39,
@@ -2851,7 +2609,7 @@
                 "info": 0,
                 "refactor": 13,
                 "statement": 402,
-                "warning": 17
+                "warning": 8
             },
             "aixcalibuha.sensitivity_analysis.fast": {
                 "convention": 3,
@@ -2905,7 +2663,7 @@
                 "info": 0,
                 "refactor": 5,
                 "statement": 218,
-                "warning": 4
+                "warning": 3
             },
             "aixcalibuha.calibration.__init__": {
                 "convention": 0,
@@ -2927,7 +2685,7 @@
             }
         },
         "by_msg": {
-            "line-too-long": 53,
+            "line-too-long": 47,
             "trailing-whitespace": 1,
             "too-many-instance-attributes": 7,
             "too-many-branches": 4,
@@ -2940,13 +2698,12 @@
             "unspecified-encoding": 4,
             "too-many-locals": 10,
             "protected-access": 2,
-            "invalid-name": 13,
-            "unused-variable": 7,
             "too-many-nested-blocks": 1,
+            "invalid-name": 9,
+            "unused-variable": 5,
             "reimported": 1,
             "no-else-return": 10,
             "unnecessary-comprehension": 3,
-            "logging-fstring-interpolation": 10,
             "f-string-without-interpolation": 3,
             "too-many-statements": 1,
             "unneeded-not": 1,
@@ -2972,46 +2729,46 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha",
                 "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha"
+                "aixcalibuha",
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "aixcalibuha.sensitivity_analysis.plotting": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
                 "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis",
-                "aixcalibuha.sensitivity_analysis.sobol"
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis"
             ],
             "pandas": [
-                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
                 "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.data_types",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.sensitivity_analysis.plotting"
             ],
             "numpy": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.calibration.multi_class_calibrator",
                 "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting",
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.data_types",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.calibration.calibrator",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "ebcpy": [
                 "aixcalibuha.data_types",
@@ -3024,32 +2781,32 @@
                 "aixcalibuha.data_types"
             ],
             "matplotlib.pyplot": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting"
-            ],
-            "ebcpy.utils": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.plotting",
                 "aixcalibuha.utils.visualizer"
             ],
+            "ebcpy.utils": [
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
             "aixcalibuha": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.calibration.multi_class_calibrator",
                 "aixcalibuha.utils.visualizer",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.utils",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.calibration.calibrator",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "toml": [
                 "aixcalibuha.utils.configuration"
             ],
             "ebcpy.data_types": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.utils.configuration",
                 "aixcalibuha.calibration.calibrator",
-                "aixcalibuha.utils.configuration"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "matplotlib": [
                 "aixcalibuha.sensitivity_analysis.plotting"
@@ -3058,19 +2815,19 @@
                 "aixcalibuha.sensitivity_analysis.plotting"
             ],
             "ebcpy.simulationapi": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "aixcalibuha.utils": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "ebcpy.utils.reproduction": [
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "SALib.sample.fast_sampler": [
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
             ],
             "SALib.analyze.fast": [
                 "aixcalibuha.sensitivity_analysis.fast"
@@ -3133,16 +2890,16 @@
             "method": 1,
             "module": 0
         },
-        "convention": 89,
+        "convention": 79,
         "error": 2,
         "fatal": 0,
         "info": 0,
         "refactor": 61,
         "statement": 1732,
-        "warning": 33,
+        "warning": 21,
         "global_note": 0,
         "nb_duplicated_lines": 5,
-        "percent_duplicated_lines": 0.11246063877642826
+        "percent_duplicated_lines": 0.11215791834903545
     },
     "previous": {
         "bad_names": {
@@ -3156,7 +2913,7 @@
             "function": 0,
             "method": 0,
             "module": 0,
-            "variable": 10,
+            "variable": 6,
             "typevar": 0,
             "typealias": 0
         },
@@ -3207,13 +2964,13 @@
                 "warning": 0
             },
             "aixcalibuha.sensitivity_analysis.plotting": {
-                "convention": 11,
+                "convention": 1,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 11,
                 "statement": 217,
-                "warning": 4
+                "warning": 2
             },
             "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
                 "convention": 39,
@@ -3222,7 +2979,7 @@
                 "info": 0,
                 "refactor": 13,
                 "statement": 402,
-                "warning": 17
+                "warning": 8
             },
             "aixcalibuha.sensitivity_analysis.fast": {
                 "convention": 3,
@@ -3276,7 +3033,7 @@
                 "info": 0,
                 "refactor": 5,
                 "statement": 218,
-                "warning": 4
+                "warning": 3
             },
             "aixcalibuha.calibration.__init__": {
                 "convention": 0,
@@ -3298,7 +3055,7 @@
             }
         },
         "by_msg": {
-            "line-too-long": 53,
+            "line-too-long": 47,
             "trailing-whitespace": 1,
             "too-many-instance-attributes": 7,
             "too-many-branches": 4,
@@ -3311,13 +3068,12 @@
             "unspecified-encoding": 4,
             "too-many-locals": 10,
             "protected-access": 2,
-            "invalid-name": 13,
-            "unused-variable": 7,
             "too-many-nested-blocks": 1,
+            "invalid-name": 9,
+            "unused-variable": 5,
             "reimported": 1,
             "no-else-return": 10,
             "unnecessary-comprehension": 3,
-            "logging-fstring-interpolation": 10,
             "f-string-without-interpolation": 3,
             "too-many-statements": 1,
             "unneeded-not": 1,
@@ -3343,46 +3099,46 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha",
                 "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha"
+                "aixcalibuha",
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.morris"
-            ],
-            "aixcalibuha.sensitivity_analysis.plotting": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis",
-                "aixcalibuha.sensitivity_analysis.sobol"
-            ],
-            "pandas": [
-                "aixcalibuha.sensitivity_analysis.plotting",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.data_types",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
-            ],
-            "numpy": [
-                "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting",
-                "aixcalibuha.sensitivity_analysis.fast",
                 "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.data_types",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.pawn"
+            ],
+            "aixcalibuha.sensitivity_analysis.plotting": [
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "pandas": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.data_types",
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "numpy": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.data_types",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "ebcpy": [
                 "aixcalibuha.data_types",
@@ -3395,32 +3151,32 @@
                 "aixcalibuha.data_types"
             ],
             "matplotlib.pyplot": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting"
-            ],
-            "ebcpy.utils": [
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.plotting",
                 "aixcalibuha.utils.visualizer"
             ],
+            "ebcpy.utils": [
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
             "aixcalibuha": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.calibration.multi_class_calibrator",
                 "aixcalibuha.utils.visualizer",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.morris",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.utils",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "toml": [
                 "aixcalibuha.utils.configuration"
             ],
             "ebcpy.data_types": [
+                "aixcalibuha.utils.configuration",
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator",
-                "aixcalibuha.utils.configuration"
+                "aixcalibuha.calibration.calibrator"
             ],
             "matplotlib": [
                 "aixcalibuha.sensitivity_analysis.plotting"
@@ -3440,8 +3196,8 @@
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "SALib.sample.fast_sampler": [
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
             ],
             "SALib.analyze.fast": [
                 "aixcalibuha.sensitivity_analysis.fast"
@@ -3504,15 +3260,15 @@
             "method": 1,
             "module": 0
         },
-        "convention": 89,
+        "convention": 79,
         "error": 2,
         "fatal": 0,
         "info": 0,
         "refactor": 62,
         "statement": 1732,
-        "warning": 33,
-        "global_note": 8.879907621247114,
+        "warning": 21,
+        "global_note": 9.006928406466512,
         "nb_duplicated_lines": 5,
-        "percent_duplicated_lines": 0.11246063877642826
+        "percent_duplicated_lines": 0.11215791834903545
     }
 }

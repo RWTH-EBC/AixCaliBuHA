@@ -28,9 +28,9 @@
 
         
         <h2>Score</h2>
-        8.89 / 10
+        9.01 / 10
             
-            (previous score: 8.88 / 10)
+            (previous score: 9.01 / 10)
             
         
 
@@ -90,16 +90,6 @@
                 <td>R1721</td>
                 <td>Calibrator.obj</td>
                 <td><pre>Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>241</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>Calibrator.obj</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
@@ -220,17 +210,7 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.calibration -&gt; aixcalibuha.calibration.multi_class_calibrator)</pre></td>
             </tr>
             
             <tr>
@@ -250,7 +230,27 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
                 <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.calibration -&gt; aixcalibuha.calibration.calibrator -&gt; aixcalibuha.utils.visualizer)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.calibration -&gt; aixcalibuha.calibration.calibrator -&gt; aixcalibuha.utils)</pre></td>
             </tr>
             
             <tr>
@@ -270,7 +270,7 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sensitivity_analyzer)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
             </tr>
             
             <tr>
@@ -280,7 +280,7 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
             </tr>
             
             <tr>
@@ -291,16 +291,6 @@
                 <td>R0401</td>
                 <td></td>
                 <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
             </tr>
             
             <tr>
@@ -698,17 +688,7 @@
             </tr>
             
             <tr>
-                <td>145</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (116/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>162</td>
+                <td>164</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-arguments</code></td>
@@ -718,17 +698,7 @@
             </tr>
             
             <tr>
-                <td>168</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (101/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>204</td>
+                <td>207</td>
                 <td>60</td>
                 <td>warning</td>
                 <td><code>protected-access</code></td>
@@ -738,7 +708,7 @@
             </tr>
             
             <tr>
-                <td>210</td>
+                <td>213</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-arguments</code></td>
@@ -748,47 +718,7 @@
             </tr>
             
             <tr>
-                <td>238</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>unused-variable</code></td>
-                <td>W0612</td>
-                <td>heatmap</td>
-                <td><pre>Unused variable &#39;fig&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>241</td>
-                <td>4</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td>heatmap</td>
-                <td><pre>Variable name &#34;im&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>283</td>
-                <td>4</td>
-                <td>warning</td>
-                <td><code>unused-variable</code></td>
-                <td>W0612</td>
-                <td>heatmaps</td>
-                <td><pre>Unused variable &#39;fig&#39;</pre></td>
-            </tr>
-            
-            <tr>
-                <td>292</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (109/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>297</td>
+                <td>306</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-arguments</code></td>
@@ -798,7 +728,7 @@
             </tr>
             
             <tr>
-                <td>297</td>
+                <td>306</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-locals</code></td>
@@ -808,7 +738,7 @@
             </tr>
             
             <tr>
-                <td>297</td>
+                <td>306</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-branches</code></td>
@@ -818,27 +748,7 @@
             </tr>
             
             <tr>
-                <td>308</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (157/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>328</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (102/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>349</td>
+                <td>360</td>
                 <td>4</td>
                 <td>refactor</td>
                 <td><code>too-many-nested-blocks</code></td>
@@ -848,37 +758,7 @@
             </tr>
             
             <tr>
-                <td>360</td>
-                <td>18</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td>plot_time_dependent</td>
-                <td><pre>Variable name &#34;av&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>365</td>
-                <td>20</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td>plot_time_dependent</td>
-                <td><pre>Variable name &#34;p&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>368</td>
-                <td>20</td>
-                <td>convention</td>
-                <td><code>invalid-name</code></td>
-                <td>C0103</td>
-                <td>plot_time_dependent</td>
-                <td><pre>Variable name &#34;ci&#34; doesn&#39;t conform to snake_case naming style</pre></td>
-            </tr>
-            
-            <tr>
-                <td>388</td>
+                <td>399</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-arguments</code></td>
@@ -888,7 +768,7 @@
             </tr>
             
             <tr>
-                <td>388</td>
+                <td>399</td>
                 <td>0</td>
                 <td>refactor</td>
                 <td><code>too-many-locals</code></td>
@@ -898,17 +778,7 @@
             </tr>
             
             <tr>
-                <td>419</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (102/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>467</td>
+                <td>479</td>
                 <td>22</td>
                 <td>convention</td>
                 <td><code>invalid-name</code></td>
@@ -918,7 +788,7 @@
             </tr>
             
             <tr>
-                <td>467</td>
+                <td>479</td>
                 <td>16</td>
                 <td>warning</td>
                 <td><code>unused-variable</code></td>
@@ -1072,16 +942,6 @@
             </tr>
             
             <tr>
-                <td>250</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer.simulate_samples</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
-            </tr>
-            
-            <tr>
                 <td>279</td>
                 <td>0</td>
                 <td>convention</td>
@@ -1089,26 +949,6 @@
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (101/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>279</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer._check_index</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
-            </tr>
-            
-            <tr>
-                <td>286</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer._check_index</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
@@ -1143,16 +983,6 @@
             
             <tr>
                 <td>312</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer.eval_statistical_measure</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
-            </tr>
-            
-            <tr>
-                <td>312</td>
                 <td>25</td>
                 <td>warning</td>
                 <td><code>f-string-without-interpolation</code></td>
@@ -1169,16 +999,6 @@
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (104/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>337</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer._mp_load_eval</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
@@ -1292,16 +1112,6 @@
             </tr>
             
             <tr>
-                <td>473</td>
-                <td>16</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer.run</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
-            </tr>
-            
-            <tr>
                 <td>478</td>
                 <td>0</td>
                 <td>convention</td>
@@ -1319,16 +1129,6 @@
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (107/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>480</td>
-                <td>16</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer.run</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
@@ -1512,16 +1312,6 @@
             </tr>
             
             <tr>
-                <td>752</td>
-                <td>8</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer._load_tsteps_df</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
-            </tr>
-            
-            <tr>
                 <td>773</td>
                 <td>0</td>
                 <td>convention</td>
@@ -1529,16 +1319,6 @@
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (103/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>777</td>
-                <td>12</td>
-                <td>warning</td>
-                <td><code>logging-fstring-interpolation</code></td>
-                <td>W1203</td>
-                <td>SenAnalyzer._load_analyze_tsteps</td>
-                <td><pre>Use lazy % formatting in logging functions</pre></td>
             </tr>
             
             <tr>
@@ -2782,12 +2562,12 @@
             
             <tr>
                 <td>warning</td>
-                <td>39</td>
+                <td>27</td>
             </tr>
             
             <tr>
                 <td>convention</td>
-                <td>89</td>
+                <td>79</td>
             </tr>
             
         </table>
@@ -2817,7 +2597,7 @@
             
             <tr>
                 <td>line-too-long</td>
-                <td>53</td>
+                <td>47</td>
             </tr>
             
             <tr>
@@ -2881,18 +2661,18 @@
             </tr>
             
             <tr>
+                <td>too-many-nested-blocks</td>
+                <td>1</td>
+            </tr>
+            
+            <tr>
                 <td>invalid-name</td>
-                <td>13</td>
+                <td>9</td>
             </tr>
             
             <tr>
                 <td>unused-variable</td>
-                <td>7</td>
-            </tr>
-            
-            <tr>
-                <td>too-many-nested-blocks</td>
-                <td>1</td>
+                <td>5</td>
             </tr>
             
             <tr>
@@ -2908,11 +2688,6 @@
             <tr>
                 <td>unnecessary-comprehension</td>
                 <td>3</td>
-            </tr>
-            
-            <tr>
-                <td>logging-fstring-interpolation</td>
-                <td>10</td>
             </tr>
             
             <tr>
@@ -3027,12 +2802,12 @@
             
             <tr>
                 <td>aixcalibuha.sensitivity_analysis.plotting</td>
-                <td>26</td>
+                <td>14</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha.sensitivity_analysis.sensitivity_analyzer</td>
-                <td>69</td>
+                <td>60</td>
             </tr>
             
             <tr>
@@ -3062,7 +2837,7 @@
             
             <tr>
                 <td>aixcalibuha.calibration.calibrator</td>
-                <td>11</td>
+                <td>10</td>
             </tr>
             
             <tr>
@@ -3107,12 +2882,12 @@
             
             <tr>
                 <td>aixcalibuha/sensitivity_analysis/plotting.py</td>
-                <td>26</td>
+                <td>14</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py</td>
-                <td>69</td>
+                <td>60</td>
             </tr>
             
             <tr>
@@ -3142,7 +2917,7 @@
             
             <tr>
                 <td>aixcalibuha/calibration/calibrator.py</td>
-                <td>11</td>
+                <td>10</td>
             </tr>
             
             <tr>

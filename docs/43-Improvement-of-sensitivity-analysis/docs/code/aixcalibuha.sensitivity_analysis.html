@@ -388,7 +388,8 @@ the name must also be only the suffix.</p></li>
 of Modelica variables is used for the x ticks.</p></li>
 <li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
 goal names is given only these will be plotted.</p></li>
-<li><p><strong>fig_axes</strong> (<em>(</em><em>fig</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).</p></li>
+<li><p><strong>fig_axes</strong> (<em>(</em><em>fig</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes
+(see example for verbose sensitivity analysis).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -482,7 +483,8 @@ of Modelica variables is used for the x ticks.</p></li>
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_time_dependent">
 <span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_time_dependent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame,</span> <span class="pre">parameters:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">analysis_variables:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">plot_conf:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">show_plot:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">use_suffix:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">figs_axes:</span> <span class="pre">[[&lt;class</span> <span class="pre">'matplotlib.figure.Figure'&gt;],</span> <span class="pre">[&lt;class</span> <span class="pre">'matplotlib.axes._axes.Axes'&gt;]]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_time_dependent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_time_dependent" title="Permalink to this definition"></a></dt>
 <dd><p>Plot time dependent sensitivity results without interactions from run_time_dependent().</p>
-<p>For each goal one figure is created with one axes for each analysis variable. In these plots the time dependent sensitivity of the parameters is plotted.
+<p>For each goal one figure is created with one axes for each analysis variable.
+In these plots the time dependent sensitivity of the parameters is plotted.
 The confidence interval can also be plotted.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -496,7 +498,8 @@ The confidence interval can also be plotted.</p>
 of Modelica variables is used for the x ticks.</p></li>
 <li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
 goal names is given only these will be plotted.</p></li>
-<li><p><strong>figs_axes</strong> (<em>(</em><em>[</em><em>fig</em><em>]</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes (see example for verbose sensitivity analysis).</p></li>
+<li><p><strong>figs_axes</strong> (<em>(</em><em>[</em><em>fig</em><em>]</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes
+(see example for verbose sensitivity analysis).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
