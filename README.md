@@ -1,11 +1,11 @@
 ![E.ON EBC RWTH Aachen University](./docs/EBC_Logo.png)
 
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.03861/status.svg)](https://doi.org/10.21105/joss.03861)
-[![pylint](https://rwth-ebc.github.io/AixCaliBuHA/master/pylint/pylint.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/pylint/pylint.html)
-[![documentation](https://rwth-ebc.github.io/AixCaliBuHA/master/docs/doc.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/docs/index.html)
-[![coverage](https://rwth-ebc.github.io/AixCaliBuHA/master/coverage/badge.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/coverage)
+[![pylint](https://rwth-ebc.github.io/AixCaliBuHA/master/pylint/pylint.svg)](https://rwth-ebc.github.io/AixCaliBuHA/master/pylint/pylint.html)
+[![documentation](https://rwth-ebc.github.io/AixCaliBuHA/master/docs/doc.svg)](https://rwth-ebc.github.io/AixCaliBuHA/master/docs/index.html)
+[![coverage](https://rwth-ebc.github.io/AixCaliBuHA/master/coverage/badge.svg)](https://rwth-ebc.github.io/AixCaliBuHA/master/coverage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![build](https://rwth-ebc.github.io/AixCaliBuHA/master/build/build.svg)](https://ebc.pages.rwth-aachen.de/EBC_all/github_ci/AixCaliBuHA/master/build/build.svg)
+[![build](https://rwth-ebc.github.io/AixCaliBuHA/master/build/build.svg)](https://rwth-ebc.github.io/AixCaliBuHA/master/build/build.svg)
 
 # AixCaliBuHA
 
