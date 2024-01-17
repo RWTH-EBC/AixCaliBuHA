@@ -2,17 +2,17 @@
 Adds the FASTAnalyzer to the available
 classes of sensitivity analysis.
 """
+import numpy as np
 from SALib.sample import fast_sampler as fast
 from SALib.analyze import fast as analyze_fast
-import numpy as np
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
 from aixcalibuha import CalibrationClass
-import warnings
 
 
 class FASTAnalyzer(SenAnalyzer):
     """
-    FAST method from SALib https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test
+    FAST method from SALib
+    https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test
     A variance-based method which can compute the sensitivity measures
     'S1' and 'ST'.
 
@@ -84,7 +84,6 @@ class FASTAnalyzer(SenAnalyzer):
             return {var_name: np.abs(res_val)
                     for var_name, res_val in zip(names,
                                                  np.zeros(len(names)))}
-        else:
-            return {var_name: np.abs(res_val)
-                    for var_name, res_val in zip(names,
-                                                 result[analysis_variable])}
+        return {var_name: np.abs(res_val)
+                for var_name, res_val in zip(names,
+                                             result[analysis_variable])}

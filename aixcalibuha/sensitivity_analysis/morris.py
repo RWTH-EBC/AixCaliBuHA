@@ -85,5 +85,4 @@ class MorrisAnalyzer(SenAnalyzer):
         if result is None:
             names = cal_class.tuner_paras.get_names()
             return dict(zip(names, np.zeros(len(names))))
-        else:
-            return dict(zip(result['names'], result[analysis_variable]))
+        return dict(zip(result['names'], result[analysis_variable]))

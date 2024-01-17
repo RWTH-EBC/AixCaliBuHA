@@ -22,7 +22,8 @@ def _load_single_file(_filepath, parquet_engine='pyarrow'):
     if _filepath is None:
         return None
     else:
-        return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation', engine=parquet_engine)
+        return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation',
+                                         engine=parquet_engine)
 
 
 def _load_files(_filepaths, parquet_engine='pyarrow'):
@@ -47,7 +48,8 @@ def _restruct_verbose(list_output_verbose):
 def _concat_all_sims(sim_results_list):
     """Helper function that concat all results in a list to one DataFrame."""
     sim_results_list = [r.to_df() for r in sim_results_list]
-    sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)), axis='columns')
+    sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)),
+                                 axis='columns')
     sim_results_list = sim_results_list.swaplevel(axis=1).sort_index(axis=1)
     return sim_results_list
 
@@ -62,14 +64,17 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
         sen_time_dependent_df = sen_time_dependent_df.swaplevel(1, 2).sort_index(axis=0)
         if second_order:
             sen_time_dependent_df = sen_time_dependent_df.swaplevel(2, 3).sort_index(axis=0)
-            sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'Interaction', 'time'], inplace=True)
+            sen_time_dependent_df.index.set_names(
+                ['Goal', 'Analysis variable', 'Interaction', 'time'], inplace=True)
         else:
-            sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'time'], inplace=True)
+            sen_time_dependent_df.index.set_names(['Goal', 'Analysis variable', 'time'],
+                                                  inplace=True)
         return sen_time_dependent_df
 
     if isinstance(sen_time_dependent_list[0], tuple):
         sen_time_dependent_list1, sen_time_dependent_list2 = zip(*sen_time_dependent_list)
-        return _restruct_single(sen_time_dependent_list1), _restruct_single(sen_time_dependent_list2, True)
+        return _restruct_single(sen_time_dependent_list1), _restruct_single(
+            sen_time_dependent_list2, True)
     else:
         return _restruct_single(sen_time_dependent_list)
 
@@ -276,8 +281,9 @@ class SenAnalyzer(abc.ABC):
         if sim_num is None:
             sim_num = tsd.filepath.name
         if freq[0] != self.sim_api.sim_setup.output_interval:
-            self.logger.info(f'The mean value of the frequency from {sim_num} does not match output '
-                             'interval index will be cleaned and spaced equally')
+            self.logger.info(
+                f'The mean value of the frequency from {sim_num} does not match output '
+                'interval index will be cleaned and spaced equally')
             tsd.to_datetime_index()
             tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval * 1000)}ms')
             tsd.to_float_index()
@@ -475,8 +481,10 @@ class SenAnalyzer(abc.ABC):
                                       header=0,
                                       index_col=0)
                 samples = samples.to_numpy()
-                result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
-                _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
+                result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in
+                                     range(len(samples))]
+                _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in
+                              result_file_names]
                 self.logger.info(f'Loading simulation files from {sim_dir}')
                 output_array, output_verbose = self._load_eval(_filepaths, cal_class, n_cpu)
             else:
@@ -506,7 +514,8 @@ class SenAnalyzer(abc.ABC):
             if save_results:
                 result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
                 stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
-                savepath_stat_mea = self.cd.joinpath(f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv')
+                savepath_stat_mea = self.cd.joinpath(
+                    f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv')
                 stat_mea_df.to_csv(savepath_stat_mea)
                 self.reproduction_files.append(savepath_stat_mea)
                 samples_df = pd.DataFrame(samples, columns=cal_class.tuner_paras.get_names(),
@@ -688,8 +697,10 @@ class SenAnalyzer(abc.ABC):
                                   header=0,
                                   index_col=0)
             samples = samples.to_numpy()
-            result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in range(len(samples))]
-            _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in result_file_names]
+            result_file_names = [f"simulation_{idx}.{self.suffix_files}" for idx in
+                                 range(len(samples))]
+            _filepaths = [sim_dir.joinpath(result_file_name) for result_file_name in
+                          result_file_names]
 
             sen_time_dependent_list, time_index = self._load_analyze_tsteps(_filepaths=_filepaths,
                                                                             samples=samples,
@@ -706,7 +717,8 @@ class SenAnalyzer(abc.ABC):
                                                                                 samples=samples,
                                                                                 n_steps=n_steps,
                                                                                 cal_class=cal_class)
-                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list,
+                                                                 time_index)
             else:
                 variables = results[0].get_variable_names()
                 time_index = results[0].index.to_numpy()
@@ -719,7 +731,8 @@ class SenAnalyzer(abc.ABC):
                                                              samples=samples,
                                                              cal_class=cal_class)
                     sen_time_dependent_list.append(result_df_tstep)
-                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list, time_index)
+                sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list,
+                                                                 time_index)
         self.logger.info("Finished time dependent sensitivity analysys.")
         if save_results:
             self._save(sen_time_dependent_df, time_dependent=True)
@@ -749,7 +762,8 @@ class SenAnalyzer(abc.ABC):
 
     def _load_tsteps_df(self, tsteps, _filepaths):
         """Load all simulations and extract and concat the sim results of the time steps in tsteps."""
-        self.logger.info(f"Loading time steps from {tsteps[0]} to {tsteps[-1]} of the simulation files.")
+        self.logger.info(
+            f"Loading time steps from {tsteps[0]} to {tsteps[-1]} of the simulation files.")
         tsteps_sim_results = []
         for _filepath in _filepaths:
             sim = _load_single_file(_filepath)
@@ -770,7 +784,8 @@ class SenAnalyzer(abc.ABC):
         elif isinstance(n_steps, int) and not (n_steps <= 0 or n_steps > len(time_index)):
             list_tsteps = _divide_chunks(time_index, n_steps)
         else:
-            raise ValueError(f"n_steps can only be between 1 and {len(time_index)} or the string all.")
+            raise ValueError(
+                f"n_steps can only be between 1 and {len(time_index)} or the string all.")
 
         for tsteps in list_tsteps:
             tsteps_sim_results = self._load_tsteps_df(tsteps=tsteps, _filepaths=_filepaths)
@@ -784,8 +799,10 @@ class SenAnalyzer(abc.ABC):
                 sen_time_dependent_list.append(result_df_tstep)
         return sen_time_dependent_list, time_index
 
-    def _conv_global_result(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
-        glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class, analysis_variable=analysis_variable)
+    def _conv_global_result(self, result: dict, cal_class: CalibrationClass,
+                            analysis_variable: str):
+        glo_res_dict = self._get_res_dict(result=result, cal_class=cal_class,
+                                          analysis_variable=analysis_variable)
         return pd.DataFrame(glo_res_dict, index=['global'])
 
     def _conv_local_results(self, results: list, local_classes: list):
@@ -802,7 +819,8 @@ class SenAnalyzer(abc.ABC):
                                                             cal_class=local_class,
                                                             analysis_variable=av))
                     tuples.append((local_class.name, goal, av))
-        index = pd.MultiIndex.from_tuples(tuples=tuples, names=['Class', 'Goal', 'Analysis variable'])
+        index = pd.MultiIndex.from_tuples(tuples=tuples,
+                                          names=['Class', 'Goal', 'Analysis variable'])
         df = pd.DataFrame(_conv_results, index=index)
         return df
 

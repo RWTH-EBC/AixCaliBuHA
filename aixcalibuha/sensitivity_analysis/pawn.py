@@ -103,11 +103,11 @@ class PAWNAnalyzer(SenAnalyzer):
             return sobol.sample(self.problem,
                                 N=self.num_samples,
                                 **self.create_sampler_demand())
-        elif self.sampler == 'morris':
+        if self.sampler == 'morris':
             return morris.sample(self.problem,
                                  N=self.num_samples,
                                  **self.create_sampler_demand())
-        elif self.sampler == 'fast':
+        if self.sampler == 'fast':
             return fast.sample(self.problem,
                                N=self.num_samples,
                                **self.create_sampler_demand())
@@ -123,5 +123,4 @@ class PAWNAnalyzer(SenAnalyzer):
         if result is None:
             names = cal_class.tuner_paras.get_names()
             return dict(zip(names, np.zeros(len(names))))
-        else:
-            return dict(zip(result['names'], result[analysis_variable]))
+        return dict(zip(result['names'], result[analysis_variable]))

@@ -96,7 +96,7 @@ class Calibrator(Optimizer):
                  calibration_class: CalibrationClass,
                  **kwargs):
         """Instantiate instance attributes"""
-        #%% Kwargs
+        # %% Kwargs
         # Initialize supported keywords with default value
         # Pop the items so they wont be added when calling the
         # __init__ of the parent class. Always pop with a default value in case
@@ -132,7 +132,7 @@ class Calibrator(Optimizer):
                 raise TypeError(f"Given {bool_keyword} is of type "
                                 f"{type(keyword_value).__name__} but should be type bool")
 
-        #%% Initialize all public parameters
+        # %% Initialize all public parameters
         super().__init__(cd, **kwargs)
         # Set sim_api
         self.sim_api = sim_api
@@ -154,7 +154,7 @@ class Calibrator(Optimizer):
              "stop_time": self.calibration_class.stop_time}
         )
 
-        #%% Setup the logger
+        # %% Setup the logger
         # De-register the logger setup in the optimization class:
         if self.verbose_logging:
             self.logger = visualizer.CalibrationVisualizer(
@@ -269,12 +269,14 @@ class Calibrator(Optimizer):
             xk_descaled_list.append(xk_descaled)
             # Update Parameters
             parameter_copy = parameters.copy()
-            parameter_copy.update({name: value for name, value in zip(initial_names, xk_descaled.values)})
+            parameter_copy.update(
+                {name: value for name, value in zip(initial_names, xk_descaled.values)})
             parameter_list.append(parameter_copy)
 
         # Simulate
         if self.save_files:
-            result_file_names = [f"simulation_{self._counter + idx}" for idx in range(len(parameter_list))]
+            result_file_names = [f"simulation_{self._counter + idx}" for idx in
+                                 range(len(parameter_list))]
             _filepaths = self.sim_api.simulate(
                 parameters=parameter_list,
                 return_option="savepath",
@@ -381,7 +383,7 @@ class Calibrator(Optimizer):
         arguments in Optimizer.optimize(). Look at the docstring
         in ebcpy to know which options are available.
         """
-        #%% Start Calibration:
+        # %% Start Calibration:
         self.at_calibration = True
         self.logger.log(f"Start calibration of model: {self.sim_api.model_name}"
                         f" with framework-class {self.__class__.__name__}")
@@ -418,7 +420,7 @@ class Calibrator(Optimizer):
                 "Can't save or return any results."
             )
 
-        #%% Save the relevant results.
+        # %% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
                                             duration=t_cal,

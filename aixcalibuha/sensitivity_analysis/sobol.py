@@ -13,7 +13,8 @@ from aixcalibuha.sensitivity_analysis.plotting import plot_single, heatmaps
 
 class SobolAnalyzer(SenAnalyzer):
     """
-    Sobol method from SALib https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis
+    Sobol method from SALib
+    https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis
     A variance-based method which can compute the sensitivity measures
     'S1', 'ST' and 'S2' with their confidence intervals.
 
@@ -92,16 +93,19 @@ class SobolAnalyzer(SenAnalyzer):
         if not result[0].empty:
             super()._save(result=result[0], time_dependent=time_dependent)
         if time_dependent:
-            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order_time.csv')
+            savepath_result_2 = self.cd.joinpath(
+                f'{self.__class__.__name__}_results_second_order_time.csv')
         else:
-            savepath_result_2 = self.cd.joinpath(f'{self.__class__.__name__}_results_second_order.csv')
+            savepath_result_2 = self.cd.joinpath(
+                f'{self.__class__.__name__}_results_second_order.csv')
         if not result[1].empty:
             result[1].to_csv(savepath_result_2)
             self.reproduction_files.append(savepath_result_2)
 
     def _conv_local_results(self, results: list, local_classes: list):
         """
-        Convert the result dictionaries form SALib of each class and goal into a tuple of two DataFrames.
+        Convert the result dictionaries form SALib
+        of each class and goal into a tuple of two DataFrames.
         First is the single order and second is the second order result.
         If one of the results is not computed an empty list is returned.
         """
@@ -125,7 +129,8 @@ class SobolAnalyzer(SenAnalyzer):
         index = pd.MultiIndex.from_tuples(tuples=tuples,
                                           names=['Class', 'Goal', 'Analysis variable'])
         index_2 = pd.MultiIndex.from_tuples(tuples=tuples_2,
-                                            names=['Class', 'Goal', 'Analysis variable', 'Interaction'])
+                                            names=['Class', 'Goal', 'Analysis variable',
+                                                   'Interaction'])
         df = pd.DataFrame(_conv_results, index=index)
         df_2 = pd.DataFrame(_conv_results_2, index=index_2)
         return df, df_2
@@ -181,7 +186,8 @@ class SobolAnalyzer(SenAnalyzer):
     @staticmethod
     def load_second_order_from_csv(path):
         """
-        Load second order sensitivity results which were saved with the run() or run_time_dependent() function.
+        Load second order sensitivity results which were saved with the run() or
+        run_time_dependent() function.
         """
         result = pd.read_csv(path, index_col=[0, 1, 2, 3])
         return result
