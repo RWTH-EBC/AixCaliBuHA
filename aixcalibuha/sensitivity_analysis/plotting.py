@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from SALib.plotting.bar import plot as barplot
+from aixcalibuha.utils.visualizer import short_name
 
 
 def plot_single(result: pd.DataFrame,
@@ -14,6 +15,7 @@ def plot_single(result: pd.DataFrame,
                 goals: [str] = None,
                 show_plot: bool = True,
                 use_suffix: bool = False,
+                max_name_len: int = 10,
                 figs_axes: [[matplotlib.figure.Figure], [matplotlib.axes.Axes]] = None):
     """
     Plot sensitivity results of first and total order analysis variables.
@@ -27,6 +29,8 @@ def plot_single(result: pd.DataFrame,
     :param bool use_suffix:
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
         Default are all possible calibration classes. If a list of
         names of calibration classes is given only plots for these
@@ -35,9 +39,10 @@ def plot_single(result: pd.DataFrame,
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
     :param ([fig], [ax]) figs_axes:
-        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
+        Default None. Set own figures of subfigures with corresponding axes for customization.
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
+        with shapes (len(cal_classes)), (len(cal_classes), len(goals))
     """
 
     # get lists of the calibration classes and their goals in the result dataframe
@@ -46,12 +51,7 @@ def plot_single(result: pd.DataFrame,
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(1)))
 
-    # rename tuner_names in result to the suffix of their variable name
-    if use_suffix:
-        result = _rename_tuner_names(result)
-
-    # when the index is not sorted pandas throws a performance warning
-    result = result.sort_index()
+    result = _rename_tuner_names(result, use_suffix, max_name_len)
 
     # plotting with simple plot function of the SALib
     figs = []
@@ -85,6 +85,7 @@ def plot_second_order(result: pd.DataFrame,
                       goals: [str] = None,
                       show_plot: bool = True,
                       use_suffix: bool = False,
+                      max_name_len: int = 10,
                       figs: [[matplotlib.figure.Figure]] = None):
     """
     Plot sensitivity results of second order analysis variables.
@@ -99,6 +100,8 @@ def plot_second_order(result: pd.DataFrame,
     :param bool use_suffix:
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
         Default are all possible calibration classes. If a list of
         names of calibration classes is given only plots for these
@@ -107,7 +110,7 @@ def plot_second_order(result: pd.DataFrame,
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
     :param [[fig]] figs:
-        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
+        Default None. Set own figures of subfigures for customization.
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
     """
@@ -117,9 +120,7 @@ def plot_second_order(result: pd.DataFrame,
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(1)))
 
-    # rename tuner_names in result to the suffix of their variable name
-    if use_suffix:
-        result = _rename_tuner_names(result)
+    result = _rename_tuner_names(result, use_suffix, max_name_len)
 
     tuner_names = result.columns
     if len(tuner_names) < 2:
@@ -167,6 +168,7 @@ def plot_single_second_order(result: pd.DataFrame,
                              goals: [str] = None,
                              show_plot: bool = True,
                              use_suffix: bool = False,
+                             max_name_len: int = 10,
                              figs_axes: [[matplotlib.figure.Figure],
                                          [matplotlib.axes.Axes]] = None):
     """
@@ -188,10 +190,13 @@ def plot_single_second_order(result: pd.DataFrame,
     :param bool use_suffix:
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :param ([fig], [ax]) figs_axes:
-        Default None. Useful for using subfigures (see example for verbose sensitivity analysis).
+        Default None. Set own figures of subfigures with corresponding axes for customization.
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
+        with shapes (len(cal_classes)), (len(cal_classes), len(goals))
     """
     result = result.loc[:, :, :, para_name][:].fillna(0)
     figs, axes = plot_single(
@@ -200,7 +205,8 @@ def plot_single_second_order(result: pd.DataFrame,
         cal_classes=cal_classes,
         goals=goals,
         figs_axes=figs_axes,
-        use_suffix=use_suffix
+        use_suffix=use_suffix,
+        max_name_len=max_name_len
     )
     # set new title for the figures of each calibration class
     for fig in figs:
@@ -215,7 +221,8 @@ def heatmap(result: pd.DataFrame,
             goal: str,
             ax: matplotlib.axes.Axes = None,
             show_plot: bool = True,
-            use_suffix: bool = False):
+            use_suffix: bool = False,
+            max_name_len: int = 10):
     """
     Plot S2 sensitivity results from one calibration class and goal as a heatmap.
 
@@ -232,11 +239,12 @@ def heatmap(result: pd.DataFrame,
         Default is True. If False, all created plots are not shown.
     :param bool use_suffix:
         Default is False. If True, only the last suffix of a Modelica variable is displayed.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :return:
         Returns axes
     """
-    if use_suffix:
-        result = _rename_tuner_names(result)
+    result = _rename_tuner_names(result, use_suffix, max_name_len)
     if ax is None:
         _, ax = plt.subplots(layout="constrained")
     data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
@@ -260,7 +268,8 @@ def heatmaps(result: pd.DataFrame,
              cal_classes: [str] = None,
              goals: [str] = None,
              show_plot: bool = True,
-             use_suffix: bool = False):
+             use_suffix: bool = False,
+             max_name_len: int = 10):
     """
     Plot S2 sensitivity results as a heatmap for multiple
     calibration classes and goals in one figure.
@@ -277,6 +286,8 @@ def heatmaps(result: pd.DataFrame,
         Default is True. If False, all created plots are not shown.
     :param bool use_suffix:
         Default is False. If True, only the last suffix of a Modelica variable is displayed.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     """
     if cal_classes is None:
         cal_classes = result.index.get_level_values("Class").unique()
@@ -298,7 +309,8 @@ def heatmaps(result: pd.DataFrame,
                     goal_name,
                     ax=axes[row][col],
                     show_plot=False,
-                    use_suffix=use_suffix)
+                    use_suffix=use_suffix,
+                    max_name_len=max_name_len)
     if show_plot:
         plt.show()
 
@@ -310,6 +322,7 @@ def plot_time_dependent(result: pd.DataFrame,
                         plot_conf: bool = True,
                         show_plot: bool = True,
                         use_suffix: bool = False,
+                        max_name_len: int = 10,
                         figs_axes: [[matplotlib.figure.Figure], [matplotlib.axes.Axes]] = None):
     """
     Plot time dependent sensitivity results without interactions from run_time_dependent().
@@ -331,6 +344,8 @@ def plot_time_dependent(result: pd.DataFrame,
     :param bool use_suffix:
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
@@ -339,6 +354,7 @@ def plot_time_dependent(result: pd.DataFrame,
         (see example for verbose sensitivity analysis).
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
+        with shapes (len(goals)), (len(goals), len(analysis_variables))
     """
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(0)))
@@ -348,12 +364,7 @@ def plot_time_dependent(result: pd.DataFrame,
     if parameters is None:
         parameters = result.columns.values
 
-    # rename tuner_names in result to the suffix of their variable name
-    if use_suffix:
-        result = _rename_tuner_names(result)
-
-    # when the index is not sorted pandas throws a performance warning
-    result = result.sort_index()
+    result = _rename_tuner_names(result, use_suffix, max_name_len)
 
     figs = []
     axes = []
@@ -402,6 +413,7 @@ def plot_parameter_verbose(parameter: str,
                            goals: [str] = None,
                            show_plot: bool = True,
                            use_suffix: bool = False,
+                           max_name_len: int = 10,
                            fig_axes: [matplotlib.figure.Figure, [matplotlib.axes.Axes]] = None):
     """
     Plot all time dependent sensitivity measure for one parameter.
@@ -423,6 +435,8 @@ def plot_parameter_verbose(parameter: str,
     :param bool use_suffix:
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
+    :param int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
@@ -430,21 +444,19 @@ def plot_parameter_verbose(parameter: str,
         Default None. Optional custom figures and axes
         (see example for verbose sensitivity analysis).
     :return:
-        Returns all created figures and axes in lists like [fig], [ax]
+        Returns all created figures and axes in lists like fig, [ax]
+        with shape (len(goals)) for the axes list
     """
     if goals is None:
         goals = _del_duplicates(list(single_result.index.get_level_values(0)))
     all_analysis_variables = _del_duplicates(list(single_result.index.get_level_values(1)))
     analysis_variables = [av for av in all_analysis_variables if '_conf' not in av]
 
-    # rename tuner_names in result to the suffix of their variable name
-    if use_suffix:
-        single_result = _rename_tuner_names(single_result)
-        # when the index is not sorted pandas throws a performance warning
-        single_result = single_result.sort_index()
-        if second_order_result is not None:
-            second_order_result = _rename_tuner_names(second_order_result)
-            second_order_result = second_order_result.sort_index()
+    renamed_parameter = _format_name(parameter, use_suffix, max_name_len)
+
+    single_result = _rename_tuner_names(single_result, use_suffix, max_name_len)
+    if second_order_result is not None:
+        second_order_result = _rename_tuner_names(second_order_result, use_suffix, max_name_len)
 
     if fig_axes is None:
         fig, ax = plt.subplots(len(goals), sharex='all', layout="constrained")
@@ -456,20 +468,20 @@ def plot_parameter_verbose(parameter: str,
         ax = [ax]
     for g_i, goal in enumerate(goals):
         if second_order_result is not None:
-            result_2_goal = second_order_result.loc[goal, 'S2', parameter]
-            mean = result_2_goal.mean().drop([parameter])
+            result_2_goal = second_order_result.loc[goal, 'S2', renamed_parameter]
+            mean = result_2_goal.mean().drop([renamed_parameter])
             mean.sort_values(ascending=False, inplace=True)
             sorted_interactions = list(mean.index)
             time_ar = _del_duplicates(list(result_2_goal.index.get_level_values(0)))
-            value = single_result.loc[goal, 'S1'][parameter].to_numpy()
-            ax[g_i].plot(single_result.loc[goal, 'S1'][parameter], label='S1')
+            value = single_result.loc[goal, 'S1'][renamed_parameter].to_numpy()
+            ax[g_i].plot(single_result.loc[goal, 'S1'][renamed_parameter], label='S1')
             ax[g_i].fill_between(time_ar, np.zeros_like(value), value, alpha=0.1)
             for para in sorted_interactions:
                 value_2 = value + result_2_goal[para].to_numpy()
                 ax[g_i].plot(time_ar, value_2, label='S2 ' + para)
                 ax[g_i].fill_between(time_ar, value, value_2, alpha=0.1)
                 value = value_2
-            ax[g_i].plot(single_result.loc[goal, 'ST'][parameter], label='ST')
+            ax[g_i].plot(single_result.loc[goal, 'ST'][renamed_parameter], label='ST')
             legend = ['S1']
             legend.extend(analysis_variables)
             legend.append('ST')
@@ -477,7 +489,7 @@ def plot_parameter_verbose(parameter: str,
             ax[g_i].legend()
         else:
             for av_i, av in enumerate(analysis_variables):
-                ax[g_i].plot(single_result.loc[goal, av][parameter])
+                ax[g_i].plot(single_result.loc[goal, av][renamed_parameter])
             ax[g_i].legend(analysis_variables)
     if show_plot:
         plt.show()
@@ -489,12 +501,23 @@ def _del_duplicates(x):
     return list(dict.fromkeys(x))
 
 
-def _rename_tuner_names(result):
+def _rename_tuner_names(result, use_suffix, max_len):
     """Helper function"""
     tuner_names = list(result.columns)
-    rename_tuner_names = {name: _get_suffix(name) for name in tuner_names}
+    rename_tuner_names = {name: _format_name(name, use_suffix, max_len) for name in tuner_names}
     result = result.rename(columns=rename_tuner_names, index=rename_tuner_names)
+    result = result.sort_index()
     return result
+
+
+def _format_name(name, use_suffix, max_len):
+    """
+    Format tuner names.
+    """
+    if use_suffix:
+        name = _get_suffix(name)
+    name = short_name(name,max_len)
+    return name
 
 
 def _get_suffix(modelica_var_name):

@@ -15,6 +15,28 @@ from ebcpy.utils import setup_logger
 import aixcalibuha
 
 
+def short_name(ini_name: str, max_len: int):
+    """
+    Shortens long strings to a max length from the front.
+    long_string_name => ...ing_name with len(new_name) = max_len
+
+    :param str ini_name:
+        Long string to shorten.
+    :param int max_len:
+        Max len of the new string.
+    :return: str
+        The shorten string.
+    """
+    if len(ini_name) > max_len:
+        num_dots = len(ini_name) - max_len
+        if num_dots > 3:
+            num_dots = 3
+        formatted_name = "." * num_dots + ini_name[-(max_len - num_dots):]
+    else:
+        formatted_name = ini_name
+    return formatted_name
+
+
 class CalibrationLogger:
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
@@ -259,13 +281,7 @@ class CalibrationLogger:
         for ini_name in initial_names:
             # Limit string length to a certain amount.
             # The full name has to be displayed somewhere else
-            if len(ini_name) > self._width:
-                num_dots = len(ini_name) - self._width
-                if num_dots > 3:
-                    num_dots = 3
-                formatted_name = "."*num_dots + ini_name[-(self._width-num_dots):]
-            else:
-                formatted_name = ini_name
+            formatted_name = short_name(ini_name=ini_name, max_len=self._width)
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
         info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
