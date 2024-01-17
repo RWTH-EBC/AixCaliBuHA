@@ -51,8 +51,9 @@ def run_sensitivity_analysis(
     # contain the objective on which the sensitivity will be calculated.
     # Here we will study different calibration classes for different states of the models.
     # First we create one global calibration class over the total time and name it 'global'.
-    # TODO: Directly say why it is necessary or refer to the section
-    # This class is important later. For the states of the models we will use the
+    # We can then use the simulations of this calibration class also for other ones which
+    # look at specific time intervals which are in the total interval of the global class.
+    # For the states of the models with specific time intervals we will use the
     # calibration classes from the second example and customize them for the verbose
     # sensitivity analysis, but we could also create custom classes directly here.
     # As we don't need the second return value of the function (`validation_class`),
@@ -74,7 +75,8 @@ def run_sensitivity_analysis(
           [c.name for c in merged_calibration_classes])
 
     # For our verbose sensitivity analysis, we want all classes to have
-    # the same tuner-parameters. This comes in handy in a later part.  # TODO: Directly say why it is necessary
+    # the same tuner-parameters. This comes so that we can use the same simulations
+    # for the sensitivity analysis of different calibration classes.
     # But the last class of example B has different tuner parameters, so we reset
     # them to the tuner parameters of the other classes.
     if example == 'B':
@@ -112,22 +114,25 @@ def run_sensitivity_analysis(
     # Because we defined the first calibration class global
     # and every calibration class has the same
     # tuner-parameters, we can use the option `use_first_sim`,
-    # where only the first class will be simulated
-    # and these simulations will be used for all other classes.
+    # where only the first class will be simulated and the simulation files saved.
+    # These simulations will be used for all other classes.
+
     # For that the simulations are loaded for each class
     # and the statistical measure is then evaluated for the
     # relevant time intervals of each class.
-    # TODO: The following sentence is not clear to me
-    # When we save or load the simulation files we can use
-    # with n_cpu>1 multiprocessing for loading and evaluation
-    # of the simulations for each class. This option is especially
+
+    # When we load simulation files we can use multiprocessing for loading the simulation
+    # and evaluation of the statistical measure for each class.
+    # This multiprocessing option is especially
     # useful for large models and large simulation data,
     # because only one simulation at a time is stored
     # in memory for each process.
     # This can prevent possible memory errors.
+
     # We disable the automatic plot option here,
     # but we save all results. Later we can use the plot function
     # of the analyzers to plot the results.
+
     result, classes = sen_analyzer.run(calibration_classes=merged_calibration_classes,
                                        verbose=True,
                                        use_first_sim=True,
@@ -135,10 +140,11 @@ def run_sensitivity_analysis(
                                        save_results=True,
                                        n_cpu=n_cpu,
                                        scale=False)
+
     # After running the sensitivity analysis you can see
     # that the working directory was created and the result
     # files were saved here. First, the folder "files" was
-    # created as the result of save_files=True. In there, the
+    # created as the result of `save_files=True`. In there, the
     # simulation files are stored in an own folder which
     # name contains the name of the used calibration class.
     # Additionally, the corresponding samples are stored.
@@ -159,7 +165,7 @@ def run_sensitivity_analysis(
     # The first result has as columns the tuner-parameters
     # and a multi level index with three levels.
     # The first level defines the calibration class.
-    # The second level defines the Goals (target values). The index 'all'
+    # The second level defines the Goals (target values). The index `all`
     # is for the result of the combined target values in the goals.
     # The last level defines the result of the
     # sensitivity measure for each class and goal.
@@ -167,8 +173,7 @@ def run_sensitivity_analysis(
     # For their exact meaning I refer to the documentation of the SALib or the literature.
     # In this example you get a short overview in the comparison later.
     print('First and total order results of sobol method')
-    print(result[
-              0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
+    print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
     # The second result of the sobol method is for second order sensitive measures.
     # These describe the interaction between two parameters,
     # so this dataframe has a fourth index level "Interaction".
@@ -192,7 +197,10 @@ def run_sensitivity_analysis(
     # The plotting of second order results is only useful
     # and working for more than 2 parameters.
     # So we only can take a look at them in example A.
-    # Let's take a look at the second order results S2.
+    # If you run example B we will skip the plot of the second order results
+    # and load some sensitivity results of example A.
+
+    # Let's take a look at the second order results `S2` of example A.
     # This analysis variable shows the interaction of two
     # parameters, so we can plot them as a heatmap.
     # We can see that the parameters have no interaction with
@@ -201,17 +209,20 @@ def run_sensitivity_analysis(
     # In the heatmap we can't visualize the confidence intervals,
     # so we will also take a look at the interaction of
     # one specific parameter.
-    # For that the SobolAnalyzer has also a plotting function
-    # which look simular to the S1 and ST plots.
+    # For that the `SobolAnalyzer` has also a plotting function
+    # which look simular to the `S1` and `ST` plots.
     # Here we see again huge confidence intervals,
     # so now we will load results which were calculated with
     # a much higher sample number.
-    if example == 'A':  # TODO: Mhm, this concept could be difficult for the notebooks. Maybe like this?
+    if example == 'A':
         plotting.heatmaps(result[1])
         plotting.plot_single_second_order(result[1], 'rad.n')
 
-    # ## Loading results  # TODO: This should also work even if examole=B, as plotting is static, or?
-    # These results were produced with a samples number N=1024 and calc_second_order=True
+    # ## Loading results
+    # We will now load sensitivity results of example A .
+    # These results were produced with this example and
+    # a samples number N=1024 and calc_second_order=True
+
     result_sobol = SobolAnalyzer.load_from_csv(
         examples_dir.joinpath('data', 'SobolAnalyzer_results_A.csv')
     )
@@ -220,7 +231,7 @@ def run_sensitivity_analysis(
     )
     # For a better understanding we will only take a
     # look at the global class and Electricity goal
-    # and plot S1, ST and S2 in the same window.
+    # and plot `S1`, `ST` and `S2` in the same window.
     # For that we can use the plot function of the Analyzer
     # with some optional options. We will also only use
     # the suffix of the modelica variables for better
@@ -229,7 +240,7 @@ def run_sensitivity_analysis(
     # on the axes of the plots.
     fig = plt.figure(figsize=plt.figaspect(1. / 4.), layout="constrained")  # creating one figure
     subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
-    # plotting S1 and ST
+    # plotting `S1` and `ST`
     ax0 = subfigs[0].subplots()
     plotting.plot_single(
         result=result_sobol,
@@ -288,24 +299,23 @@ def run_sensitivity_analysis(
     # We already took a look at the `Sobol` method,
     # which can compute `S1`, `ST`, and `S2` with their confidence intervals.
     # The sobol method needs for that `(2+2k)N` simulations
-    # where `k` is the number of parameters and N is the sample  # TOD: Adjust remaining variables to code for notenbooks and markdown
-    # number. For variance-based methods N should be greater
-    # than 1000. The sobol method can also compute only S1 and
-    # ST with calc_second_order=False and (1+k)N simulations.
+    # where `k` is the number of parameters and `N` is the sample
+    # number. For variance-based methods `N` should be greater
+    # than 1000. The sobol method can also compute only `S1` and
+    # `ST` with calc_second_order=False and (1+k)N simulations.
     # The FAST method is another variance-based
-    # method and only computes S1 and ST with k*N simulations.
-    # Sobol and FAST should show simular results which is the
-    # case for example B but in example A the FAST method overestimates ST in some cases.
-    # See issue # TODO: Open issue in SAlib for false ST results of the FAST method
+    # method and only computes `S1` and `ST` with k*N simulations.
+    # `Sobol` and FAST should show simular results which is the
+    # case for example B but in example A the FAST method overestimates `ST` in some cases.
     # In the right plots, the results for the Morris method are shown.
     # These are based on the mean of derivatives which
     # represents the analysis variables mu. In the estimation
     # of the derivatives, only one parameter is changed at a time.
     # mu_star is the mean of the absolut values of the derivatives
-    # and is an approximation of ST but
-    # needs only a N of over 100 and (1+k)N simulations.
-    # In this comparison, mu_star shows simular results to ST
-    # of the Sobol method. Last, sigma is computed which is the standard deviation and
+    # and is an approximation of `ST` but
+    # needs only an `N` of over 100 and `(1+k)N` simulations.
+    # In this comparison, mu_star shows simular results to `ST`
+    # of the `Sobol` method. Last, sigma is computed which is the standard deviation and
     # is a sign for a non-linear model or for interactions in the model.
     result_sobol = SobolAnalyzer.load_from_csv(
         examples_dir.joinpath('data', f'SobolAnalyzer_results_{example}.csv')
@@ -346,7 +356,7 @@ def run_sensitivity_analysis(
     subfigs_comp[2].suptitle("Morris")
     plt.show()
 
-    # # Selection of tuner-parameters based on verbose sensitivity results
+    # ## Selection of tuner-parameters based on verbose sensitivity results
     # We can now also use these verbose sensitivity
     # results for a selection of relevant tuner parameters.
     # We already saw that our models have interactions,
@@ -361,7 +371,7 @@ def run_sensitivity_analysis(
     # sensitivity at least in one class and target value
     # of the sensitivity results. This is enough that
     # the parameter can be calibrated.
-    # Here, we will use S1 because it is normalized instead of mu_star,
+    # Here, we will use `S1` because it is normalized instead of mu_star,
     # and we can set on single threshold for all classes and goals.
     calibration_class = SobolAnalyzer.select_by_threshold_verbose(classes[0],
                                                                   result=result_sobol,
@@ -397,7 +407,7 @@ def run_sensitivity_analysis(
     # Let's load again results which were created with a larger sample size.
 
     # ## Loading time dependent results
-    # These results were produced with a samples number N=1024 and calc_second_order=True
+    # These results were produced with a samples number `N=1024` and `calc_second_order=True`
     result_sobol_time = SobolAnalyzer.load_from_csv(
         examples_dir.joinpath('data', 'SobolAnalyzer_results_time_A.csv')
     )
@@ -405,12 +415,13 @@ def run_sensitivity_analysis(
         examples_dir.joinpath('data', 'SobolAnalyzer_results_second_order_time_A.csv')
     )
     plotting.plot_time_dependent(result=result_sobol_time, plot_conf=True, show_plot=False)
-    # Now the confidence intervals are smaller and only at one time step they are still lager than 1.
+    # Now the confidence intervals are smaller and
+    # only at one time step they are still lager than 1.
     # We can also see that the parameter `theCon.G` has the biggest influence.
     # So we can take a closer look at this parameter with another plot
     # function where all available sensitivity measures are plotted together.
-    # Second order results are plotted cumulative on top of S1.
-    # This resembles the definition of ST = S1 + sum(S2_i) + sum(S3_i) + ...
+    # Second order results are plotted cumulative on top of `S1`.
+    # This resembles the definition of `ST = S1 + sum(S2_i) + sum(S3_i) + ...`
     plotting.plot_parameter_verbose(parameter='theCon.G',
                                     single_result=result_sobol_time,
                                     second_order_result=result_sobol_2_time,
