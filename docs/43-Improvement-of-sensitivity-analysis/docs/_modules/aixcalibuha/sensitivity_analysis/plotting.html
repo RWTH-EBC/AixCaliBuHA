@@ -82,7 +82,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module containing functions for plotting sensitivity results</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
@@ -94,7 +94,7 @@
 <div class="viewcode-block" id="plot_single"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_single">[docs]</a><span class="k">def</span> <span class="nf">plot_single</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                 <span class="n">cal_classes</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">goals</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot sensitivity results of first and total order analysis variables.</span>
@@ -126,6 +126,7 @@
     <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">figs_axes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figs_axes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_func_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_func_name&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_single&#39;</span><span class="p">)</span>
 
     <span class="c1"># get lists of the calibration classes and their goals in the result dataframe</span>
     <span class="k">if</span> <span class="n">cal_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -133,7 +134,7 @@
     <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">,</span> <span class="n">_func_name</span><span class="p">)</span>
 
     <span class="c1"># plotting with simple plot function of the SALib</span>
     <span class="n">figs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -158,7 +159,7 @@
 <div class="viewcode-block" id="plot_second_order"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.plot_second_order">[docs]</a><span class="k">def</span> <span class="nf">plot_second_order</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                       <span class="n">cal_classes</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="n">goals</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                      <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                      <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
                       <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot sensitivity results of second order analysis variables.</span>
@@ -197,7 +198,7 @@
     <span class="k">if</span> <span class="n">goals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">goals</span> <span class="o">=</span> <span class="n">_del_duplicates</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">,</span> <span class="s2">&quot;plot_second_order&quot;</span><span class="p">)</span>
 
     <span class="n">tuner_names</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tuner_names</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -243,7 +244,7 @@
                              <span class="n">para_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                              <span class="n">cal_classes</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                              <span class="n">goals</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                             <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                             <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
                              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the value of S2 from one parameter with all other parameters.</span>
@@ -284,7 +285,8 @@
         <span class="n">goals</span><span class="o">=</span><span class="n">goals</span><span class="p">,</span>
         <span class="n">figs_axes</span><span class="o">=</span><span class="n">figs_axes</span><span class="p">,</span>
         <span class="n">use_suffix</span><span class="o">=</span><span class="n">use_suffix</span><span class="p">,</span>
-        <span class="n">max_name_len</span><span class="o">=</span><span class="n">max_name_len</span>
+        <span class="n">max_name_len</span><span class="o">=</span><span class="n">max_name_len</span><span class="p">,</span>
+        <span class="n">_func_name</span><span class="o">=</span><span class="s2">&quot;plot_single_second_order&quot;</span>
     <span class="p">)</span>
     <span class="c1"># set new title for the figures of each calibration class</span>
     <span class="k">for</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">figs</span><span class="p">:</span>
@@ -298,7 +300,7 @@
             <span class="n">cal_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">goal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot S2 sensitivity results from one calibration class and goal as a heatmap.</span>
@@ -323,8 +325,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">use_suffix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_suffix&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">show_plot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;show_plot&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">_func_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_func_name&#39;</span><span class="p">,</span> <span class="s2">&quot;heatmap&quot;</span><span class="p">)</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">,</span> <span class="n">_func_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="s2">&quot;constrained&quot;</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
@@ -347,7 +350,7 @@
 <div class="viewcode-block" id="heatmaps"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.plotting.heatmaps">[docs]</a><span class="k">def</span> <span class="nf">heatmaps</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
              <span class="n">cal_classes</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">goals</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+             <span class="n">max_name_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot S2 sensitivity results as a heatmap for multiple</span>
@@ -383,7 +386,7 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">]</span>
-
+    <span class="n">_func_name</span> <span class="o">=</span> <span class="s2">&quot;heatmaps&quot;</span>
     <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cal_classes</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">goals</span><span class="p">):</span>
             <span class="n">heatmap</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
@@ -392,7 +395,9 @@
                     <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">],</span>
                     <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">use_suffix</span><span class="o">=</span><span class="n">use_suffix</span><span class="p">,</span>
-                    <span class="n">max_name_len</span><span class="o">=</span><span class="n">max_name_len</span><span class="p">)</span>
+                    <span class="n">max_name_len</span><span class="o">=</span><span class="n">max_name_len</span><span class="p">,</span>
+                    <span class="n">_func_name</span><span class="o">=</span><span class="n">_func_name</span><span class="p">)</span>
+            <span class="n">_func_name</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
@@ -448,7 +453,7 @@
     <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">,</span> <span class="s2">&quot;plot_time_dependent&quot;</span><span class="p">)</span>
 
     <span class="n">renamed_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">_format_name</span><span class="p">(</span><span class="n">para</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span> <span class="k">for</span> <span class="n">para</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
 
@@ -469,10 +474,11 @@
                     <span class="n">conv_int</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">analysis_var</span> <span class="o">+</span> <span class="s1">&#39;_conf&#39;</span><span class="p">][</span><span class="n">para</span><span class="p">]</span>
                     <span class="n">large_values_indices</span> <span class="o">=</span> <span class="n">conv_int</span><span class="p">[</span><span class="n">conv_int</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
                     <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">large_values_indices</span><span class="p">):</span>
-                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;plot_time_dependent INFO:&quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;Confidence interval for </span><span class="si">{</span><span class="n">goal</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">analysis_var</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">para</span><span class="si">}</span><span class="s2"> was at the &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;following times </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">large_values_indices</span><span class="p">)</span><span class="si">}</span><span class="s2"> lager than 1 &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;and is smoothed out in the plot.&quot;</span><span class="p">)</span>
+                            <span class="sa">f</span><span class="s2">&quot;and is smoothed out in the plot.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">large_values_indices</span><span class="p">:</span>
                         <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">conv_int</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
                         <span class="k">if</span> <span class="n">prev_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -535,7 +541,8 @@
 
     <span class="n">renamed_parameter</span> <span class="o">=</span> <span class="n">_format_name</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
 
-    <span class="n">single_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">single_result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
+    <span class="n">single_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">single_result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">,</span>
+                                        <span class="s2">&quot;plot_parameter_verbose&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">second_order_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">second_order_result</span> <span class="o">=</span> <span class="n">_rename_tuner_names</span><span class="p">(</span><span class="n">second_order_result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_name_len</span><span class="p">)</span>
 
@@ -569,8 +576,8 @@
             <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Goal: </span><span class="si">{</span><span class="n">goal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">av_i</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">):</span>
-                <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">av</span><span class="p">][</span><span class="n">renamed_parameter</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">analysis_var</span> <span class="ow">in</span> <span class="n">analysis_variables</span><span class="p">:</span>
+                <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">single_result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">goal</span><span class="p">,</span> <span class="n">analysis_var</span><span class="p">][</span><span class="n">renamed_parameter</span><span class="p">])</span>
             <span class="n">ax</span><span class="p">[</span><span class="n">g_i</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">analysis_variables</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -582,12 +589,15 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_rename_tuner_names</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">func_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
     <span class="n">tuner_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">rename_tuner_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_format_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tuner_names</span><span class="p">}</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">rename_tuner_names</span><span class="p">)</span>
+    <span class="n">renamed_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">_format_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">use_suffix</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tuner_names</span><span class="p">}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">renamed_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">renamed_names</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">renamed_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="o">!=</span> <span class="n">new</span> <span class="ow">and</span> <span class="n">func_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> INFO: parameter name </span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2"> changed to </span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
 
 

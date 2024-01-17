@@ -90,7 +90,6 @@
 <span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span>
 <span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">Goals</span><span class="p">,</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">TunerParas</span>
 
-
 <span class="n">tsd_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the path to the target values measured&quot;</span><span class="p">,</span>
               <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
               <span class="s2">&quot;sheet_name&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -131,13 +130,13 @@
                                                 <span class="s2">&quot;TODO: Specify the boundaries of the tuner parameters as a list of tuples&quot;</span><span class="p">}}</span>
 
 <span class="n">default_calibration_config</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;statistical_measure&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the statistical &quot;</span>
-                                           <span class="s2">&quot;measure for calibration (RMSE, MAE, etc.)&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;calibration_classes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">default_cal_class_config</span><span class="p">],</span>
-                    <span class="s2">&quot;start_time_method&quot;</span><span class="p">:</span> <span class="s1">&#39;fixstart&#39;</span><span class="p">,</span>
-                    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="n">kwargs_calibrator</span><span class="p">,</span>
-                    <span class="s2">&quot;settings multiple classes&quot;</span><span class="p">:</span> <span class="n">kwargs_multiple_classes</span>
-                    <span class="p">}</span>
+    <span class="s2">&quot;statistical_measure&quot;</span><span class="p">:</span> <span class="s2">&quot;TODO: Specify the statistical &quot;</span>
+                           <span class="s2">&quot;measure for calibration (RMSE, MAE, etc.)&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calibration_classes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">default_cal_class_config</span><span class="p">],</span>
+    <span class="s2">&quot;start_time_method&quot;</span><span class="p">:</span> <span class="s1">&#39;fixstart&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="n">kwargs_calibrator</span><span class="p">,</span>
+    <span class="s2">&quot;settings multiple classes&quot;</span><span class="p">:</span> <span class="n">kwargs_multiple_classes</span>
+<span class="p">}</span>
 
 <span class="n">kwargs_scipy_dif_evo</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
                         <span class="s2">&quot;popsize&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
@@ -182,7 +181,7 @@
     <span class="s2">&quot;Optimization&quot;</span><span class="p">:</span> <span class="n">default_optimization_config</span><span class="p">,</span>
     <span class="s2">&quot;Input Data&quot;</span><span class="p">:</span> <span class="n">default_input_config</span><span class="p">,</span>
     <span class="s2">&quot;Calibration&quot;</span><span class="p">:</span> <span class="n">default_calibration_config</span>
-    <span class="p">}</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="get_goals_from_config"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_goals_from_config">[docs]</a><span class="k">def</span> <span class="nf">get_goals_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>

@@ -92,6 +92,7 @@
 <span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">TimeSeriesData</span>
 <span class="kn">from</span> <span class="nn">ebcpy.utils.statistics_analyzer</span> <span class="kn">import</span> <span class="n">StatisticsAnalyzer</span>
 <span class="kn">from</span> <span class="nn">ebcpy.preprocessing</span> <span class="kn">import</span> <span class="n">convert_datetime_index_to_float_index</span>
+
 <span class="c1"># pylint: disable=I1101</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -227,8 +228,8 @@
         <span class="c1"># Set the weightings, if not specified.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">weightings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span>
-                                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">)])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span>
+                                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">)])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weightings</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;weightings is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
@@ -237,7 +238,7 @@
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The given number of weightings (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>
                                  <span class="sa">f</span><span class="s2">&quot;does not match the number of &quot;</span>
                                  <span class="sa">f</span><span class="s2">&quot;goals (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weightings</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrite string method to present the Goals-Object more</span>
@@ -294,8 +295,8 @@
             <span class="p">)</span>
             <span class="c1"># Apply penalty function</span>
             <span class="n">_diff</span> <span class="o">=</span> <span class="n">_diff</span> <span class="o">*</span> <span class="n">penaltyfactor</span>
-            <span class="n">_verbose_calculation</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_diff</span><span class="p">)</span>
-            <span class="n">total_difference</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weightings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">_diff</span>
+            <span class="n">_verbose_calculation</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weightings</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">_diff</span><span class="p">)</span>
+            <span class="n">total_difference</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weightings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">_diff</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">total_difference</span><span class="p">,</span> <span class="n">_verbose_calculation</span>
         <span class="k">return</span> <span class="n">total_difference</span></div>
@@ -447,6 +448,7 @@
 <span class="sd">    m_flow_2             0.02     0.01     0.1     0.09</span>
 <span class="sd">    heatConv_a         200.00    10.00   300.0   290.00</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class-objects and check correct input.&quot;&quot;&quot;</span>
         <span class="c1"># Check if the given input-parameters are of correct format. If not, raise an error.</span>
@@ -505,7 +507,7 @@
         <span class="c1"># If no bounds are given, scaling is not possible--&gt; descaled = scaled</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">descaled</span>
-        <span class="n">_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">descaled</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">])</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
+        <span class="n">_scaled</span> <span class="o">=</span> <span class="p">(</span><span class="n">descaled</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">_scaled</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_scaled</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Given descaled values are outside &quot;</span>
                           <span class="s2">&quot;of bounds. Automatically limiting &quot;</span>
@@ -525,12 +527,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">scaled</span>
         <span class="n">_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scaled</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">_scaled</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">-</span><span class="mf">1e4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_scaled</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">+</span><span class="mf">1e4</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">_scaled</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">-</span> <span class="mf">1e4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_scaled</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">1e4</span><span class="p">)):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Given scaled values are outside of bounds. &quot;</span>
                           <span class="s2">&quot;Automatically limiting the values with &quot;</span>
                           <span class="s2">&quot;respect to the bounds.&quot;</span><span class="p">)</span>
         <span class="n">_scaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">_scaled</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_scaled</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">_scaled</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -785,7 +787,7 @@
                                   <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">),</span>
                                   <span class="s2">&quot;input_kwargs&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">)</span>
                                   <span class="p">}</span>
-                                  
+
     <span class="c1"># Convert dict to actual calibration-classes</span>
     <span class="n">cal_classes_merged</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">temp_merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

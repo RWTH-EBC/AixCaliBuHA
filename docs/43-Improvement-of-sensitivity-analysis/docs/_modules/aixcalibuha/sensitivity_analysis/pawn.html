@@ -162,14 +162,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;sobol&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;calc_second_order&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_second_order</span><span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;morris&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;morris&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_levels</span><span class="p">,</span>
                     <span class="s1">&#39;optimal_trajectories&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimal_trajectories</span><span class="p">,</span>
                     <span class="s1">&#39;local_optimization&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_optimization</span><span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s1"> is not implemented yet&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s1"> is not implemented yet&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PAWNAnalyzer.generate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.generate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -184,16 +183,15 @@
             <span class="k">return</span> <span class="n">sobol</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span>
                                 <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
                                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;morris&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;morris&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">morris</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span>
                                  <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
                                  <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fast</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span>
                                <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s1"> is not implemented yet&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s1"> is not implemented yet&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -204,8 +202,7 @@
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">))))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">analysis_variable</span><span class="p">]))</span></div>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">analysis_variable</span><span class="p">]))</span></div>
 </pre></div>
 
            </div>

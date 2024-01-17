@@ -177,7 +177,7 @@
                  <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate instance attributes&quot;&quot;&quot;</span>
-        <span class="c1">#%% Kwargs</span>
+        <span class="c1"># %% Kwargs</span>
         <span class="c1"># Initialize supported keywords with default value</span>
         <span class="c1"># Pop the items so they wont be added when calling the</span>
         <span class="c1"># __init__ of the parent class. Always pop with a default value in case</span>
@@ -213,7 +213,7 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given </span><span class="si">{</span><span class="n">bool_keyword</span><span class="si">}</span><span class="s2"> is of type &quot;</span>
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">keyword_value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> but should be type bool&quot;</span><span class="p">)</span>
 
-        <span class="c1">#%% Initialize all public parameters</span>
+        <span class="c1"># %% Initialize all public parameters</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Set sim_api</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span> <span class="o">=</span> <span class="n">sim_api</span>
@@ -235,7 +235,7 @@
              <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="c1">#%% Setup the logger</span>
+        <span class="c1"># %% Setup the logger</span>
         <span class="c1"># De-register the logger setup in the optimization class:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">CalibrationVisualizer</span><span class="p">(</span>
@@ -350,12 +350,14 @@
             <span class="n">xk_descaled_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xk_descaled</span><span class="p">)</span>
             <span class="c1"># Update Parameters</span>
             <span class="n">parameter_copy</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">parameter_copy</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="o">.</span><span class="n">values</span><span class="p">)})</span>
+            <span class="n">parameter_copy</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="o">.</span><span class="n">values</span><span class="p">)})</span>
             <span class="n">parameter_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter_copy</span><span class="p">)</span>
 
         <span class="c1"># Simulate</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
-            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameter_list</span><span class="p">))]</span>
+            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span>
+                                 <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameter_list</span><span class="p">))]</span>
             <span class="n">_filepaths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameter_list</span><span class="p">,</span>
                 <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
@@ -462,7 +464,7 @@
 <span class="sd">        arguments in Optimizer.optimize(). Look at the docstring</span>
 <span class="sd">        in ebcpy to know which options are available.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#%% Start Calibration:</span>
+        <span class="c1"># %% Start Calibration:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start calibration of model: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="sa">f</span><span class="s2">&quot; with framework-class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -499,7 +501,7 @@
                 <span class="s2">&quot;Can&#39;t save or return any results.&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1">#%% Save the relevant results.</span>
+        <span class="c1"># %% Save the relevant results.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">save_calibration_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
                                             <span class="n">duration</span><span class="o">=</span><span class="n">t_cal</span><span class="p">,</span>
