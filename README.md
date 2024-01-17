@@ -16,7 +16,7 @@ This framework automates the process of calibrating models used in Building
 and HVAC Simulations.
 
 # Key features
-- Performing a **Sensitivity Analysis** to discover tuner parameters for the calibration
+- Performing a **Sensitivity Analysis** to analyze your model and discover tuner parameters for the calibration
 - **Calibration** of a given model based on the tuner parameters, the calibration classes and specified goals to evaluate the objective function of the underlying optimization
 
 # Installation

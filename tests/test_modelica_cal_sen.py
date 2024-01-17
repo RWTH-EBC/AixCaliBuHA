@@ -349,6 +349,10 @@ class TestSenAnalyzer(unittest.TestCase):
                           show_plot=False)
 
     def test_sa_time_dependent(self):
+        """
+        Test time dependent sensitivity analysis and
+        simple plotting on the basis of the sobol method.
+        """
         sen_ana = SobolAnalyzer(
             sim_api=self.sim_api,
             num_samples=1,
@@ -380,6 +384,9 @@ class TestSenAnalyzer(unittest.TestCase):
                                                     plot_result=True)
 
     def test_plot_parameter_verbose(self):
+        """
+        Test the verbose plotting of time dependent sensitivity results of a single parameter
+        """
         result_sobol_time = SobolAnalyzer.load_from_csv(
             self.data_dir.joinpath('SobolAnalyzer_results_time_A.csv')
         )
@@ -392,6 +399,9 @@ class TestSenAnalyzer(unittest.TestCase):
                                         use_suffix=True)
 
     def _check_sen_run_return(self, sen_ana, sen_result, classes):
+        """
+        Check the result of sensitivity_analyzer.run() function
+        """
         if sen_ana.__class__.__name__ == 'SobolAnalyzer':
             self.assertIsInstance(sen_result, tuple)
             self.assertIsInstance(sen_result[1], pd.DataFrame)
