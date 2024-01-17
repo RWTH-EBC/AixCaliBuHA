@@ -13,10 +13,8 @@ from aixcalibuha.utils.visualizer import short_name
 def plot_single(result: pd.DataFrame,
                 cal_classes: [str] = None,
                 goals: [str] = None,
-                show_plot: bool = True,
-                use_suffix: bool = False,
                 max_name_len: int = 10,
-                figs_axes: [[matplotlib.figure.Figure], [matplotlib.axes.Axes]] = None):
+                **kwargs):
     """
     Plot sensitivity results of first and total order analysis variables.
     For each calibration class one figure is created, which shows for each goal an axis
@@ -24,11 +22,6 @@ def plot_single(result: pd.DataFrame,
 
     :param pd.DataFrame result:
         A result from run
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is True: If True, the last part after the last point
-        of Modelica variables is used for the x ticks.
     :param int max_name_len:
         Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
@@ -38,12 +31,20 @@ def plot_single(result: pd.DataFrame,
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
-    :param ([fig], [ax]) figs_axes:
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword ([fig], [ax]) figs_axes:
         Default None. Set own figures of subfigures with corresponding axes for customization.
+    :keyword bool use_suffix:
+        Default is True: If True, the last part after the last point
+        of Modelica variables is used for the x ticks.
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
         with shapes (len(cal_classes)), (len(cal_classes), len(goals))
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    show_plot = kwargs.pop('show_plot', True)
+    figs_axes = kwargs.pop('figs_axes', None)
 
     # get lists of the calibration classes and their goals in the result dataframe
     if cal_classes is None:
@@ -57,15 +58,8 @@ def plot_single(result: pd.DataFrame,
     figs = []
     axes = []
     for col, cal_class in enumerate(cal_classes):
-        if figs_axes is None:
-            fig, ax = plt.subplots(len(goals), sharex='all', layout="constrained")
-        else:
-            fig = figs_axes[0][col]
-            ax = figs_axes[1][col]
-        fig.suptitle(f"Class: {cal_class}")
+        fig, ax = _create_figs_axes(figs_axes, col, goals, f"Class: {cal_class}")
         figs.append(fig)
-        if not isinstance(ax, np.ndarray):
-            ax = [ax]
         axes.append(ax)
         for row, goal in enumerate(goals):
             result_df = result.loc[cal_class, goal]
@@ -83,10 +77,8 @@ def plot_single(result: pd.DataFrame,
 def plot_second_order(result: pd.DataFrame,
                       cal_classes: [str] = None,
                       goals: [str] = None,
-                      show_plot: bool = True,
-                      use_suffix: bool = False,
                       max_name_len: int = 10,
-                      figs: [[matplotlib.figure.Figure]] = None):
+                      **kwargs):
     """
     Plot sensitivity results of second order analysis variables.
     For each calibration class and goal one figure of a 3d plot is created
@@ -95,11 +87,6 @@ def plot_second_order(result: pd.DataFrame,
 
     :param pd.DataFrame result:
         A result from run
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is True: If True, the last part after the last point
-        of Modelica variables is used for the x ticks.
     :param int max_name_len:
         Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
@@ -109,11 +96,20 @@ def plot_second_order(result: pd.DataFrame,
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
-    :param [[fig]] figs:
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is True: If True, the last part after the last point
+        of Modelica variables is used for the x ticks.
+    :keyword [[fig]] figs:
         Default None. Set own figures of subfigures for customization.
+        Shape (len(cal_classes), len(goals))
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    show_plot = kwargs.pop('show_plot', True)
+    figs = kwargs.pop('figs', None)
     result = result.fillna(0)
     if cal_classes is None:
         cal_classes = _del_duplicates(list(result.index.get_level_values(0)))
@@ -166,11 +162,8 @@ def plot_single_second_order(result: pd.DataFrame,
                              para_name: str,
                              cal_classes: [str] = None,
                              goals: [str] = None,
-                             show_plot: bool = True,
-                             use_suffix: bool = False,
                              max_name_len: int = 10,
-                             figs_axes: [[matplotlib.figure.Figure],
-                                         [matplotlib.axes.Axes]] = None):
+                             **kwargs):
     """
     Plot the value of S2 from one parameter with all other parameters.
 
@@ -185,19 +178,23 @@ def plot_single_second_order(result: pd.DataFrame,
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is True: If True, the last part after the last point
-        of Modelica variables is used for the x ticks.
     :param int max_name_len:
         Default is 10. Shortens the parameter names to max_name_len characters.
-    :param ([fig], [ax]) figs_axes:
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is True: If True, the last part after the last point
+        of Modelica variables is used for the x ticks.
+    :keyword ([fig], [ax]) figs_axes:
         Default None. Set own figures of subfigures with corresponding axes for customization.
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
         with shapes (len(cal_classes)), (len(cal_classes), len(goals))
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    show_plot = kwargs.pop('show_plot', True)
+    figs_axes = kwargs.pop('figs_axes', None)
+
     result = result.loc[:, :, :, para_name][:].fillna(0)
     figs, axes = plot_single(
         result=result,
@@ -220,9 +217,8 @@ def heatmap(result: pd.DataFrame,
             cal_class: str,
             goal: str,
             ax: matplotlib.axes.Axes = None,
-            show_plot: bool = True,
-            use_suffix: bool = False,
-            max_name_len: int = 10):
+            max_name_len: int = 10,
+            **kwargs):
     """
     Plot S2 sensitivity results from one calibration class and goal as a heatmap.
 
@@ -235,15 +231,18 @@ def heatmap(result: pd.DataFrame,
     :param matplotlib.axes ax:
         Default is None. If an axes is given the heatmap will be plotted on it, else
         a new figure and axes is created.
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is False. If True, only the last suffix of a Modelica variable is displayed.
     :param int max_name_len:
         Default is 10. Shortens the parameter names to max_name_len characters.
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is False. If True, only the last suffix of a Modelica variable is displayed.
     :return:
         Returns axes
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    show_plot = kwargs.pop('show_plot', True)
+
     result = _rename_tuner_names(result, use_suffix, max_name_len)
     if ax is None:
         _, ax = plt.subplots(layout="constrained")
@@ -267,9 +266,8 @@ def heatmap(result: pd.DataFrame,
 def heatmaps(result: pd.DataFrame,
              cal_classes: [str] = None,
              goals: [str] = None,
-             show_plot: bool = True,
-             use_suffix: bool = False,
-             max_name_len: int = 10):
+             max_name_len: int = 10,
+             **kwargs):
     """
     Plot S2 sensitivity results as a heatmap for multiple
     calibration classes and goals in one figure.
@@ -282,13 +280,16 @@ def heatmaps(result: pd.DataFrame,
     :param [str] goals:
         Default is a list of all goals in the result.
         If a list of goals is given only these goals are plotted.
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is False. If True, only the last suffix of a Modelica variable is displayed.
     :param int max_name_len:
         Default is 10. Shortens the parameter names to max_name_len characters.
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is False. If True, only the last suffix of a Modelica variable is displayed.
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    show_plot = kwargs.pop('show_plot', True)
+
     if cal_classes is None:
         cal_classes = result.index.get_level_values("Class").unique()
     if goals is None:
@@ -320,10 +321,7 @@ def plot_time_dependent(result: pd.DataFrame,
                         goals: [str] = None,
                         analysis_variables: [str] = None,
                         plot_conf: bool = True,
-                        show_plot: bool = True,
-                        use_suffix: bool = False,
-                        max_name_len: int = 10,
-                        figs_axes: [[matplotlib.figure.Figure], [matplotlib.axes.Axes]] = None):
+                        **kwargs):
     """
     Plot time dependent sensitivity results without interactions from run_time_dependent().
 
@@ -339,23 +337,28 @@ def plot_time_dependent(result: pd.DataFrame,
         Default all analysis_variables. List of analysis variables to plot.
     :param bool plot_conf:
         Default True. If true, the confidence intervals for each parameter are plotted.
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is True: If True, the last part after the last point
-        of Modelica variables is used for the x ticks.
-    :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
-    :param ([fig], [ax]) figs_axes:
+    :keyword ([fig], [ax]) figs_axes:
         Default None. Optional custom figures and axes
         (see example for verbose sensitivity analysis).
     :return:
         Returns all created figures and axes in lists like [fig], [ax]
         with shapes (len(goals)), (len(goals), len(analysis_variables))
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is True: If True, the last part after the last point
+        of Modelica variables is used for the x ticks.
+    :keyword int max_name_len:
+        Default is 50. Shortens the parameter names to max_name_len characters.
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    max_name_len = kwargs.pop('max_name_len', 50)
+    show_plot = kwargs.pop('show_plot', True)
+    figs_axes = kwargs.pop('figs_axes', None)
+
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(0)))
     all_analysis_variables = _del_duplicates(list(result.index.get_level_values(1)))
@@ -366,25 +369,20 @@ def plot_time_dependent(result: pd.DataFrame,
 
     result = _rename_tuner_names(result, use_suffix, max_name_len)
 
+    renamed_parameters = [_format_name(para, use_suffix, max_name_len) for para in parameters]
+
     figs = []
     axes = []
     for idx_goal, goal in enumerate(goals):
-        if figs_axes is None:
-            fig, ax = plt.subplots(len(analysis_variables), sharex='all', layout="constrained")
-        else:
-            fig = figs_axes[0][idx_goal]
-            ax = figs_axes[1][idx_goal]
-        fig.suptitle(f"Goal: {goal}")
+        fig, ax = _create_figs_axes(figs_axes, idx_goal, analysis_variables, f"Goal: {goal}")
         figs.append(fig)
-        if not isinstance(ax, np.ndarray):
-            ax = [ax]
         axes.append(ax)
         for idx_av, analysis_var in enumerate(analysis_variables):
-            axes[idx_goal][idx_av].plot(result.loc[goal, analysis_var][parameters])
+            axes[idx_goal][idx_av].plot(result.loc[goal, analysis_var][renamed_parameters])
             axes[idx_goal][idx_av].set_ylabel(analysis_var)
-            axes[idx_goal][idx_av].legend(parameters)
+            axes[idx_goal][idx_av].legend(renamed_parameters)
             if plot_conf and analysis_var + '_conf' in all_analysis_variables:
-                for para in parameters:
+                for para in renamed_parameters:
                     y = result.loc[goal, analysis_var][para]
                     x = y.index.to_numpy()
                     conv_int = result.loc[goal, analysis_var + '_conf'][para]
@@ -411,10 +409,7 @@ def plot_parameter_verbose(parameter: str,
                            single_result: pd.DataFrame,
                            second_order_result: pd.DataFrame = None,
                            goals: [str] = None,
-                           show_plot: bool = True,
-                           use_suffix: bool = False,
-                           max_name_len: int = 10,
-                           fig_axes: [matplotlib.figure.Figure, [matplotlib.axes.Axes]] = None):
+                           **kwargs):
     """
     Plot all time dependent sensitivity measure for one parameter.
     For each goal an axes is created within one figure.
@@ -430,23 +425,28 @@ def plot_parameter_verbose(parameter: str,
         First and total order result form run_time_dependent.
     :param pd.DataFrame second_order_result:
         Default None. Second order result of SobolAnalyzer.run_time_dependent.
-    :param bool show_plot:
-        Default is True. If False, all created plots are not shown.
-    :param bool use_suffix:
-        Default is True: If True, the last part after the last point
-        of Modelica variables is used for the x ticks.
-    :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
     :param [str] goals:
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
-    :param (fig, [ax]) fig_axes:
+    :keyword (fig, [ax]) fig_axes:
         Default None. Optional custom figures and axes
         (see example for verbose sensitivity analysis).
     :return:
         Returns all created figures and axes in lists like fig, [ax]
         with shape (len(goals)) for the axes list
+    :keyword bool show_plot:
+        Default is True. If False, all created plots are not shown.
+    :keyword bool use_suffix:
+        Default is True: If True, the last part after the last point
+        of Modelica variables is used for the x ticks.
+    :keyword int max_name_len:
+        Default is 10. Shortens the parameter names to max_name_len characters.
     """
+    use_suffix = kwargs.pop('use_suffix', False)
+    max_name_len = kwargs.pop('max_name_len', 50)
+    show_plot = kwargs.pop('show_plot', True)
+    fig_axes = kwargs.pop('fig_axes', None)
+
     if goals is None:
         goals = _del_duplicates(list(single_result.index.get_level_values(0)))
     all_analysis_variables = _del_duplicates(list(single_result.index.get_level_values(1)))
@@ -516,7 +516,7 @@ def _format_name(name, use_suffix, max_len):
     """
     if use_suffix:
         name = _get_suffix(name)
-    name = short_name(name,max_len)
+    name = short_name(name, max_len)
     return name
 
 
@@ -525,3 +525,18 @@ def _get_suffix(modelica_var_name):
     index_last_dot = modelica_var_name.rfind('.')
     suffix = modelica_var_name[index_last_dot + 1:]
     return suffix
+
+
+def _create_figs_axes(figs_axes, fig_index, ax_len_list, fig_title):
+    """
+    Check if figs and axes are already given, if not create them.
+    """
+    if figs_axes is None:
+        fig, ax = plt.subplots(len(ax_len_list), sharex='all', layout="constrained")
+    else:
+        fig = figs_axes[0][fig_index]
+        ax = figs_axes[1][fig_index]
+    fig.suptitle(fig_title)
+    if not isinstance(ax, np.ndarray):
+        ax = [ax]
+    return fig, ax
