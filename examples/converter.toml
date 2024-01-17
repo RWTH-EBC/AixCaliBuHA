@@ -29,6 +29,18 @@ md_path = "examples/docs"
 ipynb_path = "examples/jupyter_notebooks"
 
 [[ExampleFile]]
+filename = "examples/e3_verbose_sensitivity_analysis_example.py"
+func_name = "run_sensitivity_analysis"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
+filename = "examples/e3_verbose_dymola sensitivity_analysis_example.py"
+func_name = "run_sensitivity_analysis"
+md_path = "examples/docs"
+ipynb_path = "examples/jupyter_notebooks"
+
+[[ExampleFile]]
 filename = "examples/e4_calibration_example.py"
 func_name = "run_calibration"
 md_path = "examples/docs"
