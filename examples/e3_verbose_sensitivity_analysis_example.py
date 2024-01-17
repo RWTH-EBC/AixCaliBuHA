@@ -1,10 +1,12 @@
 """
 Example 3 verbose sensitivity analysis
+for the analysis of your model and the calibration process
 
 Goals of this part of the examples:
 1. Learn how to execute a verbose sensitivity analysis
-2. Learn the meaning of the results
+2. Learn the meaning of the results the analysis of your model
 3. Learn other sensitivity methods
+5. Learn time dependent sensitivity analysis
 4. Learn how to save the results for reproduction
 """
 import matplotlib.pyplot as plt
