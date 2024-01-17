@@ -145,18 +145,16 @@ aixcalibuha/calibration/multi_class_calibrator.py:198:8: R1705: Unnecessary "els
 aixcalibuha/calibration/multi_class_calibrator.py:261:28: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
 aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator) (cyclic-import)
 aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
 aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils.visualizer) (cyclic-import)
 aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer -> aixcalibuha.utils) (cyclic-import)
 aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 9.50/10
+Your code has been rated at 9.51/10
 
