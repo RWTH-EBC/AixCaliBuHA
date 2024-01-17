@@ -1,7 +1,7 @@
 """
 Module containing functions for plotting sensitivity results
 """
-import warnings
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -13,7 +13,7 @@ from aixcalibuha.utils.visualizer import short_name
 def plot_single(result: pd.DataFrame,
                 cal_classes: [str] = None,
                 goals: [str] = None,
-                max_name_len: int = 10,
+                max_name_len: int = 15,
                 **kwargs):
     """
     Plot sensitivity results of first and total order analysis variables.
@@ -45,6 +45,7 @@ def plot_single(result: pd.DataFrame,
     use_suffix = kwargs.pop('use_suffix', False)
     show_plot = kwargs.pop('show_plot', True)
     figs_axes = kwargs.pop('figs_axes', None)
+    _func_name = kwargs.pop('_func_name', 'plot_single')
 
     # get lists of the calibration classes and their goals in the result dataframe
     if cal_classes is None:
@@ -52,7 +53,7 @@ def plot_single(result: pd.DataFrame,
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(1)))
 
-    result = _rename_tuner_names(result, use_suffix, max_name_len)
+    result = _rename_tuner_names(result, use_suffix, max_name_len, _func_name)
 
     # plotting with simple plot function of the SALib
     figs = []
@@ -77,7 +78,7 @@ def plot_single(result: pd.DataFrame,
 def plot_second_order(result: pd.DataFrame,
                       cal_classes: [str] = None,
                       goals: [str] = None,
-                      max_name_len: int = 10,
+                      max_name_len: int = 15,
                       **kwargs):
     """
     Plot sensitivity results of second order analysis variables.
@@ -116,7 +117,7 @@ def plot_second_order(result: pd.DataFrame,
     if goals is None:
         goals = _del_duplicates(list(result.index.get_level_values(1)))
 
-    result = _rename_tuner_names(result, use_suffix, max_name_len)
+    result = _rename_tuner_names(result, use_suffix, max_name_len, "plot_second_order")
 
     tuner_names = result.columns
     if len(tuner_names) < 2:
@@ -162,7 +163,7 @@ def plot_single_second_order(result: pd.DataFrame,
                              para_name: str,
                              cal_classes: [str] = None,
                              goals: [str] = None,
-                             max_name_len: int = 10,
+                             max_name_len: int = 15,
                              **kwargs):
     """
     Plot the value of S2 from one parameter with all other parameters.
@@ -203,7 +204,8 @@ def plot_single_second_order(result: pd.DataFrame,
         goals=goals,
         figs_axes=figs_axes,
         use_suffix=use_suffix,
-        max_name_len=max_name_len
+        max_name_len=max_name_len,
+        _func_name="plot_single_second_order"
     )
     # set new title for the figures of each calibration class
     for fig in figs:
@@ -217,7 +219,7 @@ def heatmap(result: pd.DataFrame,
             cal_class: str,
             goal: str,
             ax: matplotlib.axes.Axes = None,
-            max_name_len: int = 10,
+            max_name_len: int = 15,
             **kwargs):
     """
     Plot S2 sensitivity results from one calibration class and goal as a heatmap.
@@ -242,8 +244,9 @@ def heatmap(result: pd.DataFrame,
     """
     use_suffix = kwargs.pop('use_suffix', False)
     show_plot = kwargs.pop('show_plot', True)
+    _func_name = kwargs.pop('_func_name', "heatmap")
 
-    result = _rename_tuner_names(result, use_suffix, max_name_len)
+    result = _rename_tuner_names(result, use_suffix, max_name_len, _func_name)
     if ax is None:
         _, ax = plt.subplots(layout="constrained")
     data = result.sort_index().loc[cal_class, goal, 'S2'].fillna(0).reindex(
@@ -266,7 +269,7 @@ def heatmap(result: pd.DataFrame,
 def heatmaps(result: pd.DataFrame,
              cal_classes: [str] = None,
              goals: [str] = None,
-             max_name_len: int = 10,
+             max_name_len: int = 15,
              **kwargs):
     """
     Plot S2 sensitivity results as a heatmap for multiple
@@ -302,7 +305,7 @@ def heatmaps(result: pd.DataFrame,
     if len(cal_classes) == 1:
         for idx, ax in enumerate(axes):
             axes[idx] = [ax]
-
+    _func_name = "heatmaps"
     for col, class_name in enumerate(cal_classes):
         for row, goal_name in enumerate(goals):
             heatmap(result,
@@ -311,7 +314,9 @@ def heatmaps(result: pd.DataFrame,
                     ax=axes[row][col],
                     show_plot=False,
                     use_suffix=use_suffix,
-                    max_name_len=max_name_len)
+                    max_name_len=max_name_len,
+                    _func_name=_func_name)
+            _func_name = None
     if show_plot:
         plt.show()
 
@@ -367,7 +372,7 @@ def plot_time_dependent(result: pd.DataFrame,
     if parameters is None:
         parameters = result.columns.values
 
-    result = _rename_tuner_names(result, use_suffix, max_name_len)
+    result = _rename_tuner_names(result, use_suffix, max_name_len, "plot_time_dependent")
 
     renamed_parameters = [_format_name(para, use_suffix, max_name_len) for para in parameters]
 
@@ -388,10 +393,11 @@ def plot_time_dependent(result: pd.DataFrame,
                     conv_int = result.loc[goal, analysis_var + '_conf'][para]
                     large_values_indices = conv_int[conv_int > 1].index
                     if list(large_values_indices):
-                        warnings.warn(
+                        sys.stderr.write(
+                            f"plot_time_dependent INFO:"
                             f"Confidence interval for {goal}, {analysis_var}, {para} was at the "
                             f"following times {list(large_values_indices)} lager than 1 "
-                            f"and is smoothed out in the plot.")
+                            f"and is smoothed out in the plot.\n")
                     for idx in large_values_indices:
                         prev_idx = conv_int.index.get_loc(idx) - 1
                         if prev_idx >= 0:
@@ -454,7 +460,8 @@ def plot_parameter_verbose(parameter: str,
 
     renamed_parameter = _format_name(parameter, use_suffix, max_name_len)
 
-    single_result = _rename_tuner_names(single_result, use_suffix, max_name_len)
+    single_result = _rename_tuner_names(single_result, use_suffix, max_name_len,
+                                        "plot_parameter_verbose")
     if second_order_result is not None:
         second_order_result = _rename_tuner_names(second_order_result, use_suffix, max_name_len)
 
@@ -488,8 +495,8 @@ def plot_parameter_verbose(parameter: str,
             ax[g_i].set_title(f"Goal: {goal}")
             ax[g_i].legend()
         else:
-            for av_i, av in enumerate(analysis_variables):
-                ax[g_i].plot(single_result.loc[goal, av][renamed_parameter])
+            for analysis_var in analysis_variables:
+                ax[g_i].plot(single_result.loc[goal, analysis_var][renamed_parameter])
             ax[g_i].legend(analysis_variables)
     if show_plot:
         plt.show()
@@ -501,12 +508,15 @@ def _del_duplicates(x):
     return list(dict.fromkeys(x))
 
 
-def _rename_tuner_names(result, use_suffix, max_len):
+def _rename_tuner_names(result, use_suffix, max_len, func_name=None):
     """Helper function"""
     tuner_names = list(result.columns)
-    rename_tuner_names = {name: _format_name(name, use_suffix, max_len) for name in tuner_names}
-    result = result.rename(columns=rename_tuner_names, index=rename_tuner_names)
+    renamed_names = {name: _format_name(name, use_suffix, max_len) for name in tuner_names}
+    result = result.rename(columns=renamed_names, index=renamed_names)
     result = result.sort_index()
+    for old, new in renamed_names.items():
+        if old != new and func_name is not None:
+            sys.stderr.write(f"{func_name} INFO: parameter name {old} changed to {new}\n")
     return result
 
 

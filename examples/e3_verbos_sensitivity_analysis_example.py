@@ -7,7 +7,6 @@ Goals of this part of the examples:
 3. Learn other sensitivity methods
 4. Learn how to save the results for reproduction
 """
-# TODO: Add this file and the other verbose example to the files under examples\converter.toml
 import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
