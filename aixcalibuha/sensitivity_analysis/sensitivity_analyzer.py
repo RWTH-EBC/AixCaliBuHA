@@ -4,16 +4,16 @@ import abc
 import copy
 import os
 import pathlib
+import multiprocessing as mp
 from typing import List
 from collections import Counter
 import numpy as np
 import pandas as pd
 from ebcpy.utils import setup_logger
-from ebcpy import data_types
+from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha import utils
-import multiprocessing as mp
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
 
 
@@ -21,9 +21,8 @@ def _load_single_file(_filepath, parquet_engine='pyarrow'):
     """Helper function"""
     if _filepath is None:
         return None
-    else:
-        return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation',
-                                         engine=parquet_engine)
+    return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation',
+                                     engine=parquet_engine)
 
 
 def _load_files(_filepaths, parquet_engine='pyarrow'):
@@ -75,8 +74,7 @@ def _restruct_time_dependent(sen_time_dependent_list, time_index):
         sen_time_dependent_list1, sen_time_dependent_list2 = zip(*sen_time_dependent_list)
         return _restruct_single(sen_time_dependent_list1), _restruct_single(
             sen_time_dependent_list2, True)
-    else:
-        return _restruct_single(sen_time_dependent_list)
+    return _restruct_single(sen_time_dependent_list)
 
 
 def _divide_chunks(long_list, chunk_length):
@@ -212,7 +210,8 @@ class SenAnalyzer(abc.ABC):
         :param cal_class:
             One class for calibration. Goals and tuner_paras have to be set
         :keyword scale:
-            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
+            Default is False. If True the bounds of the tuner-parameters
+            will be scaled between 0 and 1.
 
         :return:
             Returns two lists. First a list with the simulation results for each sample.
@@ -241,10 +240,10 @@ class SenAnalyzer(abc.ABC):
 
         # Simulate the current values
         parameters = []
-        for i, initial_values in enumerate(samples):
+        for initial_values in samples:
             if scale:
                 initial_values = cal_class.tuner_paras.descale(initial_values)
-            parameters.append({name: value for name, value in zip(initial_names, initial_values)})
+            parameters.append(dict(zip(initial_names, initial_values)))
 
         self.logger.info('Starting %s parameter variations on %s cores',
                          len(samples), self.sim_api.n_cpu)
@@ -302,20 +301,19 @@ class SenAnalyzer(abc.ABC):
         num_sim = kwargs_eval.pop('sim_num', None)
         if result is None:
             verbose_error = {}
-            for goal, w in zip(cal_class.goals.get_goals_list(), cal_class.goals._weightings):
-                verbose_error[goal] = (w, self.ret_val_on_error)
+            for goal, weight in zip(cal_class.goals.get_goals_list(), cal_class.goals.weightings):
+                verbose_error[goal] = (weight, self.ret_val_on_error)
             return self.ret_val_on_error, verbose_error
-        else:
-            result = self._check_index(result, num_sim)
-            cal_class.goals.set_sim_target_data(result)
-            cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
-            # Evaluate the current objective
-            total_res, verbose_calculation = cal_class.goals.eval_difference(verbose=True)
-            return total_res, verbose_calculation
+        result = self._check_index(result, num_sim)
+        cal_class.goals.set_sim_target_data(result)
+        cal_class.goals.set_relevant_time_intervals(cal_class.relevant_intervals)
+        # Evaluate the current objective
+        total_res, verbose_calculation = cal_class.goals.eval_difference(verbose=True)
+        return total_res, verbose_calculation
 
     def eval_statistical_measure(self, cal_class, results, verbose=True):
         """Evaluates statistical measures of results on single core"""
-        self.logger.info(f'Starting evaluation of statistical measure')
+        self.logger.info('Starting evaluation of statistical measure')
         output = []
         list_output_verbose = []
         for i, result in enumerate(results):
@@ -339,7 +337,9 @@ class SenAnalyzer(abc.ABC):
         return total_res, verbose_calculation
 
     def _mp_load_eval(self, _filepaths, cal_class, n_cpu):
-        """Loading and evaluating the statistical measure of saved simulation files on multiple cores"""
+        """
+        Loading and evaluating the statistical measure of saved simulation files on multiple cores
+        """
         self.logger.info(f'Load files and evaluate statistical measure on {n_cpu} processes.')
         kwargs_load_eval = []
         for filepath in _filepaths:
@@ -366,9 +366,8 @@ class SenAnalyzer(abc.ABC):
                 results=results
             )
             return output_array, output_verbose
-        else:
-            output_array, output_verbose = self._mp_load_eval(_filepaths, cal_class, n_cpu)
-            return output_array, output_verbose
+        output_array, output_verbose = self._mp_load_eval(_filepaths, cal_class, n_cpu)
+        return output_array, output_verbose
 
     def run(self, calibration_classes, merge_multiple_classes=True, **kwargs):
         """
@@ -385,27 +384,31 @@ class SenAnalyzer(abc.ABC):
             This will automatically yield an intersection of tuner-parameters, however may
             have advantages in some cases.
         :keyword bool verbose:
-            Default False. If True, in addition to the combined Goals of the Classes (saved under index Goal: all),
-            the sensitivity measures of the individual Goals will also be calculated and returned.
+            Default False. If True, in addition to the combined Goals of the Classes
+            (saved under index Goal: all), the sensitivity measures of the individual
+            Goals will also be calculated and returned.
         :keyword scale:
-            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
+            Default is False. If True the bounds of the tuner-parameters
+            will be scaled between 0 and 1.
         :keyword bool use_fist_sim:
             Default False. If True, the simulations of the first calibration class will be used for
             all other calibration classes with their relevant time intervals.
             The simulations must be stored on a hard-drive, so it must be used with
             either save_files or load_files.
         :keyword int n_cpu:
-            Default is 1. The number of processes to use for the evaluation of the statistical measure.
-            For n_cpu > 1 only one simulation file is loaded at once in a process and dumped directly
-            after the evaluation of the statistical measure, so that only minimal memory is used.
+            Default is 1. The number of processes to use for the evaluation of the statistical
+            measure. For n_cpu > 1 only one simulation file is loaded at once in a process and
+            dumped directly after the evaluation of the statistical measure,
+            so that only minimal memory is used.
             Use this option for large analyses.
             Only implemented for save_files=True or load_sim_files=True.
         :keyword bool load_sim_files:
             Default False. If True, no new simulations are done and old simulations are loaded.
-            The simulations and corresponding samples will be loaded from self.savepath_sim like they
-            were saved from self.save_files. Currently, the name of the sim folder must be
+            The simulations and corresponding samples will be loaded from self.savepath_sim like
+            they were saved from self.save_files. Currently, the name of the sim folder must be
             "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
-            The usage of the same simulations for different calibration classes is not supported yet.
+            The usage of the same simulations for different
+            calibration classes is not supported yet.
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples, statistical measures and analysis variables).
@@ -442,10 +445,10 @@ class SenAnalyzer(abc.ABC):
         # Check if the usage of the simulations from the first calibration class for all is possible
         if use_first_sim:
             if not self.save_files and not load_sim_files:
-                raise AttributeError(f'To use the simulations of the first calibration class '
-                                     f'for all classes the simulation files must be saved. '
-                                     f'Either set save_files=True or load already exiting files '
-                                     f'with load_sim_files=True.')
+                raise AttributeError('To use the simulations of the first calibration class '
+                                     'for all classes the simulation files must be saved. '
+                                     'Either set save_files=True or load already exiting files '
+                                     'with load_sim_files=True.')
             start_time = 0
             stop_time = 0
             for idx, cal_class in enumerate(calibration_classes):
@@ -582,7 +585,7 @@ class SenAnalyzer(abc.ABC):
             Minimal required value of given key
         :return: list calibration_classes
         """
-        for num_class, cal_class in enumerate(calibration_classes):
+        for cal_class in calibration_classes:
             first_goal = result.index.get_level_values(1)[0]
             class_result = result.loc[cal_class.name, first_goal, analysis_variable]
             tuner_paras = copy.deepcopy(cal_class.tuner_paras)
@@ -627,7 +630,7 @@ class SenAnalyzer(abc.ABC):
             Specifies which calibration classes in the sensitivity results will be used for
             the selection. Default are all classes.
         """
-        if not Counter(calibration_class.tuner_paras.get_names()) == Counter(list(result.columns)):
+        if Counter(calibration_class.tuner_paras.get_names()) != Counter(list(result.columns)):
             raise NameError("The tuner-parameter of the calibration class do not "
                             "match the tuner-parameters in the sensitivity result."
                             "They have to match.")
@@ -635,9 +638,10 @@ class SenAnalyzer(abc.ABC):
         result = result.loc[:, :, analysis_variable]
         calc_names_results = result.index.get_level_values("Class").unique()
         if calc_names_for_selection:
-            for idx, c in enumerate(calc_names_for_selection):
-                if c not in calc_names_results:
-                    raise NameError(f"The calibration class name {c} does not match any class name "
+            for cal_class in calc_names_for_selection:
+                if cal_class not in calc_names_results:
+                    raise NameError(f"The calibration class name {cal_class} "
+                                    f"does not match any class name "
                                     f"in the given sensitivity result.")
             result = result.loc[calc_names_for_selection, :, :]
 
@@ -651,8 +655,7 @@ class SenAnalyzer(abc.ABC):
         tuner_paras.remove_names(remove_tuners)
         if not tuner_paras.get_names():
             raise ValueError("Threshold to small. All tuner-parameters would be removed.")
-        else:
-            calibration_class.tuner_paras = tuner_paras
+        calibration_class.tuner_paras = tuner_paras
         return calibration_class
 
     def run_time_dependent(self, cal_class: CalibrationClass, **kwargs):
@@ -663,19 +666,21 @@ class SenAnalyzer(abc.ABC):
             Calibration class with tuner-parameters to calculate sensitivity for.
             Can include dummy target date.
         :keyword scale:
-            Default is False. If True the bounds of the tuner-parameters will be scaled between 0 and 1.
+            Default is False. If True the bounds of the tuner-parameters
+            will be scaled between 0 and 1.
         :keyword bool load_sim_files:
             Default False. If True, no new simulations are done and old simulations are loaded.
-            The simulations and corresponding samples will be loaded from self.savepath_sim like they
-            were saved from self.save_files. Currently, the name of the sim folder must be
+            The simulations and corresponding samples will be loaded from self.savepath_sim like
+            they were saved from self.save_files. Currently, the name of the sim folder must be
             "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
         :keyword bool save_results:
             Default True. If True, all results are saved as a csv in cd.
             (samples and analysis variables).
         :keyword int n_steps:
-            Default is all time steps. If the problem is large, the evaluation of all time steps at once
-            can cause a memory error. Then n_steps defines how many time_steps are evaluated at once in chunks.
-            This increases the needed time exponentially and the simulation files must be saved.
+            Default is all time steps. If the problem is large, the evaluation of all time steps
+            at once can cause a memory error. Then n_steps defines how many time_steps
+            are evaluated at once in chunks. This increases the needed time exponentially and
+            the simulation files must be saved.
         :keyword bool plot_result:
             Default True. If True, the results will be plotted.
         :return:
@@ -761,7 +766,9 @@ class SenAnalyzer(abc.ABC):
         return result_df_tstep
 
     def _load_tsteps_df(self, tsteps, _filepaths):
-        """Load all simulations and extract and concat the sim results of the time steps in tsteps."""
+        """
+        Load all simulations and extract and concat the sim results of the time steps in tsteps.
+        """
         self.logger.info(
             f"Loading time steps from {tsteps[0]} to {tsteps[-1]} of the simulation files.")
         tsteps_sim_results = []
@@ -789,9 +796,9 @@ class SenAnalyzer(abc.ABC):
 
         for tsteps in list_tsteps:
             tsteps_sim_results = self._load_tsteps_df(tsteps=tsteps, _filepaths=_filepaths)
-            self.logger.info(f"Analyzing these time steps.")
-            for t in tsteps:
-                result_df_tstep = self._analyze_tstep_df(time_step=t,
+            self.logger.info("Analyzing these time steps.")
+            for tstep in tsteps:
+                result_df_tstep = self._analyze_tstep_df(time_step=tstep,
                                                          tsteps_sim_results=tsteps_sim_results,
                                                          variables=variables,
                                                          samples=samples,
@@ -814,11 +821,11 @@ class SenAnalyzer(abc.ABC):
         tuples = []
         for class_results, local_class in zip(results, local_classes):
             for goal, goal_results in class_results.items():
-                for av in self.analysis_variables:
+                for analysis_var in self.analysis_variables:
                     _conv_results.append(self._get_res_dict(result=goal_results,
                                                             cal_class=local_class,
-                                                            analysis_variable=av))
-                    tuples.append((local_class.name, goal, av))
+                                                            analysis_variable=analysis_var))
+                    tuples.append((local_class.name, goal, analysis_var))
         index = pd.MultiIndex.from_tuples(tuples=tuples,
                                           names=['Class', 'Goal', 'Analysis variable'])
         df = pd.DataFrame(_conv_results, index=index)
@@ -884,8 +891,6 @@ class SenAnalyzer(abc.ABC):
             `save_reproduction_archive`. Most importantly, `log_message` may be
             specified to avoid input during execution.
         """
-        from ebcpy.utils.reproduction import CopyFile
-
         if files is None:
             files = []
 
@@ -893,7 +898,7 @@ class SenAnalyzer(abc.ABC):
             if exclude_sim_files:
                 if 'simulation' in str(file_path):
                     continue
-            filename = "SenAnalyzer" + str(file_path).split(self.cd.name)[-1]
+            filename = "SenAnalyzer" + str(file_path).rsplit(self.cd.name, maxsplit=1)[-1]
             files.append(CopyFile(
                 sourcepath=file_path,
                 filename=filename,

@@ -81,14 +81,13 @@ class PAWNAnalyzer(SenAnalyzer):
         """
         if self.sampler == 'sobol':
             return {'calc_second_order': self.calc_second_order}
-        elif self.sampler == 'morris':
+        if self.sampler == 'morris':
             return {'num_levels': self.num_levels,
                     'optimal_trajectories': self.optimal_trajectories,
                     'local_optimization': self.local_optimization}
-        elif self.sampler == 'fast':
+        if self.sampler == 'fast':
             return {'M': self.M}
-        else:
-            raise NotImplementedError(f'{self.sampler} is not implemented yet')
+        raise NotImplementedError(f'{self.sampler} is not implemented yet')
 
     def generate_samples(self):
         """
@@ -111,8 +110,7 @@ class PAWNAnalyzer(SenAnalyzer):
             return fast.sample(self.problem,
                                N=self.num_samples,
                                **self.create_sampler_demand())
-        else:
-            raise NotImplementedError(f'{self.sampler} is not implemented yet')
+        raise NotImplementedError(f'{self.sampler} is not implemented yet')
 
     def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """

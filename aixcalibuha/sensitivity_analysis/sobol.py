@@ -115,17 +115,17 @@ class SobolAnalyzer(SenAnalyzer):
         tuples_2 = []
         for class_results, local_class in zip(results, local_classes):
             for goal, goal_results in class_results.items():
-                for av in self.analysis_variables:
+                for analysis_var in self.analysis_variables:
                     res_dict = self._get_res_dict(result=goal_results,
                                                   cal_class=local_class,
-                                                  analysis_variable=av)
-                    if av in self.__analysis_variables_1:
+                                                  analysis_variable=analysis_var)
+                    if analysis_var in self.__analysis_variables_1:
                         _conv_results.append(res_dict)
-                        tuples.append((local_class.name, goal, av))
-                    elif av in self.__analysis_variables_2:
+                        tuples.append((local_class.name, goal, analysis_var))
+                    elif analysis_var in self.__analysis_variables_2:
                         for tuner_para, res_dict in res_dict.items():
                             _conv_results_2.append(res_dict)
-                            tuples_2.append((local_class.name, goal, av, tuner_para))
+                            tuples_2.append((local_class.name, goal, analysis_var, tuner_para))
         index = pd.MultiIndex.from_tuples(tuples=tuples,
                                           names=['Class', 'Goal', 'Analysis variable'])
         index_2 = pd.MultiIndex.from_tuples(tuples=tuples_2,
@@ -163,8 +163,8 @@ class SobolAnalyzer(SenAnalyzer):
                                                            np.zeros((len(names), len(names))))}
             else:
                 result_av = result[analysis_variable]
-                for i in range(len(result_av)):
-                    for j in range(len(result_av)):
+                for i, _ in enumerate(result_av):
+                    for j, _ in enumerate(result_av):
                         if i > j:
                             result_av[i][j] = result_av[j][i]
                 res_dict_2 = {var_name: dict(zip(names, np.abs(res_val)))

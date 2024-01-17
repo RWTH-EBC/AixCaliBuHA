@@ -284,7 +284,8 @@ class CalibrationLogger:
             formatted_name = short_name(ini_name=ini_name, max_len=self._width)
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
-        info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
+        info_string += "     {0:{width}s}".format(self.goals.statistical_measure,
+                                                  width=self._width)
         info_string += "penaltyfactor"
         info_string += f"   Unweighted {self.goals.statistical_measure}"
         return info_string
@@ -322,10 +323,11 @@ class CalibrationLogger:
                                                        prec=self._prec)
         if penalty:
             info_string += "   {0:{width}.{prec}f}".format(penalty, width=self._width,
-                                                           prec=self._prec-3)
+                                                           prec=self._prec - 3)
         else:
             info_string += "        {}".format("-")
-        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(val[0], val[1], prec=4)
+        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(val[0],
+                                                                            val[1], prec=4)
                                            for goal, val in unweighted_objective.items()])
         info_string += f"          {_verbose_info}"
 
@@ -587,8 +589,9 @@ class CalibrationVisualizer(CalibrationLogger):
             os.makedirs(path_intersections)
         if "itercount" in kwargs:
             fig_intersection.savefig(
-                os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
+                os.path.join(
+                    path_intersections,
+                    f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
             )
         else:
             fig_intersection.savefig(

@@ -147,8 +147,8 @@ class Goals:
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
         if weightings is None:
-            self._weightings = np.array([1 / self._num_goals
-                                         for i in range(self._num_goals)])
+            self.weightings = np.array([1 / self._num_goals
+                                        for i in range(self._num_goals)])
         else:
             if not isinstance(weightings, (list, np.ndarray)):
                 raise TypeError(f"weightings is of type {type(weightings).__name__} "
@@ -157,7 +157,7 @@ class Goals:
                 raise IndexError(f"The given number of weightings ({len(weightings)}) "
                                  f"does not match the number of "
                                  f"goals ({self._num_goals})")
-            self._weightings = np.array(weightings) / sum(weightings)
+            self.weightings = np.array(weightings) / sum(weightings)
 
     def __str__(self):
         """Overwrite string method to present the Goals-Object more
@@ -214,8 +214,8 @@ class Goals:
             )
             # Apply penalty function
             _diff = _diff * penaltyfactor
-            _verbose_calculation[goal_name] = (self._weightings[i], _diff)
-            total_difference += self._weightings[i] * _diff
+            _verbose_calculation[goal_name] = (self.weightings[i], _diff)
+            total_difference += self.weightings[i] * _diff
         if verbose:
             return total_difference, _verbose_calculation
         return total_difference

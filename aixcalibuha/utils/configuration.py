@@ -8,7 +8,6 @@ import numpy as np
 from ebcpy import data_types
 from aixcalibuha import Goals, CalibrationClass, TunerParas
 
-
 tsd_config = {"data": "TODO: Specify the path to the target values measured",
               "key": None,
               "sheet_name": None,
@@ -49,13 +48,13 @@ default_cal_class_config = {"name": "TODO: Specify the name of the calibration c
                                                 "TODO: Specify the boundaries of the tuner parameters as a list of tuples"}}
 
 default_calibration_config = {
-                    "statistical_measure": "TODO: Specify the statistical "
-                                           "measure for calibration (RMSE, MAE, etc.)",
-                    "calibration_classes": [default_cal_class_config],
-                    "start_time_method": 'fixstart',
-                    "settings": kwargs_calibrator,
-                    "settings multiple classes": kwargs_multiple_classes
-                    }
+    "statistical_measure": "TODO: Specify the statistical "
+                           "measure for calibration (RMSE, MAE, etc.)",
+    "calibration_classes": [default_cal_class_config],
+    "start_time_method": 'fixstart',
+    "settings": kwargs_calibrator,
+    "settings multiple classes": kwargs_multiple_classes
+}
 
 kwargs_scipy_dif_evo = {"maxiter": 30,
                         "popsize": 5,
@@ -100,7 +99,7 @@ default_config = {
     "Optimization": default_optimization_config,
     "Input Data": default_input_config,
     "Calibration": default_calibration_config
-    }
+}
 
 
 def get_goals_from_config(config):
