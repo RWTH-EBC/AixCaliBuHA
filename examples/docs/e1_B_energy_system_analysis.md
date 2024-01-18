@@ -13,6 +13,21 @@ import pathlib
 import matplotlib.pyplot as plt
 ```
 
+Please define the missing TODOs in the section below according to the docstrings.
+
+```python
+"""
+Arguments of this example:
+
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param bool with_plot:
+    Show the plot at the end of the script. Default is True.
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+with_plot = True
+```
+
 ## System analysis
 The best way to analyze the model which we later want to calibrate
 is to open the models in a GUI (OpenModelica, fmpy, Dymola, o.s.).

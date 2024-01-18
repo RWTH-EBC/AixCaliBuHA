@@ -18,6 +18,34 @@ from examples import setup_fmu, setup_calibration_classes
 from aixcalibuha import plotting
 ```
 
+Please define the missing TODOs in the section below according to the docstrings.
+
+```python
+"""
+Example process of a verbose sensitivity analysis for calibration and analysis porpoises.
+First, the sensitivity problem is constructed, in this example
+the `sobol` method is chosen.
+Afterward, the sen_analyzer class is instantiated to run the
+sensitivity analysis in the next step.
+The result of this analysis is then printed to the user.
+A comparison between different methods is shown.
+At the end the option to save a reproduction archive is shown.
+
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param str example:
+    Which example to run, "A" or "B"
+:param int n_cpu:
+    Number of cores to use
+
+:return: A list of calibration classes
+:rtype: list
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+example: str  =  "B"
+n_cpu: int  =  1
+```
+
 ## Setup
 Set up the class according to the documentation.
 You just have to pass a valid simulation api and

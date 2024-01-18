@@ -18,6 +18,30 @@ from aixcalibuha.data_types import merge_calibration_classes
 from ebcpy.utils.conversion import convert_tsd_to_modelica_txt
 ```
 
+Please define the missing TODOs in the section below according to the docstrings.
+
+```python
+"""
+Example process of a verbose sensitivity analysis with the dymola_api.
+
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param [pathlib.Path, str] aixlib_mo:
+    Path to the AixLib package.mo file.
+:param str example:
+    Which example to run, "A" or "B"
+:param int n_cpu:
+    Number of cores to use
+
+:return: A list of calibration classes
+:rtype: list
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+aixlib_mo = "TODO: Add a valid input according to the docstring above"
+example: str  =  "B"
+n_cpu: int  =  1
+```
+
 ## Setup
 Using a dymola api instead of the fmu api
 

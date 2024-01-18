@@ -11,6 +11,46 @@ import numpy as np
 from aixcalibuha import CalibrationClass, Calibrator, MultipleClassCalibrator
 ```
 
+Please define the missing TODOs in the section below according to the docstrings.
+
+```python
+"""
+Run an example for a calibration. Make sure you have Dymola installed
+on your device and a working licence. All output data will be stored in
+the current working directory of python. Look at the logs and plots
+to better understand what is happening in the calibration. If you want, you
+can switch the methods to other supported methods or change the framework and
+try the global optimizer of dlib.
+
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param str example:
+    Which example to run, "A" or "B"
+:param int n_cpu:
+    Number of cores to use
+
+Optional, for the fully automated process
+:param ebcpy.simulationapi.SimulationAPI sim_api:
+    Simulation API to simulate the models
+:param list[CalibrationClass] cal_classes:
+    List with multiple CalibrationClass objects for calibration. Goals and
+    TunerParameters have to be set. If only one class is provided (either
+    a list with one entry or a CalibrationClass object) the single-class
+    Calibrator is used.
+:param CalibrationClass framework:
+    See Documentation of ebcpy on available optimization frameworks
+:param str method:
+    See Documentation of ebcpy on available optimization framework methods
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+example = "B"
+n_cpu: int  =  1
+sim_api = None
+cal_classes = None
+framework: str  =  "scipy_differential_evolution"
+method: str  =  "best1bin"
+```
+
 ## Setup
 Start by loading the simulation api and the calibration classes
 
