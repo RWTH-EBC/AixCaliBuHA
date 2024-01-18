@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for aixcalibuha/sensitivity_analysis/plotting.py: 93%</title>
+    <title>Coverage for aixcalibuha/sensitivity_analysis/plotting.py: 91%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>aixcalibuha/sensitivity_analysis/plotting.py</b>:
-            <span class="pc_cov">93%</span>
+            <span class="pc_cov">91%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">235 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">219<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">16<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">215<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">20<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">7<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_f4434ebd7e0d50e1_sensitivity_analyzer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2024-01-17 20:33 +0000
+            created at 2024-01-18 10:29 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -475,15 +475,15 @@
     <p class="run"><span class="n"><a id="t393" href="#t393">393</a></span><span class="t">                    <span class="nam">conv_int</span> <span class="op">=</span> <span class="nam">result</span><span class="op">.</span><span class="nam">loc</span><span class="op">[</span><span class="nam">goal</span><span class="op">,</span> <span class="nam">analysis_var</span> <span class="op">+</span> <span class="str">'_conf'</span><span class="op">]</span><span class="op">[</span><span class="nam">para</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t394" href="#t394">394</a></span><span class="t">                    <span class="nam">large_values_indices</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">[</span><span class="nam">conv_int</span> <span class="op">></span> <span class="num">1</span><span class="op">]</span><span class="op">.</span><span class="nam">index</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t395" href="#t395">395</a></span><span class="t">                    <span class="key">if</span> <span class="nam">list</span><span class="op">(</span><span class="nam">large_values_indices</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t396" href="#t396">396</a></span><span class="t">                        <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t396" href="#t396">396</a></span><span class="t">                        <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t397" href="#t397">397</a></span><span class="t">                            <span class="str">f"plot_time_dependent INFO:"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t398" href="#t398">398</a></span><span class="t">                            <span class="str">f"Confidence interval for {goal}, {analysis_var}, {para} was at the "</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t399" href="#t399">399</a></span><span class="t">                            <span class="str">f"following times {list(large_values_indices)} lager than 1 "</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t400" href="#t400">400</a></span><span class="t">                            <span class="str">f"and is smoothed out in the plot.\n"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t401" href="#t401">401</a></span><span class="t">                    <span class="key">for</span> <span class="nam">idx</span> <span class="key">in</span> <span class="nam">large_values_indices</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t402" href="#t402">402</a></span><span class="t">                        <span class="nam">prev_idx</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">-</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t403" href="#t403">403</a></span><span class="t">                        <span class="key">if</span> <span class="nam">prev_idx</span> <span class="op">>=</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t404" href="#t404">404</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">prev_idx</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t402" href="#t402">402</a></span><span class="t">                        <span class="nam">prev_idx</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">-</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t403" href="#t403">403</a></span><span class="t">                        <span class="key">if</span> <span class="nam">prev_idx</span> <span class="op">>=</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t404" href="#t404">404</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">prev_idx</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t405" href="#t405">405</a></span><span class="t">                        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t406" href="#t406">406</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t407" href="#t407">407</a></span><span class="t">                    <span class="nam">axes</span><span class="op">[</span><span class="nam">idx_goal</span><span class="op">]</span><span class="op">[</span><span class="nam">idx_av</span><span class="op">]</span><span class="op">.</span><span class="nam">fill_between</span><span class="op">(</span><span class="nam">x</span><span class="op">,</span> <span class="op">(</span><span class="nam">y</span> <span class="op">-</span> <span class="nam">conv_int</span><span class="op">)</span><span class="op">,</span> <span class="op">(</span><span class="nam">y</span> <span class="op">+</span> <span class="nam">conv_int</span><span class="op">)</span><span class="op">,</span> <span class="nam">alpha</span><span class="op">=</span><span class="num">.1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -641,7 +641,7 @@
             <a id="nextFileLink" class="nav" href="d_f4434ebd7e0d50e1_sensitivity_analyzer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2024-01-17 20:33 +0000
+            created at 2024-01-18 10:29 +0000
         </p>
     </div>
 </footer>
