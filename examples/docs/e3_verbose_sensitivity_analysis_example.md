@@ -1,16 +1,18 @@
 
-```python
-"""
-Example 3 verbose sensitivity analysis
+##Example 3 verbose sensitivity analysis
 for the analysis of your model and the calibration process
 
 Goals of this part of the examples:
 1. Learn how to execute a verbose sensitivity analysis
-2. Learn the meaning of the results the analysis of your model
+2. Learn the meaning of the results and the analysis of your model
 3. Learn other sensitivity methods
 5. Learn time dependent sensitivity analysis
 4. Learn how to save the results for reproduction
-"""
+
+Start by importing all relevant packages
+
+```python
+import pathlib
 import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
@@ -31,7 +33,7 @@ The result of this analysis is then printed to the user.
 A comparison between different methods is shown.
 At the end the option to save a reproduction archive is shown.
 
-:param [pathlib.Path, str] examples_dir:
+:param [pathlib.Path] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str example:
     Which example to run, "A" or "B"
@@ -56,16 +58,19 @@ Let's first load the necessary simulation api:
 sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 ```
 
-For performing a sensitivity analysis, we must define calibration classes which
-contain the objective on which the sensitivity will be calculated.
-Here we will study different calibration classes for different states of the models.
-First we create one global calibration class over the total time and name it 'global'.
-We can then use the simulations of this calibration class also for other ones which
-look at specific time intervals which are in the total interval of the global class.
-For the states of the models with specific time intervals we will use the
-calibration classes from the second example and customize them for the verbose
-sensitivity analysis, but we could also create custom classes directly here.
-we don't assign it do a variable (`, _`).
+To conduct a sensitivity analysis, we need to define calibration classes that
+encompass the objectives for which sensitivity is to be assessed. In this
+context, we'll explore distinct calibration classes corresponding to various
+states of the models. Initially, we establish a comprehensive calibration class
+that spans the entire duration, denoted as `global`. Subsequently, we can
+leverage simulations from this global class for other classes targeting
+specific time intervals within the overall global range.
+
+For the specific states of the models with distinct time intervals, we adopt the
+calibration classes from the second example and tailor them for the verbose
+sensitivity analysis. Alternatively, custom classes could be created directly
+function (`validation_class`), we opt to ignore it by using the variable
+assignment `_` and omit any associated text output of the second example.
 
 ```python
 calibration_classes, _ = setup_calibration_classes(
@@ -84,7 +89,7 @@ calibration_classes, _ = setup_calibration_classes(
 merged_calibration_classes.extend(merge_calibration_classes(calibration_classes))
 ```
 
-Now we have the following calibration classes and merged them directly.
+This results in the following calibration classes where we merge the time intervals directly.
 We could have also merged them with an option in the `run()` function of the
 sensitivity analyzer classes.
 
@@ -93,11 +98,11 @@ print("Calibration classes for sensitivity analysis:",
       [c.name for c in merged_calibration_classes])
 ```
 
-For our verbose sensitivity analysis, we want all classes to have
-the same tuner-parameters. This comes so that we can use the same simulations
-for the sensitivity analysis of different calibration classes.
-But the last class of example B has different tuner parameters, so we reset
-them to the tuner parameters of the other classes.
+In our detailed sensitivity analysis, it is essential for all classes to share
+identical tuner parameters. This ensures that we can employ the same set of
+simulations for assessing sensitivity across various calibration classes.
+However, the final class in example B deviates in tuner parameters; hence, we
+reset them to align with the tuner parameters of the other classes.
 
 ```python
 if example == 'B':
@@ -187,10 +192,6 @@ dataframes. This is specific to the sobol method, all other
 of the sobol method with possibly other analysis variables.
 Let´s take a look at these results.
 
-```python
-print("Result of the sensitivity analysis")
-```
-
 The first result has as columns the tuner-parameters
 and a multi level index with three levels.
 The first level defines the calibration class.
@@ -203,6 +204,7 @@ For their exact meaning I refer to the documentation of the SALib or the literat
 In this example you get a short overview in the comparison later.
 
 ```python
+print("Result of the sensitivity analysis")
 print('First and total order results of sobol method')
 print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
 ```
@@ -287,12 +289,7 @@ on the axes of the plots.
 
 ```python
 fig = plt.figure(figsize=plt.figaspect(1. / 4.), layout="constrained")  # creating one figure
-subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
-```
-
-plotting `S1` and `ST`
-
-```python
+subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot plotting `S1` and `ST`
 ax0 = subfigs[0].subplots()
 plotting.plot_single(
     result=result_sobol,
@@ -302,12 +299,7 @@ plotting.plot_single(
     figs_axes=([subfigs[0]], [ax0]),
     use_suffix=True,
 )
-```
-
-plotting heatmap
-
-```python
-ax1 = subfigs[1].subplots()
+ax1 = subfigs[1].subplots()  # plotting heatmap
 plotting.heatmap(
     result_sobol_2,
     cal_class='global',
@@ -316,12 +308,7 @@ plotting.heatmap(
     show_plot=False,
     use_suffix=True
 )
-```
-
-plotting the interactions of one single parameter
-
-```python
-ax2 = subfigs[2].subplots()
+ax2 = subfigs[2].subplots()  # plotting the interactions of one single parameter
 plotting.plot_single_second_order(
     result=result_sobol_2,
     para_name='rad.n',
@@ -354,6 +341,7 @@ parameters have only a very small sensitivity.
 These are just some basics, to understand what option you
 have in `AixCaliBuAH`. For more information look up relevant literature.
 
+## Comparison of different Methods
 We will now take a short look at a comparison of the
 `Sobol`, `Fast` and `Morris` method in `AixCaliBuAH`.
 The `SALib` provides more methods, which can
