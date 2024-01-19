@@ -535,6 +535,9 @@ class SenAnalyzer(abc.ABC):
                 )
                 results_goals[key] = result_goal
             all_results.append(results_goals)
+            self.logger.info('Finished sensitivity analysis of class: %s, '
+                             'Time-Interval: %s-%s s', cal_class.name,
+                             cal_class.start_time, cal_class.stop_time)
         result = self._conv_local_results(results=all_results,
                                           local_classes=calibration_classes)
         if save_results:
