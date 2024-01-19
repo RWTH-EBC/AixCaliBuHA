@@ -23,7 +23,7 @@ def plot_single(result: pd.DataFrame,
     :param pd.DataFrame result:
         A result from run
     :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
         Default are all possible calibration classes. If a list of
         names of calibration classes is given only plots for these
@@ -89,7 +89,7 @@ def plot_second_order(result: pd.DataFrame,
     :param pd.DataFrame result:
         A result from run
     :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     :param [str] cal_classes:
         Default are all possible calibration classes. If a list of
         names of calibration classes is given only plots for these
@@ -180,7 +180,7 @@ def plot_single_second_order(result: pd.DataFrame,
         Default are all possible goal names. If a list of specific
         goal names is given only these will be plotted.
     :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     :keyword bool show_plot:
         Default is True. If False, all created plots are not shown.
     :keyword bool use_suffix:
@@ -234,7 +234,7 @@ def heatmap(result: pd.DataFrame,
         Default is None. If an axes is given the heatmap will be plotted on it, else
         a new figure and axes is created.
     :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     :keyword bool show_plot:
         Default is True. If False, all created plots are not shown.
     :keyword bool use_suffix:
@@ -284,7 +284,7 @@ def heatmaps(result: pd.DataFrame,
         Default is a list of all goals in the result.
         If a list of goals is given only these goals are plotted.
     :param int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     :keyword bool show_plot:
         Default is True. If False, all created plots are not shown.
     :keyword bool use_suffix:
@@ -446,7 +446,7 @@ def plot_parameter_verbose(parameter: str,
         Default is True: If True, the last part after the last point
         of Modelica variables is used for the x ticks.
     :keyword int max_name_len:
-        Default is 10. Shortens the parameter names to max_name_len characters.
+        Default is 15. Shortens the parameter names to max_name_len characters.
     """
     use_suffix = kwargs.pop('use_suffix', False)
     max_name_len = kwargs.pop('max_name_len', 50)
