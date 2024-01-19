@@ -616,6 +616,9 @@
                 <span class="p">)</span>
                 <span class="n">results_goals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_goal</span>
             <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_goals</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished sensitivity analysis of class: </span><span class="si">%s</span><span class="s1">, &#39;</span>
+                             <span class="s1">&#39;Time-Interval: </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1"> s&#39;</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conv_local_results</span><span class="p">(</span><span class="n">results</span><span class="o">=</span><span class="n">all_results</span><span class="p">,</span>
                                           <span class="n">local_classes</span><span class="o">=</span><span class="n">calibration_classes</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">save_results</span><span class="p">:</span>
