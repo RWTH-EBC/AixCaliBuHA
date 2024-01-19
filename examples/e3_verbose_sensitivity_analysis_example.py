@@ -35,9 +35,9 @@ def run_sensitivity_analysis(
     A comparison between different methods is shown.
     At the end the option to save a reproduction archive is shown.
 
-    :param [pathlib.Path] examples_dir:
+    :param [pathlib.Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
-        e.g. pathlib.Path(r"LOCAL_PATH_TO\AixCaliBuHA\examples")
+        e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
     :param str example:
         Which example to run, "A" or "B"
     :param int n_cpu:
@@ -51,6 +51,7 @@ def run_sensitivity_analysis(
     # You just have to pass a valid simulation api and
     # some further settings for the analysis.
     # Let's first load the necessary simulation api:
+    examples_dir = pathlib.Path(examples_dir)
     sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
     # To conduct a sensitivity analysis, we need to define calibration classes that
     # encompass the objectives (goals) for which sensitivity is to be assessed. In this
@@ -184,7 +185,7 @@ def run_sensitivity_analysis(
     # In this example you get a short overview in the comparison later.
     print("Result of the sensitivity analysis")
     print('First and total order results of sobol method')
-    print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
+    print(result[0].to_string())
     # The second result of the sobol method is for second order sensitive measures.
     # These describe the interaction between two parameters,
     # so this dataframe has a fourth index level "Interaction".
