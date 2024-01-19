@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for aixcalibuha/sensitivity_analysis/plotting.py: 91%</title>
+    <title>Coverage for aixcalibuha/sensitivity_analysis/plotting.py: 93%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>aixcalibuha/sensitivity_analysis/plotting.py</b>:
-            <span class="pc_cov">91%</span>
+            <span class="pc_cov">93%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">235 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">215<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">20<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">219<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">16<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">7<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_f4434ebd7e0d50e1_sensitivity_analyzer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2024-01-19 08:34 +0000
+            created at 2024-01-19 12:21 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -105,7 +105,7 @@
     <p class="pln"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t"><span class="str">    :param pd.DataFrame result:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="str">        A result from run</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t"><span class="str">    :param int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t"><span class="str">    :param [str] cal_classes:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t"><span class="str">        Default are all possible calibration classes. If a list of</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t"><span class="str">        names of calibration classes is given only plots for these</span>&nbsp;</span><span class="r"></span></p>
@@ -171,7 +171,7 @@
     <p class="pln"><span class="n"><a id="t89" href="#t89">89</a></span><span class="t"><span class="str">    :param pd.DataFrame result:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t90" href="#t90">90</a></span><span class="t"><span class="str">        A result from run</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t91" href="#t91">91</a></span><span class="t"><span class="str">    :param int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t92" href="#t92">92</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t92" href="#t92">92</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t93" href="#t93">93</a></span><span class="t"><span class="str">    :param [str] cal_classes:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t94" href="#t94">94</a></span><span class="t"><span class="str">        Default are all possible calibration classes. If a list of</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t95" href="#t95">95</a></span><span class="t"><span class="str">        names of calibration classes is given only plots for these</span>&nbsp;</span><span class="r"></span></p>
@@ -262,7 +262,7 @@
     <p class="pln"><span class="n"><a id="t180" href="#t180">180</a></span><span class="t"><span class="str">        Default are all possible goal names. If a list of specific</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t181" href="#t181">181</a></span><span class="t"><span class="str">        goal names is given only these will be plotted.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t182" href="#t182">182</a></span><span class="t"><span class="str">    :param int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t183" href="#t183">183</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t183" href="#t183">183</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t184" href="#t184">184</a></span><span class="t"><span class="str">    :keyword bool show_plot:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t185" href="#t185">185</a></span><span class="t"><span class="str">        Default is True. If False, all created plots are not shown.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t186" href="#t186">186</a></span><span class="t"><span class="str">    :keyword bool use_suffix:</span>&nbsp;</span><span class="r"></span></p>
@@ -316,7 +316,7 @@
     <p class="pln"><span class="n"><a id="t234" href="#t234">234</a></span><span class="t"><span class="str">        Default is None. If an axes is given the heatmap will be plotted on it, else</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t235" href="#t235">235</a></span><span class="t"><span class="str">        a new figure and axes is created.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t236" href="#t236">236</a></span><span class="t"><span class="str">    :param int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t237" href="#t237">237</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t237" href="#t237">237</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t238" href="#t238">238</a></span><span class="t"><span class="str">    :keyword bool show_plot:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t239" href="#t239">239</a></span><span class="t"><span class="str">        Default is True. If False, all created plots are not shown.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t240" href="#t240">240</a></span><span class="t"><span class="str">    :keyword bool use_suffix:</span>&nbsp;</span><span class="r"></span></p>
@@ -366,7 +366,7 @@
     <p class="pln"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t"><span class="str">        Default is a list of all goals in the result.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t"><span class="str">        If a list of goals is given only these goals are plotted.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t286" href="#t286">286</a></span><span class="t"><span class="str">    :param int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t288" href="#t288">288</a></span><span class="t"><span class="str">    :keyword bool show_plot:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t289" href="#t289">289</a></span><span class="t"><span class="str">        Default is True. If False, all created plots are not shown.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t290" href="#t290">290</a></span><span class="t"><span class="str">    :keyword bool use_suffix:</span>&nbsp;</span><span class="r"></span></p>
@@ -475,15 +475,15 @@
     <p class="run"><span class="n"><a id="t393" href="#t393">393</a></span><span class="t">                    <span class="nam">conv_int</span> <span class="op">=</span> <span class="nam">result</span><span class="op">.</span><span class="nam">loc</span><span class="op">[</span><span class="nam">goal</span><span class="op">,</span> <span class="nam">analysis_var</span> <span class="op">+</span> <span class="str">'_conf'</span><span class="op">]</span><span class="op">[</span><span class="nam">para</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t394" href="#t394">394</a></span><span class="t">                    <span class="nam">large_values_indices</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">[</span><span class="nam">conv_int</span> <span class="op">></span> <span class="num">1</span><span class="op">]</span><span class="op">.</span><span class="nam">index</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t395" href="#t395">395</a></span><span class="t">                    <span class="key">if</span> <span class="nam">list</span><span class="op">(</span><span class="nam">large_values_indices</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t396" href="#t396">396</a></span><span class="t">                        <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t396" href="#t396">396</a></span><span class="t">                        <span class="nam">sys</span><span class="op">.</span><span class="nam">stderr</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t397" href="#t397">397</a></span><span class="t">                            <span class="str">f"plot_time_dependent INFO:"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t398" href="#t398">398</a></span><span class="t">                            <span class="str">f"Confidence interval for {goal}, {analysis_var}, {para} was at the "</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t399" href="#t399">399</a></span><span class="t">                            <span class="str">f"following times {list(large_values_indices)} lager than 1 "</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t400" href="#t400">400</a></span><span class="t">                            <span class="str">f"and is smoothed out in the plot.\n"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t401" href="#t401">401</a></span><span class="t">                    <span class="key">for</span> <span class="nam">idx</span> <span class="key">in</span> <span class="nam">large_values_indices</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t402" href="#t402">402</a></span><span class="t">                        <span class="nam">prev_idx</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">-</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t403" href="#t403">403</a></span><span class="t">                        <span class="key">if</span> <span class="nam">prev_idx</span> <span class="op">>=</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t404" href="#t404">404</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">prev_idx</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t402" href="#t402">402</a></span><span class="t">                        <span class="nam">prev_idx</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">-</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t403" href="#t403">403</a></span><span class="t">                        <span class="key">if</span> <span class="nam">prev_idx</span> <span class="op">>=</span> <span class="num">0</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t404" href="#t404">404</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">prev_idx</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t405" href="#t405">405</a></span><span class="t">                        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t406" href="#t406">406</a></span><span class="t">                            <span class="nam">conv_int</span><span class="op">.</span><span class="nam">iloc</span><span class="op">[</span><span class="nam">conv_int</span><span class="op">.</span><span class="nam">index</span><span class="op">.</span><span class="nam">get_loc</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="num">1</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t407" href="#t407">407</a></span><span class="t">                    <span class="nam">axes</span><span class="op">[</span><span class="nam">idx_goal</span><span class="op">]</span><span class="op">[</span><span class="nam">idx_av</span><span class="op">]</span><span class="op">.</span><span class="nam">fill_between</span><span class="op">(</span><span class="nam">x</span><span class="op">,</span> <span class="op">(</span><span class="nam">y</span> <span class="op">-</span> <span class="nam">conv_int</span><span class="op">)</span><span class="op">,</span> <span class="op">(</span><span class="nam">y</span> <span class="op">+</span> <span class="nam">conv_int</span><span class="op">)</span><span class="op">,</span> <span class="nam">alpha</span><span class="op">=</span><span class="num">.1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -528,7 +528,7 @@
     <p class="pln"><span class="n"><a id="t446" href="#t446">446</a></span><span class="t"><span class="str">        Default is True: If True, the last part after the last point</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t447" href="#t447">447</a></span><span class="t"><span class="str">        of Modelica variables is used for the x ticks.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t448" href="#t448">448</a></span><span class="t"><span class="str">    :keyword int max_name_len:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t449" href="#t449">449</a></span><span class="t"><span class="str">        Default is 10. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t449" href="#t449">449</a></span><span class="t"><span class="str">        Default is 15. Shortens the parameter names to max_name_len characters.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t450" href="#t450">450</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t451" href="#t451">451</a></span><span class="t">    <span class="nam">use_suffix</span> <span class="op">=</span> <span class="nam">kwargs</span><span class="op">.</span><span class="nam">pop</span><span class="op">(</span><span class="str">'use_suffix'</span><span class="op">,</span> <span class="key">False</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t452" href="#t452">452</a></span><span class="t">    <span class="nam">max_name_len</span> <span class="op">=</span> <span class="nam">kwargs</span><span class="op">.</span><span class="nam">pop</span><span class="op">(</span><span class="str">'max_name_len'</span><span class="op">,</span> <span class="num">50</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -641,7 +641,7 @@
             <a id="nextFileLink" class="nav" href="d_f4434ebd7e0d50e1_sensitivity_analyzer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.0">coverage.py v7.4.0</a>,
-            created at 2024-01-19 08:34 +0000
+            created at 2024-01-19 12:21 +0000
         </p>
     </div>
 </footer>
