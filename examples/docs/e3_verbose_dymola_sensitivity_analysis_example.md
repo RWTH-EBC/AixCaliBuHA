@@ -7,6 +7,7 @@ Goals of this part of the examples:
 
 ```python
 import os
+import pathlib
 from examples import setup_dym_api, setup_calibration_classes
 ```
 
@@ -46,6 +47,7 @@ n_cpu: int  =  1
 Using a dymola api instead of the fmu api
 
 ```python
+examples_dir = pathlib.Path(examples_dir)
 sim_api = setup_dym_api(examples_dir=examples_dir,
                         aixlib_mo=aixlib_mo,
                         example=example,
@@ -64,7 +66,7 @@ if example == 'B':
     merged_calibration_classes[-1].tuner_paras = merged_calibration_classes[0].tuner_paras
 ```
 
-Example of Sobol method
+## Example of Sobol method
 Set up Sobol analyzer
 
 ```python

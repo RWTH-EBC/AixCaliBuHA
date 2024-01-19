@@ -5,9 +5,10 @@ for the analysis of your model and the calibration process
 Goals of this part of the examples:
 1. Learn how to execute a verbose sensitivity analysis
 2. Learn the meaning of the results and the analysis of your model
-3. Learn other sensitivity methods
-5. Learn time dependent sensitivity analysis
-4. Learn how to save the results for reproduction
+3  Learn how to use the results to select tuner-parameters for a calibration
+4. Learn other sensitivity methods and compare them
+5. Learn how to execute a time dependent sensitivity analysis
+6. Learn how to save the results for reproduction
 
 Start by importing all relevant packages
 
@@ -28,15 +29,16 @@ Please define the missing TODOs in the section below according to the docstrings
 Example process of a verbose sensitivity analysis for calibration and analysis porpoises.
 First, the sensitivity problem is constructed, in this example
 the `sobol` method is chosen.
-Afterward, the sen_analyzer class is instantiated to run the
+Afterward, the SenAnalyzer class is instantiated to run the
 sensitivity analysis in the next step.
 The result of this analysis is then printed to the user.
+and tuner-parameters are selected with these results.
 A comparison between different methods is shown.
 At the end the option to save a reproduction archive is shown.
 
-:param [pathlib.Path] examples_dir:
+:param [pathlib.Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
-    e.g. pathlib.Path(r"LOCAL_PATH_TO\AixCaliBuHA\examples")
+    e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
 :param str example:
     Which example to run, "A" or "B"
 :param int n_cpu:
@@ -57,11 +59,12 @@ some further settings for the analysis.
 Let's first load the necessary simulation api:
 
 ```python
+examples_dir = pathlib.Path(examples_dir)
 sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 ```
 
 To conduct a sensitivity analysis, we need to define calibration classes that
-encompass the objectives for which sensitivity is to be assessed. In this
+encompass the objectives (goals) for which sensitivity is to be assessed. In this
 context, we'll explore distinct calibration classes corresponding to various
 states of the models. Initially, we establish a comprehensive calibration class
 that spans the entire duration, denoted as `global`. Subsequently, we can
@@ -102,7 +105,7 @@ print("Calibration classes for sensitivity analysis:",
 
 In our detailed sensitivity analysis, it is essential for all classes to share
 identical tuner parameters. This ensures that we can employ the same set of
-simulations for assessing sensitivity across various calibration classes.
+simulations for calculating sensitivity across various calibration classes.
 However, the final class in example B deviates in tuner parameters; hence, we
 reset them to align with the tuner parameters of the other classes.
 
@@ -154,7 +157,7 @@ and the statistical measure is then evaluated for the
 relevant time intervals of each class.
 
 When we load simulation files we can use multiprocessing for loading the simulation
-and evaluation of the statistical measure for each class.
+and evaluating the statistical measure for each class in their time intervals.
 This multiprocessing option is especially
 useful for large models and large simulation data,
 because only one simulation at a time is stored
@@ -163,7 +166,7 @@ This can prevent possible memory errors.
 
 We disable the automatic plot option here,
 but we save all results. Later we can use the plot function
-of the analyzers to plot the results.
+of the plotting module to plot the results.
 
 ```python
 result, classes = sen_analyzer.run(calibration_classes=merged_calibration_classes,
@@ -208,7 +211,7 @@ In this example you get a short overview in the comparison later.
 ```python
 print("Result of the sensitivity analysis")
 print('First and total order results of sobol method')
-print(result[0].to_string())  # TODO: Check if the to_string() method is better than simple result[0] in jupyter-notebook. If not, we could parse all functions of print(XX.to_string()) to XX in the example converter script.
+print(result[0].to_string())
 ```
 
 The second result of the sobol method is for second order sensitive measures.
@@ -229,8 +232,8 @@ Let's plot the first and total order results. These results
 are specific for each single parameter
 For each calibration class, a figure is created
 which shows for each goal the first order sensitivity `S1`
-and the total order sensitivity combined. For the small
-sample size the results have huge confidence
+and the total order sensitivity `ST` combined. For the small
+sample size the results have large confidence
 intervals, which show that these results are inaccurate as we
 noted earlier due to the small sample size.
 
@@ -244,7 +247,7 @@ So we only can take a look at them in example A.
 If you run example B we will skip the plot of the second order results
 and load some sensitivity results of example A.
 
-Let's take a look at the second order results `S2` of example A.
+Let's take a look at the second order results `S2` of example A we just created.
 This analysis variable shows the interaction of two
 parameters, so we can plot them as a heatmap.
 We can see that the parameters have no interaction with
@@ -253,9 +256,9 @@ values for p1,p2 and p2,p1 are the same.
 In the heatmap we can't visualize the confidence intervals,
 so we will also take a look at the interaction of
 one specific parameter.
-For that the `SobolAnalyzer` has also a plotting function
-which look simular to the `S1` and `ST` plots.
-Here we see again huge confidence intervals,
+For that the `plotting` module has also a function
+which looks simular to the `S1` and `ST` plots.
+Here we see again large confidence intervals,
 so now we will load results which were calculated with
 a much higher sample number.
 
@@ -282,10 +285,8 @@ result_sobol_2 = SobolAnalyzer.load_second_order_from_csv(
 For a better understanding we will only take a
 look at the global class and Electricity goal
 and plot `S1`, `ST` and `S2` in the same window.
-For that we can use the plot function of the Analyzer
-with some optional options. We will also only use
-the suffix of the modelica variables for better
-visibility. This show how you can easily customize
+For that we can use the plot function
+with some optional options. This shows how you can easily customize
 these plots, and you can also chang everything
 on the axes of the plots.
 
@@ -298,7 +299,8 @@ plotting.plot_single(
     cal_classes=['global'],
     goals=['Electricity'],
     show_plot=False,
-    figs_axes=([subfigs[0]], [ax0])
+    figs_axes=([subfigs[0]], [ax0]),
+    max_name_len=14
 )
 ax1 = subfigs[1].subplots()  # plotting heatmap
 plotting.heatmap(
@@ -306,7 +308,8 @@ plotting.heatmap(
     cal_class='global',
     goal='Electricity',
     ax=ax1,
-    show_plot=False
+    show_plot=False,
+    max_name_len=14
 )
 ax2 = subfigs[2].subplots()  # plotting the interactions of one single parameter
 plotting.plot_single_second_order(
@@ -315,7 +318,8 @@ plotting.plot_single_second_order(
     show_plot=False,
     cal_classes=['global'],
     goals=['Electricity'],
-    figs_axes=([subfigs[2]], [ax2])
+    figs_axes=([subfigs[2]], [ax2]),
+    max_name_len=14
 )
 plt.show()
 ```
@@ -335,8 +339,9 @@ with all his interactions. Let's take a look at the
 interaction between `n` and `G`, which are the highest.
 Here, the `S2` value of the interaction
 between `n` and `G` has a similar value to each difference
-of `S1` and `ST` from these parameters. All other
-parameters have only a very small sensitivity.
+of `S1` and `ST` from these parameters. This show how this
+difference corresponds to the interactions of a parameter.
+All other parameters have only a very small sensitivity.
 These are just some basics, to understand what option you
 have in `AixCaliBuAH`. For more information look up relevant literature.
 
@@ -356,7 +361,7 @@ The FAST method is another variance-based
 method and only computes `S1` and `ST` with k*N simulations.
 `Sobol` and FAST should show simular results which is the
 case for example B but in example A the FAST method overestimates `ST` in some cases.
-In the right plots, the results for the Morris method are shown.
+In the right plots, the results for the `Morris` method are shown.
 These are based on the mean of derivatives which
 represents the analysis variables mu. In the estimation
 of the derivatives, only one parameter is changed at a time.
@@ -364,7 +369,8 @@ mu_star is the mean of the absolut values of the derivatives
 and is an approximation of `ST` but
 needs only an `N` of over 100 and `(1+k)N` simulations.
 In this comparison, mu_star shows simular results to `ST`
-of the `Sobol` method. Last, sigma is computed which is the standard deviation and
+of the `Sobol` method, but it is not normalized.
+Last, sigma is computed which is the standard deviation and
 is a sign for a non-linear model or for interactions in the model.
 
 ```python
@@ -425,6 +431,10 @@ of the sensitivity results. This is enough that
 the parameter can be calibrated.
 Here, we will use `S1` because it is normalized instead of mu_star,
 and we can set on single threshold for all classes and goals.
+Also, if a parameter is only through interaction sensitive (only in `ST`)
+A real value can't be found and the parameters which interact will
+compensate each others deviation to a real world value.
+This still can happen when we choose with `S1` but it is less likely.
 
 ```python
 calibration_class = SobolAnalyzer.select_by_threshold_verbose(classes[0],
@@ -441,7 +451,7 @@ For analysis porpoises we can also evaluate the time dependent sensitivity
 instead of the sensitivity of larger time intervals. But these results can not yet
 be used to automatically selected tuner parameters for a calibration.
 The function for the time dependent sensitivity is similar to the other one.
-So we can also use the simulations of the other function we have saved.
+So we can also use the simulations of booth run functions for each other.
 The main difference is that we only need one calibration class from which
 the measured target data is not used and the sensitivity is directly
 calculated for the change of the separate target values and no combined goals.
@@ -458,10 +468,10 @@ with warnings.catch_warnings():
 print(result)
 ```
 
-When we use the internal plot function we can see the sensitivity of each parameter
+When we use the plot function we can see the sensitivity of each parameter
 changing over time. We can also see that the confidence intervals
 are again large for such a small sample size. When the confidence interval is larger
-than one a warning is thrown and the confidence interval of the previous
+than one an info is shown and the confidence interval of the previous
 time step is used to smooth it out for the visualisation.
 Let's load again results which were created with a larger sample size.
 
@@ -489,8 +499,7 @@ This resembles the definition of `ST = S1 + sum(S2_i) + sum(S3_i) + ...`
 ```python
 plotting.plot_parameter_verbose(parameter='theCon.G',
                                 single_result=result_sobol_time,
-                                second_order_result=result_sobol_2_time,
-                                use_suffix=False)
+                                second_order_result=result_sobol_2_time)
 ```
 
 At the end we also can create a reproduction
