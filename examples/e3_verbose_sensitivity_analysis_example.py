@@ -1,4 +1,4 @@
-# ##Example 3 verbose sensitivity analysis
+# ## Example 3 verbose sensitivity analysis
 # for the analysis of your model and the calibration process
 
 # Goals of this part of the examples:
@@ -9,6 +9,7 @@
 # 4. Learn how to save the results for reproduction
 
 # Start by importing all relevant packages
+import warnings
 import pathlib
 import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
@@ -34,6 +35,7 @@ def run_sensitivity_analysis(
 
     :param [pathlib.Path] examples_dir:
         Path to the examples folder of AixCaliBuHA
+        e.g. pathlib.Path(r"LOCAL_PATH_TO\AixCaliBuHA\examples")
     :param str example:
         Which example to run, "A" or "B"
     :param int n_cpu:
@@ -246,15 +248,14 @@ def run_sensitivity_analysis(
     # these plots, and you can also chang everything
     # on the axes of the plots.
     fig = plt.figure(figsize=plt.figaspect(1. / 4.), layout="constrained")  # creating one figure
-    subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot plotting `S1` and `ST`
-    ax0 = subfigs[0].subplots()
+    subfigs = fig.subfigures(1, 3, wspace=0)  # creating subfigures for each type of plot
+    ax0 = subfigs[0].subplots()  # plotting `S1` and `ST`
     plotting.plot_single(
         result=result_sobol,
         cal_classes=['global'],
         goals=['Electricity'],
         show_plot=False,
-        figs_axes=([subfigs[0]], [ax0]),
-        use_suffix=True,
+        figs_axes=([subfigs[0]], [ax0])
     )
     ax1 = subfigs[1].subplots()  # plotting heatmap
     plotting.heatmap(
@@ -262,8 +263,7 @@ def run_sensitivity_analysis(
         cal_class='global',
         goal='Electricity',
         ax=ax1,
-        show_plot=False,
-        use_suffix=True
+        show_plot=False
     )
     ax2 = subfigs[2].subplots()  # plotting the interactions of one single parameter
     plotting.plot_single_second_order(
@@ -272,8 +272,7 @@ def run_sensitivity_analysis(
         show_plot=False,
         cal_classes=['global'],
         goals=['Electricity'],
-        figs_axes=([subfigs[2]], [ax2]),
-        use_suffix=True
+        figs_axes=([subfigs[2]], [ax2])
     )
     plt.show()
     # Now, what can we see in these results? First, the
@@ -397,11 +396,13 @@ def run_sensitivity_analysis(
     # calculated for the change of the separate target values and no combined goals.
     # In the results, we then get just the additional index time.
 
-    result = sen_analyzer.run_time_dependent(
-        cal_class=merged_calibration_classes[0],
-        load_sim_files=True,
-        plot_result=True
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")  # ignoring warnings that are caused by the low sample size
+        result = sen_analyzer.run_time_dependent(
+            cal_class=merged_calibration_classes[0],
+            load_sim_files=True,
+            plot_result=True
+        )
     print(result)
 
     # When we use the internal plot function we can see the sensitivity of each parameter
@@ -435,6 +436,7 @@ def run_sensitivity_analysis(
     # At the end we also can create a reproduction
     # archive which saves all settings and all created files
     # automatically with the reproduction function of ebcpy.
+    # Not running in jupyter notebook
     file = sen_analyzer.save_for_reproduction(
         title="SenAnalyzerTest",
         path=examples_dir.joinpath('testzone'),
@@ -446,7 +448,6 @@ def run_sensitivity_analysis(
 
 
 if __name__ == "__main__":
-    import pathlib
 
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
