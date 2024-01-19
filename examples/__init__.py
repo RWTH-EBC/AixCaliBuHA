@@ -11,7 +11,7 @@ def setup_fmu(examples_dir, example="B", n_cpu=1):
     """
     Setup the FMU used in all examples and tests.
 
-    :param str examples_dir:
+    :param [pathlib.Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
@@ -38,7 +38,7 @@ def setup_fmu(examples_dir, example="B", n_cpu=1):
                    n_cpu=n_cpu)
 
 
-def setup_dym_api(examples_dir, aixlib_mo, example="A", n_cpu=1, dymola_version='Dymola 2021'):
+def setup_dym_api(examples_dir, aixlib_mo, example="A", n_cpu=1, dymola_version='Dymola 2023'):
     examples_dir = pathlib.Path(examples_dir)
     packages = []
     if example == "A":

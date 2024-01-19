@@ -4,6 +4,7 @@
 # 1. Learn how to execute a sensitivity analysis with the dymola api
 #
 import os
+import pathlib
 from examples import setup_dym_api, setup_calibration_classes
 # Import a valid analyzer, e.g. `SobolAnalyzer`
 from aixcalibuha import SobolAnalyzer
@@ -34,6 +35,7 @@ def run_sensitivity_analysis(
     """
     # ## Setup
     # Using a dymola api instead of the fmu api
+    examples_dir = pathlib.Path(examples_dir)
     sim_api = setup_dym_api(examples_dir=examples_dir,
                             aixlib_mo=aixlib_mo,
                             example=example,
@@ -51,7 +53,7 @@ def run_sensitivity_analysis(
     if example == 'B':
         merged_calibration_classes[-1].tuner_paras = merged_calibration_classes[0].tuner_paras
 
-    # Example of Sobol method
+    # ## Example of Sobol method
     # Set up Sobol analyzer
     sen_analyzer = SobolAnalyzer(
         sim_api=sim_api,
@@ -103,11 +105,10 @@ def run_sensitivity_analysis(
 
 
 if __name__ == "__main__":
-    import pathlib
 
     # Parameters for sen-analysis:
     EXAMPLE = "A"  # Or choose B
-    N_CPU = 2
+    N_CPU = 1
 
     # Sensitivity analysis:
     run_sensitivity_analysis(
