@@ -1482,18 +1482,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.multi_class_calibrator",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils)",
             "message-id": "R0401"
         },
         {
@@ -1515,18 +1504,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.multi_class_calibrator",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer -> aixcalibuha.utils)",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
             "message-id": "R0401"
         },
         {
@@ -1548,7 +1526,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils)",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator)",
             "message-id": "R0401"
         },
         {
@@ -1570,7 +1548,40 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer -> aixcalibuha.utils)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
             "message-id": "R0401"
         },
         {
@@ -1592,7 +1603,18 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator)",
             "message-id": "R0401"
         }
     ],
@@ -1744,7 +1766,7 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 16,
+                "refactor": 18,
                 "statement": 98,
                 "warning": 0
             }
@@ -1771,7 +1793,7 @@
             "unused-variable": 1,
             "broad-exception-raised": 1,
             "no-else-return": 1,
-            "cyclic-import": 11
+            "cyclic-import": 13
         },
         "code_type_count": {
             "code": 0,
@@ -1791,41 +1813,41 @@
                 "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.pawn",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "aixcalibuha.sensitivity_analysis.plotting": [
                 "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
                 "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+                "aixcalibuha.sensitivity_analysis"
             ],
             "pandas": [
                 "aixcalibuha.data_types",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "numpy": [
                 "aixcalibuha.data_types",
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.calibration.multi_class_calibrator",
-                "aixcalibuha.sensitivity_analysis.plotting",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.utils.visualizer"
             ],
             "ebcpy": [
-                "aixcalibuha.calibration.calibrator",
-                "aixcalibuha.data_types"
+                "aixcalibuha.data_types",
+                "aixcalibuha.calibration.calibrator"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -1834,31 +1856,31 @@
                 "aixcalibuha.data_types"
             ],
             "matplotlib.pyplot": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.visualizer"
             ],
             "ebcpy.utils": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.utils.visualizer"
             ],
             "aixcalibuha": [
-                "aixcalibuha.utils",
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.utils",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "toml": [
                 "aixcalibuha.utils.configuration"
             ],
             "ebcpy.data_types": [
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration"
             ],
             "matplotlib": [
                 "aixcalibuha.sensitivity_analysis.plotting"
@@ -1882,8 +1904,8 @@
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "SALib.sample.fast_sampler": [
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
             ],
             "SALib.analyze.fast": [
                 "aixcalibuha.sensitivity_analysis.fast"
@@ -1904,8 +1926,8 @@
                 "aixcalibuha.sensitivity_analysis"
             ],
             "SALib.sample.sobol": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "SALib.sample.morris": [
                 "aixcalibuha.sensitivity_analysis.pawn",
@@ -1947,7 +1969,7 @@
         "error": 2,
         "fatal": 0,
         "info": 0,
-        "refactor": 43,
+        "refactor": 45,
         "statement": 1759,
         "warning": 11,
         "global_note": 0,
@@ -2102,7 +2124,7 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 16,
+                "refactor": 17,
                 "statement": 98,
                 "warning": 0
             }
@@ -2129,7 +2151,7 @@
             "unused-variable": 1,
             "broad-exception-raised": 1,
             "no-else-return": 1,
-            "cyclic-import": 11
+            "cyclic-import": 12
         },
         "code_type_count": {
             "code": 0,
@@ -2141,45 +2163,45 @@
         "dependencies": {
             "aixcalibuha.data_types": [
                 "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.multi_class_calibrator"
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "aixcalibuha.calibration": [
-                "aixcalibuha",
-                "aixcalibuha.calibration.multi_class_calibrator"
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.pawn",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.morris"
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "aixcalibuha.sensitivity_analysis.plotting": [
                 "aixcalibuha",
                 "aixcalibuha.sensitivity_analysis",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "pandas": [
                 "aixcalibuha.data_types",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "numpy": [
-                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.data_types",
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.plotting",
-                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.pawn",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.calibration.multi_class_calibrator"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "ebcpy": [
                 "aixcalibuha.calibration.calibrator",
@@ -2192,24 +2214,24 @@
                 "aixcalibuha.data_types"
             ],
             "matplotlib.pyplot": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.plotting"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.visualizer"
             ],
             "ebcpy.utils": [
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.utils.visualizer"
             ],
             "aixcalibuha": [
-                "aixcalibuha.utils",
                 "aixcalibuha.sensitivity_analysis.morris",
-                "aixcalibuha.utils.visualizer",
-                "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.calibration.multi_class_calibrator"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.utils",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "toml": [
                 "aixcalibuha.utils.configuration"
@@ -2240,8 +2262,8 @@
                 "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
             ],
             "SALib.sample.fast_sampler": [
-                "aixcalibuha.sensitivity_analysis.fast",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
             ],
             "SALib.analyze.fast": [
                 "aixcalibuha.sensitivity_analysis.fast"
@@ -2262,8 +2284,8 @@
                 "aixcalibuha.sensitivity_analysis"
             ],
             "SALib.sample.sobol": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.pawn"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "SALib.sample.morris": [
                 "aixcalibuha.sensitivity_analysis.pawn",
@@ -2305,10 +2327,10 @@
         "error": 2,
         "fatal": 0,
         "info": 0,
-        "refactor": 43,
+        "refactor": 44,
         "statement": 1759,
         "warning": 11,
-        "global_note": 9.511085844229676,
+        "global_note": 9.505400795906764,
         "nb_duplicated_lines": 0,
         "percent_duplicated_lines": 0.0
     }
