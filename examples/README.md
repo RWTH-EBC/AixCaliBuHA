@@ -53,17 +53,17 @@ The examples 3-5 are written for both, so just alter the parameter in the `if __
 1. Learn how to execute a simple sensitivity analysis
 2. Learn how to automatically select sensitive tuner parameters
 
-## `e3_verbose_dymola_sensitivity_analysis_example.py`
-
-1. Learn how to execute a sensitivity analysis with the dymola api
-
-## `e3_verbose_sensitivity_analysis_example.py`
+## `e3_1_verbose_sensitivity_analysis_example.py`
 
 1. Learn how to execute a verbose sensitivity analysis
 2. Learn the meaning of the results the analysis of your model
 3. Learn other sensitivity methods
-5. Learn time dependent sensitivity analysis
-4. Learn how to save the results for reproduction
+4. Learn time dependent sensitivity analysis
+5. Learn how to save the results for reproduction
+
+## `e3_1_verbose_dymola_sensitivity_analysis_example.py`
+
+1. Learn how to execute a sensitivity analysis with the dymola api
 
 ## `e4_calibration_example.py`
 
