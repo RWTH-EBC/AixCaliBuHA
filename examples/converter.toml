@@ -34,14 +34,14 @@ ipynb_path = "examples/jupyter_notebooks"
 docstrings = true
 
 [[ExampleFile]]
-filename = "examples/e3_verbose_sensitivity_analysis_example.py"
+filename = "examples/e3_1_verbose_sensitivity_analysis_example.py"
 func_name = "run_sensitivity_analysis"
 md_path = "examples/docs"
 ipynb_path = "examples/jupyter_notebooks"
 docstrings = true
 
 [[ExampleFile]]
-filename = "examples/e3_verbose_dymola_sensitivity_analysis_example.py"
+filename = "examples/e3_2_verbose_dymola_sensitivity_analysis_example.py"
 func_name = "run_sensitivity_analysis"
 md_path = "examples/docs"
 ipynb_path = "examples/jupyter_notebooks"
