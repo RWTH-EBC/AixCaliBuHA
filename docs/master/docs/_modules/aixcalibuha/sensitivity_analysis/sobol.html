@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aixcalibuha.sensitivity_analysis.sobol &mdash; AixCaliBuHa 0.3.1 documentation</title>
+  <title>aixcalibuha.sensitivity_analysis.sobol &mdash; AixCaliBuHa 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
@@ -34,7 +34,7 @@
             AixCaliBuHa
           </a>
               <div class="version">
-                0.3
+                1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -83,40 +83,58 @@
 <span class="sd">Adds the SobolAnalyzer to the available</span>
 <span class="sd">classes of sensitivity analysis.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">SALib.sample</span> <span class="kn">import</span> <span class="n">saltelli</span> <span class="k">as</span> <span class="n">sobol</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">SALib.sample</span> <span class="kn">import</span> <span class="n">sobol</span>
 <span class="kn">from</span> <span class="nn">SALib.analyze</span> <span class="kn">import</span> <span class="n">sobol</span> <span class="k">as</span> <span class="n">analyze_sobol</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">aixcalibuha.sensitivity_analysis</span> <span class="kn">import</span> <span class="n">SenAnalyzer</span>
 <span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha.sensitivity_analysis.plotting</span> <span class="kn">import</span> <span class="n">plot_single</span><span class="p">,</span> <span class="n">heatmaps</span>
 
 
 <div class="viewcode-block" id="SobolAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SobolAnalyzer</span><span class="p">(</span><span class="n">SenAnalyzer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sobol method from SALib</span>
+<span class="sd">    https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis</span>
+<span class="sd">    A variance-based method which can compute the sensitivity measures</span>
+<span class="sd">    &#39;S1&#39;, &#39;ST&#39; and &#39;S2&#39; with their confidence intervals.</span>
+
 <span class="sd">    Additional arguments:</span>
 
 <span class="sd">    :keyword bool calc_second_order:</span>
 <span class="sd">        Default True, used for the sobol-method</span>
-<span class="sd">    :keyword seed:</span>
+<span class="sd">    :keyword int seed:</span>
 <span class="sd">        Used for the sobol-method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="s1">&#39;S1_conf&#39;</span><span class="p">,</span> <span class="s1">&#39;ST_conf&#39;</span><span class="p">]</span>
+    <span class="n">__analysis_variables_1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="s1">&#39;S1_conf&#39;</span><span class="p">,</span> <span class="s1">&#39;ST_conf&#39;</span><span class="p">]</span>
+    <span class="n">__analysis_variables_2</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="s1">&#39;S2_conf&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Additional kwarg which changes the possible analysis_variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_second_order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;calc_second_order&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_second_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="s1">&#39;S1_conf&#39;</span><span class="p">,</span> <span class="s1">&#39;ST_conf&#39;</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="s1">&#39;S2_conf&#39;</span><span class="p">]</span>
+        <span class="c1"># separately store first and total order (1) and second order (2) analysis variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">av_1_selected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">av_2_selected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Set additional kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">sim_api</span><span class="o">=</span><span class="n">sim_api</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="c1"># Set additional kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calc_second_order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;calc_second_order&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">analysis_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The analysis variables of the sobol method&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">,</span> <span class="s1">&#39;S1_conf&#39;</span><span class="p">,</span> <span class="s1">&#39;ST_conf&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables</span>
 
 <div class="viewcode-block" id="SobolAnalyzer.analysis_function"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.analysis_function">[docs]</a>    <span class="k">def</span> <span class="nf">analysis_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use the SALib.analyze.sobol method to analyze the simulation results.</span>
 
-<span class="sd">        :param np.array: x</span>
+<span class="sd">        :param np.array x:</span>
 <span class="sd">            placeholder for the `X` parameter of the morris method not used for sobol</span>
 <span class="sd">        :param np.array y:</span>
 <span class="sd">            The NumPy array containing the model outputs</span>
@@ -149,16 +167,111 @@
                             <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
                             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">time_dependent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the results of the run and run_time_dependent function of the SobolAnalyzer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_dependent</span><span class="o">=</span><span class="n">time_dependent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_dependent</span><span class="p">:</span>
+            <span class="n">savepath_result_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">_results_second_order_time.csv&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">savepath_result_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">_results_second_order.csv&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">savepath_result_2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">savepath_result_2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conv_local_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the result dictionaries form SALib</span>
+<span class="sd">        of each class and goal into a tuple of two DataFrames.</span>
+<span class="sd">        First is the single order and second is the second order result.</span>
+<span class="sd">        If one of the results is not computed an empty list is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_conv_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_conv_results_2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tuples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tuples_2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">class_results</span><span class="p">,</span> <span class="n">local_class</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">goal</span><span class="p">,</span> <span class="n">goal_results</span> <span class="ow">in</span> <span class="n">class_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">analysis_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">:</span>
+                    <span class="n">res_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">goal_results</span><span class="p">,</span>
+                                                  <span class="n">cal_class</span><span class="o">=</span><span class="n">local_class</span><span class="p">,</span>
+                                                  <span class="n">analysis_variable</span><span class="o">=</span><span class="n">analysis_var</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">analysis_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables_1</span><span class="p">:</span>
+                        <span class="n">_conv_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_dict</span><span class="p">)</span>
+                        <span class="n">tuples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">local_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="n">analysis_var</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="n">analysis_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables_2</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">tuner_para</span><span class="p">,</span> <span class="n">res_dict</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">_conv_results_2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_dict</span><span class="p">)</span>
+                            <span class="n">tuples_2</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">local_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="n">analysis_var</span><span class="p">,</span> <span class="n">tuner_para</span><span class="p">))</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span><span class="n">tuples</span><span class="o">=</span><span class="n">tuples</span><span class="p">,</span>
+                                          <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Analysis variable&#39;</span><span class="p">])</span>
+        <span class="n">index_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span><span class="n">tuples</span><span class="o">=</span><span class="n">tuples_2</span><span class="p">,</span>
+                                            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Analysis variable&#39;</span><span class="p">,</span>
+                                                   <span class="s1">&#39;Interaction&#39;</span><span class="p">])</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_conv_results</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">df_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_conv_results_2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index_2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">df_2</span>
+
+    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the result object to a dict with the key</span>
 <span class="sd">        being the variable name and the value being the result</span>
-<span class="sd">        associated to self.analysis_variable.</span>
+<span class="sd">        associated to analysis_variable.</span>
+<span class="sd">        For second oder analysis variables the result is converted to a</span>
+<span class="sd">        dict with the key being the variable name and the value being another dict</span>
+<span class="sd">        with the variable names as the keys and the result associated to analysis_variable</span>
+<span class="sd">        from the interaction between the two variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res_val</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">res_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span>
-                                             <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span><span class="p">])}</span></div>
+        <span class="k">if</span> <span class="n">analysis_variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables_1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">res_dict_1</span> <span class="o">=</span> <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res_val</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">res_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span>
+                                                           <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)))}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res_dict_1</span> <span class="o">=</span> <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res_val</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">res_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span>
+                                                           <span class="n">result</span><span class="p">[</span><span class="n">analysis_variable</span><span class="p">])}</span>
+            <span class="k">return</span> <span class="n">res_dict_1</span>
+        <span class="k">if</span> <span class="n">analysis_variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__analysis_variables_2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">res_dict_2</span> <span class="o">=</span> <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res_val</span><span class="p">)))</span>
+                              <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">res_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span>
+                                                           <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">))))}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_av</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">analysis_variable</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result_av</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result_av</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">j</span><span class="p">:</span>
+                            <span class="n">result_av</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_av</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">res_dict_2</span> <span class="o">=</span> <span class="p">{</span><span class="n">var_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">res_val</span><span class="p">)))</span>
+                              <span class="k">for</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">res_val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span>
+                                                           <span class="n">result_av</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="n">res_dict_2</span>
+
+<div class="viewcode-block" id="SobolAnalyzer.plot"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the results of the sensitivity analysis method from run().</span>
+
+<span class="sd">        :param pd.DataFrame result:</span>
+<span class="sd">            Dataframe of the results like from the run() function.</span>
+<span class="sd">        :return tuple of matplotlib objects (fig, ax):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_single</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">heatmaps</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="SobolAnalyzer.load_second_order_from_csv"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.load_second_order_from_csv">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_second_order_from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load second order sensitivity results which were saved with the run() or</span>
+<span class="sd">        run_time_dependent() function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
 </pre></div>
 
            </div>

@@ -9,10 +9,34 @@ aixcalibuha.sensitivity\_analysis package
 Submodules
 ----------
 
+aixcalibuha.sensitivity\_analysis.fast module
+---------------------------------------------
+
+.. automodule:: aixcalibuha.sensitivity_analysis.fast
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 aixcalibuha.sensitivity\_analysis.morris module
 -----------------------------------------------
 
 .. automodule:: aixcalibuha.sensitivity_analysis.morris
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+aixcalibuha.sensitivity\_analysis.pawn module
+---------------------------------------------
+
+.. automodule:: aixcalibuha.sensitivity_analysis.pawn
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+aixcalibuha.sensitivity\_analysis.plotting module
+-------------------------------------------------
+
+.. automodule:: aixcalibuha.sensitivity_analysis.plotting
    :members:
    :undoc-members:
    :show-inheritance:

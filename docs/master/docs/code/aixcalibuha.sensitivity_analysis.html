@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aixcalibuha.sensitivity_analysis package &mdash; AixCaliBuHa 0.3.1 documentation</title>
+  <title>aixcalibuha.sensitivity_analysis package &mdash; AixCaliBuHa 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
 
@@ -37,7 +37,7 @@
             AixCaliBuHa
           </a>
               <div class="version">
-                0.3
+                1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -103,6 +103,77 @@ sensitivity analysis with.</p>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
+<section id="module-aixcalibuha.sensitivity_analysis.fast">
+<span id="aixcalibuha-sensitivity-analysis-fast-module"></span><h2>aixcalibuha.sensitivity_analysis.fast module<a class="headerlink" href="#module-aixcalibuha.sensitivity_analysis.fast" title="Permalink to this heading"></a></h2>
+<p>Adds the FASTAnalyzer to the available
+classes of sensitivity analysis.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.fast.</span></span><span class="sig-name descname"><span class="pre">FASTAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_api</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/fast.html#FASTAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer" title="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SenAnalyzer</span></code></a></p>
+<p>FAST method from SALib
+<a class="reference external" href="https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test">https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test</a>
+A variance-based method which can compute the sensitivity measures
+‘S1’ and ‘ST’.</p>
+<p>Additional arguments:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default 4, used for the fast-method</p></li>
+<li><p><strong>seed</strong> – Used for the fast-method</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_function">
+<span class="sig-name descname"><span class="pre">analysis_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/fast.html#FASTAnalyzer.analysis_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_function" title="Permalink to this definition"></a></dt>
+<dd><p>Use the SALib.analyze.fast method to analyze the simulation results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – placeholder for the <cite>X</cite> parameter of the morris method not used for sobol</p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – The NumPy array containing the model outputs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns the result of the SALib.analyze.fast method (from the documentation:
+Returns a dictionary with keys ‘S1’ and ‘ST’, where each entry is a list of
+size D (the number of parameters) containing the indices in the same order
+as the parameter file.)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_variables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analysis_variables</span></span><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_variables" title="Permalink to this definition"></a></dt>
+<dd><p>The analysis variables of the FAST method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.create_sampler_demand">
+<span class="sig-name descname"><span class="pre">create_sampler_demand</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/fast.html#FASTAnalyzer.create_sampler_demand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.create_sampler_demand" title="Permalink to this definition"></a></dt>
+<dd><p>Function to create the sampler parameters for the fast method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.generate_samples">
+<span class="sig-name descname"><span class="pre">generate_samples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/fast.html#FASTAnalyzer.generate_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.generate_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Run the sampler for fast and return the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of samples generated as a NumPy array with one row per sample
+and each row containing one value for each variable name in <cite>problem[‘names’]</cite>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-aixcalibuha.sensitivity_analysis.morris">
 <span id="aixcalibuha-sensitivity-analysis-morris-module"></span><h2>aixcalibuha.sensitivity_analysis.morris module<a class="headerlink" href="#module-aixcalibuha.sensitivity_analysis.morris" title="Permalink to this heading"></a></h2>
 <p>Adds the MorrisAnalyzer to the available
@@ -111,11 +182,14 @@ classes of sensitivity analysis.</p>
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.morris.</span></span><span class="sig-name descname"><span class="pre">MorrisAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_api</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/morris.html#MorrisAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.morris.MorrisAnalyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer" title="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SenAnalyzer</span></code></a></p>
+<p>Moris method from SALib <a class="reference external" href="https://salib.readthedocs.io/en/latest/api.html#method-of-morris">https://salib.readthedocs.io/en/latest/api.html#method-of-morris</a>
+An elementary effects (One-At-A-Time) method which computes the sensitivity
+measures ‘mu’, ‘mu_star’ and ‘sigma’ with a confidence interval for mu_star.</p>
 <p>Additional arguments:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>num_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default 4, used for the morris-method</p></li>
+<li><p><strong>num_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default num_samples, used for the morris-method</p></li>
 <li><p><strong>optimal_trajectories</strong> – Used for the morris-method</p></li>
 <li><p><strong>local_optimization</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True, used for the morris-method</p></li>
 </ul>
@@ -171,6 +245,283 @@ and each row containing one value for each variable name in <cite>problem[‘nam
 </dd></dl>
 
 </section>
+<section id="module-aixcalibuha.sensitivity_analysis.pawn">
+<span id="aixcalibuha-sensitivity-analysis-pawn-module"></span><h2>aixcalibuha.sensitivity_analysis.pawn module<a class="headerlink" href="#module-aixcalibuha.sensitivity_analysis.pawn" title="Permalink to this heading"></a></h2>
+<p>Adds the PAWNAnalyzer to the available
+classes of sensitivity analysis.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.pawn.</span></span><span class="sig-name descname"><span class="pre">PAWNAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_api</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/pawn.html#PAWNAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer" title="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SenAnalyzer</span></code></a></p>
+<p>PAWN method from SALib <a class="reference external" href="https://salib.readthedocs.io/en/latest/api.html#pawn-sensitivity-analysis">https://salib.readthedocs.io/en/latest/api.html#pawn-sensitivity-analysis</a>
+Density-based method which computes the PAWN index at ‘min’, ‘max’, ‘mean’,
+‘median’ and coefficient of variation ‘cv’.</p>
+<p>Additional arguments:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc_second_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True, used for the sampler of the sobol-method</p></li>
+<li><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default 10, used for the pawn-method.</p></li>
+<li><p><strong>sampler</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Which sampler should be used. Default sobol.
+Choose between ‘sobol’, ‘morris’ and ‘fast’.</p></li>
+<li><p><strong>num_levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default num_samples, used for the sampler of the morris-method.</p></li>
+<li><p><strong>optimal_trajectories</strong> – Used for the sampler of the morris-method.</p></li>
+<li><p><strong>local_optimization</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True, used for the sampler of the morris-method.</p></li>
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default 4, used for the sampler of the fast-method.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.analysis_function">
+<span class="sig-name descname"><span class="pre">analysis_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/pawn.html#PAWNAnalyzer.analysis_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.analysis_function" title="Permalink to this definition"></a></dt>
+<dd><p>Use the SALib.analyze.pawn method to analyze the simulation results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.array</em>) – placeholder for the <cite>X</cite> parameter of the morris method not used for sobol</p></li>
+<li><p><strong>y</strong> (<em>np.array</em>) – The NumPy array containing the model outputs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>returns the result of the SALib.analyze.pawn method (from the documentation:
+This implementation reports the PAWN index at the min, mean, median, and
+max across the slides/conditioning intervals as well as the coefficient of
+variation (<code class="docutils literal notranslate"><span class="pre">CV</span></code>). The median value is the typically reported value. As
+the <code class="docutils literal notranslate"><span class="pre">CV</span></code> is (standard deviation / mean), it indicates the level of
+variability across the slides, with values closer to zero indicating lower
+variation.)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.analysis_variables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analysis_variables</span></span><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.analysis_variables" title="Permalink to this definition"></a></dt>
+<dd><p>The analysis variables of the PAWN method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.create_sampler_demand">
+<span class="sig-name descname"><span class="pre">create_sampler_demand</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/pawn.html#PAWNAnalyzer.create_sampler_demand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.create_sampler_demand" title="Permalink to this definition"></a></dt>
+<dd><p>Function to create the sampler parameters for the sampler method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.generate_samples">
+<span class="sig-name descname"><span class="pre">generate_samples</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/pawn.html#PAWNAnalyzer.generate_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.pawn.PAWNAnalyzer.generate_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Run the sampler for the selected sampler and return the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of samples generated as a NumPy array with one row per sample
+and each row containing one value for each variable name in <cite>problem[‘names’]</cite>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-aixcalibuha.sensitivity_analysis.plotting">
+<span id="aixcalibuha-sensitivity-analysis-plotting-module"></span><h2>aixcalibuha.sensitivity_analysis.plotting module<a class="headerlink" href="#module-aixcalibuha.sensitivity_analysis.plotting" title="Permalink to this heading"></a></h2>
+<p>Module containing functions for plotting sensitivity results</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.heatmap">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_name_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.heatmap" title="Permalink to this definition"></a></dt>
+<dd><p>Plot S2 sensitivity results from one calibration class and goal as a heatmap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – A second order result from run</p></li>
+<li><p><strong>cal_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the class to plot S2 from.</p></li>
+<li><p><strong>goal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the goal to plot S2 from.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes</em>) – Default is None. If an axes is given the heatmap will be plotted on it, else
+a new figure and axes is created.</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is False. If True, only the last suffix of a Modelica variable is displayed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.heatmaps">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">heatmaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_classes:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_name_len:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#heatmaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.heatmaps" title="Permalink to this definition"></a></dt>
+<dd><p>Plot S2 sensitivity results as a heatmap for multiple
+calibration classes and goals in one figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – A second order result from run</p></li>
+<li><p><strong>cal_classes</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default is a list of all calibration classes in the result.
+If a list of classes is given only these classes are plotted.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default is a list of all goals in the result.
+If a list of goals is given only these goals are plotted.</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is False. If True, only the last suffix of a Modelica variable is displayed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_parameter_verbose">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_parameter_verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_order_result:</span> <span class="pre">~pandas.core.frame.DataFrame</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_parameter_verbose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_parameter_verbose" title="Permalink to this definition"></a></dt>
+<dd><p>Plot all time dependent sensitivity measure for one parameter.
+For each goal an axes is created within one figure.</p>
+<p>If second_order_results form SobolAnalyzer.run_time_dependent are given
+the S2 results of the interaction with each other parameter are added on top
+of each other and the first order result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Parameter to plot all sensitivity results for. If use_suffix=True, then
+the name must also be only the suffix.</p></li>
+<li><p><strong>single_result</strong> (<em>pd.DataFrame</em>) – First and total order result form run_time_dependent.</p></li>
+<li><p><strong>second_order_result</strong> (<em>pd.DataFrame</em>) – Default None. Second order result of SobolAnalyzer.run_time_dependent.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
+goal names is given only these will be plotted.</p></li>
+<li><p><strong>fig_axes</strong> (<em>(</em><em>fig</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes
+(see example for verbose sensitivity analysis).</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True: If True, the last part after the last point
+of Modelica variables is used for the x ticks.</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all created figures and axes in lists like fig, [ax]
+with shape (len(goals)) for the axes list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_second_order">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_second_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_classes:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_name_len:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_second_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_second_order" title="Permalink to this definition"></a></dt>
+<dd><p>Plot sensitivity results of second order analysis variables.
+For each calibration class and goal one figure of a 3d plot is created
+with the barplots of the interactions for each parameter.
+Only working for more than 2 parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – A result from run</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+<li><p><strong>cal_classes</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible calibration classes. If a list of
+names of calibration classes is given only plots for these
+classes are created.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
+goal names is given only these will be plotted.</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True: If True, the last part after the last point
+of Modelica variables is used for the x ticks.</p></li>
+<li><p><strong>figs</strong> (<em>[</em><em>[</em><em>fig</em><em>]</em><em>]</em>) – Default None. Set own figures of subfigures for customization.
+Shape (len(cal_classes), len(goals))</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all created figures and axes in lists like [fig], [ax]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_single">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_classes:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_name_len:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_single" title="Permalink to this definition"></a></dt>
+<dd><p>Plot sensitivity results of first and total order analysis variables.
+For each calibration class one figure is created, which shows for each goal an axis
+with a barplot of the values of the analysis variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – A result from run</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+<li><p><strong>cal_classes</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible calibration classes. If a list of
+names of calibration classes is given only plots for these
+classes are created.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
+goal names is given only these will be plotted.</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>figs_axes</strong> (<em>(</em><em>[</em><em>fig</em><em>]</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Set own figures of subfigures with corresponding axes for customization.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True: If True, the last part after the last point
+of Modelica variables is used for the x ticks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all created figures and axes in lists like [fig], [ax]
+with shapes (len(cal_classes)), (len(cal_classes), len(goals))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_single_second_order">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_single_second_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">para_name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_classes:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_name_len:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_single_second_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_single_second_order" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the value of S2 from one parameter with all other parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – Second order result from run.</p></li>
+<li><p><strong>para_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of the parameter of which the results should be plotted.</p></li>
+<li><p><strong>cal_classes</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible calibration classes. If a list of
+names of calibration classes is given only plots for these
+classes are created.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
+goal names is given only these will be plotted.</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 15. Shortens the parameter names to max_name_len characters.</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True: If True, the last part after the last point
+of Modelica variables is used for the x ticks.</p></li>
+<li><p><strong>figs_axes</strong> (<em>(</em><em>[</em><em>fig</em><em>]</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Set own figures of subfigures with corresponding axes for customization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all created figures and axes in lists like [fig], [ax]
+with shapes (len(cal_classes)), (len(cal_classes), len(goals))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.plotting.plot_time_dependent">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_time_dependent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goals:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_variables:</span> <span class="pre">[&lt;class</span> <span class="pre">'str'&gt;]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_conf:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/plotting.html#plot_time_dependent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.plotting.plot_time_dependent" title="Permalink to this definition"></a></dt>
+<dd><p>Plot time dependent sensitivity results without interactions from run_time_dependent().</p>
+<p>For each goal one figure is created with one axes for each analysis variable.
+In these plots the time dependent sensitivity of the parameters is plotted.
+The confidence interval can also be plotted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – A result from run_time_dependent without second order results.</p></li>
+<li><p><strong>parameters</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default all parameters. List of parameters to plot the sensitivity.</p></li>
+<li><p><strong>analysis_variables</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default all analysis_variables. List of analysis variables to plot.</p></li>
+<li><p><strong>plot_conf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If true, the confidence intervals for each parameter are plotted.</p></li>
+<li><p><strong>goals</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Default are all possible goal names. If a list of specific
+goal names is given only these will be plotted.</p></li>
+<li><p><strong>figs_axes</strong> (<em>(</em><em>[</em><em>fig</em><em>]</em><em>, </em><em>[</em><em>ax</em><em>]</em><em>)</em>) – Default None. Optional custom figures and axes
+(see example for verbose sensitivity analysis).</p></li>
+<li><p><strong>show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True. If False, all created plots are not shown.</p></li>
+<li><p><strong>use_suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default is True: If True, the last part after the last point
+of Modelica variables is used for the x ticks.</p></li>
+<li><p><strong>max_name_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 50. Shortens the parameter names to max_name_len characters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns all created figures and axes in lists like [fig], [ax]
+with shapes (len(goals)), (len(goals), len(analysis_variables))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-aixcalibuha.sensitivity_analysis.sensitivity_analyzer">
 <span id="aixcalibuha-sensitivity-analysis-sensitivity-analyzer-module"></span><h2>aixcalibuha.sensitivity_analysis.sensitivity_analyzer module<a class="headerlink" href="#module-aixcalibuha.sensitivity_analysis.sensitivity_analyzer" title="Permalink to this heading"></a></h2>
 <p>Package containing modules for sensitivity analysis.
@@ -185,18 +536,27 @@ The module contains the relevant base-classes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sim_api</strong> (<em>SimulationAPI</em>) – Simulation-API used to simulate the samples</p></li>
 <li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The parameter <cite>N</cite> to the sampler methods of sobol and morris. NOTE: This is not the
-the number of samples produced, but relates to the total number of samples produced in
-a manner dependent on the sampler method used. See the documentation of sobol and
-morris in the SALib for more information.</p></li>
-<li><p><strong>analysis_function</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Used to automatically select result values.</p></li>
-<li><p><strong>cd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>,</em><em>os.path.normpath</em>) – The path for the current working directory.</p></li>
+number of samples produced, but relates to the total number of samples produced in
+a manner dependent on the sampler method used. See the documentation of the specific 
+method in the SALib for more information.</p></li>
+<li><p><strong>cd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>,</em><em>os.path.normpath</em>) – The path for the current working directory.
+Logger and results will be stored here.</p></li>
 <li><p><strong>fail_on_error</strong> (<em>boolean</em>) – Default is False. If True, the calibration will stop with an error if
 the simulation fails. See also: <code class="docutils literal notranslate"><span class="pre">ret_val_on_error</span></code></p></li>
 <li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>,</em><em>np.NAN</em>) – Default is np.NAN. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
 which value to return in the case of a failed simulation. Possible
 options are np.NaN, np.inf or some other high numbers. be aware that this
 max influence the solver.</p></li>
-<li><p><strong>save_files</strong> (<em>boolean</em>) – If true, all simulation files for each iteration will be saved!</p></li>
+<li><p><strong>save_files</strong> (<em>boolean</em>) – Default False. If true, all simulation files for each iteration will be saved!</p></li>
+<li><p><strong>suffix_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Default ‘csv’. Specifies the data format to store the simulation files in.
+Options are ‘csv’, ‘hdf’, ‘parquet’.</p></li>
+<li><p><strong>parquet_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The engine to use for the data format parquet.
+Supported options can be extracted
+from the ebcpy.TimeSeriesData.save() function.
+Default is ‘pyarrow’.</p></li>
+<li><p><strong>savepath_sim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>,</em><em>os.path.normpath</em>) – Default is cd. Own directory for the time series data sets of all simulations
+during the sensitivity analysis. The own dir can be necessary for large data sets,
+because they can crash IDE during indexing when they are in the project folder.</p></li>
 </ul>
 </dd>
 </dl>
@@ -231,7 +591,7 @@ able to be selected for analysis</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner_paras</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.create_problem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuner_paras</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.create_problem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem" title="Permalink to this definition"></a></dt>
 <dd><p>Create function for later access if multiple calibration-classes are used.</p>
 </dd></dl>
 
@@ -244,6 +604,12 @@ able to be selected for analysis</p>
 <dd class="field-odd"><p>dict: A dict with the sampler demand</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.eval_statistical_measure">
+<span class="sig-name descname"><span class="pre">eval_statistical_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cal_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.eval_statistical_measure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.eval_statistical_measure" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluates statistical measures of results on single core</p>
 </dd></dl>
 
 <dl class="py method">
@@ -262,44 +628,152 @@ and each row containing one value for each variable name in <cite>problem[‘nam
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.load_from_csv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.load_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.load_from_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Load sensitivity results which were saved with the run() or run_time_dependent() function.</p>
+<p>For second order results use the load_second_order_from_csv() function of the SobolAnalyzer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the results of the sensitivity analysis method from run().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>pd.DataFrame</em>) – Dataframe of the results like from the run() function.</p>
+</dd>
+<dt class="field-even">Return tuple of matplotlib objects (fig, ax)<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_multiple_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_multiple_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run" title="Permalink to this definition"></a></dt>
 <dd><p>Execute the sensitivity analysis for each class and
 return the result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>calibration_classes</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – Either one or multiple classes for calibration</p></li>
+<li><p><strong>calibration_classes</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – Either one or multiple classes for calibration with same tuner-parameters.</p></li>
 <li><p><strong>merge_multiple_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If False, the given list of calibration-classes
-is handeled as-is. This means if you pass two CalibrationClass objects
+is handled as-is. This means if you pass two CalibrationClass objects
 with the same name (e.g. “device on”), the calibration process will run
 for both these classes stand-alone.
 This will automatically yield an intersection of tuner-parameters, however may
 have advantages in some cases.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, in addition to the combined Goals of the Classes
+(saved under index Goal: all), the sensitivity measures of the individual
+Goals will also be calculated and returned.</p></li>
+<li><p><strong>scale</strong> – Default is False. If True the bounds of the tuner-parameters
+will be scaled between 0 and 1.</p></li>
+<li><p><strong>use_fist_sim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, the simulations of the first calibration class will be used for
+all other calibration classes with their relevant time intervals.
+The simulations must be stored on a hard-drive, so it must be used with
+either save_files or load_files.</p></li>
+<li><p><strong>n_cpu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is 1. The number of processes to use for the evaluation of the statistical
+measure. For n_cpu &gt; 1 only one simulation file is loaded at once in a process and
+dumped directly after the evaluation of the statistical measure,
+so that only minimal memory is used.
+Use this option for large analyses.
+Only implemented for save_files=True or load_sim_files=True.</p></li>
+<li><p><strong>load_sim_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, no new simulations are done and old simulations are loaded.
+The simulations and corresponding samples will be loaded from self.savepath_sim like
+they were saved from self.save_files. Currently, the name of the sim folder must be
+“simulations_CAL_CLASS_NAME” and for the samples “samples_CAL_CLASS_NAME”.
+The usage of the same simulations for different
+calibration classes is not supported yet.</p></li>
+<li><p><strong>save_results</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If True, all results are saved as a csv in cd.
+(samples, statistical measures and analysis variables).</p></li>
+<li><p><strong>plot_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If True, the results will be plotted.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Returns a list of dictionaries. One dict is the SALib-result for
-one calibration-class. The order is based on the order of the
-calibration-class list.</p>
+<dd class="field-even"><p>Returns a pandas.DataFrame. The DataFrame has a Multiindex with the
+levels Class, Goal and Analysis variable. The Goal name of combined goals is ‘all’.
+The variables are the tuner-parameters.
+For the Sobol Method and calc_second_order returns a tuple of DataFrames (df_1, df_2)
+where df_2 contains the second oder analysis variables and has an extra index level
+Interaction, which also contains the variables.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run_time_dependent">
+<span class="sig-name descname"><span class="pre">run_time_dependent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cal_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.run_time_dependent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run_time_dependent" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the time dependent sensitivity for all the single goals in the calibration class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cal_class</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a>) – Calibration class with tuner-parameters to calculate sensitivity for.
+Can include dummy target date.</p></li>
+<li><p><strong>scale</strong> – Default is False. If True the bounds of the tuner-parameters
+will be scaled between 0 and 1.</p></li>
+<li><p><strong>load_sim_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, no new simulations are done and old simulations are loaded.
+The simulations and corresponding samples will be loaded from self.savepath_sim like
+they were saved from self.save_files. Currently, the name of the sim folder must be
+“simulations_CAL_CLASS_NAME” and for the samples “samples_CAL_CLASS_NAME”.</p></li>
+<li><p><strong>save_results</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If True, all results are saved as a csv in cd.
+(samples and analysis variables).</p></li>
+<li><p><strong>n_steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Default is all time steps. If the problem is large, the evaluation of all time steps
+at once can cause a memory error. Then n_steps defines how many time_steps
+are evaluated at once in chunks. This increases the needed time exponentially and
+the simulation files must be saved.</p></li>
+<li><p><strong>plot_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True. If True, the results will be plotted.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a pandas.DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.save_for_reproduction">
+<span class="sig-name descname"><span class="pre">save_for_reproduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_sim_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_saved_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.save_for_reproduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.save_for_reproduction" title="Permalink to this definition"></a></dt>
+<dd><p>Save the settings of the SenAnalyzer and SimApi in order to
+reproduce the simulations and sensitivity analysis method.
+All saved results will be also saved in the reproduction
+archive. The simulations can be excluded from saving.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Title of the study</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><em>pathlib.Path</em></a>) – Where to store the .zip file. If not given, self.cd is used.</p></li>
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of files to save along the standard ones.
+Examples would be plots, tables etc.</p></li>
+<li><p><strong>exclude_sim_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, the simulation files will not be saved in
+the reproduction archive.</p></li>
+<li><p><strong>remove_saved_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default False. If True, the result and simulation files will be moved
+instead of just copied.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – All keyword arguments except title, files, and path of the function
+<cite>save_reproduction_archive</cite>. Most importantly, <cite>log_message</cite> may be
+specified to avoid input during execution.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_by_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.select_by_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_by_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.select_by_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold" title="Permalink to this definition"></a></dt>
 <dd><p>Automatically select sensitive tuner parameters based on a given threshold
-and a key-word of the result.</p>
+of a given analysis variable from a sensitivity result.
+Uses only the combined goals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calibration_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of aixcalibuha.data_types.CalibrationClass objects that you want to
 automatically select sensitive tuner-parameters.</p></li>
 <li><p><strong>result</strong> (<em>pd.DataFrame</em>) – Result object of sensitivity analysis run</p></li>
+<li><p><strong>analysis_variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Analysis variable to use for the selection</p></li>
 <li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Minimal required value of given key</p></li>
 </ul>
 </dd>
@@ -310,19 +784,49 @@ automatically select sensitive tuner-parameters.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples">
-<span class="sig-name descname"><span class="pre">simulate_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.simulate_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples" title="Permalink to this definition"></a></dt>
-<dd><p>Put the parameters in the model and simulate it.</p>
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold_verbose">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_by_threshold_verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibration_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><span class="pre">CalibrationClass</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis_variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_names_for_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.select_by_threshold_verbose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold_verbose" title="Permalink to this definition"></a></dt>
+<dd><p>Select tuner-parameters of single calibration class with verbose sensitivity results.
+This function selects tuner-parameters if their sensitivity is equal or greater
+than the threshold in just one target value of one calibration class in the
+sensitivity result. This can be more robust because a small sensitivity in one target
+value and state of the system can mean that the parameter can also be calibrated in
+a global calibration class which calibrates multiple states and target values at
+the same time and has there not directly the same sensitivity as in the isolated
+view of a calibration class for only one state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>samples</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Output variables in dymola</p></li>
+<li><p><strong>calibration_class</strong> (<a class="reference internal" href="aixcalibuha.html#aixcalibuha.data_types.CalibrationClass" title="aixcalibuha.data_types.CalibrationClass"><em>CalibrationClass</em></a>) – The calibration class from which the tuner parameters will be selected.</p></li>
+<li><p><strong>result</strong> (<em>pd.DataFrame</em>) – Sensitivity results to use for the selection. Can include multiple classes.</p></li>
+<li><p><strong>analysis_variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The analysis variable to use for the selection.</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Minimal required value of given analysis variable.</p></li>
+<li><p><strong>calc_names_for_selection</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – Specifies which calibration classes in the sensitivity results will be used for
+the selection. Default are all classes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples">
+<span class="sig-name descname"><span class="pre">simulate_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cal_class</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sensitivity_analyzer.html#SenAnalyzer.simulate_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Creates the samples for the calibration class and simulates them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>cal_class</strong> – One class for calibration. Goals and tuner_paras have to be set</p></li>
+<li><p><strong>scale</strong> – Default is False. If True the bounds of the tuner-parameters
+will be scaled between 0 and 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>np.array
-An array containing the evaluated differences for each sample</p>
+<dd class="field-even"><p>Returns two lists. First a list with the simulation results for each sample.
+If save_files the list contains the filepaths to the results
+Second a list of the samples.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -338,12 +842,16 @@ classes of sensitivity analysis.</p>
 <dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.sensitivity_analysis.sobol.</span></span><span class="sig-name descname"><span class="pre">SobolAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_api</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sobol.html#SobolAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer" title="aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SenAnalyzer</span></code></a></p>
+<p>Sobol method from SALib
+<a class="reference external" href="https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis">https://salib.readthedocs.io/en/latest/api.html#sobol-sensitivity-analysis</a>
+A variance-based method which can compute the sensitivity measures
+‘S1’, ‘ST’ and ‘S2’ with their confidence intervals.</p>
 <p>Additional arguments:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calc_second_order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Default True, used for the sobol-method</p></li>
-<li><p><strong>seed</strong> – Used for the sobol-method</p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Used for the sobol-method</p></li>
 </ul>
 </dd>
 </dl>
@@ -354,8 +862,7 @@ classes of sensitivity analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>np.array</strong> – x
-placeholder for the <cite>X</cite> parameter of the morris method not used for sobol</p></li>
+<li><p><strong>x</strong> (<em>np.array</em>) – placeholder for the <cite>X</cite> parameter of the morris method not used for sobol</p></li>
 <li><p><strong>y</strong> (<em>np.array</em>) – The NumPy array containing the model outputs</p></li>
 </ul>
 </dd>
@@ -393,6 +900,26 @@ and each row containing one value for each variable name in <cite>problem[‘nam
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>np.ndarray</p>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.load_second_order_from_csv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_second_order_from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sobol.html#SobolAnalyzer.load_second_order_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.load_second_order_from_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Load second order sensitivity results which were saved with the run() or
+run_time_dependent() function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/sensitivity_analysis/sobol.html#SobolAnalyzer.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.sensitivity_analysis.sobol.SobolAnalyzer.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the results of the sensitivity analysis method from run().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result</strong> (<em>pd.DataFrame</em>) – Dataframe of the results like from the run() function.</p>
+</dd>
+<dt class="field-even">Return tuple of matplotlib objects (fig, ax)<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
 </dl>
 </dd></dl>
 

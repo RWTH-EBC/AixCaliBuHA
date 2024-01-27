@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aixcalibuha.utils.visualizer &mdash; AixCaliBuHa 0.3.1 documentation</title>
+  <title>aixcalibuha.utils.visualizer &mdash; AixCaliBuHa 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
@@ -34,7 +34,7 @@
             AixCaliBuHa
           </a>
               <div class="version">
-                0.3
+                1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -95,6 +95,28 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ebcpy.utils</span> <span class="kn">import</span> <span class="n">setup_logger</span>
 <span class="kn">import</span> <span class="nn">aixcalibuha</span>
+
+
+<div class="viewcode-block" id="short_name"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.short_name">[docs]</a><span class="k">def</span> <span class="nf">short_name</span><span class="p">(</span><span class="n">ini_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shortens long strings to a max length from the front.</span>
+<span class="sd">    long_string_name =&gt; ...ing_name with len(new_name) = max_len</span>
+
+<span class="sd">    :param str ini_name:</span>
+<span class="sd">        Long string to shorten.</span>
+<span class="sd">    :param int max_len:</span>
+<span class="sd">        Max len of the new string.</span>
+<span class="sd">    :return: str</span>
+<span class="sd">        The shorten string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+        <span class="n">num_dots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">-</span> <span class="n">max_len</span>
+        <span class="k">if</span> <span class="n">num_dots</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">num_dots</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">formatted_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">*</span> <span class="n">num_dots</span> <span class="o">+</span> <span class="n">ini_name</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">max_len</span> <span class="o">-</span> <span class="n">num_dots</span><span class="p">):]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">formatted_name</span> <span class="o">=</span> <span class="n">ini_name</span>
+    <span class="k">return</span> <span class="n">formatted_name</span></div>
 
 
 <div class="viewcode-block" id="CalibrationLogger"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger">[docs]</a><span class="k">class</span> <span class="nc">CalibrationLogger</span><span class="p">:</span>
@@ -341,16 +363,11 @@
         <span class="k">for</span> <span class="n">ini_name</span> <span class="ow">in</span> <span class="n">initial_names</span><span class="p">:</span>
             <span class="c1"># Limit string length to a certain amount.</span>
             <span class="c1"># The full name has to be displayed somewhere else</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">:</span>
-                <span class="n">num_dots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ini_name</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
-                <span class="k">if</span> <span class="n">num_dots</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="n">num_dots</span> <span class="o">=</span> <span class="mi">3</span>
-                <span class="n">formatted_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">*</span><span class="n">num_dots</span> <span class="o">+</span> <span class="n">ini_name</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">-</span><span class="n">num_dots</span><span class="p">):]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">formatted_name</span> <span class="o">=</span> <span class="n">ini_name</span>
+            <span class="n">formatted_name</span> <span class="o">=</span> <span class="n">short_name</span><span class="p">(</span><span class="n">ini_name</span><span class="o">=</span><span class="n">ini_name</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
             <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formatted_name</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
         <span class="c1"># Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)</span>
-        <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;     {0:</span><span class="si">{width}</span><span class="s2">s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
+        <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;     {0:</span><span class="si">{width}</span><span class="s2">s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="p">,</span>
+                                                  <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">)</span>
         <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;penaltyfactor&quot;</span>
         <span class="n">info_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;   Unweighted </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">info_string</span>
@@ -388,11 +405,12 @@
                                                        <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">penalty</span><span class="p">:</span>
             <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;   {0:</span><span class="si">{width}</span><span class="s2">.</span><span class="si">{prec}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">penalty</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
-                                                           <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+                                                           <span class="n">prec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prec</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">info_string</span> <span class="o">+=</span> <span class="s2">&quot;        </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
-        <span class="n">_verbose_info</span> <span class="o">=</span> <span class="s2">&quot;= &quot;</span> <span class="o">+</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;{0:.</span><span class="si">{prec}</span><span class="s2">}*{1:.</span><span class="si">{prec}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-                                           <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">unweighted_objective</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">_verbose_info</span> <span class="o">=</span> <span class="s2">&quot;= &quot;</span> <span class="o">+</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;{0:.</span><span class="si">{prec}</span><span class="s2">}*{1:.</span><span class="si">{prec}</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                                            <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                                           <span class="k">for</span> <span class="n">goal</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">unweighted_objective</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
         <span class="n">info_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;          </span><span class="si">{</span><span class="n">_verbose_info</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">return</span> <span class="n">info_string</span></div>
@@ -544,18 +562,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_plot_goals</span><span class="p">(</span><span class="n">at_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_show_plot</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_plot</span><span class="p">(</span><span class="n">for_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">for_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Show plot if activated&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_plot</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tsd_plot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fig_goal</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">for_validation</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_obj</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig_tuner</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_plot_pause_time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
 <div class="viewcode-block" id="CalibrationVisualizer.save_calibration_result"><a class="viewcode-back" href="../../../code/aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationVisualizer.save_calibration_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_calibration_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">best_iterate</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -650,8 +671,9 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;itercount&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">fig_intersection</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_intersections</span><span class="p">,</span>
-                             <span class="sa">f</span><span class="s1">&#39;tuner_parameter_intersection_plot_it</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;itercount&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">path_intersections</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;tuner_parameter_intersection_plot_it</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;itercount&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fig_intersection</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>

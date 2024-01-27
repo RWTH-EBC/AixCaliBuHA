@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aixcalibuha.calibration.multi_class_calibrator &mdash; AixCaliBuHa 0.3.1 documentation</title>
+  <title>aixcalibuha.calibration.multi_class_calibrator &mdash; AixCaliBuHa 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
@@ -34,7 +34,7 @@
             AixCaliBuHa
           </a>
               <div class="version">
-                0.3
+                1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -257,6 +257,8 @@
         <span class="k">for</span> <span class="n">cal_run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
                 <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cal_run</span><span class="p">[</span><span class="s1">&#39;res&#39;</span><span class="p">][</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">p_name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">res_intersection</span> <span class="ow">in</span> <span class="n">res_tuner</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_intersection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">parameter_values</span><span class="o">=</span><span class="n">parameter_values</span><span class="p">,</span>
                           <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;MultiClassCalibrationResult&#39;</span><span class="p">)</span>
 

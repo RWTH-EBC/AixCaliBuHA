@@ -738,21 +738,10 @@
             "message-id": "W0012"
         },
         {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 709,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
             "type": "refactor",
             "module": "aixcalibuha.data_types",
             "obj": "Goals",
-            "line": 19,
+            "line": 20,
             "column": 0,
             "path": "aixcalibuha/data_types.py",
             "symbol": "too-many-instance-attributes",
@@ -763,7 +752,7 @@
             "type": "refactor",
             "module": "aixcalibuha.data_types",
             "obj": "Goals.__init__",
-            "line": 67,
+            "line": 68,
             "column": 4,
             "path": "aixcalibuha/data_types.py",
             "symbol": "too-many-branches",
@@ -793,989 +782,857 @@
             "message-id": "R0913"
         },
         {
-            "type": "convention",
-            "module": "bin.guided_setup",
-            "obj": "",
-            "line": 314,
+            "type": "refactor",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "short_name",
+            "line": 32,
+            "column": 8,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-min-builtin",
+            "message": "Consider using 'num_dots = min(num_dots, 3)' instead of unnecessary if block",
+            "message-id": "R1730"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger",
+            "line": 40,
             "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (12/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._set_prec_and_with_for_tuner_paras",
+            "line": 92,
+            "column": 28,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "nested-min-max",
+            "message": "Do not use nested call of 'max'; it's possible to do 'max(bounds_max, abs(bounds_min))' instead",
+            "message-id": "W3301"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger.save_calibration_result",
+            "line": 132,
+            "column": 0,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "unused-argument",
+            "message": "Unused argument 'kwargs'",
+            "message-id": "W0613"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger.calibrate_new_class",
+            "line": 160,
+            "column": 62,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "unused-argument",
+            "message": "Unused argument 'for_validation'",
+            "message-id": "W0613"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger.tuner_paras",
+            "line": 191,
+            "column": 4,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "missing-function-docstring",
+            "message": "Missing function or method docstring",
+            "message-id": "C0116"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger.log_intersection_of_tuners",
+            "line": 254,
+            "column": 0,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "unused-argument",
+            "message": "Unused argument 'kwargs'",
+            "message-id": "W0613"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_names_as_string",
+            "line": 278,
+            "column": 22,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_names_as_string",
+            "line": 285,
+            "column": 27,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_names_as_string",
+            "line": 287,
+            "column": 23,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 315,
+            "column": 22,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 318,
+            "column": 27,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 322,
+            "column": 23,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 325,
+            "column": 27,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 328,
+            "column": 27,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationLogger._get_tuner_para_values_as_string",
+            "line": 329,
+            "column": 43,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationVisualizer",
+            "line": 337,
+            "column": 0,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (17/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationVisualizer.save_calibration_result",
+            "line": 521,
+            "column": 48,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationVisualizer.save_calibration_result",
+            "line": 522,
+            "column": 46,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationVisualizer.save_calibration_result",
+            "line": 536,
+            "column": 13,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.utils.visualizer",
+            "obj": "CalibrationVisualizer._plot_goals",
+            "line": 640,
+            "column": 4,
+            "path": "aixcalibuha/utils/visualizer.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (16/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.configuration",
+            "obj": "",
+            "line": 41,
+            "column": 0,
+            "path": "aixcalibuha/utils/configuration.py",
             "symbol": "line-too-long",
-            "message": "Line too long (102/100)",
+            "message": "Line too long (110/100)",
             "message-id": "C0301"
         },
         {
             "type": "convention",
-            "module": "bin.guided_setup",
+            "module": "aixcalibuha.utils.configuration",
             "obj": "",
-            "line": 374,
+            "line": 42,
             "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/utils/configuration.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (116/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.configuration",
+            "obj": "",
+            "line": 44,
+            "column": 0,
+            "path": "aixcalibuha/utils/configuration.py",
             "symbol": "line-too-long",
             "message": "Line too long (103/100)",
             "message-id": "C0301"
         },
         {
             "type": "convention",
-            "module": "bin.guided_setup",
+            "module": "aixcalibuha.utils.configuration",
             "obj": "",
-            "line": 404,
+            "line": 46,
             "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/utils/configuration.py",
             "symbol": "line-too-long",
-            "message": "Line too long (104/100)",
+            "message": "Line too long (111/100)",
+            "message-id": "C0301"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.utils.configuration",
+            "obj": "",
+            "line": 48,
+            "column": 0,
+            "path": "aixcalibuha/utils/configuration.py",
+            "symbol": "line-too-long",
+            "message": "Line too long (124/100)",
             "message-id": "C0301"
         },
         {
             "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "",
-            "line": 295,
+            "module": "aixcalibuha.utils.configuration",
+            "obj": "write_config",
+            "line": 188,
             "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "fixme",
-            "message": "TODO: Check if this still works for new installs",
-            "message-id": "W0511"
+            "path": "aixcalibuha/utils/configuration.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
         },
         {
             "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_handle_tsd_input",
-            "line": 34,
-            "column": 12,
-            "path": "bin/guided_setup.py",
-            "symbol": "lost-exception",
-            "message": "break statement in finally block may swallow exception",
-            "message-id": "W0150"
+            "module": "aixcalibuha.utils.configuration",
+            "obj": "read_config",
+            "line": 203,
+            "column": 9,
+            "path": "aixcalibuha/utils/configuration.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
         },
         {
             "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "_handle_argv",
-            "line": 72,
-            "column": 12,
-            "path": "bin/guided_setup.py",
-            "symbol": "no-else-raise",
-            "message": "Unnecessary \"else\" after \"raise\", remove the \"else\" and de-indent the code inside it",
-            "message-id": "R1720"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_handle_argv",
-            "line": 77,
-            "column": 12,
-            "path": "bin/guided_setup.py",
-            "symbol": "raise-missing-from",
-            "message": "Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\\n{_handle_argv.__doc__}') from exc'",
-            "message-id": "W0707"
-        },
-        {
-            "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 82,
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_single",
+            "line": 13,
             "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-locals",
             "message": "Too many local variables (18/15)",
             "message-id": "R0914"
         },
         {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 153,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 157,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 159,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 172,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 182,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 184,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 186,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 196,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 199,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 201,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 210,
-            "column": 9,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
             "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "_automatically_generate_mocate",
-            "line": 82,
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_second_order",
+            "line": 78,
             "column": 0,
-            "path": "bin/guided_setup.py",
-            "symbol": "too-many-statements",
-            "message": "Too many statements (55/50)",
-            "message-id": "R0915"
-        },
-        {
-            "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 226,
-            "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "too-many-locals",
-            "message": "Too many local variables (43/15)",
+            "message": "Too many local variables (22/15)",
             "message-id": "R0914"
         },
         {
             "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 232,
-            "column": 4,
-            "path": "bin/guided_setup.py",
-            "symbol": "unreachable",
-            "message": "Unreachable code",
-            "message-id": "W0101"
-        },
-        {
-            "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 255,
-            "column": 12,
-            "path": "bin/guided_setup.py",
-            "symbol": "no-else-break",
-            "message": "Unnecessary \"elif\" after \"break\", remove the leading \"el\" from \"elif\"",
-            "message-id": "R1723"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 484,
-            "column": 11,
-            "path": "bin/guided_setup.py",
-            "symbol": "broad-exception-caught",
-            "message": "Catching too general exception Exception",
-            "message-id": "W0718"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 363,
-            "column": 13,
-            "path": "bin/guided_setup.py",
-            "symbol": "unspecified-encoding",
-            "message": "Using open without explicitly specifying an encoding",
-            "message-id": "W1514"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 369,
-            "column": 28,
-            "path": "bin/guided_setup.py",
-            "symbol": "f-string-without-interpolation",
-            "message": "Using an f-string that does not have any interpolated variables",
-            "message-id": "W1309"
-        },
-        {
-            "type": "warning",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 371,
-            "column": 33,
-            "path": "bin/guided_setup.py",
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_single_second_order",
+            "line": 212,
+            "column": 60,
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
             "symbol": "protected-access",
-            "message": "Access to a protected member _make_modelica_normpath of a client class",
+            "message": "Access to a protected member _suptitle of a client class",
             "message-id": "W0212"
         },
         {
-            "type": "error",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 453,
-            "column": 45,
-            "path": "bin/guided_setup.py",
-            "symbol": "no-member",
-            "message": "Instance of 'DymolaAPI' has no 'dymola_path' member",
-            "message-id": "E1101"
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_time_dependent",
+            "line": 324,
+            "column": 0,
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (27/15)",
+            "message-id": "R0914"
         },
         {
             "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 226,
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_time_dependent",
+            "line": 381,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
+            "symbol": "too-many-nested-blocks",
+            "message": "Too many nested blocks (6/5)",
+            "message-id": "R1702"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.plotting",
+            "obj": "plot_parameter_verbose",
+            "line": 414,
             "column": 0,
-            "path": "bin/guided_setup.py",
+            "path": "aixcalibuha/sensitivity_analysis/plotting.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (25/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer",
+            "line": 86,
+            "column": 0,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (12/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer.run",
+            "line": 372,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (35/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer.run",
+            "line": 372,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "too-many-branches",
-            "message": "Too many branches (19/12)",
+            "message": "Too many branches (21/12)",
             "message-id": "R0912"
         },
         {
             "type": "refactor",
-            "module": "bin.guided_setup",
-            "obj": "main",
-            "line": 226,
-            "column": 0,
-            "path": "bin/guided_setup.py",
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer.run",
+            "line": 372,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "too-many-statements",
-            "message": "Too many statements (108/50)",
+            "message": "Too many statements (75/50)",
             "message-id": "R0915"
         },
         {
             "type": "refactor",
-            "module": "bin.run_modelica_calibration",
-            "obj": "_handle_argv",
-            "line": 34,
-            "column": 12,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "no-else-raise",
-            "message": "Unnecessary \"else\" after \"raise\", remove the \"else\" and de-indent the code inside it",
-            "message-id": "R1720"
-        },
-        {
-            "type": "warning",
-            "module": "bin.run_modelica_calibration",
-            "obj": "_handle_argv",
-            "line": 39,
-            "column": 12,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "raise-missing-from",
-            "message": "Consider explicitly re-raising using 'except (ValueError, KeyError) as exc' and 'raise ValueError(f'Given argument is not supported.\\n{_handle_argv.__doc__}') from exc'",
-            "message-id": "W0707"
-        },
-        {
-            "type": "convention",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 44,
-            "column": 0,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "missing-function-docstring",
-            "message": "Missing function or method docstring",
-            "message-id": "C0116"
-        },
-        {
-            "type": "refactor",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 44,
-            "column": 0,
-            "path": "bin/run_modelica_calibration.py",
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer.run_time_dependent",
+            "line": 664,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "too-many-locals",
-            "message": "Too many local variables (31/15)",
+            "message": "Too many local variables (21/15)",
             "message-id": "R0914"
         },
         {
-            "type": "warning",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 112,
-            "column": 8,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "redefined-builtin",
-            "message": "Redefining built-in 'map'",
-            "message-id": "W0622"
-        },
-        {
-            "type": "warning",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 46,
-            "column": 4,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "unreachable",
-            "message": "Unreachable code",
-            "message-id": "W0101"
-        },
-        {
-            "type": "convention",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 78,
-            "column": 4,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "invalid-name",
-            "message": "Variable name \"e\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "warning",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 80,
-            "column": 8,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "raise-missing-from",
-            "message": "Consider explicitly re-raising using 'raise KeyError(f'Given config file does not contain {value_error}. You need to specify this value in order to run the calibration.') from e'",
-            "message-id": "W0707"
-        },
-        {
-            "type": "error",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 108,
-            "column": 14,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "no-member",
-            "message": "Module 'aixcalibuha.utils.configuration' has no 'get_simulation_api_from_config' member",
-            "message-id": "E1101"
-        },
-        {
-            "type": "error",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 121,
-            "column": 8,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "no-member",
-            "message": "Module 'ebcpy.utils.conversion' has no 'convert_hdf_to_modelica_txt' member",
-            "message-id": "E1101"
-        },
-        {
             "type": "refactor",
-            "module": "bin.run_modelica_calibration",
-            "obj": "main",
-            "line": 44,
-            "column": 0,
-            "path": "bin/run_modelica_calibration.py",
-            "symbol": "too-many-statements",
-            "message": "Too many statements (59/50)",
-            "message-id": "R0915"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 45,
-            "column": 0,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (107/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 46,
-            "column": 0,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (108/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 124,
-            "column": 25,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "anomalous-backslash-in-string",
-            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
-            "message-id": "W1401"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 127,
-            "column": 25,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "anomalous-backslash-in-string",
-            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
-            "message-id": "W1401"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 130,
-            "column": 25,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "anomalous-backslash-in-string",
-            "message": "Anomalous backslash in string: '\\m'. String constant might be missing an r prefix.",
-            "message-id": "W1401"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "invalid-name",
-            "message": "Module name \"e1_A_energy_system_analysis\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "main",
-            "line": 101,
-            "column": 10,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "consider-using-f-string",
-            "message": "Formatting a regular string which could be a f-string",
-            "message-id": "C0209"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "main",
-            "line": 116,
-            "column": 10,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "consider-using-f-string",
-            "message": "Formatting a regular string which could be a f-string",
-            "message-id": "C0209"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e1_A_energy_system_analysis",
-            "obj": "main",
-            "line": 121,
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer._analyze_tstep_df",
+            "line": 754,
             "column": 4,
-            "path": "examples/e1_A_energy_system_analysis.py",
-            "symbol": "unused-variable",
-            "message": "Unused variable 'fig'",
-            "message-id": "W0612"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "",
-            "line": 28,
-            "column": 0,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (108/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "invalid-name",
-            "message": "Module name \"e1_B_energy_system_analysis\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "main",
-            "line": 39,
-            "column": 4,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "import-outside-toplevel",
-            "message": "Import outside toplevel (examples.setup_fmu)",
-            "message-id": "C0415"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "main",
-            "line": 66,
-            "column": 10,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "consider-using-f-string",
-            "message": "Formatting a regular string which could be a f-string",
-            "message-id": "C0209"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e1_B_energy_system_analysis",
-            "obj": "main",
-            "line": 69,
-            "column": 4,
-            "path": "examples/e1_B_energy_system_analysis.py",
-            "symbol": "unused-variable",
-            "message": "Unused variable 'fig'",
-            "message-id": "W0612"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e2_A_optimization_problem_definition",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e2_A_optimization_problem_definition.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e2_A_optimization_problem_definition",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e2_A_optimization_problem_definition.py",
-            "symbol": "invalid-name",
-            "message": "Module name \"e2_A_optimization_problem_definition\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "refactor",
-            "module": "examples.e2_A_optimization_problem_definition",
-            "obj": "main",
-            "line": 20,
-            "column": 0,
-            "path": "examples/e2_A_optimization_problem_definition.py",
-            "symbol": "too-many-locals",
-            "message": "Too many local variables (17/15)",
-            "message-id": "R0914"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e2_A_optimization_problem_definition",
-            "obj": "main",
-            "line": 126,
-            "column": 11,
-            "path": "examples/e2_A_optimization_problem_definition.py",
-            "symbol": "broad-exception-caught",
-            "message": "Catching too general exception Exception",
-            "message-id": "W0718"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e2_A_optimization_problem_definition",
-            "obj": "main",
-            "line": 136,
-            "column": 11,
-            "path": "examples/e2_A_optimization_problem_definition.py",
-            "symbol": "broad-exception-caught",
-            "message": "Catching too general exception Exception",
-            "message-id": "W0718"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e2_B_optimization_problem_definition",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e2_B_optimization_problem_definition.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e2_B_optimization_problem_definition",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e2_B_optimization_problem_definition.py",
-            "symbol": "invalid-name",
-            "message": "Module name \"e2_B_optimization_problem_definition\" doesn't conform to snake_case naming style",
-            "message-id": "C0103"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e2_B_optimization_problem_definition",
-            "obj": "main",
-            "line": 117,
-            "column": 11,
-            "path": "examples/e2_B_optimization_problem_definition.py",
-            "symbol": "broad-exception-caught",
-            "message": "Catching too general exception Exception",
-            "message-id": "W0718"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e2_B_optimization_problem_definition",
-            "obj": "main",
-            "line": 127,
-            "column": 11,
-            "path": "examples/e2_B_optimization_problem_definition.py",
-            "symbol": "broad-exception-caught",
-            "message": "Catching too general exception Exception",
-            "message-id": "W0718"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "run_sensitivity_analysis",
-            "line": 41,
-            "column": 4,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "redefined-outer-name",
-            "message": "Redefining name 'setup_fmu' from outer scope (line 74)",
-            "message-id": "W0621"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "run_sensitivity_analysis",
-            "line": 41,
-            "column": 4,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "redefined-outer-name",
-            "message": "Redefining name 'setup_calibration_classes' from outer scope (line 74)",
-            "message-id": "W0621"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "run_sensitivity_analysis",
-            "line": 41,
-            "column": 4,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "import-outside-toplevel",
-            "message": "Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)",
-            "message-id": "C0415"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "",
-            "line": 74,
-            "column": 4,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "unused-import",
-            "message": "Unused setup_fmu imported from examples",
-            "message-id": "W0611"
-        },
-        {
-            "type": "warning",
-            "module": "examples.e3_sensitivity_analysis_example",
-            "obj": "",
-            "line": 74,
-            "column": 4,
-            "path": "examples/e3_sensitivity_analysis_example.py",
-            "symbol": "unused-import",
-            "message": "Unused setup_calibration_classes imported from examples",
-            "message-id": "W0611"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e4_calibration_example",
-            "obj": "",
-            "line": 101,
-            "column": 0,
-            "path": "examples/e4_calibration_example.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (108/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "examples.e4_calibration_example",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e4_calibration_example.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
-        },
-        {
-            "type": "refactor",
-            "module": "examples.e4_calibration_example",
-            "obj": "run_calibration",
-            "line": 12,
-            "column": 0,
-            "path": "examples/e4_calibration_example.py",
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "too-many-arguments",
-            "message": "Too many arguments (7/5)",
+            "message": "Too many arguments (6/5)",
             "message-id": "R0913"
         },
         {
             "type": "refactor",
-            "module": "examples.e4_calibration_example",
-            "obj": "run_calibration",
-            "line": 12,
+            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+            "obj": "SenAnalyzer.save_for_reproduction",
+            "line": 866,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
+            "symbol": "too-many-arguments",
+            "message": "Too many arguments (6/5)",
+            "message-id": "R0913"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.sensitivity_analysis.fast",
+            "obj": "FASTAnalyzer.__init__",
+            "line": 32,
+            "column": 8,
+            "path": "aixcalibuha/sensitivity_analysis/fast.py",
+            "symbol": "invalid-name",
+            "message": "Attribute name \"M\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.sensitivity_analysis.pawn",
+            "obj": "PAWNAnalyzer.__init__",
+            "line": 46,
+            "column": 8,
+            "path": "aixcalibuha/sensitivity_analysis/pawn.py",
+            "symbol": "invalid-name",
+            "message": "Attribute name \"s\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.sensitivity_analysis.pawn",
+            "obj": "PAWNAnalyzer.__init__",
+            "line": 51,
+            "column": 8,
+            "path": "aixcalibuha/sensitivity_analysis/pawn.py",
+            "symbol": "invalid-name",
+            "message": "Attribute name \"M\" doesn't conform to snake_case naming style",
+            "message-id": "C0103"
+        },
+        {
+            "type": "error",
+            "module": "aixcalibuha.sensitivity_analysis.pawn",
+            "obj": "PAWNAnalyzer.generate_samples",
+            "line": 106,
+            "column": 19,
+            "path": "aixcalibuha/sensitivity_analysis/pawn.py",
+            "symbol": "unexpected-keyword-arg",
+            "message": "Unexpected keyword argument 'calc_second_order' in function call",
+            "message-id": "E1123"
+        },
+        {
+            "type": "error",
+            "module": "aixcalibuha.sensitivity_analysis.pawn",
+            "obj": "PAWNAnalyzer.generate_samples",
+            "line": 110,
+            "column": 19,
+            "path": "aixcalibuha/sensitivity_analysis/pawn.py",
+            "symbol": "unexpected-keyword-arg",
+            "message": "Unexpected keyword argument 'calc_second_order' in function call",
+            "message-id": "E1123"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.sobol",
+            "obj": "SobolAnalyzer._conv_local_results",
+            "line": 105,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sobol.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (18/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.sensitivity_analysis.sobol",
+            "obj": "SobolAnalyzer._get_res_dict",
+            "line": 138,
+            "column": 4,
+            "path": "aixcalibuha/sensitivity_analysis/sobol.py",
+            "symbol": "inconsistent-return-statements",
+            "message": "Either all return statements in a function should return an expression, or none of them should.",
+            "message-id": "R1710"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator",
+            "line": 20,
             "column": 0,
-            "path": "examples/e4_calibration_example.py",
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (24/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.obj",
+            "line": 214,
+            "column": 26,
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "unnecessary-comprehension",
+            "message": "Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead.",
+            "message-id": "R1721"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.mp_obj",
+            "line": 255,
+            "column": 4,
+            "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "too-many-locals",
             "message": "Too many local variables (20/15)",
             "message-id": "R0914"
         },
         {
-            "type": "convention",
-            "module": "examples.e4_calibration_example",
-            "obj": "run_calibration",
-            "line": 51,
-            "column": 4,
-            "path": "examples/e4_calibration_example.py",
-            "symbol": "import-outside-toplevel",
-            "message": "Import outside toplevel (examples.setup_fmu, examples.setup_calibration_classes)",
-            "message-id": "C0415"
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.mp_obj",
+            "line": 273,
+            "column": 16,
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "unnecessary-comprehension",
+            "message": "Unnecessary use of a comprehension, use dict(zip(initial_names, xk_descaled.values)) instead.",
+            "message-id": "R1721"
         },
         {
-            "type": "convention",
-            "module": "examples.e5_automated_process",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "examples/e5_automated_process.py",
-            "symbol": "missing-module-docstring",
-            "message": "Missing module docstring",
-            "message-id": "C0114"
+            "type": "warning",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.mp_obj",
+            "line": 310,
+            "column": 23,
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "unused-variable",
+            "message": "Unused variable 'unweighted_objective'",
+            "message-id": "W0612"
         },
         {
-            "type": "convention",
-            "module": "tests.test_data_types",
-            "obj": "TestDataTypes.test_tuner_paras",
-            "line": 89,
+            "type": "warning",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.calibrate",
+            "line": 418,
+            "column": 12,
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "broad-exception-raised",
+            "message": "Raising too general exception: Exception",
+            "message-id": "W0719"
+        },
+        {
+            "type": "warning",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.save_results",
+            "line": 489,
             "column": 17,
-            "path": "tests/test_data_types.py",
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "unspecified-encoding",
+            "message": "Using open without explicitly specifying an encoding",
+            "message-id": "W1514"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.calibrator",
+            "obj": "Calibrator.validate",
+            "line": 492,
+            "column": 4,
+            "path": "aixcalibuha/calibration/calibrator.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (17/15)",
+            "message-id": "R0914"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator",
+            "line": 13,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "too-many-instance-attributes",
+            "message": "Too many instance attributes (13/7)",
+            "message-id": "R0902"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator.__init__",
+            "line": 53,
+            "column": 4,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "too-many-arguments",
+            "message": "Too many arguments (6/5)",
+            "message-id": "R0913"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator.__init__",
+            "line": 62,
+            "column": 28,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "consider-using-f-string",
             "message": "Formatting a regular string which could be a f-string",
             "message-id": "C0209"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==bin.guided_setup:[64:102]\n==bin.run_modelica_calibration:[26:44]\n    __supported_argv = [\"--config\"]\n    # Path to the script is irrelevant\n    resulting_setting = {}\n    _rel_argv = argv[1:]\n    for arg in _rel_argv:\n        try:\n            name, value = arg.split(\"=\")\n            if name not in __supported_argv:\n                raise KeyError\n            else:\n                resulting_setting[name] = value\n        except (ValueError, KeyError):\n            raise ValueError(f\"Given argument is not supported.\\n{_handle_argv.__doc__}\")\n\n    return resulting_setting\n\n\ndef main():",
-            "message-id": "R0801"
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator.calibrate",
+            "line": 94,
+            "column": 4,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "too-many-locals",
+            "message": "Too many local variables (16/15)",
+            "message-id": "R0914"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:131]\n==examples.e2_B_optimization_problem_definition:[113:122]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)\n    new_index = meas_target_data.index.values.copy()\n    new_index[-10] += 0.05  # Change some value",
-            "message-id": "R0801"
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator.calibrate",
+            "line": 94,
+            "column": 4,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "too-many-branches",
+            "message": "Too many branches (14/12)",
+            "message-id": "R0912"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[92:110]\n==examples.e2_B_optimization_problem_definition:[82:100]\n    }\n    # To match the measured data to simulated data,\n    # the index has to match with the simulation output\n    # Thus, convert it:\n    meas_target_data.to_float_index()\n    # Lastly, setup the goals object. Note that the statistical_measure\n    # is parameter of the python version of this example. It's a metric to\n    # compare two set's of time series data. Which one to choose is up to\n    # your expert knowledge. If you have no clue, raise an issue or read\n    # basic literature on calibration.\n    goals = Goals(\n        meas_target_data=meas_target_data,\n        variable_names=variable_names,\n        statistical_measure=statistical_measure,\n        weightings=[0.7, 0.3]\n    )\n    # Let's check if our evaluation is possible by creating some\n    # dummy sim_target_data with the same index:",
-            "message-id": "R0801"
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator._apply_start_time_method",
+            "line": 198,
+            "column": 8,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "no-else-return",
+            "message": "Unnecessary \"else\" after \"return\", remove the \"else\" and de-indent the code inside it",
+            "message-id": "R1705"
+        },
+        {
+            "type": "convention",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "MultipleClassCalibrator.check_intersection_of_tuner_parameters",
+            "line": 261,
+            "column": 28,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "consider-using-f-string",
+            "message": "Formatting a regular string which could be a f-string",
+            "message-id": "C0209"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[213:222]\n==examples.e2_B_optimization_problem_definition:[188:197]\n    )\n    return calibration_classes, validation_class\n\n\nif __name__ == '__main__':\n    main(\n        examples_dir=pathlib.Path(__file__).parent,\n        multiple_classes=True\n    )",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[197:207]\n==examples.e2_B_optimization_problem_definition:[173:183]\n    print([c.name for c in calibration_classes])\n    calibration_classes_merged = merge_calibration_classes(calibration_classes)\n    print([c.name for c in calibration_classes_merged])\n    # Don't worry, the relevant_time_interval object keeps track\n    # of which time intervals are relevant for the objective calculation\n    print(\"Relevant time interval for class\",\n          calibration_classes_merged[0].name,\n          calibration_classes_merged[0].relevant_intervals)\n    # Let's also create an object to later validate our calibration:\n    validation_class = CalibrationClass(",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[132:158]\n==examples.e2_B_optimization_problem_definition:[113:120]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[122:129]\n==examples.e2_B_optimization_problem_definition:[123:149]\n                                     index=new_index)\n    try:\n        goals.set_sim_target_data(sim_target_data)\n    except Exception as err:\n        print(\"I knew this error was going to happen. Do you understand \"\n              \"why this happens based on the following message?\")\n        print(err)",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils.visualizer)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[111:120]\n==examples.e2_B_optimization_problem_definition:[101:111]\n                                     index=meas_target_data.index)\n    print(\"Goals data before setting simulation data:\\n\", goals.get_goals_data())\n    goals.set_sim_target_data(sim_target_data)\n    print(\"Goals data after setting simulation data:\\n\", goals.get_goals_data())\n    print(statistical_measure, \"of goals: \", goals.eval_difference())\n    print(\"Verbose information on calculation\", goals.eval_difference(verbose=True))\n    # Lastly we advice to play around with the index of the sim_target_data to\n    # understand the error messages of this framework a little bit better.\n    # Example:",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.calibrator -> aixcalibuha.utils)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[70:84]\n==examples.e2_B_optimization_problem_definition:[57:73]\n    )\n    print(tuner_paras)\n    print(\"Names of parameters\", tuner_paras.get_names())\n    print(\"Initial values\", tuner_paras.get_initial_values())\n    # Scaling (will be done internally)\n    print(\"Scaled initial values:\\n\", tuner_paras.scale(tuner_paras.get_initial_values()))\n    # ## Goals\n    # The evaluation of your goals (or mathematically speaking 'objective function')\n    # depends on the difference of measured to simulated data.\n    # Thus, you need to specify both measured and simulated data.\n    #\n    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:\n    #\n    # As the examples should work, and the cal_class example uses the other examples,\n    # we will test it here:\n    data_dir = pathlib.Path(examples_dir).joinpath(\"data\")",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
+            "message-id": "R0401"
         },
         {
             "type": "refactor",
-            "module": "tests.test_modelica_cal_sen",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
             "obj": "",
             "line": 1,
             "column": 0,
-            "path": "tests/test_modelica_cal_sen.py",
-            "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==examples.e2_A_optimization_problem_definition:[10:58]\n==examples.e2_B_optimization_problem_definition:[10:53]\nimport pathlib\n# Imports from ebcpy\nfrom ebcpy import TimeSeriesData\n# Imports from AixCaliBUhA\nfrom aixcalibuha import TunerParas, Goals, \\\n    CalibrationClass\nfrom aixcalibuha.data_types import merge_calibration_classes\n\n\ndef main(\n        examples_dir,\n        statistical_measure=\"NRMSE\",\n        multiple_classes=True\n):\n    \"\"\"\n    Arguments of this example:\n\n    :param [pathlib.Path, str] examples_dir:\n        Path to the examples folder of AixCaliBuHA\n    :param str statistical_measure:\n        Measure to calculate the scalar of the objective,\n        One of the supported methods in\n        ebcpy.utils.statistics_analyzer.StatisticsAnalyzer\n        e.g. RMSE, MAE, NRMSE\n    :param bool multiple_classes:\n        If False, all CalibrationClasses will have the\n        same name\n    \"\"\"\n    # ## Tuner Parameters\n    # Tuner parameters are the optimization variables we will be\n    # changing to match the simulated onto the measured output.\n    #\n    # As described in the first example (e1_B_energy_system_analysis),\n    # we've changed two parameters in the model.\n    # To define tuner parameters, you have to specify\n    # - the name of the parameter\n    # - an initial guess\n    # - boundaries as a (min, max) tuple.\n    # Note that the initial guess is not always used by optimization routines.\n    # We've chosen to make it a requirement to prevent blindly accepting\n    # calibration results. If the result is very far away from your initial guess\n    # and you though you understand the model, maybe the parameter is just not\n    # sensitive or influenced by another parameter.",
-            "message-id": "R0801"
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sensitivity_analyzer)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.multi_class_calibrator",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/multi_class_calibrator.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.calibration -> aixcalibuha.calibration.multi_class_calibrator)",
+            "message-id": "R0401"
         }
     ],
     "stats": {
         "bad_names": {
             "argument": 0,
-            "attr": 0,
+            "attr": 3,
             "klass": 0,
             "class_attribute": 0,
             "class_const": 0,
@@ -1783,13 +1640,13 @@
             "inlinevar": 0,
             "function": 0,
             "method": 0,
-            "module": 4,
-            "variable": 1,
+            "module": 0,
+            "variable": 0,
             "typevar": 0,
             "typealias": 0
         },
         "by_module": {
-            "aixcalibuha.__init__": {
+            "aixcalibuha": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
@@ -1799,7 +1656,7 @@
                 "warning": 0
             },
             "aixcalibuha.data_types": {
-                "convention": 1,
+                "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
@@ -1807,97 +1664,61 @@
                 "statement": 255,
                 "warning": 0
             },
-            "bin.guided_setup": {
-                "convention": 3,
-                "error": 1,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 7,
-                "statement": 223,
-                "warning": 19
-            },
-            "bin.run_modelica_calibration": {
-                "convention": 2,
-                "error": 2,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 3,
-                "statement": 80,
-                "warning": 4
-            },
-            "examples.__init__": {
-                "convention": 0,
+            "aixcalibuha.utils.visualizer": {
+                "convention": 12,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 0,
-                "statement": 22,
-                "warning": 0
+                "refactor": 4,
+                "statement": 298,
+                "warning": 5
             },
-            "examples.e1_A_energy_system_analysis": {
-                "convention": 6,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 0,
-                "statement": 41,
-                "warning": 4
-            },
-            "examples.e1_B_energy_system_analysis": {
+            "aixcalibuha.utils.configuration": {
                 "convention": 5,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 24,
-                "warning": 1
-            },
-            "examples.e2_A_optimization_problem_definition": {
-                "convention": 2,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 1,
-                "statement": 52,
+                "statement": 53,
                 "warning": 2
             },
-            "examples.e2_B_optimization_problem_definition": {
-                "convention": 2,
+            "aixcalibuha.utils.__init__": {
+                "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 46,
-                "warning": 2
-            },
-            "examples.e3_sensitivity_analysis_example": {
-                "convention": 2,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 0,
-                "statement": 20,
-                "warning": 4
-            },
-            "examples.e4_calibration_example": {
-                "convention": 3,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 2,
-                "statement": 37,
+                "statement": 12,
                 "warning": 0
             },
-            "examples.e5_automated_process": {
+            "aixcalibuha.sensitivity_analysis.plotting": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 5,
+                "statement": 242,
+                "warning": 1
+            },
+            "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 7,
+                "statement": 402,
+                "warning": 0
+            },
+            "aixcalibuha.sensitivity_analysis.fast": {
                 "convention": 1,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 9,
+                "statement": 23,
                 "warning": 0
             },
-            "examples.e6_multiprocessing_calibration_example": {
+            "aixcalibuha.sensitivity_analysis.__init__": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
@@ -1906,73 +1727,84 @@
                 "statement": 6,
                 "warning": 0
             },
-            "tests.__init__": {
+            "aixcalibuha.sensitivity_analysis.pawn": {
+                "convention": 2,
+                "error": 2,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 42,
+                "warning": 0
+            },
+            "aixcalibuha.sensitivity_analysis.morris": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 0,
+                "statement": 24,
                 "warning": 0
             },
-            "tests.test_config": {
+            "aixcalibuha.sensitivity_analysis.sobol": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 2,
+                "statement": 80,
+                "warning": 0
+            },
+            "aixcalibuha.calibration.calibrator": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 5,
+                "statement": 218,
+                "warning": 3
+            },
+            "aixcalibuha.calibration.__init__": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 16,
+                "statement": 2,
                 "warning": 0
             },
-            "tests.test_data_types": {
-                "convention": 1,
+            "aixcalibuha.calibration.multi_class_calibrator": {
+                "convention": 2,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 0,
-                "statement": 85,
-                "warning": 0
-            },
-            "tests.test_modelica_cal_sen": {
-                "convention": 0,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 10,
-                "statement": 57,
+                "refactor": 19,
+                "statement": 98,
                 "warning": 0
             }
         },
         "by_msg": {
-            "trailing-whitespace": 1,
-            "too-many-instance-attributes": 2,
-            "too-many-branches": 2,
-            "too-many-arguments": 2,
-            "line-too-long": 7,
-            "fixme": 1,
-            "lost-exception": 1,
-            "no-else-raise": 2,
-            "raise-missing-from": 3,
-            "too-many-locals": 5,
-            "unspecified-encoding": 12,
-            "too-many-statements": 3,
-            "unreachable": 2,
-            "no-else-break": 1,
-            "broad-exception-caught": 5,
-            "f-string-without-interpolation": 1,
-            "protected-access": 1,
-            "no-member": 3,
+            "too-many-instance-attributes": 7,
+            "too-many-branches": 3,
+            "too-many-arguments": 4,
+            "consider-using-min-builtin": 1,
+            "nested-min-max": 1,
+            "unused-argument": 3,
             "missing-function-docstring": 1,
-            "redefined-builtin": 1,
-            "invalid-name": 5,
-            "anomalous-backslash-in-string": 3,
-            "missing-module-docstring": 7,
-            "consider-using-f-string": 4,
-            "unused-variable": 2,
-            "import-outside-toplevel": 3,
-            "redefined-outer-name": 2,
-            "unused-import": 2,
-            "duplicate-code": 10
+            "consider-using-f-string": 13,
+            "unspecified-encoding": 4,
+            "too-many-locals": 11,
+            "line-too-long": 5,
+            "protected-access": 1,
+            "too-many-nested-blocks": 1,
+            "too-many-statements": 1,
+            "invalid-name": 3,
+            "unexpected-keyword-arg": 2,
+            "inconsistent-return-statements": 1,
+            "unnecessary-comprehension": 2,
+            "unused-variable": 1,
+            "broad-exception-raised": 1,
+            "no-else-return": 1,
+            "cyclic-import": 14
         },
         "code_type_count": {
             "code": 0,
@@ -1983,34 +1815,50 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha",
-                "examples.e2_A_optimization_problem_definition"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.calibration": [
                 "aixcalibuha",
-                "bin.run_modelica_calibration"
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha"
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "aixcalibuha.sensitivity_analysis.plotting": [
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "pandas": [
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.data_types",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "numpy": [
-                "examples.e4_calibration_example",
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.fast",
                 "aixcalibuha.data_types",
-                "tests.test_data_types",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "ebcpy": [
-                "examples.e2_B_optimization_problem_definition",
-                "examples",
-                "aixcalibuha.data_types",
-                "examples.e2_A_optimization_problem_definition",
-                "examples.e1_A_energy_system_analysis",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.data_types"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2018,55 +1866,98 @@
             "ebcpy.preprocessing": [
                 "aixcalibuha.data_types"
             ],
-            "ebcpy.data_types": [
-                "tests.test_data_types",
-                "bin.guided_setup",
-                "bin.run_modelica_calibration"
-            ],
-            "ebcpy.simulationapi.dymola_api": [
-                "bin.guided_setup"
-            ],
-            "ebcpy.modelica": [
-                "bin.guided_setup"
-            ],
-            "aixcalibuha.utils.configuration": [
-                "tests.test_config",
-                "bin.guided_setup",
-                "bin.run_modelica_calibration"
-            ],
-            "ebcpy.utils.conversion": [
-                "bin.run_modelica_calibration"
-            ],
-            "examples.e2_A_optimization_problem_definition": [
-                "examples"
-            ],
-            "examples.e2_B_optimization_problem_definition": [
-                "examples"
-            ],
             "matplotlib.pyplot": [
-                "examples.e1_B_energy_system_analysis",
-                "examples.e1_A_energy_system_analysis"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.visualizer"
             ],
-            "examples": [
-                "examples.e1_B_energy_system_analysis",
-                "examples.e3_sensitivity_analysis_example",
-                "examples.e4_calibration_example"
+            "ebcpy.utils": [
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.utils.visualizer"
             ],
             "aixcalibuha": [
-                "examples.e2_B_optimization_problem_definition",
-                "examples.e3_sensitivity_analysis_example",
-                "tests.test_config",
-                "examples.e4_calibration_example",
-                "examples.e2_A_optimization_problem_definition",
-                "tests.test_modelica_cal_sen",
-                "tests.test_data_types"
+                "aixcalibuha.utils",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
-            "examples.e3_sensitivity_analysis_example": [
-                "examples.e5_automated_process"
+            "toml": [
+                "aixcalibuha.utils.configuration"
             ],
-            "examples.e4_calibration_example": [
-                "examples.e6_multiprocessing_calibration_example",
-                "examples.e5_automated_process"
+            "ebcpy.data_types": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration"
+            ],
+            "matplotlib": [
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "SALib.plotting.bar": [
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "aixcalibuha.utils.visualizer": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "ebcpy.utils.reproduction": [
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "ebcpy.simulationapi": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "aixcalibuha.utils": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "SALib.sample.fast_sampler": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
+            ],
+            "SALib.analyze.fast": [
+                "aixcalibuha.sensitivity_analysis.fast"
+            ],
+            "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.sobol": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.morris": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.fast": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.pawn": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "SALib.sample.sobol": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "SALib.sample.morris": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.morris"
+            ],
+            "SALib.analyze.pawn": [
+                "aixcalibuha.sensitivity_analysis.pawn"
+            ],
+            "SALib.analyze.morris": [
+                "aixcalibuha.sensitivity_analysis.morris"
+            ],
+            "SALib.analyze.sobol": [
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "aixcalibuha.calibration.calibrator": [
+                "aixcalibuha.calibration"
+            ],
+            "aixcalibuha.calibration.multi_class_calibrator": [
+                "aixcalibuha.calibration"
             ]
         },
         "duplicated_lines": {
@@ -2074,32 +1965,32 @@
             "percent_duplicated_lines": 0.0
         },
         "node_count": {
-            "function": 17,
-            "klass": 6,
-            "method": 51,
-            "module": 17
+            "function": 28,
+            "klass": 13,
+            "method": 144,
+            "module": 15
         },
         "undocumented": {
-            "function": 1,
+            "function": 0,
             "klass": 0,
-            "method": 0,
-            "module": 7
+            "method": 1,
+            "module": 0
         },
-        "convention": 28,
-        "error": 3,
+        "convention": 22,
+        "error": 2,
         "fatal": 0,
         "info": 0,
-        "refactor": 27,
-        "statement": 977,
-        "warning": 36,
+        "refactor": 46,
+        "statement": 1759,
+        "warning": 11,
         "global_note": 0,
-        "nb_duplicated_lines": 75,
-        "percent_duplicated_lines": 2.6862464183381087
+        "nb_duplicated_lines": 0,
+        "percent_duplicated_lines": 0.0
     },
     "previous": {
         "bad_names": {
             "argument": 0,
-            "attr": 0,
+            "attr": 3,
             "klass": 0,
             "class_attribute": 0,
             "class_const": 0,
@@ -2107,13 +1998,13 @@
             "inlinevar": 0,
             "function": 0,
             "method": 0,
-            "module": 4,
-            "variable": 1,
+            "module": 0,
+            "variable": 0,
             "typevar": 0,
             "typealias": 0
         },
         "by_module": {
-            "aixcalibuha.__init__": {
+            "aixcalibuha": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
@@ -2123,7 +2014,7 @@
                 "warning": 0
             },
             "aixcalibuha.data_types": {
-                "convention": 1,
+                "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
@@ -2131,97 +2022,61 @@
                 "statement": 255,
                 "warning": 0
             },
-            "guided_setup": {
-                "convention": 3,
-                "error": 1,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 7,
-                "statement": 223,
-                "warning": 19
-            },
-            "run_modelica_calibration": {
-                "convention": 2,
-                "error": 2,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 3,
-                "statement": 80,
-                "warning": 4
-            },
-            "examples.__init__": {
-                "convention": 0,
+            "aixcalibuha.utils.visualizer": {
+                "convention": 12,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 0,
-                "statement": 22,
-                "warning": 0
+                "refactor": 4,
+                "statement": 298,
+                "warning": 5
             },
-            "examples.e1_A_energy_system_analysis": {
-                "convention": 6,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 0,
-                "statement": 41,
-                "warning": 4
-            },
-            "examples.e1_B_energy_system_analysis": {
+            "aixcalibuha.utils.configuration": {
                 "convention": 5,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 24,
-                "warning": 1
-            },
-            "examples.e2_A_optimization_problem_definition": {
-                "convention": 2,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 1,
-                "statement": 52,
+                "statement": 53,
                 "warning": 2
             },
-            "examples.e2_B_optimization_problem_definition": {
-                "convention": 2,
+            "aixcalibuha.utils.__init__": {
+                "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 46,
-                "warning": 2
-            },
-            "examples.e3_sensitivity_analysis_example": {
-                "convention": 2,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 0,
-                "statement": 20,
-                "warning": 4
-            },
-            "examples.e4_calibration_example": {
-                "convention": 3,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 2,
-                "statement": 37,
+                "statement": 12,
                 "warning": 0
             },
-            "examples.e5_automated_process": {
+            "aixcalibuha.sensitivity_analysis.plotting": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 5,
+                "statement": 242,
+                "warning": 1
+            },
+            "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 7,
+                "statement": 402,
+                "warning": 0
+            },
+            "aixcalibuha.sensitivity_analysis.fast": {
                 "convention": 1,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 9,
+                "statement": 23,
                 "warning": 0
             },
-            "examples.e6_multiprocessing_calibration_example": {
+            "aixcalibuha.sensitivity_analysis.__init__": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
@@ -2230,73 +2085,84 @@
                 "statement": 6,
                 "warning": 0
             },
-            "tests.__init__": {
+            "aixcalibuha.sensitivity_analysis.pawn": {
+                "convention": 2,
+                "error": 2,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 0,
+                "statement": 42,
+                "warning": 0
+            },
+            "aixcalibuha.sensitivity_analysis.morris": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 0,
+                "statement": 24,
                 "warning": 0
             },
-            "tests.test_config": {
+            "aixcalibuha.sensitivity_analysis.sobol": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 2,
+                "statement": 80,
+                "warning": 0
+            },
+            "aixcalibuha.calibration.calibrator": {
+                "convention": 0,
+                "error": 0,
+                "fatal": 0,
+                "info": 0,
+                "refactor": 5,
+                "statement": 218,
+                "warning": 3
+            },
+            "aixcalibuha.calibration.__init__": {
                 "convention": 0,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
                 "refactor": 0,
-                "statement": 16,
+                "statement": 2,
                 "warning": 0
             },
-            "tests.test_data_types": {
-                "convention": 1,
+            "aixcalibuha.calibration.multi_class_calibrator": {
+                "convention": 2,
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 0,
-                "statement": 85,
-                "warning": 0
-            },
-            "tests.test_modelica_cal_sen": {
-                "convention": 0,
-                "error": 0,
-                "fatal": 0,
-                "info": 0,
-                "refactor": 10,
-                "statement": 57,
+                "refactor": 18,
+                "statement": 98,
                 "warning": 0
             }
         },
         "by_msg": {
-            "trailing-whitespace": 1,
-            "too-many-instance-attributes": 2,
-            "too-many-branches": 2,
-            "too-many-arguments": 2,
-            "line-too-long": 7,
-            "fixme": 1,
-            "lost-exception": 1,
-            "no-else-raise": 2,
-            "raise-missing-from": 3,
-            "too-many-locals": 5,
-            "unspecified-encoding": 12,
-            "too-many-statements": 3,
-            "unreachable": 2,
-            "no-else-break": 1,
-            "broad-exception-caught": 5,
-            "f-string-without-interpolation": 1,
-            "protected-access": 1,
-            "no-member": 3,
+            "too-many-instance-attributes": 7,
+            "too-many-branches": 3,
+            "too-many-arguments": 4,
+            "consider-using-min-builtin": 1,
+            "nested-min-max": 1,
+            "unused-argument": 3,
             "missing-function-docstring": 1,
-            "redefined-builtin": 1,
-            "invalid-name": 5,
-            "anomalous-backslash-in-string": 3,
-            "missing-module-docstring": 7,
-            "consider-using-f-string": 4,
-            "unused-variable": 2,
-            "import-outside-toplevel": 3,
-            "redefined-outer-name": 2,
-            "unused-import": 2,
-            "duplicate-code": 10
+            "consider-using-f-string": 13,
+            "unspecified-encoding": 4,
+            "too-many-locals": 11,
+            "line-too-long": 5,
+            "protected-access": 1,
+            "too-many-nested-blocks": 1,
+            "too-many-statements": 1,
+            "invalid-name": 3,
+            "unexpected-keyword-arg": 2,
+            "inconsistent-return-statements": 1,
+            "unnecessary-comprehension": 2,
+            "unused-variable": 1,
+            "broad-exception-raised": 1,
+            "no-else-return": 1,
+            "cyclic-import": 13
         },
         "code_type_count": {
             "code": 0,
@@ -2307,34 +2173,50 @@
         },
         "dependencies": {
             "aixcalibuha.data_types": [
-                "examples.e2_B_optimization_problem_definition",
                 "aixcalibuha",
-                "examples.e2_A_optimization_problem_definition"
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.calibration": [
                 "aixcalibuha",
-                "run_modelica_calibration"
+                "aixcalibuha.calibration.multi_class_calibrator"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha"
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "aixcalibuha.sensitivity_analysis.plotting": [
+                "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.sensitivity_analysis",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "pandas": [
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
                 "aixcalibuha.data_types",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "numpy": [
-                "examples.e4_calibration_example",
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.fast",
                 "aixcalibuha.data_types",
-                "tests.test_data_types",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
             "ebcpy": [
-                "examples.e2_B_optimization_problem_definition",
-                "examples",
-                "aixcalibuha.data_types",
-                "examples.e2_A_optimization_problem_definition",
-                "examples.e1_A_energy_system_analysis",
-                "tests.test_modelica_cal_sen"
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.data_types"
             ],
             "ebcpy.utils.statistics_analyzer": [
                 "aixcalibuha.data_types"
@@ -2342,55 +2224,98 @@
             "ebcpy.preprocessing": [
                 "aixcalibuha.data_types"
             ],
-            "ebcpy.data_types": [
-                "guided_setup",
-                "run_modelica_calibration",
-                "tests.test_data_types"
-            ],
-            "ebcpy.simulationapi.dymola_api": [
-                "guided_setup"
-            ],
-            "ebcpy.modelica": [
-                "guided_setup"
-            ],
-            "aixcalibuha.utils.configuration": [
-                "tests.test_config",
-                "guided_setup",
-                "run_modelica_calibration"
-            ],
-            "ebcpy.utils.conversion": [
-                "run_modelica_calibration"
-            ],
-            "examples.e2_A_optimization_problem_definition": [
-                "examples"
-            ],
-            "examples.e2_B_optimization_problem_definition": [
-                "examples"
-            ],
             "matplotlib.pyplot": [
-                "examples.e1_B_energy_system_analysis",
-                "examples.e1_A_energy_system_analysis"
+                "aixcalibuha.sensitivity_analysis.plotting",
+                "aixcalibuha.utils.visualizer"
             ],
-            "examples": [
-                "examples.e1_B_energy_system_analysis",
-                "examples.e4_calibration_example",
-                "examples.e3_sensitivity_analysis_example"
+            "ebcpy.utils": [
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.utils.visualizer"
             ],
             "aixcalibuha": [
-                "examples.e2_B_optimization_problem_definition",
-                "examples.e4_calibration_example",
-                "examples.e3_sensitivity_analysis_example",
-                "tests.test_config",
-                "examples.e2_A_optimization_problem_definition",
-                "tests.test_modelica_cal_sen",
-                "tests.test_data_types"
+                "aixcalibuha.utils",
+                "aixcalibuha.utils.configuration",
+                "aixcalibuha.calibration.multi_class_calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.morris",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
             ],
-            "examples.e3_sensitivity_analysis_example": [
-                "examples.e5_automated_process"
+            "toml": [
+                "aixcalibuha.utils.configuration"
             ],
-            "examples.e4_calibration_example": [
-                "examples.e6_multiprocessing_calibration_example",
-                "examples.e5_automated_process"
+            "ebcpy.data_types": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.utils.configuration"
+            ],
+            "matplotlib": [
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "SALib.plotting.bar": [
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "aixcalibuha.utils.visualizer": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.plotting"
+            ],
+            "ebcpy.utils.reproduction": [
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "ebcpy.simulationapi": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "aixcalibuha.utils": [
+                "aixcalibuha.calibration.calibrator",
+                "aixcalibuha.sensitivity_analysis.sensitivity_analyzer"
+            ],
+            "SALib.sample.fast_sampler": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.fast"
+            ],
+            "SALib.analyze.fast": [
+                "aixcalibuha.sensitivity_analysis.fast"
+            ],
+            "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.sobol": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.morris": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.fast": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "aixcalibuha.sensitivity_analysis.pawn": [
+                "aixcalibuha.sensitivity_analysis"
+            ],
+            "SALib.sample.sobol": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "SALib.sample.morris": [
+                "aixcalibuha.sensitivity_analysis.pawn",
+                "aixcalibuha.sensitivity_analysis.morris"
+            ],
+            "SALib.analyze.pawn": [
+                "aixcalibuha.sensitivity_analysis.pawn"
+            ],
+            "SALib.analyze.morris": [
+                "aixcalibuha.sensitivity_analysis.morris"
+            ],
+            "SALib.analyze.sobol": [
+                "aixcalibuha.sensitivity_analysis.sobol"
+            ],
+            "aixcalibuha.calibration.calibrator": [
+                "aixcalibuha.calibration"
+            ],
+            "aixcalibuha.calibration.multi_class_calibrator": [
+                "aixcalibuha.calibration"
             ]
         },
         "duplicated_lines": {
@@ -2398,26 +2323,26 @@
             "percent_duplicated_lines": 0.0
         },
         "node_count": {
-            "function": 17,
-            "klass": 6,
-            "method": 51,
-            "module": 17
+            "function": 28,
+            "klass": 13,
+            "method": 144,
+            "module": 15
         },
         "undocumented": {
-            "function": 1,
+            "function": 0,
             "klass": 0,
-            "method": 0,
-            "module": 7
+            "method": 1,
+            "module": 0
         },
-        "convention": 28,
-        "error": 3,
+        "convention": 22,
+        "error": 2,
         "fatal": 0,
         "info": 0,
-        "refactor": 27,
-        "statement": 977,
-        "warning": 36,
-        "global_note": 8.915046059365405,
-        "nb_duplicated_lines": 75,
-        "percent_duplicated_lines": 2.6862464183381087
+        "refactor": 45,
+        "statement": 1759,
+        "warning": 11,
+        "global_note": 9.499715747583855,
+        "nb_duplicated_lines": 0,
+        "percent_duplicated_lines": 0.0
     }
 }

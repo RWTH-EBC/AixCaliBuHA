@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>aixcalibuha.sensitivity_analysis.sensitivity_analyzer &mdash; AixCaliBuHa 0.3.1 documentation</title>
+  <title>aixcalibuha.sensitivity_analysis.sensitivity_analyzer &mdash; AixCaliBuHa 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
@@ -34,7 +34,7 @@
             AixCaliBuHa
           </a>
               <div class="version">
-                0.3
+                1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -84,15 +84,84 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">ebcpy.utils</span> <span class="kn">import</span> <span class="n">setup_logger</span>
-<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span>
+<span class="kn">from</span> <span class="nn">ebcpy.utils.reproduction</span> <span class="kn">import</span> <span class="n">CopyFile</span>
 <span class="kn">from</span> <span class="nn">ebcpy.simulationapi</span> <span class="kn">import</span> <span class="n">SimulationAPI</span>
 <span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
 <span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">aixcalibuha.sensitivity_analysis.plotting</span> <span class="kn">import</span> <span class="n">plot_single</span><span class="p">,</span> <span class="n">plot_time_dependent</span>
+
+
+<span class="k">def</span> <span class="nf">_load_single_file</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">parquet_engine</span><span class="o">=</span><span class="s1">&#39;pyarrow&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">default_tag</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+                                     <span class="n">engine</span><span class="o">=</span><span class="n">parquet_engine</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_load_files</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">,</span> <span class="n">parquet_engine</span><span class="o">=</span><span class="s1">&#39;pyarrow&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_load_single_file</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">parquet_engine</span><span class="o">=</span><span class="n">parquet_engine</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="k">def</span> <span class="nf">_restruct_verbose</span><span class="p">(</span><span class="n">list_output_verbose</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
+    <span class="n">output_verbose</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">list_output_verbose</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">output_verbose</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_output_verbose</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">output_verbose</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_verbose</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="k">return</span> <span class="n">output_verbose</span>
+
+
+<span class="k">def</span> <span class="nf">_concat_all_sims</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function that concat all results in a list to one DataFrame.&quot;&quot;&quot;</span>
+    <span class="n">sim_results_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sim_results_list</span><span class="p">]</span>
+    <span class="n">sim_results_list</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">)),</span>
+                                 <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+    <span class="n">sim_results_list</span> <span class="o">=</span> <span class="n">sim_results_list</span><span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sim_results_list</span>
+
+
+<span class="k">def</span> <span class="nf">_restruct_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">,</span> <span class="n">time_index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function that restructures the time dependent sensitivity results.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_restruct_single</span><span class="p">(</span><span class="n">sen_time_dependent_list_s</span><span class="p">,</span> <span class="n">second_order</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">sen_time_dependent_list_s</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">time_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">second_order</span><span class="p">:</span>
+            <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_names</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Analysis variable&#39;</span><span class="p">,</span> <span class="s1">&#39;Interaction&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sen_time_dependent_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_names</span><span class="p">([</span><span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Analysis variable&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
+                                                  <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sen_time_dependent_df</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">sen_time_dependent_list1</span><span class="p">,</span> <span class="n">sen_time_dependent_list2</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sen_time_dependent_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_restruct_single</span><span class="p">(</span><span class="n">sen_time_dependent_list1</span><span class="p">),</span> <span class="n">_restruct_single</span><span class="p">(</span>
+            <span class="n">sen_time_dependent_list2</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_restruct_single</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_divide_chunks</span><span class="p">(</span><span class="n">long_list</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function that divides all list into multiple list with a specific chunk length.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">long_list</span><span class="p">),</span> <span class="n">chunk_length</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">long_list</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">chunk_length</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="SenAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SenAnalyzer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
@@ -103,13 +172,12 @@
 <span class="sd">        Simulation-API used to simulate the samples</span>
 <span class="sd">    :param int num_samples:</span>
 <span class="sd">        The parameter `N` to the sampler methods of sobol and morris. NOTE: This is not the</span>
-<span class="sd">        the number of samples produced, but relates to the total number of samples produced in</span>
-<span class="sd">        a manner dependent on the sampler method used. See the documentation of sobol and</span>
-<span class="sd">        morris in the SALib for more information.</span>
-<span class="sd">    :keyword str analysis_function:</span>
-<span class="sd">        Used to automatically select result values.</span>
+<span class="sd">        number of samples produced, but relates to the total number of samples produced in</span>
+<span class="sd">        a manner dependent on the sampler method used. See the documentation of the specific </span>
+<span class="sd">        method in the SALib for more information.</span>
 <span class="sd">    :keyword str,os.path.normpath cd:</span>
 <span class="sd">        The path for the current working directory.</span>
+<span class="sd">        Logger and results will be stored here.</span>
 <span class="sd">    :keyword boolean fail_on_error:</span>
 <span class="sd">        Default is False. If True, the calibration will stop with an error if</span>
 <span class="sd">        the simulation fails. See also: ``ret_val_on_error``</span>
@@ -119,7 +187,19 @@
 <span class="sd">        options are np.NaN, np.inf or some other high numbers. be aware that this</span>
 <span class="sd">        max influence the solver.</span>
 <span class="sd">    :keyword boolean save_files:</span>
-<span class="sd">        If true, all simulation files for each iteration will be saved!</span>
+<span class="sd">        Default False. If true, all simulation files for each iteration will be saved!</span>
+<span class="sd">    :keyword str suffix_files:</span>
+<span class="sd">        Default &#39;csv&#39;. Specifies the data format to store the simulation files in.</span>
+<span class="sd">        Options are &#39;csv&#39;, &#39;hdf&#39;, &#39;parquet&#39;.</span>
+<span class="sd">    :keyword str parquet_engine:</span>
+<span class="sd">        The engine to use for the data format parquet.</span>
+<span class="sd">        Supported options can be extracted</span>
+<span class="sd">        from the ebcpy.TimeSeriesData.save() function.</span>
+<span class="sd">        Default is &#39;pyarrow&#39;.</span>
+<span class="sd">    :keyword str,os.path.normpath savepath_sim:</span>
+<span class="sd">        Default is cd. Own directory for the time series data sets of all simulations</span>
+<span class="sd">        during the sensitivity analysis. The own dir can be necessary for large data sets,</span>
+<span class="sd">        because they can crash IDE during indexing when they are in the project folder.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -135,20 +215,23 @@
         <span class="c1"># Update kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fail_on_error&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_files&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;suffix_files&#39;</span><span class="p">,</span> <span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parquet_engine&#39;</span><span class="p">,</span> <span class="s1">&#39;pyarrow&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cd</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cd&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;analysis_variable&#39;</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given analysis_variable &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variable</span><span class="si">}</span><span class="s1">&quot; not &#39;</span>
-                            <span class="sa">f</span><span class="s1">&#39;supported for class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">. &#39;</span>
-                            <span class="sa">f</span><span class="s1">&#39;Supported options are: </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;savepath_sim&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="p">)</span>
 
         <span class="c1"># Setup the logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">setup_logger</span><span class="p">(</span><span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="c1"># Setup default values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -201,19 +284,23 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.generate_samples &#39;</span>
                                   <span class="sa">f</span><span class="s1">&#39;function is not defined yet&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SenAnalyzer.simulate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">):</span>
+<div class="viewcode-block" id="SenAnalyzer.simulate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.simulate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">simulate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Put the parameters in the model and simulate it.</span>
+<span class="sd">        Creates the samples for the calibration class and simulates them.</span>
 
-<span class="sd">        :param Union[list, np.ndarray] samples:</span>
-<span class="sd">            Output variables in dymola</span>
 <span class="sd">        :param cal_class:</span>
 <span class="sd">            One class for calibration. Goals and tuner_paras have to be set</span>
+<span class="sd">        :keyword scale:</span>
+<span class="sd">            Default is False. If True the bounds of the tuner-parameters</span>
+<span class="sd">            will be scaled between 0 and 1.</span>
 
-<span class="sd">        :returns: np.array</span>
-<span class="sd">            An array containing the evaluated differences for each sample</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Returns two lists. First a list with the simulation results for each sample.</span>
+<span class="sd">            If save_files the list contains the filepaths to the results</span>
+<span class="sd">            Second a list of the samples.</span>
+<span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Set the output interval according the given Goals</span>
         <span class="n">mean_freq</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_meas_frequency</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting output_interval of simulation according &quot;</span>
@@ -223,31 +310,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_sim_setup</span><span class="p">({</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
                                     <span class="s2">&quot;stop_time&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_sim_var_names</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting </span><span class="si">%s</span><span class="s1"> parameter variations on </span><span class="si">%s</span><span class="s1"> cores&#39;</span><span class="p">,</span>
-                         <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">n_cpu</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_samples</span><span class="p">()</span>
+
+        <span class="c1"># creat df of samples with the result_file_names as the index</span>
+        <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))]</span>
+        <span class="n">samples_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">)</span>
+        <span class="n">samples_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">))</span>
+
         <span class="c1"># Simulate the current values</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">initial_values</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">)})</span>
+        <span class="k">for</span> <span class="n">initial_values</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+                <span class="n">initial_values</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">descale</span><span class="p">(</span><span class="n">initial_values</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">initial_names</span><span class="p">,</span> <span class="n">initial_values</span><span class="p">)))</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting </span><span class="si">%s</span><span class="s1"> parameter variations on </span><span class="si">%s</span><span class="s1"> cores&#39;</span><span class="p">,</span>
+                         <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">n_cpu</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
-            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">))]</span>
+            <span class="n">sim_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;simulations_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">samples_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Saving simulation files in: </span><span class="si">{</span><span class="n">sim_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">_filepaths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
                 <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
-                <span class="n">savepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">savepath</span><span class="o">=</span><span class="n">sim_dir</span><span class="p">,</span>
                 <span class="n">result_file_name</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">,</span>
+                <span class="n">result_file_suffix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="p">,</span>
+                <span class="n">parquet_engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span><span class="p">,</span>
                 <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
                 <span class="n">inputs</span><span class="o">=</span><span class="n">cal_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span>
             <span class="p">)</span>
-            <span class="c1"># Load results</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">_filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">_filepaths</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
@@ -256,95 +354,324 @@
                 <span class="o">**</span><span class="n">cal_class</span><span class="o">.</span><span class="n">input_kwargs</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished </span><span class="si">%s</span><span class="s1"> simulations&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_sim_target_data</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-                <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_relevant_time_intervals</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="p">)</span>
-                <span class="c1"># Evaluate the current objective</span>
-                <span class="n">total_res</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">eval_difference</span><span class="p">()</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">samples</span></div>
 
+    <span class="k">def</span> <span class="nf">_check_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsd</span><span class="p">:</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">sim_num</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
+        <span class="k">if</span> <span class="n">sim_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sim_num</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;The mean value of the frequency from </span><span class="si">{</span><span class="n">sim_num</span><span class="si">}</span><span class="s1"> does not match output &#39;</span>
+                <span class="s1">&#39;interval index will be cleaned and spaced equally&#39;</span><span class="p">)</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">to_datetime_index</span><span class="p">()</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">clean_and_space_equally</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">ms&#39;</span><span class="p">)</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">to_float_index</span><span class="p">()</span>
+            <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
+        <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The standard deviation of the frequency from </span><span class="si">{</span><span class="n">sim_num</span><span class="si">}</span><span class="s1"> is to high &#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;and will be rounded to the accuracy of the output interval&#39;</span><span class="p">)</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">tsd</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">),</span>
+                                 <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">tsd</span>
+
+    <span class="k">def</span> <span class="nf">_single_eval_statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_eval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates statistical measure of one result&quot;&quot;&quot;</span>
+        <span class="n">cal_class</span> <span class="o">=</span> <span class="n">kwargs_eval</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cal_class&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">kwargs_eval</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;result&#39;</span><span class="p">)</span>
+        <span class="n">num_sim</span> <span class="o">=</span> <span class="n">kwargs_eval</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sim_num&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbose_error</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">goal</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_goals_list</span><span class="p">(),</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">weightings</span><span class="p">):</span>
+                <span class="n">verbose_error</span><span class="p">[</span><span class="n">goal</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span><span class="p">,</span> <span class="n">verbose_error</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_index</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">num_sim</span><span class="p">)</span>
+        <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_sim_target_data</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">set_relevant_time_intervals</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">relevant_intervals</span><span class="p">)</span>
+        <span class="c1"># Evaluate the current objective</span>
+        <span class="n">total_res</span><span class="p">,</span> <span class="n">verbose_calculation</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">eval_difference</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">verbose_calculation</span>
+
+<div class="viewcode-block" id="SenAnalyzer.eval_statistical_measure"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.eval_statistical_measure">[docs]</a>    <span class="k">def</span> <span class="nf">eval_statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates statistical measures of results on single core&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting evaluation of statistical measure&#39;</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">list_output_verbose</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="n">total_res</span><span class="p">,</span> <span class="n">verbose_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_eval_statistical_measure</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;cal_class&#39;</span><span class="p">:</span> <span class="n">cal_class</span><span class="p">,</span> <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span> <span class="s1">&#39;sim_num&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;simulation_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_res</span><span class="p">)</span>
+            <span class="n">list_output_verbose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">verbose_calculation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># restructure output_verbose</span>
+            <span class="n">output_verbose</span> <span class="o">=</span> <span class="n">_restruct_verbose</span><span class="p">(</span><span class="n">list_output_verbose</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">output</span><span class="p">),</span> <span class="n">output_verbose</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SenAnalyzer.run"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">,</span> <span class="n">merge_multiple_classes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_single_load_eval_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_load_eval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For multiprocessing&quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">kwargs_load_eval</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;filepath&#39;</span><span class="p">)</span>
+        <span class="n">_result</span> <span class="o">=</span> <span class="n">_load_single_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span><span class="p">)</span>
+        <span class="n">kwargs_load_eval</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="n">_result</span><span class="p">})</span>
+        <span class="n">total_res</span><span class="p">,</span> <span class="n">verbose_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_eval_statistical_measure</span><span class="p">(</span><span class="n">kwargs_load_eval</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">verbose_calculation</span>
+
+    <span class="k">def</span> <span class="nf">_mp_load_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_filepaths</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">n_cpu</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading and evaluating the statistical measure of saved simulation files on multiple cores</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Load files and evaluate statistical measure on </span><span class="si">{</span><span class="n">n_cpu</span><span class="si">}</span><span class="s1"> processes.&#39;</span><span class="p">)</span>
+        <span class="n">kwargs_load_eval</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
+            <span class="n">kwargs_load_eval</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;cal_class&#39;</span><span class="p">:</span> <span class="n">cal_class</span><span class="p">})</span>
+        <span class="n">output_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">list_output_verbose</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">n_cpu</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">total</span><span class="p">,</span> <span class="n">verbose</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_single_load_eval_file</span><span class="p">,</span> <span class="n">kwargs_load_eval</span><span class="p">):</span>
+                <span class="n">output_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+                <span class="n">list_output_verbose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">output_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">output_array</span><span class="p">)</span>
+            <span class="n">output_verbose</span> <span class="o">=</span> <span class="n">_restruct_verbose</span><span class="p">(</span><span class="n">list_output_verbose</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span>
+
+    <span class="k">def</span> <span class="nf">_load_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_filepaths</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">n_cpu</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading and evaluating the statistical measure of saved simulation files.</span>
+<span class="sd">        Single- or multiprocessing possible with definition of n_cpu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_cpu</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">_load_files</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span><span class="p">)</span>
+            <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_statistical_measure</span><span class="p">(</span>
+                <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">,</span>
+                <span class="n">results</span><span class="o">=</span><span class="n">results</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span>
+        <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mp_load_eval</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">n_cpu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span>
+
+<div class="viewcode-block" id="SenAnalyzer.run"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">,</span> <span class="n">merge_multiple_classes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the sensitivity analysis for each class and</span>
 <span class="sd">        return the result.</span>
 
 <span class="sd">        :param CalibrationClass,list calibration_classes:</span>
-<span class="sd">            Either one or multiple classes for calibration</span>
+<span class="sd">            Either one or multiple classes for calibration with same tuner-parameters.</span>
 <span class="sd">        :param bool merge_multiple_classes:</span>
 <span class="sd">            Default True. If False, the given list of calibration-classes</span>
-<span class="sd">            is handeled as-is. This means if you pass two CalibrationClass objects</span>
+<span class="sd">            is handled as-is. This means if you pass two CalibrationClass objects</span>
 <span class="sd">            with the same name (e.g. &quot;device on&quot;), the calibration process will run</span>
 <span class="sd">            for both these classes stand-alone.</span>
 <span class="sd">            This will automatically yield an intersection of tuner-parameters, however may</span>
 <span class="sd">            have advantages in some cases.</span>
+<span class="sd">        :keyword bool verbose:</span>
+<span class="sd">            Default False. If True, in addition to the combined Goals of the Classes</span>
+<span class="sd">            (saved under index Goal: all), the sensitivity measures of the individual</span>
+<span class="sd">            Goals will also be calculated and returned.</span>
+<span class="sd">        :keyword scale:</span>
+<span class="sd">            Default is False. If True the bounds of the tuner-parameters</span>
+<span class="sd">            will be scaled between 0 and 1.</span>
+<span class="sd">        :keyword bool use_fist_sim:</span>
+<span class="sd">            Default False. If True, the simulations of the first calibration class will be used for</span>
+<span class="sd">            all other calibration classes with their relevant time intervals.</span>
+<span class="sd">            The simulations must be stored on a hard-drive, so it must be used with</span>
+<span class="sd">            either save_files or load_files.</span>
+<span class="sd">        :keyword int n_cpu:</span>
+<span class="sd">            Default is 1. The number of processes to use for the evaluation of the statistical</span>
+<span class="sd">            measure. For n_cpu &gt; 1 only one simulation file is loaded at once in a process and</span>
+<span class="sd">            dumped directly after the evaluation of the statistical measure,</span>
+<span class="sd">            so that only minimal memory is used.</span>
+<span class="sd">            Use this option for large analyses.</span>
+<span class="sd">            Only implemented for save_files=True or load_sim_files=True.</span>
+<span class="sd">        :keyword bool load_sim_files:</span>
+<span class="sd">            Default False. If True, no new simulations are done and old simulations are loaded.</span>
+<span class="sd">            The simulations and corresponding samples will be loaded from self.savepath_sim like</span>
+<span class="sd">            they were saved from self.save_files. Currently, the name of the sim folder must be</span>
+<span class="sd">            &quot;simulations_CAL_CLASS_NAME&quot; and for the samples &quot;samples_CAL_CLASS_NAME&quot;.</span>
+<span class="sd">            The usage of the same simulations for different</span>
+<span class="sd">            calibration classes is not supported yet.</span>
+<span class="sd">        :keyword bool save_results:</span>
+<span class="sd">            Default True. If True, all results are saved as a csv in cd.</span>
+<span class="sd">            (samples, statistical measures and analysis variables).</span>
+<span class="sd">        :keyword bool plot_result:</span>
+<span class="sd">            Default True. If True, the results will be plotted.</span>
 <span class="sd">        :return:</span>
-<span class="sd">            Returns a list of dictionaries. One dict is the SALib-result for</span>
-<span class="sd">            one calibration-class. The order is based on the order of the</span>
-<span class="sd">            calibration-class list.</span>
-<span class="sd">        :rtype: list</span>
+<span class="sd">            Returns a pandas.DataFrame. The DataFrame has a Multiindex with the</span>
+<span class="sd">            levels Class, Goal and Analysis variable. The Goal name of combined goals is &#39;all&#39;.</span>
+<span class="sd">            The variables are the tuner-parameters.</span>
+<span class="sd">            For the Sobol Method and calc_second_order returns a tuple of DataFrames (df_1, df_2)</span>
+<span class="sd">            where df_2 contains the second oder analysis variables and has an extra index level</span>
+<span class="sd">            Interaction, which also contains the variables.</span>
+<span class="sd">        :rtype: pandas.DataFrame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">use_first_sim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_first_sim&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">n_cpu</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_cpu&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">save_results</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;save_results&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">plot_result</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;plot_result&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">load_sim_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;load_sim_files&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Check correct input</span>
         <span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">validate_cal_class_input</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
         <span class="c1"># Merge the classes for avoiding possible intersection of tuner-parameters</span>
         <span class="k">if</span> <span class="n">merge_multiple_classes</span><span class="p">:</span>
             <span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">merge_calibration_classes</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
 
+        <span class="c1"># Check n_cpu</span>
+        <span class="k">if</span> <span class="n">n_cpu</span> <span class="o">&gt;</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given n_cpu &#39;</span><span class="si">{</span><span class="n">n_cpu</span><span class="si">}</span><span class="s2">&#39; is greater &quot;</span>
+                             <span class="s2">&quot;than the available number of &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;cpus on your machine &#39;</span><span class="si">{</span><span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check if the usage of the simulations from the first calibration class for all is possible</span>
+        <span class="k">if</span> <span class="n">use_first_sim</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">load_sim_files</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;To use the simulations of the first calibration class &#39;</span>
+                                     <span class="s1">&#39;for all classes the simulation files must be saved. &#39;</span>
+                                     <span class="s1">&#39;Either set save_files=True or load already exiting files &#39;</span>
+                                     <span class="s1">&#39;with load_sim_files=True.&#39;</span><span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">stop_time</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">start_time</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span>
+                    <span class="n">stop_time</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">start_time</span> <span class="o">&gt;</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span> <span class="ow">or</span> <span class="n">stop_time</span> <span class="o">&lt;</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;To use the simulations of the first calibration class &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;for all classes the start and stop times of the other &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;classes must be in the interval [</span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">stop_time</span><span class="si">}</span><span class="s1">] &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;of the first calibration class.&#39;</span><span class="p">)</span>
+
         <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calibration_classes</span><span class="p">:</span>
-            <span class="n">t_sen_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">):</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start sensitivity analysis of class: </span><span class="si">%s</span><span class="s1">, &#39;</span>
                              <span class="s1">&#39;Time-Interval: </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1"> s&#39;</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                              <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
-            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_samples</span><span class="p">()</span>
             <span class="c1"># Generate list with metrics of every parameter variation</span>
-            <span class="n">output_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulate_samples</span><span class="p">(</span>
-                <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
-                <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_function</span><span class="p">(</span>
-                <span class="n">x</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
-                <span class="n">y</span><span class="o">=</span><span class="n">output_array</span>
-            <span class="p">)</span>
-            <span class="n">t_sen_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">result</span><span class="p">[</span><span class="s1">&#39;duration[s]&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_sen_stop</span> <span class="o">-</span> <span class="n">t_sen_start</span>
-            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">results_goals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">load_sim_files</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">use_first_sim</span><span class="p">:</span>
+                    <span class="n">class_name</span> <span class="o">=</span> <span class="n">calibration_classes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">class_name</span> <span class="o">=</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">sim_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;simulations_</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">samples_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples_</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading samples from </span><span class="si">{</span><span class="n">samples_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">samples_path</span><span class="p">,</span>
+                                      <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span>
+                                     <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))]</span>
+                <span class="n">_filepaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">result_file_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">result_file_name</span> <span class="ow">in</span>
+                              <span class="n">result_file_names</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading simulation files from </span><span class="si">{</span><span class="n">sim_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_eval</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">n_cpu</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulate_samples</span><span class="p">(</span>
+                    <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">,</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">scale</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+                    <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_eval</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">,</span> <span class="n">n_cpu</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output_array</span><span class="p">,</span> <span class="n">output_verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_statistical_measure</span><span class="p">(</span>
+                        <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">,</span>
+                        <span class="n">results</span><span class="o">=</span><span class="n">results</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">use_first_sim</span><span class="p">:</span>
+                    <span class="n">load_sim_files</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># combine output_array and output_verbose</span>
+            <span class="c1"># set key for output_array depending on one or multiple goals</span>
+            <span class="n">stat_mea</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="n">output_array</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_verbose</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">stat_mea</span> <span class="o">=</span> <span class="n">output_verbose</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_verbose</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">stat_mea</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">output_verbose</span><span class="p">)</span>
+
+            <span class="c1"># save statistical measure and corresponding samples for each cal_class in cd</span>
+            <span class="k">if</span> <span class="n">save_results</span><span class="p">:</span>
+                <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">output_array</span><span class="p">))]</span>
+                <span class="n">stat_mea_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">stat_mea</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">)</span>
+                <span class="n">savepath_stat_mea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">statistical_measure</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+                <span class="n">stat_mea_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">savepath_stat_mea</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">savepath_stat_mea</span><span class="p">)</span>
+                <span class="n">samples_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">(),</span>
+                                          <span class="n">index</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">)</span>
+                <span class="n">savepath_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+                <span class="n">samples_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">savepath_samples</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">savepath_samples</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting calculation of analysis variables&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">stat_mea</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">result_goal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_function</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">val</span>
+                <span class="p">)</span>
+                <span class="n">results_goals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_goal</span>
+            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_goals</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished sensitivity analysis of class: </span><span class="si">%s</span><span class="s1">, &#39;</span>
+                             <span class="s1">&#39;Time-Interval: </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1"> s&#39;</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conv_local_results</span><span class="p">(</span><span class="n">results</span><span class="o">=</span><span class="n">all_results</span><span class="p">,</span>
                                           <span class="n">local_classes</span><span class="o">=</span><span class="n">calibration_classes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_result</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">calibration_classes</span></div>
 
+    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">time_dependent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the result DataFrame of run and run_time_dependent.</span>
+<span class="sd">        Needs to be overwritten for Sobol results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">time_dependent</span><span class="p">:</span>
+            <span class="n">savepath_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">_results_time.csv&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">savepath_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">_results.csv&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">savepath_result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">savepath_result</span><span class="p">)</span>
+
 <div class="viewcode-block" id="SenAnalyzer.create_problem"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.create_problem">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_problem</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create_problem</span><span class="p">(</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create function for later access if multiple calibration-classes are used.&quot;&quot;&quot;</span>
         <span class="n">num_vars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
         <span class="n">problem</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;num_vars&#39;</span><span class="p">:</span> <span class="n">num_vars</span><span class="p">,</span>
                    <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">(),</span>
                    <span class="s1">&#39;bounds&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">bounds</span><span class="p">)}</span>
         <span class="k">return</span> <span class="n">problem</span></div>
 
 <div class="viewcode-block" id="SenAnalyzer.select_by_threshold"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">select_by_threshold</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">select_by_threshold</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Automatically select sensitive tuner parameters based on a given threshold</span>
-<span class="sd">        and a key-word of the result.</span>
+<span class="sd">        of a given analysis variable from a sensitivity result.</span>
+<span class="sd">        Uses only the combined goals.</span>
 
 <span class="sd">        :param list calibration_classes:</span>
 <span class="sd">            List of aixcalibuha.data_types.CalibrationClass objects that you want to</span>
 <span class="sd">            automatically select sensitive tuner-parameters.</span>
 <span class="sd">        :param pd.DataFrame result:</span>
 <span class="sd">            Result object of sensitivity analysis run</span>
+<span class="sd">        :param str analysis_variable:</span>
+<span class="sd">            Analysis variable to use for the selection</span>
 <span class="sd">        :param float threshold:</span>
 <span class="sd">            Minimal required value of given key</span>
 <span class="sd">        :return: list calibration_classes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">num_class</span><span class="p">,</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">):</span>
-            <span class="n">class_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calibration_classes</span><span class="p">:</span>
+            <span class="n">first_goal</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">class_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">first_goal</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">]</span>
             <span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
             <span class="n">select_names</span> <span class="o">=</span> <span class="n">class_result</span><span class="p">[</span><span class="n">class_result</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
             <span class="n">tuner_paras</span><span class="o">.</span><span class="n">remove_names</span><span class="p">(</span><span class="n">select_names</span><span class="p">)</span>
@@ -359,25 +686,315 @@
             <span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
         <span class="k">return</span> <span class="n">calibration_classes</span></div>
 
-    <span class="k">def</span> <span class="nf">_conv_global_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
-        <span class="n">glo_res_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+<div class="viewcode-block" id="SenAnalyzer.select_by_threshold_verbose"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.select_by_threshold_verbose">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">select_by_threshold_verbose</span><span class="p">(</span><span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span>
+                                    <span class="n">result</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                    <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                    <span class="n">calc_names_for_selection</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select tuner-parameters of single calibration class with verbose sensitivity results.</span>
+<span class="sd">        This function selects tuner-parameters if their sensitivity is equal or greater</span>
+<span class="sd">        than the threshold in just one target value of one calibration class in the</span>
+<span class="sd">        sensitivity result. This can be more robust because a small sensitivity in one target</span>
+<span class="sd">        value and state of the system can mean that the parameter can also be calibrated in</span>
+<span class="sd">        a global calibration class which calibrates multiple states and target values at</span>
+<span class="sd">        the same time and has there not directly the same sensitivity as in the isolated</span>
+<span class="sd">        view of a calibration class for only one state.</span>
+
+<span class="sd">        :param CalibrationClass calibration_class:</span>
+<span class="sd">            The calibration class from which the tuner parameters will be selected.</span>
+<span class="sd">        :param pd.DataFrame result:</span>
+<span class="sd">            Sensitivity results to use for the selection. Can include multiple classes.</span>
+<span class="sd">        :param str analysis_variable:</span>
+<span class="sd">            The analysis variable to use for the selection.</span>
+<span class="sd">        :param float threshold:</span>
+<span class="sd">            Minimal required value of given analysis variable.</span>
+<span class="sd">        :param List[str] calc_names_for_selection:</span>
+<span class="sd">            Specifies which calibration classes in the sensitivity results will be used for</span>
+<span class="sd">            the selection. Default are all classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Counter</span><span class="p">(</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">())</span> <span class="o">!=</span> <span class="n">Counter</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s2">&quot;The tuner-parameter of the calibration class do not &quot;</span>
+                            <span class="s2">&quot;match the tuner-parameters in the sensitivity result.&quot;</span>
+                            <span class="s2">&quot;They have to match.&quot;</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">analysis_variable</span><span class="p">]</span>
+        <span class="n">calc_names_results</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s2">&quot;Class&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">calc_names_for_selection</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="n">calc_names_for_selection</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cal_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">calc_names_results</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The calibration class name </span><span class="si">{</span><span class="n">cal_class</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;does not match any class name &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;in the given sensitivity result.&quot;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">calc_names_for_selection</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">selected_tuners</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+
+        <span class="n">remove_tuners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tuner</span><span class="p">,</span> <span class="n">selected</span> <span class="ow">in</span> <span class="n">selected_tuners</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">:</span>
+                <span class="n">remove_tuners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuner</span><span class="p">)</span>
+        <span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">)</span>
+        <span class="n">tuner_paras</span><span class="o">.</span><span class="n">remove_names</span><span class="p">(</span><span class="n">remove_tuners</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tuner_paras</span><span class="o">.</span><span class="n">get_names</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Threshold to small. All tuner-parameters would be removed.&quot;</span><span class="p">)</span>
+        <span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
+        <span class="k">return</span> <span class="n">calibration_class</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.run_time_dependent"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.run_time_dependent">[docs]</a>    <span class="k">def</span> <span class="nf">run_time_dependent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the time dependent sensitivity for all the single goals in the calibration class.</span>
+
+<span class="sd">        :param CalibrationClass cal_class:</span>
+<span class="sd">            Calibration class with tuner-parameters to calculate sensitivity for.</span>
+<span class="sd">            Can include dummy target date.</span>
+<span class="sd">        :keyword scale:</span>
+<span class="sd">            Default is False. If True the bounds of the tuner-parameters</span>
+<span class="sd">            will be scaled between 0 and 1.</span>
+<span class="sd">        :keyword bool load_sim_files:</span>
+<span class="sd">            Default False. If True, no new simulations are done and old simulations are loaded.</span>
+<span class="sd">            The simulations and corresponding samples will be loaded from self.savepath_sim like</span>
+<span class="sd">            they were saved from self.save_files. Currently, the name of the sim folder must be</span>
+<span class="sd">            &quot;simulations_CAL_CLASS_NAME&quot; and for the samples &quot;samples_CAL_CLASS_NAME&quot;.</span>
+<span class="sd">        :keyword bool save_results:</span>
+<span class="sd">            Default True. If True, all results are saved as a csv in cd.</span>
+<span class="sd">            (samples and analysis variables).</span>
+<span class="sd">        :keyword int n_steps:</span>
+<span class="sd">            Default is all time steps. If the problem is large, the evaluation of all time steps</span>
+<span class="sd">            at once can cause a memory error. Then n_steps defines how many time_steps</span>
+<span class="sd">            are evaluated at once in chunks. This increases the needed time exponentially and</span>
+<span class="sd">            the simulation files must be saved.</span>
+<span class="sd">        :keyword bool plot_result:</span>
+<span class="sd">            Default True. If True, the results will be plotted.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Returns a pandas.DataFrame.</span>
+<span class="sd">        :rtype: pandas.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">save_results</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;save_results&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">plot_result</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;plot_result&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">load_sim_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;load_sim_files&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">n_steps</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_steps&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start time dependent sensitivity analysis.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">load_sim_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_problem</span><span class="p">(</span><span class="n">cal_class</span><span class="o">.</span><span class="n">tuner_paras</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+            <span class="n">sim_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;simulations_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">samples_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">savepath_sim</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples_</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">samples_path</span><span class="p">,</span>
+                                  <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                  <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span>
+                                 <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))]</span>
+            <span class="n">_filepaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">result_file_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">result_file_name</span> <span class="ow">in</span>
+                          <span class="n">result_file_names</span><span class="p">]</span>
+
+            <span class="n">sen_time_dependent_list</span><span class="p">,</span> <span class="n">time_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_analyze_tsteps</span><span class="p">(</span><span class="n">_filepaths</span><span class="o">=</span><span class="n">_filepaths</span><span class="p">,</span>
+                                                                            <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                                                                            <span class="n">n_steps</span><span class="o">=</span><span class="n">n_steps</span><span class="p">,</span>
+                                                                            <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+            <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">_restruct_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">,</span> <span class="n">time_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulate_samples</span><span class="p">(</span>
+                <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="n">scale</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+                <span class="n">sen_time_dependent_list</span><span class="p">,</span> <span class="n">time_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_analyze_tsteps</span><span class="p">(</span><span class="n">_filepaths</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+                                                                                <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                                                                                <span class="n">n_steps</span><span class="o">=</span><span class="n">n_steps</span><span class="p">,</span>
+                                                                                <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+                <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">_restruct_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">,</span>
+                                                                 <span class="n">time_index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
+                <span class="n">time_index</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">total_result</span> <span class="o">=</span> <span class="n">_concat_all_sims</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+                <span class="n">sen_time_dependent_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">time_step</span> <span class="ow">in</span> <span class="n">time_index</span><span class="p">:</span>
+                    <span class="n">result_df_tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_tstep_df</span><span class="p">(</span><span class="n">time_step</span><span class="o">=</span><span class="n">time_step</span><span class="p">,</span>
+                                                             <span class="n">tsteps_sim_results</span><span class="o">=</span><span class="n">total_result</span><span class="p">,</span>
+                                                             <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                                                             <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                                                             <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+                    <span class="n">sen_time_dependent_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_df_tstep</span><span class="p">)</span>
+                <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">_restruct_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">,</span>
+                                                                 <span class="n">time_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished time dependent sensitivity analysys.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_results</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">sen_time_dependent_df</span><span class="p">,</span> <span class="n">time_dependent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sen_time_dependent_df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="n">plot_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_df</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plot_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_df</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">sen_time_dependent_df</span></div>
+
+    <span class="k">def</span> <span class="nf">_analyze_tstep_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_step</span><span class="p">,</span> <span class="n">tsteps_sim_results</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze the sensitivity at a single time step.&quot;&quot;&quot;</span>
+        <span class="n">result_dict_tstep</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">result_tstep_var</span> <span class="o">=</span> <span class="n">tsteps_sim_results</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">time_step</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">result_tstep_var</span> <span class="o">==</span> <span class="n">result_tstep_var</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">sen_tstep_var</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sen_tstep_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_function</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">result_tstep_var</span>
+                <span class="p">)</span>
+            <span class="n">result_dict_tstep</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">sen_tstep_var</span>
+        <span class="n">result_df_tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conv_local_results</span><span class="p">(</span><span class="n">results</span><span class="o">=</span><span class="p">[</span><span class="n">result_dict_tstep</span><span class="p">],</span>
+                                                   <span class="n">local_classes</span><span class="o">=</span><span class="p">[</span><span class="n">cal_class</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">result_df_tstep</span>
+
+    <span class="k">def</span> <span class="nf">_load_tsteps_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsteps</span><span class="p">,</span> <span class="n">_filepaths</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load all simulations and extract and concat the sim results of the time steps in tsteps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Loading time steps from </span><span class="si">{</span><span class="n">tsteps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">tsteps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> of the simulation files.&quot;</span><span class="p">)</span>
+        <span class="n">tsteps_sim_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_filepath</span> <span class="ow">in</span> <span class="n">_filepaths</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="n">_load_single_file</span><span class="p">(</span><span class="n">_filepath</span><span class="p">)</span>
+            <span class="n">tsteps_sim_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">tsteps</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">tsteps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">tsteps_sim_results</span> <span class="o">=</span> <span class="n">_concat_all_sims</span><span class="p">(</span><span class="n">tsteps_sim_results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tsteps_sim_results</span>
+
+    <span class="k">def</span> <span class="nf">_load_analyze_tsteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_filepaths</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load and analyze all time steps in chunks with n_steps time steps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sim1</span> <span class="o">=</span> <span class="n">_load_single_file</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">time_index</span> <span class="o">=</span> <span class="n">sim1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">sim1</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
+        <span class="n">sen_time_dependent_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">n_steps</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">list_tsteps</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_index</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n_steps</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_index</span><span class="p">)):</span>
+            <span class="n">list_tsteps</span> <span class="o">=</span> <span class="n">_divide_chunks</span><span class="p">(</span><span class="n">time_index</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;n_steps can only be between 1 and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">time_index</span><span class="p">)</span><span class="si">}</span><span class="s2"> or the string all.&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tsteps</span> <span class="ow">in</span> <span class="n">list_tsteps</span><span class="p">:</span>
+            <span class="n">tsteps_sim_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_tsteps_df</span><span class="p">(</span><span class="n">tsteps</span><span class="o">=</span><span class="n">tsteps</span><span class="p">,</span> <span class="n">_filepaths</span><span class="o">=</span><span class="n">_filepaths</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analyzing these time steps.&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tstep</span> <span class="ow">in</span> <span class="n">tsteps</span><span class="p">:</span>
+                <span class="n">result_df_tstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyze_tstep_df</span><span class="p">(</span><span class="n">time_step</span><span class="o">=</span><span class="n">tstep</span><span class="p">,</span>
+                                                         <span class="n">tsteps_sim_results</span><span class="o">=</span><span class="n">tsteps_sim_results</span><span class="p">,</span>
+                                                         <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span>
+                                                         <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                                                         <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">)</span>
+                <span class="n">sen_time_dependent_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_df_tstep</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sen_time_dependent_list</span><span class="p">,</span> <span class="n">time_index</span>
+
+    <span class="k">def</span> <span class="nf">_conv_global_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span>
+                            <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">glo_res_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">=</span><span class="n">cal_class</span><span class="p">,</span>
+                                          <span class="n">analysis_variable</span><span class="o">=</span><span class="n">analysis_variable</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">glo_res_dict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;global&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_conv_local_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">_conv_results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">cal_class</span><span class="o">=</span><span class="n">local_class</span><span class="p">)</span>
-                         <span class="k">for</span> <span class="n">result</span><span class="p">,</span> <span class="n">local_class</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">)]</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_conv_results</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">local_classes</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the result dictionaries form SALib of each class and goal into one DataFrame.</span>
+<span class="sd">        Overwritten for Sobol.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_conv_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tuples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">class_results</span><span class="p">,</span> <span class="n">local_class</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">local_classes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">goal</span><span class="p">,</span> <span class="n">goal_results</span> <span class="ow">in</span> <span class="n">class_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">analysis_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_variables</span><span class="p">:</span>
+                    <span class="n">_conv_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_res_dict</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">goal_results</span><span class="p">,</span>
+                                                            <span class="n">cal_class</span><span class="o">=</span><span class="n">local_class</span><span class="p">,</span>
+                                                            <span class="n">analysis_variable</span><span class="o">=</span><span class="n">analysis_var</span><span class="p">))</span>
+                    <span class="n">tuples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">local_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">goal</span><span class="p">,</span> <span class="n">analysis_var</span><span class="p">))</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span><span class="n">tuples</span><span class="o">=</span><span class="n">tuples</span><span class="p">,</span>
+                                          <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">,</span> <span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Analysis variable&#39;</span><span class="p">])</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_conv_results</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">df</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the result object to a dict with the key</span>
 <span class="sd">        being the variable name and the value being the result</span>
-<span class="sd">        associated to self.analysis_variable.</span>
+<span class="sd">        associated to analysis_variable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="SenAnalyzer.plot"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the results of the sensitivity analysis method from run().</span>
+
+<span class="sd">        :param pd.DataFrame result:</span>
+<span class="sd">            Dataframe of the results like from the run() function.</span>
+<span class="sd">        :return tuple of matplotlib objects (fig, ax):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plot_single</span><span class="p">(</span><span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.load_from_csv"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.load_from_csv">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_from_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load sensitivity results which were saved with the run() or run_time_dependent() function.</span>
+
+<span class="sd">        For second order results use the load_second_order_from_csv() function of the SobolAnalyzer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SenAnalyzer.save_for_reproduction"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer.save_for_reproduction">[docs]</a>    <span class="k">def</span> <span class="nf">save_for_reproduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                              <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">files</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">exclude_sim_files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="n">remove_saved_files</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the settings of the SenAnalyzer and SimApi in order to</span>
+<span class="sd">        reproduce the simulations and sensitivity analysis method.</span>
+<span class="sd">        All saved results will be also saved in the reproduction</span>
+<span class="sd">        archive. The simulations can be excluded from saving.</span>
+
+<span class="sd">        :param str title:</span>
+<span class="sd">            Title of the study</span>
+<span class="sd">        :param pathlib.Path path:</span>
+<span class="sd">            Where to store the .zip file. If not given, self.cd is used.</span>
+<span class="sd">        :param list files:</span>
+<span class="sd">            List of files to save along the standard ones.</span>
+<span class="sd">            Examples would be plots, tables etc.</span>
+<span class="sd">        :param bool exclude_sim_files:</span>
+<span class="sd">            Default False. If True, the simulation files will not be saved in</span>
+<span class="sd">            the reproduction archive.</span>
+<span class="sd">        :param bool remove_saved_files:</span>
+<span class="sd">            Default False. If True, the result and simulation files will be moved</span>
+<span class="sd">            instead of just copied.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            All keyword arguments except title, files, and path of the function</span>
+<span class="sd">            `save_reproduction_archive`. Most importantly, `log_message` may be</span>
+<span class="sd">            specified to avoid input during execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reproduction_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exclude_sim_files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;simulation&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                    <span class="k">continue</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;SenAnalyzer&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CopyFile</span><span class="p">(</span>
+                <span class="n">sourcepath</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">remove</span><span class="o">=</span><span class="n">remove_saved_files</span>
+            <span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">save_for_reproduction</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>
