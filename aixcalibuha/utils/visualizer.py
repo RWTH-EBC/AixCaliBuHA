@@ -15,6 +15,28 @@ from ebcpy.utils import setup_logger
 import aixcalibuha
 
 
+def short_name(ini_name: str, max_len: int):
+    """
+    Shortens long strings to a max length from the front.
+    long_string_name => ...ing_name with len(new_name) = max_len
+
+    :param str ini_name:
+        Long string to shorten.
+    :param int max_len:
+        Max len of the new string.
+    :return: str
+        The shorten string.
+    """
+    if len(ini_name) > max_len:
+        num_dots = len(ini_name) - max_len
+        if num_dots > 3:
+            num_dots = 3
+        formatted_name = "." * num_dots + ini_name[-(max_len - num_dots):]
+    else:
+        formatted_name = ini_name
+    return formatted_name
+
+
 class CalibrationLogger:
     """Base class for showing the process of functions in
         this Framework with print-statements and saving everything
@@ -259,16 +281,11 @@ class CalibrationLogger:
         for ini_name in initial_names:
             # Limit string length to a certain amount.
             # The full name has to be displayed somewhere else
-            if len(ini_name) > self._width:
-                num_dots = len(ini_name) - self._width
-                if num_dots > 3:
-                    num_dots = 3
-                formatted_name = "."*num_dots + ini_name[-(self._width-num_dots):]
-            else:
-                formatted_name = ini_name
+            formatted_name = short_name(ini_name=ini_name, max_len=self._width)
             info_string += "   {0:{width}s}".format(formatted_name, width=self._width)
         # Add string for qualitative measurement used (e.g. NRMSE, MEA etc.)
-        info_string += "     {0:{width}s}".format(self.goals.statistical_measure, width=self._width)
+        info_string += "     {0:{width}s}".format(self.goals.statistical_measure,
+                                                  width=self._width)
         info_string += "penaltyfactor"
         info_string += f"   Unweighted {self.goals.statistical_measure}"
         return info_string
@@ -306,11 +323,12 @@ class CalibrationLogger:
                                                        prec=self._prec)
         if penalty:
             info_string += "   {0:{width}.{prec}f}".format(penalty, width=self._width,
-                                                           prec=self._prec-3)
+                                                           prec=self._prec - 3)
         else:
             info_string += "        {}".format("-")
-        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(weight, val, prec=4)
-                                           for weight, val in unweighted_objective.items()])
+        _verbose_info = "= " + " + ".join(["{0:.{prec}}*{1:.{prec}}".format(val[0],
+                                                                            val[1], prec=4)
+                                           for goal, val in unweighted_objective.items()])
         info_string += f"          {_verbose_info}"
 
         return info_string
@@ -462,18 +480,21 @@ class CalibrationVisualizer(CalibrationLogger):
         if self.goals is not None and self.create_tsd_plot:
             self._plot_goals(at_validation=True)
 
-        self._show_plot()
+        self._show_plot(for_validation=True)
 
-    def _show_plot(self):
+    def _show_plot(self, for_validation=False):
         """Show plot if activated"""
         if not self.show_plot:
             return
         plt.draw()
-        self.fig_obj.canvas.draw_idle()
-        self.fig_tuner.canvas.draw_idle()
         if self.create_tsd_plot:
             self.fig_goal.canvas.draw_idle()
-        plt.pause(self.show_plot_pause_time)
+        if not for_validation:
+            self.fig_obj.canvas.draw_idle()
+            self.fig_tuner.canvas.draw_idle()
+            plt.pause(self.show_plot_pause_time)
+        else:
+            plt.show()
 
     def save_calibration_result(self, best_iterate, model_name, **kwargs):
         """
@@ -568,8 +589,9 @@ class CalibrationVisualizer(CalibrationLogger):
             os.makedirs(path_intersections)
         if "itercount" in kwargs:
             fig_intersection.savefig(
-                os.path.join(path_intersections,
-                             f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
+                os.path.join(
+                    path_intersections,
+                    f'tuner_parameter_intersection_plot_it{kwargs["itercount"]}.{self.file_type}')
             )
         else:
             fig_intersection.savefig(

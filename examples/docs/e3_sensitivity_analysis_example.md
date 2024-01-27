@@ -11,6 +11,34 @@ Import a valid analyzer, e.g. `SobolAnalyzer`
 from aixcalibuha import SobolAnalyzer
 ```
 
+Please define the missing TODOs in the section below according to the docstrings.
+
+```python
+"""
+Example process of a sensitivity analysis.
+First, the sensitivity problem is constructed, in this example
+the `morris` method is chosen.
+Afterward, the sen_analyzer class is instantiated to run the
+sensitivity analysis in the next step.
+The result of this analysis is then printed to the user.
+The automatic_select function is presented as-well, using a threshold of 1
+and the default `mu_star` criterion.
+
+:param [pathlib.Path, str] examples_dir:
+    Path to the examples folder of AixCaliBuHA
+:param str example:
+    Which example to run, "A" or "B"
+:param int n_cpu:
+    Number of cores to use
+
+:return: A list of calibration classes
+:rtype: list
+"""
+examples_dir = "TODO: Add a valid input according to the docstring above"
+example: str  =  "B"
+n_cpu: int  =  1
+```
+
 ## Setup
 Setup the class according to the documentation.
 You just have to pass a valid simulation api and
@@ -24,8 +52,7 @@ sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 sen_analyzer = SobolAnalyzer(
         sim_api=sim_api,
         num_samples=10,
-        cd=sim_api.cd,
-        analysis_variable='S1'
+        cd=sim_api.cd
     )
 ```
 
@@ -36,7 +63,9 @@ calibration_classes = setup_calibration_classes(
     examples_dir=examples_dir, example=example
 )[0]
 
-result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
+result, classes = sen_analyzer.run(calibration_classes=calibration_classes,
+                                   plot_result=True,
+                                   save_results=False)
 print("Result of the sensitivity analysis")
 print(result)
 ```
@@ -49,8 +78,9 @@ to remove complexity from our calibration problem:
 ```python
 print("Selecting relevant tuner-parameters using a fixed threshold:")
 sen_analyzer.select_by_threshold(calibration_classes=classes,
-                                 result=result,
-                                 threshold=0.01)
+                                 result=result[0],
+                                 threshold=0.01,
+                                 analysis_variable='S1')
 for cal_class in classes:
     print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
 ```

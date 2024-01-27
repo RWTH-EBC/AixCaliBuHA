@@ -12,7 +12,7 @@ You have three ways of accessing the examples:
 
 For the latter two, be sure to:
 
-1. Create a clean environment of python 3.7 or 3.8. In Anaconda run: `conda create -n py38_ebcpy python=3.8`
+1. Create a clean environment of python 3.8 or 3.9. In Anaconda run: `conda create -n py38_ebcpy python=3.8`
 2. Activate the environment in your terminal. In Anaconda run: `activate py38_ebcpy`
 3. Clone the library using `git clone --recurse-submodules https://github.com/RWTH-EBC/AixCaliBuHA`
 5. Install the library using `pip install -e AixCaliBuHA`
@@ -50,8 +50,20 @@ The examples 3-5 are written for both, so just alter the parameter in the `if __
 
 ## `e3_sensitivity_analysis_example.py`
 
-1. Learn how to execute a sensitivity analysis
+1. Learn how to execute a simple sensitivity analysis
 2. Learn how to automatically select sensitive tuner parameters
+
+## `e3_1_verbose_sensitivity_analysis_example.py`
+
+1. Learn how to execute a verbose sensitivity analysis
+2. Learn the meaning of the results the analysis of your model
+3. Learn other sensitivity methods
+4. Learn time dependent sensitivity analysis
+5. Learn how to save the results for reproduction
+
+## `e3_1_verbose_dymola_sensitivity_analysis_example.py`
+
+1. Learn how to execute a sensitivity analysis with the dymola api
 
 ## `e4_calibration_example.py`
 

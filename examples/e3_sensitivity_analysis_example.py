@@ -17,7 +17,7 @@ def run_sensitivity_analysis(
     Example process of a sensitivity analysis.
     First, the sensitivity problem is constructed, in this example
     the `morris` method is chosen.
-    Afterwards, the sen_analyzer class is instantiated to run the
+    Afterward, the sen_analyzer class is instantiated to run the
     sensitivity analysis in the next step.
     The result of this analysis is then printed to the user.
     The automatic_select function is presented as-well, using a threshold of 1
@@ -44,15 +44,16 @@ def run_sensitivity_analysis(
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
             num_samples=10,
-            cd=sim_api.cd,
-            analysis_variable='S1'
+            cd=sim_api.cd
         )
     # Now perform the analysis for the one of the given calibration classes.
     calibration_classes = setup_calibration_classes(
         examples_dir=examples_dir, example=example
     )[0]
 
-    result, classes = sen_analyzer.run(calibration_classes=calibration_classes)
+    result, classes = sen_analyzer.run(calibration_classes=calibration_classes,
+                                       plot_result=True,
+                                       save_results=False)
     print("Result of the sensitivity analysis")
     print(result)
     # For each given class, you should see the given tuner parameters
@@ -61,8 +62,9 @@ def run_sensitivity_analysis(
     # to remove complexity from our calibration problem:
     print("Selecting relevant tuner-parameters using a fixed threshold:")
     sen_analyzer.select_by_threshold(calibration_classes=classes,
-                                     result=result,
-                                     threshold=0.01)
+                                     result=result[0],
+                                     threshold=0.01,
+                                     analysis_variable='S1')
     for cal_class in classes:
         print(f"Class '{cal_class.name}' with parameters:\n{cal_class.tuner_paras}")
     # Return the classes and the sim_api to later perform an automated process in example 5

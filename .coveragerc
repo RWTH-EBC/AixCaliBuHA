@@ -16,3 +16,4 @@ exclude_lines =
 	raise ImportError
 	except Exception as error:
 	except ImportError
+	plt.show()

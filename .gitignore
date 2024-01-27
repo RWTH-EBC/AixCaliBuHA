@@ -5,7 +5,8 @@
 *.bak
 .project
 .pydevproject
-aixcalibuha/examples/testzone
+examples/testzone
+examples/results
 
 # pip install #
 #####################

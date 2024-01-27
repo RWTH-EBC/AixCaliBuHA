@@ -2,6 +2,7 @@
 Adds the MorrisAnalyzer to the available
 classes of sensitivity analysis.
 """
+import numpy as np
 from SALib.sample import morris
 from SALib.analyze import morris as analyze_morris
 from aixcalibuha.sensitivity_analysis import SenAnalyzer
@@ -10,10 +11,14 @@ from aixcalibuha import CalibrationClass
 
 class MorrisAnalyzer(SenAnalyzer):
     """
+    Moris method from SALib https://salib.readthedocs.io/en/latest/api.html#method-of-morris
+    An elementary effects (One-At-A-Time) method which computes the sensitivity
+    measures 'mu', 'mu_star' and 'sigma' with a confidence interval for mu_star.
+
     Additional arguments:
 
     :keyword int num_levels:
-        Default 4, used for the morris-method
+        Default num_samples, used for the morris-method
     :keyword optimal_trajectories:
         Used for the morris-method
     :keyword bool local_optimization:
@@ -24,14 +29,14 @@ class MorrisAnalyzer(SenAnalyzer):
             sim_api=sim_api,
             **kwargs)
         # Set additional kwargs
-        self.num_levels = kwargs.pop("num_levels", 4)
+        self.num_levels = kwargs.pop("num_levels", self.num_samples)
         self.optimal_trajectories = kwargs.pop("optimal_trajectories", None)
         self.local_optimization = kwargs.pop("local_optimization", True)
 
     @property
     def analysis_variables(self):
         """The analysis variables of the sobol method"""
-        return ['mu_star', 'sigma', 'mu_star_conf']
+        return ['mu_star', 'mu', 'sigma', 'mu_star_conf']
 
     def analysis_function(self, x, y):
         """
@@ -71,10 +76,13 @@ class MorrisAnalyzer(SenAnalyzer):
                              N=self.num_samples,
                              **self.create_sampler_demand())
 
-    def _get_res_dict(self, result: dict, cal_class: CalibrationClass):
+    def _get_res_dict(self, result: dict, cal_class: CalibrationClass, analysis_variable: str):
         """
         Convert the result object to a dict with the key
         being the variable name and the value being the result
         associated to self.analysis_variable.
         """
-        return dict(zip(result['names'], result[self.analysis_variable]))
+        if result is None:
+            names = cal_class.tuner_paras.get_names()
+            return dict(zip(names, np.zeros(len(names))))
+        return dict(zip(result['names'], result[analysis_variable]))

@@ -11,6 +11,7 @@ import numpy as np
 from ebcpy import TimeSeriesData
 from ebcpy.utils.statistics_analyzer import StatisticsAnalyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
+
 # pylint: disable=I1101
 
 logger = logging.getLogger(__name__)
@@ -146,8 +147,8 @@ class Goals:
         # Set the weightings, if not specified.
         self._num_goals = len(_columns)
         if weightings is None:
-            self._weightings = np.array([1/self._num_goals
-                                         for i in range(self._num_goals)])
+            self.weightings = np.array([1 / self._num_goals
+                                        for i in range(self._num_goals)])
         else:
             if not isinstance(weightings, (list, np.ndarray)):
                 raise TypeError(f"weightings is of type {type(weightings).__name__} "
@@ -156,7 +157,7 @@ class Goals:
                 raise IndexError(f"The given number of weightings ({len(weightings)}) "
                                  f"does not match the number of "
                                  f"goals ({self._num_goals})")
-            self._weightings = np.array(weightings) / sum(weightings)
+            self.weightings = np.array(weightings) / sum(weightings)
 
     def __str__(self):
         """Overwrite string method to present the Goals-Object more
@@ -213,10 +214,8 @@ class Goals:
             )
             # Apply penalty function
             _diff = _diff * penaltyfactor
-
-            _verbose_calculation[self._weightings[i]] = _diff
-            total_difference += self._weightings[i] * _diff
-
+            _verbose_calculation[goal_name] = (self.weightings[i], _diff)
+            total_difference += self.weightings[i] * _diff
         if verbose:
             return total_difference, _verbose_calculation
         return total_difference
@@ -368,6 +367,7 @@ class TunerParas:
     m_flow_2             0.02     0.01     0.1     0.09
     heatConv_a         200.00    10.00   300.0   290.00
     """
+
     def __init__(self, names, initial_values, bounds=None):
         """Initialize class-objects and check correct input."""
         # Check if the given input-parameters are of correct format. If not, raise an error.
@@ -426,7 +426,7 @@ class TunerParas:
         # If no bounds are given, scaling is not possible--> descaled = scaled
         if self._bounds is None:
             return descaled
-        _scaled = (descaled - self._df["min"])/self._df["scale"]
+        _scaled = (descaled - self._df["min"]) / self._df["scale"]
         if not all((_scaled >= 0) & (_scaled <= 1)):
             warnings.warn("Given descaled values are outside "
                           "of bounds. Automatically limiting "
@@ -446,12 +446,12 @@ class TunerParas:
         if not self._bounds:
             return scaled
         _scaled = np.array(scaled)
-        if not all((_scaled >= 0-1e4) & (_scaled <= 1+1e4)):
+        if not all((_scaled >= 0 - 1e4) & (_scaled <= 1 + 1e4)):
             warnings.warn("Given scaled values are outside of bounds. "
                           "Automatically limiting the values with "
                           "respect to the bounds.")
         _scaled = np.clip(_scaled, a_min=0, a_max=1)
-        return _scaled*self._df["scale"] + self._df["min"]
+        return _scaled * self._df["scale"] + self._df["min"]
 
     @property
     def bounds(self):
@@ -706,7 +706,7 @@ def merge_calibration_classes(calibration_classes):
                                   "inputs": deepcopy(cal_class.inputs),
                                   "input_kwargs": deepcopy(cal_class.input_kwargs)
                                   }
-                                  
+
     # Convert dict to actual calibration-classes
     cal_classes_merged = []
     for _name, values in temp_merged.items():

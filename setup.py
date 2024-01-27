@@ -11,12 +11,12 @@ INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
     'pandas>=1.3.5',
-    'SALib>=1.3.12',
+    'SALib>=1.4.6',
     'ebcpy>=0.3.0',
     'toml>=0.10.2'
 ]
 
-__version__ = "0.3.1"
+__version__ = "1.0.0"
 
 setuptools.setup(
     name='aixcalibuha',
@@ -39,8 +39,10 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8'
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11'
     ],
     keywords=[
         'calibration', 'building', 'energy',

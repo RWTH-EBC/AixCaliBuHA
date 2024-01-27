@@ -10,6 +10,7 @@ import logging
 from typing import Dict
 from copy import copy
 import numpy as np
+import pandas as pd
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha.utils import visualizer, MaxIterationsReached
@@ -95,7 +96,7 @@ class Calibrator(Optimizer):
                  calibration_class: CalibrationClass,
                  **kwargs):
         """Instantiate instance attributes"""
-        #%% Kwargs
+        # %% Kwargs
         # Initialize supported keywords with default value
         # Pop the items so they wont be added when calling the
         # __init__ of the parent class. Always pop with a default value in case
@@ -131,7 +132,7 @@ class Calibrator(Optimizer):
                 raise TypeError(f"Given {bool_keyword} is of type "
                                 f"{type(keyword_value).__name__} but should be type bool")
 
-        #%% Initialize all public parameters
+        # %% Initialize all public parameters
         super().__init__(cd, **kwargs)
         # Set sim_api
         self.sim_api = sim_api
@@ -153,7 +154,7 @@ class Calibrator(Optimizer):
              "stop_time": self.calibration_class.stop_time}
         )
 
-        #%% Setup the logger
+        # %% Setup the logger
         # De-register the logger setup in the optimization class:
         if self.verbose_logging:
             self.logger = visualizer.CalibrationVisualizer(
@@ -243,13 +244,13 @@ class Calibrator(Optimizer):
             )
             return self.ret_val_on_error
 
-        total_res = self._kpi_and_logging_calculation(
+        total_res, unweighted_objective = self._kpi_and_logging_calculation(
             xk_descaled=xk_descaled,
             counter=self._counter,
             results=sim_target_data
         )
 
-        return total_res
+        return total_res, unweighted_objective
 
     def mp_obj(self, x, *args):
         # Initialize list for results
@@ -268,12 +269,14 @@ class Calibrator(Optimizer):
             xk_descaled_list.append(xk_descaled)
             # Update Parameters
             parameter_copy = parameters.copy()
-            parameter_copy.update({name: value for name, value in zip(initial_names, xk_descaled.values)})
+            parameter_copy.update(
+                {name: value for name, value in zip(initial_names, xk_descaled.values)})
             parameter_list.append(parameter_copy)
 
         # Simulate
         if self.save_files:
-            result_file_names = [f"simulation_{self._counter + idx}" for idx in range(len(parameter_list))]
+            result_file_names = [f"simulation_{self._counter + idx}" for idx in
+                                 range(len(parameter_list))]
             _filepaths = self.sim_api.simulate(
                 parameters=parameter_list,
                 return_option="savepath",
@@ -304,7 +307,7 @@ class Calibrator(Optimizer):
             if result is None:
                 total_res_list[idx] = self.ret_val_on_error
                 continue
-            total_res = self._kpi_and_logging_calculation(
+            total_res, unweighted_objective = self._kpi_and_logging_calculation(
                 xk_descaled=xk_descaled_list[idx],
                 counter=self._counter,
                 results=result
@@ -370,7 +373,7 @@ class Calibrator(Optimizer):
                 f"of iterations {self.max_itercount} has been reached."
             )
 
-        return total_res
+        return total_res, unweighted_objective
 
     def calibrate(self, framework, method=None, **kwargs) -> dict:
         """
@@ -380,7 +383,7 @@ class Calibrator(Optimizer):
         arguments in Optimizer.optimize(). Look at the docstring
         in ebcpy to know which options are available.
         """
-        #%% Start Calibration:
+        # %% Start Calibration:
         self.at_calibration = True
         self.logger.log(f"Start calibration of model: {self.sim_api.model_name}"
                         f" with framework-class {self.__class__.__name__}")
@@ -417,7 +420,7 @@ class Calibrator(Optimizer):
                 "Can't save or return any results."
             )
 
-        #%% Save the relevant results.
+        # %% Save the relevant results.
         self.logger.save_calibration_result(self._current_best_iterate,
                                             self.sim_api.model_name,
                                             duration=t_cal,
@@ -486,7 +489,7 @@ class Calibrator(Optimizer):
             with open(s_path, 'w') as json_file:
                 json.dump(parameter_values, json_file, indent=4)
 
-    def validate(self, validation_class: CalibrationClass, calibration_result: Dict):
+    def validate(self, validation_class: CalibrationClass, calibration_result: Dict, verbose=False):
         """
         Validate the given calibration class based on the given
         values for tuner_parameters.
@@ -501,10 +504,10 @@ class Calibrator(Optimizer):
         self.logger.log(f"Start validation of model: {self.sim_api.model_name} with "
                         f"framework-class {self.__class__.__name__}")
         # Use start-time of calibration class
+        self.calibration_class = validation_class
         start_time = self._apply_start_time_method(
             start_time=self.calibration_class.start_time
         )
-        self.calibration_class = validation_class
         old_tuner_paras = copy(self.calibration_class.tuner_paras)
         tuner_values = list(calibration_result.values())
         self.calibration_class.tuner_paras = TunerParas(
@@ -526,12 +529,29 @@ class Calibrator(Optimizer):
         # Scale the tuner parameters
         xk = self.tuner_paras.scale(tuner_values)
         # Evaluate objective
-        obj = self.obj(xk=xk)
+        obj, unweighted_objective = self.obj(xk=xk)
         self.logger.validation_callback_func(
             obj=obj
         )
         # Reset tuner_parameters to avoid unwanted behaviour
         self.calibration_class.tuner_paras = old_tuner_paras
+        if verbose:
+            weights = [1]
+            objectives = [obj]
+            goals = ['all']
+            for goal, val in unweighted_objective.items():
+                weights.append(val[0])
+                objectives.append(val[1])
+                goals.append(goal)
+            index = pd.MultiIndex.from_product(
+                [[validation_class.name], goals],
+                names=['Class', 'Goal']
+            )
+            obj_verbos = pd.DataFrame(
+                {'weight': weights, validation_class.goals.statistical_measure: objectives},
+                index=index
+            )
+            return obj_verbos
         return obj
 
     def _handle_error(self, error):
