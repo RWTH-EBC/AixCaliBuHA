@@ -30,3 +30,9 @@ class MaxIterationsReached(Exception):
     ends because the maximum number of
     allowed iterations is reached.
     """
+    
+class MaxTimeReached(Exception):
+    """
+    Exception raised for when the calibration
+    ends because the maximum calibration time is reached.
+    """
