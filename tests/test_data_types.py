@@ -1,6 +1,6 @@
 """Test-module for all classes inside aixcalibuha.__init__.py"""
 
-import pathlib
+from pathlib import Path
 import unittest
 import numpy as np
 from ebcpy import data_types
@@ -14,7 +14,7 @@ class TestDataTypes(unittest.TestCase):
         """Called before every test.
         Define example paths and parameters used in all test-functions.
         """
-        self.framework_dir = pathlib.Path(__file__).parents[1]
+        self.framework_dir = Path(__file__).parents[1]
         self.example_dir = self.framework_dir.joinpath("examples", "data")
 
     def test_calibration_class(self):

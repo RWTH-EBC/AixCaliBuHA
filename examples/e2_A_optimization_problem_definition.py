@@ -8,7 +8,7 @@
 # 5. Learn how to merge multiple classes
 #
 # Start by importing all relevant packages
-import pathlib
+from pathlib import Path
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
 # Imports from aixcalibuha
@@ -25,7 +25,7 @@ def main(
     """
     Arguments of this example:
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
@@ -81,7 +81,7 @@ def main(
     # Thus, you need to specify both measured and simulated data.
     #
     # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
-    data_dir = pathlib.Path(examples_dir).joinpath("data")
+    data_dir = Path(examples_dir).joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
     # Map the measured keys to the names inside your simulation
     variable_names = {
@@ -217,6 +217,6 @@ def main(
 
 if __name__ == '__main__':
     main(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         multiple_classes=True
     )

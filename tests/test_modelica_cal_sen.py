@@ -5,7 +5,7 @@ aixcalibuha.sensitivity_analysis.sensitivity_analyzer.SenAnalyzer"""
 import unittest
 import sys
 import os
-import pathlib
+from pathlib import Path
 import shutil
 
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, FASTAnalyzer, PAWNAnalyze
 
 
 def _set_up():
-    aixcalibuha_dir = pathlib.Path(__file__).parents[1]
+    aixcalibuha_dir = Path(__file__).parents[1]
     data_dir = aixcalibuha_dir.joinpath("examples", "data")
     testzone_dir = aixcalibuha_dir.joinpath("tests", "testzone")
 
@@ -73,7 +73,7 @@ class TestModelicaCalibrator(unittest.TestCase):
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
         calibrator = Calibrator(
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.cd,
             sim_api=self.sim_api,
             calibration_class=self.calibration_classes[0],
             show_plot=False,
@@ -85,7 +85,7 @@ class TestModelicaCalibrator(unittest.TestCase):
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""
         calibrator = MultipleClassCalibrator(
-            cd=self.example_cal_dir,
+            working_directory=self.example_cal_dir,
             sim_api=self.sim_api,
             calibration_classes=self.calibration_classes,
             start_time_method='fixstart',

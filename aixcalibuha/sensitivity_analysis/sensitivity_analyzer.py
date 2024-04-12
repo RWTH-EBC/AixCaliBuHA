@@ -3,8 +3,9 @@ The module contains the relevant base-classes."""
 import abc
 import copy
 import os
-import pathlib
+from pathlib import Path
 import multiprocessing as mp
+import warnings
 from typing import List
 from collections import Counter
 import numpy as np
@@ -94,7 +95,7 @@ class SenAnalyzer(abc.ABC):
         number of samples produced, but relates to the total number of samples produced in
         a manner dependent on the sampler method used. See the documentation of the specific 
         method in the SALib for more information.
-    :keyword str,os.path.normpath cd:
+    :keyword str,Path working_directory:
         The path for the current working directory.
         Logger and results will be stored here.
     :keyword boolean fail_on_error:
@@ -115,8 +116,8 @@ class SenAnalyzer(abc.ABC):
         Supported options can be extracted
         from the ebcpy.TimeSeriesData.save() function.
         Default is 'pyarrow'.
-    :keyword str,os.path.normpath savepath_sim:
-        Default is cd. Own directory for the time series data sets of all simulations
+    :keyword str,Path savepath_sim:
+        Default is working_directory. Own directory for the time series data sets of all simulations
         during the sensitivity analysis. The own dir can be necessary for large data sets,
         because they can crash IDE during indexing when they are in the project folder.
 
@@ -137,16 +138,25 @@ class SenAnalyzer(abc.ABC):
         self.suffix_files = kwargs.pop('suffix_files', 'csv')
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
-        self.cd = kwargs.pop("cd", os.getcwd())
-        self.savepath_sim = kwargs.pop('savepath_sim', self.cd)
+        self.working_directory = kwargs.pop("working_directory", os.getcwd())
 
-        if isinstance(self.cd, str):
-            self.cd = pathlib.Path(self.cd)
+        if "cd" in kwargs:
+            warnings.warn(
+                "cd was renamed to working_directory in all classes. "
+                "Use working_directory instead.",
+                category=DeprecationWarning)
+            self.working_directory = kwargs.pop("cd")
+
+        self.savepath_sim = kwargs.pop('savepath_sim', self.working_directory)
+
+        if isinstance(self.working_directory, str):
+            self.working_directory = Path(self.working_directory)
         if isinstance(self.savepath_sim, str):
-            self.savepath_sim = pathlib.Path(self.savepath_sim)
+            self.savepath_sim = Path(self.savepath_sim)
 
         # Setup the logger
-        self.logger = setup_logger(working_directory=self.cd, name=self.__class__.__name__)
+        self.logger = setup_logger(working_directory=self.working_directory,
+                                   name=self.__class__.__name__)
 
         # Setup default values
         self.problem: dict = None
@@ -236,7 +246,7 @@ class SenAnalyzer(abc.ABC):
         # creat df of samples with the result_file_names as the index
         result_file_names = [f"simulation_{idx}" for idx in range(len(samples))]
         samples_df = pd.DataFrame(samples, columns=initial_names, index=result_file_names)
-        samples_df.to_csv(self.cd.joinpath(f'samples_{cal_class.name}.csv'))
+        samples_df.to_csv(self.working_directory.joinpath(f'samples_{cal_class.name}.csv'))
 
         # Simulate the current values
         parameters = []
@@ -410,7 +420,7 @@ class SenAnalyzer(abc.ABC):
             The usage of the same simulations for different
             calibration classes is not supported yet.
         :keyword bool save_results:
-            Default True. If True, all results are saved as a csv in cd.
+            Default True. If True, all results are saved as a csv in working_directory.
             (samples, statistical measures and analysis variables).
         :keyword bool plot_result:
             Default True. If True, the results will be plotted.
@@ -513,17 +523,17 @@ class SenAnalyzer(abc.ABC):
             if len(output_verbose) > 1 and verbose:
                 stat_mea.update(output_verbose)
 
-            # save statistical measure and corresponding samples for each cal_class in cd
+            # save statistical measure and corresponding samples for each cal_class in working_directory
             if save_results:
                 result_file_names = [f"simulation_{idx}" for idx in range(len(output_array))]
                 stat_mea_df = pd.DataFrame(stat_mea, index=result_file_names)
-                savepath_stat_mea = self.cd.joinpath(
+                savepath_stat_mea = self.working_directory.joinpath(
                     f'{cal_class.goals.statistical_measure}_{cal_class.name}.csv')
                 stat_mea_df.to_csv(savepath_stat_mea)
                 self.reproduction_files.append(savepath_stat_mea)
                 samples_df = pd.DataFrame(samples, columns=cal_class.tuner_paras.get_names(),
                                           index=result_file_names)
-                savepath_samples = self.cd.joinpath(f'samples_{cal_class.name}.csv')
+                savepath_samples = self.working_directory.joinpath(f'samples_{cal_class.name}.csv')
                 samples_df.to_csv(savepath_samples)
                 self.reproduction_files.append(savepath_samples)
 
@@ -552,9 +562,11 @@ class SenAnalyzer(abc.ABC):
         Needs to be overwritten for Sobol results.
         """
         if time_dependent:
-            savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results_time.csv')
+            savepath_result = self.working_directory.joinpath(
+                f'{self.__class__.__name__}_results_time.csv')
         else:
-            savepath_result = self.cd.joinpath(f'{self.__class__.__name__}_results.csv')
+            savepath_result = self.working_directory.joinpath(
+                f'{self.__class__.__name__}_results.csv')
         result.to_csv(savepath_result)
         self.reproduction_files.append(savepath_result)
 
@@ -677,7 +689,7 @@ class SenAnalyzer(abc.ABC):
             they were saved from self.save_files. Currently, the name of the sim folder must be
             "simulations_CAL_CLASS_NAME" and for the samples "samples_CAL_CLASS_NAME".
         :keyword bool save_results:
-            Default True. If True, all results are saved as a csv in cd.
+            Default True. If True, all results are saved as a csv in working_directory.
             (samples and analysis variables).
         :keyword int n_steps:
             Default is all time steps. If the problem is large, the evaluation of all time steps
@@ -865,7 +877,7 @@ class SenAnalyzer(abc.ABC):
 
     def save_for_reproduction(self,
                               title: str,
-                              path: pathlib.Path = None,
+                              path: Path = None,
                               files: list = None,
                               exclude_sim_files: bool = False,
                               remove_saved_files: bool = False,
@@ -878,8 +890,8 @@ class SenAnalyzer(abc.ABC):
 
         :param str title:
             Title of the study
-        :param pathlib.Path path:
-            Where to store the .zip file. If not given, self.cd is used.
+        :param Path path:
+            Where to store the .zip file. If not given, self.working_directory is used.
         :param list files:
             List of files to save along the standard ones.
             Examples would be plots, tables etc.
@@ -901,7 +913,8 @@ class SenAnalyzer(abc.ABC):
             if exclude_sim_files:
                 if 'simulation' in str(file_path):
                     continue
-            filename = "SenAnalyzer" + str(file_path).rsplit(self.cd.name, maxsplit=1)[-1]
+            filename = "SenAnalyzer" + \
+                       str(file_path).rsplit(self.working_directory.name, maxsplit=1)[-1]
             files.append(CopyFile(
                 sourcepath=file_path,
                 filename=filename,

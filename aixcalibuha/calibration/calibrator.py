@@ -5,9 +5,10 @@ a dynamic model, e.g. a modelica model.
 
 import os
 import json
+from pathlib import Path
 import time
 import logging
-from typing import Dict
+from typing import Dict, Union
 from copy import copy
 import numpy as np
 import pandas as pd
@@ -22,7 +23,7 @@ class Calibrator(Optimizer):
     This class can Calibrator be used for single
     time-intervals of calibration.
 
-    :param str,os.path.normpath cd:
+    :param str,Path working_directory:
         Working directory
     :param ebcpy.simulationapi.SimulationAPI sim_api:
         Simulation-API for running the models
@@ -91,7 +92,7 @@ class Calibrator(Optimizer):
     """
 
     def __init__(self,
-                 cd: str,
+                 working_directory: Union[Path, str],
                  sim_api: SimulationAPI,
                  calibration_class: CalibrationClass,
                  **kwargs):
@@ -133,7 +134,7 @@ class Calibrator(Optimizer):
                                 f"{type(keyword_value).__name__} but should be type bool")
 
         # %% Initialize all public parameters
-        super().__init__(cd, **kwargs)
+        super().__init__(working_directory, **kwargs)
         # Set sim_api
         self.sim_api = sim_api
 
@@ -158,7 +159,7 @@ class Calibrator(Optimizer):
         # De-register the logger setup in the optimization class:
         if self.verbose_logging:
             self.logger = visualizer.CalibrationVisualizer(
-                cd=cd,
+                working_directory=working_directory,
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
                 logger=self.logger,
@@ -166,13 +167,13 @@ class Calibrator(Optimizer):
             )
         else:
             self.logger = visualizer.CalibrationLogger(
-                cd=cd,
+                working_directory=working_directory,
                 name=self.__class__.__name__,
                 calibration_class=self.calibration_class,
                 logger=self.logger
             )
 
-        self.cd_of_class = cd  # Single class does not need an extra folder
+        self.working_directory_of_class = working_directory  # Single class does not need an extra folder
 
         # Set the output interval according the the given Goals
         mean_freq = self.goals.get_meas_frequency()
@@ -217,7 +218,7 @@ class Calibrator(Optimizer):
         try:
             # Generate the folder name for the calibration
             if self.save_files:
-                savepath_files = os.path.join(self.sim_api.cd,
+                savepath_files = os.path.join(self.sim_api.working_directory,
                                               f"simulation_{self._counter}")
                 _filepath = self.sim_api.simulate(
                     parameters=parameters,
@@ -280,7 +281,7 @@ class Calibrator(Optimizer):
             _filepaths = self.sim_api.simulate(
                 parameters=parameter_list,
                 return_option="savepath",
-                savepath=self.sim_api.cd,
+                savepath=self.sim_api.working_directory,
                 result_file_name=result_file_names,
                 fail_on_error=self.fail_on_error,
                 inputs=self.calibration_class.inputs,
@@ -394,7 +395,7 @@ class Calibrator(Optimizer):
 
         # Setup the visualizer for plotting and logging:
         self.logger.calibrate_new_class(self.calibration_class,
-                                        cd=self.cd_of_class,
+                                        working_directory=self.working_directory_of_class,
                                         for_validation=False)
         self.logger.log_initial_names()
 
@@ -521,7 +522,7 @@ class Calibrator(Optimizer):
         self.sim_api.sim_setup.start_time = start_time
 
         self.logger.calibrate_new_class(self.calibration_class,
-                                        cd=self.cd_of_class,
+                                        working_directory=self.working_directory_of_class,
                                         for_validation=True)
 
         # Use the results parameter vector to simulate again.

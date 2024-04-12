@@ -11,7 +11,7 @@ Goals of this part of the examples:
 Start by importing all relevant packages
 
 ```python
-import pathlib
+from pathlib import Path
 ```
 
 Imports from ebcpy
@@ -34,7 +34,7 @@ Please define the missing TODOs in the section below according to the docstrings
 """
 Arguments of this example:
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str statistical_measure:
     Measure to calculate the scalar of the objective,
@@ -103,7 +103,7 @@ Thus, you need to specify both measured and simulated data.
 Start by loading the measured data generated in 1_A_energy_system_analysis.py:
 
 ```python
-data_dir = pathlib.Path(examples_dir).joinpath("data")
+data_dir = Path(examples_dir).joinpath("data")
 meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
 ```
 

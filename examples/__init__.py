@@ -1,7 +1,7 @@
 """
 Module containing examples on how to use AixCaliBuHA
 """
-import pathlib
+from pathlib import Path
 import sys
 from ebcpy import FMU_API, DymolaAPI
 from examples import e2_A_optimization_problem_definition, e2_B_optimization_problem_definition
@@ -11,14 +11,14 @@ def setup_fmu(examples_dir, example="B", n_cpu=1):
     """
     Setup the FMU used in all examples and tests.
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
     :param int n_cpu:
         Number of cores to use
     """
-    examples_dir = pathlib.Path(examples_dir)
+    examples_dir = Path(examples_dir)
     if example == "A":
         if "win" not in sys.platform:
             raise OSError("Can only run the example type B on windows. "
@@ -39,7 +39,7 @@ def setup_fmu(examples_dir, example="B", n_cpu=1):
 
 
 def setup_dym_api(examples_dir, aixlib_mo, example="A", n_cpu=1, dymola_version='Dymola 2023'):
-    examples_dir = pathlib.Path(examples_dir)
+    examples_dir = Path(examples_dir)
     packages = []
     if example == "A":
         packages.append(examples_dir.joinpath('model', 'AixCaliBuHAExamples.mo'))
@@ -50,7 +50,7 @@ def setup_dym_api(examples_dir, aixlib_mo, example="A", n_cpu=1, dymola_version=
     else:
         raise ValueError("Only example 'A' and 'B' are available")
 
-    return DymolaAPI(cd=examples_dir.joinpath("testzone"),
+    return DymolaAPI(working_directory=examples_dir.joinpath("testzone"),
                      model_name=model_name,
                      packages=packages,
                      n_cpu=n_cpu,
