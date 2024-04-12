@@ -32,7 +32,7 @@ def setup_fmu(examples_dir, example="B", n_cpu=1):
     else:
         raise ValueError("Only example 'A' and 'B' are available")
 
-    return FMU_API(cd=examples_dir.joinpath("testzone"),
+    return FMU_API(working_directory=examples_dir.joinpath("testzone"),
                    model_name=model_name,
                    log_fmu=False,
                    n_cpu=n_cpu)

@@ -67,7 +67,7 @@ class CalibrationLogger:
         self._tuner_paras = None
         self._goals = None
         if logger is None:
-            self.logger = setup_logger(cd=cd, name=name)
+            self.logger = setup_logger(working_directory=cd, name=name)
         else:
             if not isinstance(logger, logging.Logger):
                 raise TypeError(f"Given logger is of type {type(logger)} "

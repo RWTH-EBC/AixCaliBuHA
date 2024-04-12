@@ -146,7 +146,7 @@ class SenAnalyzer(abc.ABC):
             self.savepath_sim = pathlib.Path(self.savepath_sim)
 
         # Setup the logger
-        self.logger = setup_logger(cd=self.cd, name=self.__class__.__name__)
+        self.logger = setup_logger(working_directory=self.cd, name=self.__class__.__name__)
 
         # Setup default values
         self.problem: dict = None

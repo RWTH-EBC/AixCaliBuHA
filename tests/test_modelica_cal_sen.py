@@ -67,7 +67,7 @@ class TestModelicaCalibrator(unittest.TestCase):
         else:
             model_name = aixcalibuha_dir.joinpath("examples", "model", "PumpAndValve_linux.fmu")
 
-        self.sim_api = FMU_API(cd=self.example_cal_dir,
+        self.sim_api = FMU_API(working_directory=self.example_cal_dir,
                                model_name=model_name)
 
     def test_modelica_calibrator(self):
@@ -133,7 +133,7 @@ class TestSenAnalyzer(unittest.TestCase):
         else:
             model_name = aixcalibuha_dir.joinpath("examples", "model", "PumpAndValve_linux.fmu")
 
-        self.sim_api = FMU_API(cd=self.result_dir,
+        self.sim_api = FMU_API(working_directory=self.result_dir,
                                model_name=model_name)
 
     def test_sa_morris(self):
