@@ -270,7 +270,7 @@ class Calibrator(Optimizer):
         )
         self._check_for_termination()
         
-        return total_res, unweighted_objective
+        return total_res
 
     def mp_obj(self, x, *args):
         # Initialize list for results
