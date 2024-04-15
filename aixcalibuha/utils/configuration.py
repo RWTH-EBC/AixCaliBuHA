@@ -175,7 +175,7 @@ def write_config(filepath, config):
     If the file already exists, the data is recursively
     updated.
 
-    :param str,os.path.normpath filepath:
+    :param str,Path filepath:
         Filepath with the config.
     :param: dict config:
         Config to be saved
@@ -195,7 +195,7 @@ def read_config(filepath):
     """
     Read the given file and return the toml-config
 
-    :param str,os.path.normpath filepath:
+    :param str,Path filepath:
         Filepath with the config.
     :return: dict config:
         Loaded config

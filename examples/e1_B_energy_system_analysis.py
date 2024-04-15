@@ -6,7 +6,7 @@
 # 4. Generate some measured data to later use in a calibration
 #
 # Start by importing all relevant packages
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 
@@ -17,7 +17,7 @@ def main(
     """
     Arguments of this example:
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param bool with_plot:
         Show the plot at the end of the script. Default is True.
@@ -100,11 +100,11 @@ def main(
     # let's change some names and time index to ensure a realistic scenario:
     tsd = tsd.rename(columns={"pipe.T": "TPipe", "heatCapacitor.T": "TCapacity"})
     tsd.to_datetime_index()
-    tsd.save(pathlib.Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
-    print("Saved data under", pathlib.Path(examples_dir).joinpath("data"))
+    tsd.save(Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
+    print("Saved data under", Path(examples_dir).joinpath("data"))
 
 
 if __name__ == '__main__':
     main(
-        examples_dir=pathlib.Path(__file__).parent
+        examples_dir=Path(__file__).parent
     )

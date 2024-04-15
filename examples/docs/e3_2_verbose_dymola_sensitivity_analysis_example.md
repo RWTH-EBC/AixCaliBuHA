@@ -7,7 +7,7 @@ Goals of this part of the examples:
 
 ```python
 import os
-import pathlib
+from pathlib import Path
 from examples import setup_dym_api, setup_calibration_classes
 ```
 
@@ -25,9 +25,9 @@ Please define the missing TODOs in the section below according to the docstrings
 """
 Example process of a verbose sensitivity analysis with the dymola_api.
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
-:param [pathlib.Path, str] aixlib_mo:
+:param [Path, str] aixlib_mo:
     Path to the AixLib package.mo file.
 :param str example:
     Which example to run, "A" or "B"
@@ -47,7 +47,7 @@ n_cpu: int  =  1
 Using a dymola api instead of the fmu api
 
 ```python
-examples_dir = pathlib.Path(examples_dir)
+examples_dir = Path(examples_dir)
 sim_api = setup_dym_api(examples_dir=examples_dir,
                         aixlib_mo=aixlib_mo,
                         example=example,

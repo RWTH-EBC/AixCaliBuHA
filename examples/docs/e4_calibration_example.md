@@ -22,7 +22,7 @@ to better understand what is happening in the calibration. If you want, you
 can switch the methods to other supported methods or change the framework and
 try the global optimizer of dlib.
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str example:
     Which example to run, "A" or "B"
@@ -152,7 +152,7 @@ Select between single or multiple class calibration
 ```python
 if isinstance(cal_classes, CalibrationClass):
     modelica_calibrator = Calibrator(
-        cd=sim_api.cd,
+        cd=sim_api.working_directory,
         sim_api=sim_api,
         calibration_class=cal_classes,
         **kwargs_calibrator)
@@ -160,7 +160,7 @@ else:
     kwargs_calibrator.update(kwargs_multiple_classes)
     # Setup the class
     modelica_calibrator = MultipleClassCalibrator(
-        cd=sim_api.cd,
+        cd=sim_api.working_directory,
         sim_api=sim_api,
         calibration_classes=cal_classes,
         start_time_method="fixstart",

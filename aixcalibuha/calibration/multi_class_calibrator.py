@@ -4,8 +4,11 @@ calibrating multiple calibration classes at once.
 """
 
 import os
-from typing import List
+from pathlib import Path
+from typing import List, Union
 import numpy as np
+from ebcpy.simulationapi import SimulationAPI
+
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha.calibration import Calibrator
 
@@ -51,8 +54,8 @@ class MultipleClassCalibrator(Calibrator):
     merge_multiple_classes = True
 
     def __init__(self,
-                 cd: str,
-                 sim_api,
+                 working_directory: Union[Path, str],
+                 sim_api: SimulationAPI,
                  calibration_classes: List[CalibrationClass],
                  start_time_method: str = 'fixstart',
                  calibration_strategy: str = 'parallel',
@@ -85,7 +88,7 @@ class MultipleClassCalibrator(Calibrator):
         self.calibration_strategy = calibration_strategy.lower()
 
         # Instantiate parent-class
-        super().__init__(cd, sim_api, calibration_classes[0], **kwargs)
+        super().__init__(working_directory, sim_api, calibration_classes[0], **kwargs)
         # Merge the multiple calibration_classes
         if self.merge_multiple_classes:
             self.calibration_classes = data_types.merge_calibration_classes(calibration_classes)
@@ -114,15 +117,15 @@ class MultipleClassCalibrator(Calibrator):
 
         # Iterate over the different existing classes
         for cal_class in self.calibration_classes:
-            #%% Working-Directory:
+            # %% Working-Directory:
             # Alter the working directory for saving the simulations-results
-            self.cd_of_class = os.path.join(self.cd,
-                                            f"{cal_class.name}_"
-                                            f"{cal_class.start_time}_"
-                                            f"{cal_class.stop_time}")
-            self.sim_api.set_cd(self.cd_of_class)
+            self.working_directory_of_class = os.path.join(self.working_directory,
+                                                           f"{cal_class.name}_"
+                                                           f"{cal_class.start_time}_"
+                                                           f"{cal_class.stop_time}")
+            self.sim_api.set_working_directory(self.working_directory_of_class)
 
-            #%% Calibration-Setup
+            # %% Calibration-Setup
             # Reset counter for new calibration
             self._counter = 0
             # Retrieve already calibrated parameters (i.e. calibrated in the previous classes)
@@ -160,11 +163,11 @@ class MultipleClassCalibrator(Calibrator):
             else:
                 self.bounds = [(0, 1) for i in range(len(self.x0))]
 
-            #%% Execution
+            # %% Execution
             # Run the single ModelicaCalibration
             super().calibrate(framework=framework, method=method, **kwargs)
 
-            #%% Post-processing
+            # %% Post-processing
             # Append result to list for future perturbation based on older results.
             self._cal_history.append({"res": self._current_best_iterate,
                                       "cal_class": cal_class})
@@ -261,7 +264,8 @@ class MultipleClassCalibrator(Calibrator):
             self.logger.log("The tuner parameters used for evaluation "
                             "are averaged as follows:\n "
                             "{}".format(' ,'.join([f"{tuner}={value}"
-                            for tuner, value in average_tuner_parameter.items()])))
+                                                   for tuner, value in
+                                                   average_tuner_parameter.items()])))
 
             # Create result-dictionary
             res_tuner = average_tuner_parameter

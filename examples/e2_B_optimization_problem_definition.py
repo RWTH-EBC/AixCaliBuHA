@@ -8,7 +8,7 @@
 # 5. Learn how to merge multiple classes
 #
 # Start by importing all relevant packages
-import pathlib
+from pathlib import Path
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
 # Imports from AixCaliBUhA
@@ -25,7 +25,7 @@ def main(
     """
     Arguments of this example:
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str statistical_measure:
         Measure to calculate the scalar of the objective,
@@ -70,7 +70,7 @@ def main(
     #
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
-    data_dir = pathlib.Path(examples_dir).joinpath("data")
+    data_dir = Path(examples_dir).joinpath("data")
     meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"),
                                       key="examples")
     # Setup three variables for different format of setup
@@ -192,6 +192,6 @@ def main(
 
 if __name__ == '__main__':
     main(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         multiple_classes=True
     )

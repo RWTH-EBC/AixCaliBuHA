@@ -9,7 +9,7 @@ Goals of this part of the examples:
 Start by importing all relevant packages
 
 ```python
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 ```
 
@@ -25,12 +25,12 @@ Please define the missing TODOs in the section below according to the docstrings
 """
 Arguments of this example:
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str aixlib_mo:
     Path to the package.mo of the AixLib.
     This example was tested for AixLib version 1.0.0.
-:param str cd:
+:param str working_directory:
     Path in which to store the output.
     Default is the examples\results folder
 :param bool with_plot:
@@ -46,10 +46,10 @@ General settings
 
 ```python
 if cd is None:
-    cd = pathlib.Path(examples_dir).joinpath("results")
+    cd = Path(examples_dir).joinpath("results")
 else:
-    cd = pathlib.Path(cd)
-examples_dir = pathlib.Path(examples_dir)
+    cd = Path(cd)
+examples_dir = Path(examples_dir)
 aixcalibuha_mo = examples_dir.joinpath("model", "AixCaliBuHAExamples.mo")
 ```
 

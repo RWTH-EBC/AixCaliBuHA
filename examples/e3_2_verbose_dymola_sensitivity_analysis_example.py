@@ -4,7 +4,7 @@
 # 1. Learn how to execute a sensitivity analysis with the dymola api
 #
 import os
-import pathlib
+from pathlib import Path
 from examples import setup_dym_api, setup_calibration_classes
 # Import a valid analyzer, e.g. `SobolAnalyzer`
 from aixcalibuha import SobolAnalyzer
@@ -21,9 +21,9 @@ def run_sensitivity_analysis(
     """
     Example process of a verbose sensitivity analysis with the dymola_api.
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
-    :param [pathlib.Path, str] aixlib_mo:
+    :param [Path, str] aixlib_mo:
         Path to the AixLib package.mo file.
     :param str example:
         Which example to run, "A" or "B"
@@ -35,7 +35,7 @@ def run_sensitivity_analysis(
     """
     # ## Setup
     # Using a dymola api instead of the fmu api
-    examples_dir = pathlib.Path(examples_dir)
+    examples_dir = Path(examples_dir)
     sim_api = setup_dym_api(examples_dir=examples_dir,
                             aixlib_mo=aixlib_mo,
                             example=example,
@@ -59,7 +59,7 @@ def run_sensitivity_analysis(
         sim_api=sim_api,
         num_samples=2,
         calc_second_order=True,
-        cd=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}'),
+        working_directory=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}'),
         save_files=True,
         load_files=False,
         savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_dymola_{example}', 'files'),
@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     # Sensitivity analysis:
     run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         aixlib_mo=r"D:\sbg-hst\Repos\AixLib\AixLib\package.mo",
         example=EXAMPLE,
         n_cpu=N_CPU

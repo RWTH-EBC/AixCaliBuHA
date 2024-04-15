@@ -42,7 +42,7 @@ class CalibrationLogger:
         this Framework with print-statements and saving everything
         relevant as a log-file.
 
-        :param str,os.path.normpath cd:
+        :param str,Path working_directory:
             Directory where to store the output of the Logger and possible
             child-classes. If the given directory can not be created, an error
             will be raised.
@@ -62,18 +62,18 @@ class CalibrationLogger:
     _prec = decimal_prec
     _width = integer_prec + decimal_prec + 1  # Calculate the actual width
 
-    def __init__(self, cd, name, calibration_class, logger=None):
+    def __init__(self, working_directory, name, calibration_class, logger=None):
         """Instantiate class parameters"""
         self._tuner_paras = None
         self._goals = None
         if logger is None:
-            self.logger = setup_logger(cd=cd, name=name)
+            self.logger = setup_logger(working_directory=working_directory, name=name)
         else:
             if not isinstance(logger, logging.Logger):
                 raise TypeError(f"Given logger is of type {type(logger)} "
                                 f"but should be type logging.Logger")
             self.logger = logger
-        self.cd = cd
+        self.working_directory = working_directory
         self.calibration_class = calibration_class
 
     def log(self, msg, level=logging.INFO):
@@ -157,7 +157,7 @@ class CalibrationLogger:
         self.logger.info(result_log)
         self._counter_calibration = 0
 
-    def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
+    def calibrate_new_class(self, calibration_class, working_directory=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
         This function is called when instantiating this Class. If you
         uses continuuos calibration classes, call this function before
@@ -166,26 +166,26 @@ class CalibrationLogger:
         :param aixcalibuha.CalibrationClass calibration_class:
             Class holding information on names, tuner_paras, goals
             and time-intervals of calibration.
-        :param str,os.path.normpath cd:
+        :param str,Path working_directory:
             Optional change in working directory to store files
         :param bool for_validation:
             If it's only for validation, only plot the goals
         """
-        if cd is not None:
-            self.cd = cd
+        if working_directory is not None:
+            self.working_directory = working_directory
         self.calibration_class = calibration_class
 
     @property
-    def cd(self) -> str:
+    def working_directory(self) -> str:
         """Get the current working directory for storing plots."""
-        return self._cd
+        return self._working_directory
 
-    @cd.setter
-    def cd(self, cd: str):
+    @working_directory.setter
+    def working_directory(self, working_directory: str):
         """Set the current working directory for storing plots."""
-        if not os.path.exists(cd):
-            os.makedirs(cd)
-        self._cd = cd
+        if not os.path.exists(working_directory):
+            os.makedirs(working_directory)
+        self._working_directory = working_directory
 
     @property
     def tuner_paras(self) -> aixcalibuha.TunerParas:
@@ -354,7 +354,7 @@ class CalibrationVisualizer(CalibrationLogger):
         yields plot which disappear to fast. Default is 1-e3 s.
     """
 
-    def __init__(self, cd,
+    def __init__(self, working_directory,
                  name,
                  calibration_class,
                  logger=None,
@@ -362,7 +362,7 @@ class CalibrationVisualizer(CalibrationLogger):
         """Instantiate class parameters"""
 
         # Instantiate the logger:
-        super().__init__(cd=cd,
+        super().__init__(working_directory=working_directory,
                          name=name,
                          calibration_class=calibration_class,
                          logger=logger)
@@ -388,7 +388,7 @@ class CalibrationVisualizer(CalibrationLogger):
                 f"be float or int but is {type(self.show_plot_pause_time)}."
             )
 
-    def calibrate_new_class(self, calibration_class, cd=None, for_validation=False):
+    def calibrate_new_class(self, calibration_class, working_directory=None, for_validation=False):
         """Function to setup the figures for a new class of calibration.
         This function is called when instantiating this Class. If you
         uses continuuos calibration classes, call this function before
@@ -397,12 +397,12 @@ class CalibrationVisualizer(CalibrationLogger):
         :param aixcalibuha.CalibrationClass calibration_class:
             Class holding information on names, tuner_paras, goals
             and time-intervals of calibration.
-        :param str,os.path.normpath cd:
+        :param str,Path working_directory:
             Optional change in working directory to store files
         :param bool for_validation:
             If it's only for validation, only plot the goals
         """
-        super().calibrate_new_class(calibration_class, cd)
+        super().calibrate_new_class(calibration_class, working_directory)
 
         name = calibration_class.name
 
@@ -514,14 +514,14 @@ class CalibrationVisualizer(CalibrationLogger):
         duration = kwargs["duration"]
 
         # Extract filepathes
-        iterpath = os.path.join(self.cd, f'Iteration_{itercount}')
+        iterpath = os.path.join(self.working_directory, f'Iteration_{itercount}')
         if not os.path.exists(iterpath):
             os.mkdir(iterpath)
 
         filepath_tuner = os.path.join(iterpath, "tuner_parameter_plot.%s" % self.file_type)
         filepath_obj = os.path.join(iterpath, "objective_plot.%s" % self.file_type)
         if self.save_tsd_plot:
-            bestgoal = os.path.join(self.cd,
+            bestgoal = os.path.join(self.working_directory,
                                     self.goals_dir,
                                     str(best_iterate["Iterate"]) + f"_goals.{self.file_type}")
             # Copy best goals figure
@@ -531,7 +531,7 @@ class CalibrationVisualizer(CalibrationLogger):
         res_dict = dict(best_iterate['Parameters'])
         res_dict['Objective'] = best_iterate["Objective"]
         res_dict['Duration'] = duration
-        res_csv = f'{self.cd}\\Iteration_{itercount}\\RESUL' \
+        res_csv = f'{self.working_directory}\\Iteration_{itercount}\\RESUL' \
                   f'TS_{self.calibration_class.name}_iteration{itercount}.csv'
         with open(res_csv, 'w') as rescsv:
             writer = csv.DictWriter(rescsv, res_dict.keys())
@@ -584,7 +584,7 @@ class CalibrationVisualizer(CalibrationLogger):
         # Always store in the parent diretory as this info is relevant for all classes
         # fig_intersection.suptitle("Intersection of Tuner Parameters")
         fig_intersection.suptitle("Intersection of Tuner Parameters")
-        path_intersections = os.path.join(os.path.dirname(self.cd), "tunerintersections")
+        path_intersections = os.path.join(os.path.dirname(self.working_directory), "tunerintersections")
         if not os.path.exists(path_intersections):
             os.makedirs(path_intersections)
         if "itercount" in kwargs:
@@ -692,7 +692,7 @@ class CalibrationVisualizer(CalibrationLogger):
             name_id = self._counter_calibration
 
         if self.save_tsd_plot:
-            _savedir = os.path.join(self.cd, self.goals_dir)
+            _savedir = os.path.join(self.working_directory, self.goals_dir)
             if not os.path.exists(_savedir):
                 os.makedirs(_savedir)
             self.fig_goal.savefig(

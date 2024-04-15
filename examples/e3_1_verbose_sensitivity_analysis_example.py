@@ -11,7 +11,7 @@
 
 # Start by importing all relevant packages
 import warnings
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
@@ -35,7 +35,7 @@ def run_sensitivity_analysis(
     A comparison between different methods is shown.
     At the end the option to save a reproduction archive is shown.
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
         e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
     :param str example:
@@ -51,7 +51,7 @@ def run_sensitivity_analysis(
     # You just have to pass a valid simulation api and
     # some further settings for the analysis.
     # Let's first load the necessary simulation api:
-    examples_dir = pathlib.Path(examples_dir)
+    examples_dir = Path(examples_dir)
     sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
     # To conduct a sensitivity analysis, we need to define calibration classes that
     # encompass the objectives (goals) for which sensitivity is to be assessed. In this
@@ -113,7 +113,7 @@ def run_sensitivity_analysis(
         sim_api=sim_api,
         num_samples=8,
         calc_second_order=True,
-        cd=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
+        working_directory=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
         save_files=True,
         savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_{example}', 'files'),
         suffix_files='csv'
@@ -464,7 +464,7 @@ if __name__ == "__main__":
 
     # Sensitivity analysis:
     run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         example=EXAMPLE,
         n_cpu=N_CPU
     )

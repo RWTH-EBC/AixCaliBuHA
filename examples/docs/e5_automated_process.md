@@ -17,7 +17,7 @@ Please define the missing TODOs in the section below according to the docstrings
 """
 Arguments of this example:
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str example:
     Whether to use example A (requires windows) or B.

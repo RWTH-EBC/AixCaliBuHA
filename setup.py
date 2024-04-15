@@ -12,11 +12,11 @@ INSTALL_REQUIRES = [
     'matplotlib>=3.3.4',
     'pandas>=1.3.5',
     'SALib>=1.4.6',
-    'ebcpy>=0.3.0',
+    'ebcpy>=0.3.14',
     'toml>=0.10.2'
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 setuptools.setup(
     name='aixcalibuha',

@@ -23,7 +23,7 @@ def run_sensitivity_analysis(
     The automatic_select function is presented as-well, using a threshold of 1
     and the default `mu_star` criterion.
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
@@ -44,7 +44,7 @@ def run_sensitivity_analysis(
     sen_analyzer = SobolAnalyzer(
             sim_api=sim_api,
             num_samples=10,
-            cd=sim_api.cd
+            working_directory=sim_api.working_directory
         )
     # Now perform the analysis for the one of the given calibration classes.
     calibration_classes = setup_calibration_classes(
@@ -72,7 +72,7 @@ def run_sensitivity_analysis(
 
 
 if __name__ == "__main__":
-    import pathlib
+    from pathlib import Path
     from examples import setup_fmu, setup_calibration_classes
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     # Sensitivity analysis:
     run_sensitivity_analysis(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         example=EXAMPLE,
         n_cpu=N_CPU
     )

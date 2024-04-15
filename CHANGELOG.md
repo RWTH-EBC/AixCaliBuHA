@@ -60,3 +60,6 @@
     - Sensitivity analysis is now usable for large models and data
     - Add time dependent sensitivity analysis
     - Ends support for python 3.7
+
+- **v1.0.1**
+  - refactor cd to working_directory #57

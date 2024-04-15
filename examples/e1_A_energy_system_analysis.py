@@ -6,7 +6,7 @@
 # 4. Generate some measured data to later use in a calibration
 
 # Start by importing all relevant packages
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 # Imports from ebcpy
 from ebcpy import DymolaAPI, TimeSeriesData
@@ -15,29 +15,29 @@ from ebcpy import DymolaAPI, TimeSeriesData
 def main(
         examples_dir,
         aixlib_mo,
-        cd=None,
+        working_directory=None,
         with_plot=True
 ):
     """
     Arguments of this example:
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str aixlib_mo:
         Path to the package.mo of the AixLib.
         This example was tested for AixLib version 1.0.0.
-    :param str cd:
+    :param str working_directory:
         Path in which to store the output.
         Default is the examples\results folder
     :param bool with_plot:
         Show the plot at the end of the script. Default is True.
     """
     # General settings
-    if cd is None:
-        cd = pathlib.Path(examples_dir).joinpath("results")
+    if working_directory is None:
+        working_directory = Path(examples_dir).joinpath("results")
     else:
-        cd = pathlib.Path(cd)
-    examples_dir = pathlib.Path(examples_dir)
+        working_directory = Path(working_directory)
+    examples_dir = Path(examples_dir)
     aixcalibuha_mo = examples_dir.joinpath("model", "AixCaliBuHAExamples.mo")
 
     # ## System analysis
@@ -54,7 +54,7 @@ def main(
     # Start by setting up the Dymola-API. For more info, see the examples in ebcpy.
     dym_api = DymolaAPI(
         model_name="AixCaliBuHAExamples.HeatPumpSystemCalibration",
-        cd=cd,
+        working_directory=working_directory,
         packages=[
             aixlib_mo,
             aixcalibuha_mo
@@ -167,5 +167,5 @@ if __name__ == '__main__':
     # TODO-User: Change the AixLib path!
     main(
         aixlib_mo=r"D:\02_workshop\AixLib\AixLib\package.mo",
-        examples_dir=pathlib.Path(__file__).parent
+        examples_dir=Path(__file__).parent
     )

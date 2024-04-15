@@ -1,7 +1,7 @@
 """Test-module for all classes inside aixcalibuha.calibration"""
 
 import unittest
-import pathlib
+from pathlib import Path
 import aixcalibuha
 from aixcalibuha.utils import configuration
 
@@ -15,7 +15,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_funcs(self):
         """Test functions"""
-        example_hdf = pathlib.Path(__file__).parents[1].joinpath("examples",
+        example_hdf = Path(__file__).parents[1].joinpath("examples",
                                                                  "data",
                                                                  "PumpAndValve.hdf")
         var_names = {"TCap": ["TCapacity", "heatCapacitor.T"],
