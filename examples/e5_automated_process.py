@@ -16,7 +16,7 @@ def main(
     """
     Arguments of this example:
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str example:
         Whether to use example A (requires windows) or B.
@@ -39,6 +39,6 @@ def main(
 
 
 if __name__ == '__main__':
-    import pathlib
+    from pathlib import Path
     EXAMPLE = "B"
-    main(examples_dir=pathlib.Path(__file__).parent, example=EXAMPLE)
+    main(examples_dir=Path(__file__).parent, example=EXAMPLE)

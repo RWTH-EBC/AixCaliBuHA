@@ -93,10 +93,10 @@ class SobolAnalyzer(SenAnalyzer):
         if not result[0].empty:
             super()._save(result=result[0], time_dependent=time_dependent)
         if time_dependent:
-            savepath_result_2 = self.cd.joinpath(
+            savepath_result_2 = self.working_directory.joinpath(
                 f'{self.__class__.__name__}_results_second_order_time.csv')
         else:
-            savepath_result_2 = self.cd.joinpath(
+            savepath_result_2 = self.working_directory.joinpath(
                 f'{self.__class__.__name__}_results_second_order.csv')
         if not result[1].empty:
             result[1].to_csv(savepath_result_2)

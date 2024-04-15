@@ -25,7 +25,7 @@ def run_calibration(
     can switch the methods to other supported methods or change the framework and
     try the global optimizer of dlib.
 
-    :param [pathlib.Path, str] examples_dir:
+    :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
     :param str example:
         Which example to run, "A" or "B"
@@ -124,7 +124,7 @@ def run_calibration(
     # Select between single or multiple class calibration
     if isinstance(cal_classes, CalibrationClass):
         modelica_calibrator = Calibrator(
-            cd=sim_api.cd,
+            working_directory=sim_api.working_directory,
             sim_api=sim_api,
             calibration_class=cal_classes,
             **kwargs_calibrator)
@@ -132,7 +132,7 @@ def run_calibration(
         kwargs_calibrator.update(kwargs_multiple_classes)
         # Setup the class
         modelica_calibrator = MultipleClassCalibrator(
-            cd=sim_api.cd,
+            working_directory=sim_api.working_directory,
             sim_api=sim_api,
             calibration_classes=cal_classes,
             start_time_method="fixstart",
@@ -155,11 +155,11 @@ def run_calibration(
 
 
 if __name__ == "__main__":
-    import pathlib
+    from pathlib import Path
     # Parameters for sen-analysis:
     EXAMPLE = "B"  # Or choose A
     # Sensitivity analysis:
     run_calibration(
-        examples_dir=pathlib.Path(__file__).parent,
+        examples_dir=Path(__file__).parent,
         example=EXAMPLE
     )

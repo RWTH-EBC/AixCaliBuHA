@@ -9,7 +9,7 @@ Goals of this part of the examples:
 Start by importing all relevant packages
 
 ```python
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 ```
 
@@ -19,7 +19,7 @@ Please define the missing TODOs in the section below according to the docstrings
 """
 Arguments of this example:
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param bool with_plot:
     Show the plot at the end of the script. Default is True.
@@ -136,6 +136,6 @@ let's change some names and time index to ensure a realistic scenario:
 ```python
 tsd = tsd.rename(columns={"pipe.T": "TPipe", "heatCapacitor.T": "TCapacity"})
 tsd.to_datetime_index()
-tsd.save(pathlib.Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
-print("Saved data under", pathlib.Path(examples_dir).joinpath("data"))
+tsd.save(Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
+print("Saved data under", Path(examples_dir).joinpath("data"))
 ```

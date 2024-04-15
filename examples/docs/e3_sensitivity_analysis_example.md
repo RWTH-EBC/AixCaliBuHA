@@ -24,7 +24,7 @@ The result of this analysis is then printed to the user.
 The automatic_select function is presented as-well, using a threshold of 1
 and the default `mu_star` criterion.
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
 :param str example:
     Which example to run, "A" or "B"
@@ -47,13 +47,14 @@ Let's thus first load the necessary simulation api:
 
 ```python
 from examples import setup_fmu, setup_calibration_classes
+
 sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 
 sen_analyzer = SobolAnalyzer(
-        sim_api=sim_api,
-        num_samples=10,
-        cd=sim_api.cd
-    )
+    sim_api=sim_api,
+    num_samples=10,
+    cd=sim_api.working_directory
+)
 ```
 
 Now perform the analysis for the one of the given calibration classes.

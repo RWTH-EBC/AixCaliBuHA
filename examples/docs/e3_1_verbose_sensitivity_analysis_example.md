@@ -14,7 +14,7 @@ Start by importing all relevant packages
 
 ```python
 import warnings
-import pathlib
+from pathlib import Path
 import matplotlib.pyplot as plt
 from aixcalibuha import SobolAnalyzer, FASTAnalyzer, MorrisAnalyzer
 from aixcalibuha.data_types import merge_calibration_classes
@@ -36,7 +36,7 @@ and tuner-parameters are selected with these results.
 A comparison between different methods is shown.
 At the end the option to save a reproduction archive is shown.
 
-:param [pathlib.Path, str] examples_dir:
+:param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
     e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
 :param str example:
@@ -59,7 +59,7 @@ some further settings for the analysis.
 Let's first load the necessary simulation api:
 
 ```python
-examples_dir = pathlib.Path(examples_dir)
+examples_dir = Path(examples_dir)
 sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 ```
 
