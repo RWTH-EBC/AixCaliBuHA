@@ -83,6 +83,9 @@ class Calibrator(Optimizer):
         Maximum number of iterations of calibration.
         This may be useful to explicitly limit the calibration
         time.
+    :keyword int max_time":
+        Deault is Infinity.
+        Maximum time in seconds, after which the calibration is stopped. Useful to explicitly limit the calibration time.
     :keyword str plot_file_type:
         File ending of created plots.
         Any supported option in matplotlib, e.g. svg, png, pdf ...
@@ -191,7 +194,7 @@ class Calibrator(Optimizer):
             
         if time.perf_counter() - self.start_time > self.max_time:
             raise MaxTimeReached(
-                f"Terminating calibration as the maximum time of {self.max_time}s has been "
+                f"Terminating calibration as the maximum time of {self.max_time} s has been "
                 f"reached"
             )
         
