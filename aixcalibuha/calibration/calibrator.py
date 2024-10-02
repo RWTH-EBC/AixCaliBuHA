@@ -118,6 +118,7 @@ class Calibrator(Optimizer):
         self.result_path = kwargs.pop('result_path', None)
         self.max_itercount = kwargs.pop('max_itercount', np.inf)
         self.max_time = kwargs.pop('max_time', np.inf)
+        self.save_current_best_iterate = kwargs.pop('save_current_best_iterate', False)
         self.at_calibration = True  # Boolean to indicate if validating or calibrating
         # Extract kwargs for the visualizer
         visualizer_kwargs = {
@@ -397,6 +398,15 @@ class Calibrator(Optimizer):
                 # Changed to false in this script after calling function "save_calibration_results"
                 "Penaltyfactor": penalty
             }
+            if self.save_current_best_iterate:
+                parameter_values = self._get_parameter_dict_from_current_best_iterate()
+                
+                temp_save = {
+                    "parameters": parameter_values,
+                    "objective": total_res
+                }
+                with open(self.working_directory / 'best_iterate.json', 'w') as json_file:
+                    json.dump(temp_save, json_file, indent=4)
 
         return total_res, unweighted_objective
 
@@ -454,11 +464,18 @@ class Calibrator(Optimizer):
         self._current_best_iterate['better_current_result'] = False
 
         # Save calibrated parameter values in JSON
+        parameter_values = self._get_parameter_dict_from_current_best_iterate()
+        self.save_results(parameter_values=parameter_values,
+                          filename=self.calibration_class.name)
+        return parameter_values
+    
+    def _get_parameter_dict_from_current_best_iterate(self) -> dict:
+        """
+        Get the parameter dictionary from the current best iterate.
+        """
         parameter_values = {}
         for p_name in self._current_best_iterate['Parameters'].index:
             parameter_values[p_name] = self._current_best_iterate['Parameters'][p_name]
-        self.save_results(parameter_values=parameter_values,
-                          filename=self.calibration_class.name)
         return parameter_values
 
     @property
