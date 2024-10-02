@@ -200,7 +200,7 @@ class Calibrator(Optimizer):
             )
         
 
-    def obj(self, xk, *args):
+    def obj(self, xk, *args, verbose: bool = False):
         """
         Default objective function.
         The usual function will be implemented here:
@@ -215,9 +215,15 @@ class Calibrator(Optimizer):
             Array with normalized values for the minimizer
         :param int work_id:
             id for worker in Multiprocessing
+        :param bool verbose:
+            If True, returns the objective value and the unweighted objective dict (for validation).
+            If False, returns only the objective value (for optimization).
         :return:
-            Objective value based on the used quality measurement
-        :rtype: float
+            If verbose == False (default)
+                Objective value based on the used quality measurement
+            If verbose == True
+                Objective value and unweighted objective dict as a tuple
+        :rtype: float or tuple
         """
         # Info: This function is called by the optimization framework (scipy, dlib, etc.)
         # Initialize class objects
@@ -271,7 +277,10 @@ class Calibrator(Optimizer):
         )
         self._check_for_termination()
         
-        return total_res, unweighted_objective
+        if verbose:
+            return total_res, unweighted_objective
+        
+        return total_res
 
     def mp_obj(self, x, *args):
         # Initialize list for results
@@ -545,7 +554,7 @@ class Calibrator(Optimizer):
         # Scale the tuner parameters
         xk = self.tuner_paras.scale(tuner_values)
         # Evaluate objective
-        obj, unweighted_objective = self.obj(xk=xk)
+        obj, unweighted_objective = self.obj(xk=xk, verbose=True)
         self.logger.validation_callback_func(
             obj=obj
         )
