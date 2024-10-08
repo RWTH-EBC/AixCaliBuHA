@@ -405,7 +405,7 @@ class Calibrator(Optimizer):
                     "parameters": parameter_values,
                     "objective": total_res
                 }
-                with open(self.working_directory / 'best_iterate.json', 'w') as json_file:
+                with open(self.working_directory.joinpath('best_iterate.json'), 'w') as json_file:
                     json.dump(temp_save, json_file, indent=4)
 
         return total_res, unweighted_objective
