@@ -32,3 +32,5 @@ venv
 .pytest_cache
 htmlcov
 .coverage
+.vscode/settings.json
+tests/testzone
