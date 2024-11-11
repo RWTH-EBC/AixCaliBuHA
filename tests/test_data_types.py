@@ -57,7 +57,6 @@ class TestDataTypes(unittest.TestCase):
         goals = Goals(meas_target_data=meas_target_data,
                       variable_names=var_names,
                       statistical_measure="RMSE")
-
         # Check set_sim_target_data:
         goals.set_sim_target_data(sim_target_data)
 
@@ -83,6 +82,32 @@ class TestDataTypes(unittest.TestCase):
                   statistical_measure="RMSE",
                   weightings=weightings)
 
+        # Check different KPIs for different goals:
+        goals = Goals(meas_target_data=meas_target_data,
+                      variable_names=var_names,
+                      statistical_measure=["RMSE", "MAE"])
+        # Check set_sim_target_data:
+        goals.set_sim_target_data(sim_target_data)
+
+        # Set relevant time interval test:
+        goals.set_relevant_time_intervals([(0, 100)])
+
+        # Check the eval_difference function:
+        self.assertIsInstance(goals.eval_difference(), float)
+        
+        with self.assertRaises(ValueError):
+            # Test if wrong statistical_measure raises an error.
+            Goals(meas_target_data=meas_target_data,
+                  variable_names=var_names,
+                  statistical_measure="not a valid KPI")
+            
+        with self.assertRaises(ValueError):
+            # Test that the length of the statistical_measure list is equal to the number of variables.
+            goals = Goals(meas_target_data=meas_target_data,
+                        variable_names=var_names,
+                        statistical_measure=["RMSE", "MAE", "MSE"])
+        
+        
     def test_tuner_paras(self):
         """Test the class TunerParas"""
         dim = np.random.randint(1, 100)

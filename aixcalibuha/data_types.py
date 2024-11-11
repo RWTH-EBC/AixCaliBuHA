@@ -4,7 +4,7 @@ different other modules in the Python package.
 """
 import warnings
 import logging
-from typing import Union, Callable
+from typing import Union, Callable, List
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -68,7 +68,7 @@ class Goals:
     def __init__(self,
                  meas_target_data: Union[TimeSeriesData, pd.DataFrame],
                  variable_names: dict,
-                 statistical_measure: str,
+                 statistical_measure: Union[str, List[str]],
                  weightings: list = None):
         """Initialize class-objects and check correct input."""
 
@@ -170,18 +170,34 @@ class Goals:
         return self._stat_meas
 
     @statistical_measure.setter
-    def statistical_measure(self, statistical_measure: Union[str, Callable]):
+    def statistical_measure(self, 
+                            statistical_measure: Union[str, Callable, List[Union[str, Callable]]]):
         """
         Set the new statistical measure. The value must be
         supported by the method argument in the
         ``StatisticsAnalyzer`` class of ``ebcpy``.
         """
-        self._stat_analyzer = StatisticsAnalyzer(method=statistical_measure)
-        if callable(statistical_measure):
-            self._stat_meas = statistical_measure.__name__
-        else:
-            self._stat_meas = statistical_measure
+        def _get_stat_meas(statistical_measure):
+            if callable(statistical_measure):
+                return statistical_measure.__name__
+            return statistical_measure
+        
+        self._stat_meas = None
+        if not isinstance(statistical_measure, list):
+            statistical_measure = [statistical_measure] * len(self.variable_names)
+            self._stat_meas = _get_stat_meas(statistical_measure[0])
+            
+        if len(statistical_measure) != len(self.variable_names):
+            raise ValueError("The number of statistical measures does not match the number of goals.")
+            
+        if self._stat_meas is None:
+            self._stat_meas = '_'.join([_get_stat_meas(i) for i in statistical_measure])
+        
+        self._stat_analyzer = {}
+        for n, goal_name in enumerate(self.variable_names.keys()):
+            self._stat_analyzer[goal_name] = StatisticsAnalyzer(method=statistical_measure[n])
 
+            
     def eval_difference(self, verbose=False, penaltyfactor=1):
         """
         Evaluate the difference of the measurement and simulated data based on the
@@ -208,7 +224,7 @@ class Goals:
                                  "interval of measured and simulated data "
                                  "are not equal. \nPlease check the frequencies "
                                  "in the toml file (output_interval & frequency).")
-            _diff = self._stat_analyzer.calc(
+            _diff = self._stat_analyzer[goal_name].calc(
                 meas=self._tsd[(goal_name, self.meas_tag_str)],
                 sim=self._tsd[(goal_name, self.sim_tag_str)]
             )
