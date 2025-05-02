@@ -147,3 +147,5 @@ Visit our official [Documentation](https://rwth-ebc.github.io/AixCaliBuHA/master
 
 # Problems?
 Please [raise an issue here](https://github.com/RWTH-EBC/AixCaliBuHA/issues/new).
+
+For other inquires, please contact [ebc-tools@eonerc.rwth-aachen.de](mailto:ebc-tools@eonerc.rwth-aachen.de).
