@@ -13,6 +13,7 @@ import pandas as pd
 from ebcpy.utils import setup_logger
 from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
+from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha import utils
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
@@ -84,6 +85,36 @@ def _divide_chunks(long_list, chunk_length):
         yield long_list[i:i + chunk_length]
 
 
+def _postprocess_mat_results(mat_result_file, variable_names, suffix_files, parquet_engine='pyarrow', compression='snappy'):
+    """
+    Postprocess the mat result files.
+
+    :param str mat_result_file: The path to the MATLAB result file.
+    :param List[str] variable_names: The names of the variables to extract.
+    :param str suffix_files: The suffix for the output files.
+    :param str parquet_engine: The engine to use for saving parquet files.
+    """
+    df = TimeSeriesData(mat_result_file, variable_names=variable_names).to_df()
+    df_path = Path(mat_result_file).with_suffix("." + suffix_files)
+    if suffix_files == "csv":
+        df.to_csv(df_path)
+    elif suffix_files == "parquet":
+        for col in df_for_disk.columns:
+            if isinstance(df_for_disk[col].dtype, pd.SparseDtype):
+                df_for_disk[col] = df_for_disk[col].sparse.to_dense()
+        df.to_parquet(
+            df_path,
+            engine=parquet_engine,
+            compression=compression,
+            index=True
+        )
+    else:
+        raise ValueError(f"Unsupported file suffix: {suffix_files}. "
+                         "Supported suffixes are 'csv' and 'parquet'.")
+    os.remove(mat_result_file)
+    return df_path
+
+
 class SenAnalyzer(abc.ABC):
     """
     Class to perform a Sensitivity Analysis.
@@ -110,7 +141,7 @@ class SenAnalyzer(abc.ABC):
         Default False. If true, all simulation files for each iteration will be saved!
     :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
-        Options are 'csv', 'hdf', 'parquet'.
+        Options are 'csv' and 'parquet'.
     :keyword str parquet_engine:
         The engine to use for the data format parquet.
         Supported options can be extracted
@@ -262,13 +293,18 @@ class SenAnalyzer(abc.ABC):
             os.makedirs(sim_dir, exist_ok=True)
             samples_df.to_csv(self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv'))
             self.logger.info(f'Saving simulation files in: {sim_dir}')
+            kwargs_postprocessing = {
+                'variable_names': self.sim_api.result_names,
+                'suffix_files': self.suffix_files,
+                'parquet_engine': self.parquet_engine
+            }
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix=self.suffix_files,
-                parquet_engine=self.parquet_engine,
+                postprocess_mat_result=_postprocess_mat_results,
+                kwargs_postprocessing=kwargs_postprocessing,
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
