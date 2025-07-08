@@ -633,7 +633,7 @@ class CalibrationVisualizer(CalibrationLogger):
                         cur_ax.axhline(min_value, color="r")
                         cur_ax.plot(self._counter_calibration, ini_val, "bo")
                     if xk is not None:
-                        cur_val = self.tuner_paras.descale(xk)[tuner_counter]
+                        cur_val = self.tuner_paras.descale(xk).iloc[tuner_counter]
                         cur_ax.plot(self._counter_calibration, cur_val, "bo")
                     tuner_counter += 1
 
