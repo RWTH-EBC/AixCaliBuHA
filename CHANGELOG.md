@@ -63,3 +63,10 @@
 
 - **v1.0.1**
   - refactor cd to working_directory #57
+-  **v1.0.2**
+  - Add option to save best current result #61
+  - Add the option to use different kpis for different calibration targets #63
+  - Adopt to new ebcpy version 0.5.4 #66
+  - Update saving of simulation files for DymolaAPI
+  - Ensure that statistical measures for calibration are always the absolute values
+
