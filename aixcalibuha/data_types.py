@@ -231,7 +231,7 @@ class Goals:
             # Apply penalty function
             _diff = _diff * penaltyfactor
             _verbose_calculation[goal_name] = (self.weightings[i], _diff)
-            total_difference += self.weightings[i] * _diff
+            total_difference += self.weightings[i] * abs(_diff)
         if verbose:
             return total_difference, _verbose_calculation
         return total_difference
