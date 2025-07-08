@@ -7,6 +7,7 @@ from typing import Union, List
 from pathlib import Path
 from aixcalibuha import CalibrationClass
 from ebcpy import TimeSeriesData
+import pandas as pd
 
 
 def _postprocess_mat_results(mat_result_file, variable_names, suffix_files, parquet_engine='pyarrow', compression='snappy'):

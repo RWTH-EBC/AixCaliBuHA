@@ -15,7 +15,7 @@ from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
 from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
-from aixcalibuha import utils
+from aixcalibuha.utils import validate_cal_class_input, _postprocess_mat_results, _empty_postprocessing
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
 
 
@@ -278,8 +278,8 @@ class SenAnalyzer(abc.ABC):
                     'parquet_engine': self.parquet_engine
                 }
             if self.sim_api.__class__.__name__ == "DymolaAPI":
-                self.calibration_class.input_kwargs["postprocess_mat_result"] = postprocess_mat_result
-                self.calibration_class.input_kwargs["kwargs_postprocessing"] = kwargs_postprocessing
+                cal_class.input_kwargs["postprocess_mat_result"] = postprocess_mat_result
+                cal_class.input_kwargs["kwargs_postprocessing"] = kwargs_postprocessing
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
@@ -457,7 +457,7 @@ class SenAnalyzer(abc.ABC):
         plot_result = kwargs.pop('plot_result', True)
         load_sim_files = kwargs.pop('load_sim_files', False)
         # Check correct input
-        calibration_classes = utils.validate_cal_class_input(calibration_classes)
+        calibration_classes = validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
         if merge_multiple_classes:
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)
