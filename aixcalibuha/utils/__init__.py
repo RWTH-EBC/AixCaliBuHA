@@ -2,8 +2,46 @@
 Package containing utility functions used in different packages.
 Contains a statistics analyzer and a visualizer.
 """
+import os
 from typing import Union, List
+from pathlib import Path
 from aixcalibuha import CalibrationClass
+from ebcpy import TimeSeriesData
+
+
+def _postprocess_mat_results(mat_result_file, variable_names, suffix_files, parquet_engine='pyarrow', compression='snappy'):
+    """
+    Postprocess the mat result files.
+
+    :param str mat_result_file: The path to the MATLAB result file.
+    :param List[str] variable_names: The names of the variables to extract.
+    :param str suffix_files: The suffix for the output files.
+    :param str parquet_engine: The engine to use for saving parquet files.
+    """
+    df = TimeSeriesData(mat_result_file, variable_names=variable_names).to_df()
+    df_path = Path(mat_result_file).with_suffix("." + suffix_files)
+    if suffix_files == "csv":
+        df.to_csv(df_path)
+    elif suffix_files == "parquet":
+        df_for_disk = df.copy()
+        for col in df_for_disk.columns:
+            if isinstance(df_for_disk[col].dtype, pd.SparseDtype):
+                df_for_disk[col] = df_for_disk[col].sparse.to_dense()
+        df.to_parquet(
+            df_path,
+            engine=parquet_engine,
+            compression=compression,
+            index=True
+        )
+    else:
+        raise ValueError(f"Unsupported file suffix: {suffix_files}. "
+                         "Supported suffixes are 'csv' and 'parquet'.")
+    os.remove(mat_result_file)
+    return df_path
+
+
+def _empty_postprocessing(mat_result, **_kwargs):
+    return mat_result
 
 
 def validate_cal_class_input(
