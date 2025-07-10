@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
     'toml>=0.10.2'
 ]
 
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 
 setuptools.setup(
     name='aixcalibuha',
