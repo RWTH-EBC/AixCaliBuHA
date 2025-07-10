@@ -224,14 +224,14 @@ class Goals:
                                  "interval of measured and simulated data "
                                  "are not equal. \nPlease check the frequencies "
                                  "in the toml file (output_interval & frequency).")
-            _diff = self._stat_analyzer[goal_name].calc(
+            _diff = abs(self._stat_analyzer[goal_name].calc(
                 meas=self._tsd[(goal_name, self.meas_tag_str)],
                 sim=self._tsd[(goal_name, self.sim_tag_str)]
-            )
+            ))
             # Apply penalty function
             _diff = _diff * penaltyfactor
             _verbose_calculation[goal_name] = (self.weightings[i], _diff)
-            total_difference += self.weightings[i] * abs(_diff)
+            total_difference += self.weightings[i] * _diff
         if verbose:
             return total_difference, _verbose_calculation
         return total_difference
