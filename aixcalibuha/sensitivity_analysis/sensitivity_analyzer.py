@@ -112,7 +112,7 @@ class SenAnalyzer(abc.ABC):
     :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
         Options are 'csv' and 'parquet' to save only the goals.
-        If you want to keep the original 'mat' file specify 'mat' here. (not recommended)
+        If you want to keep the original 'mat' file specify 'mat' here (not recommended due to high disk size usage).
     :keyword str parquet_engine:
         The engine to use for the data format parquet.
         Supported options can be extracted
