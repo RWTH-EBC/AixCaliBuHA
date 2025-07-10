@@ -14,8 +14,8 @@ import numpy as np
 import pandas as pd
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
-from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached, _postprocess_mat_results, \
-    _empty_postprocessing
+from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached, convert_mat_to_suffix, \
+    empty_postprocessing
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -257,10 +257,10 @@ class Calibrator(Optimizer):
             # Generate the folder name for the calibration
             if self.save_files:
                 if self.suffix_files == "mat":
-                    postprocess_mat_result = _empty_postprocessing
+                    postprocess_mat_result = empty_postprocessing
                     kwargs_postprocessing = {}
                 else:
-                    postprocess_mat_result = _postprocess_mat_results
+                    postprocess_mat_result = convert_mat_to_suffix
                     kwargs_postprocessing = {
                         'variable_names': self.sim_api.result_names,
                         'suffix_files': self.suffix_files,
@@ -332,10 +332,10 @@ class Calibrator(Optimizer):
         # Simulate
         if self.save_files:
             if self.suffix_files == "mat":
-                postprocess_mat_result = _empty_postprocessing
+                postprocess_mat_result = empty_postprocessing
                 kwargs_postprocessing = {}
             else:
-                postprocess_mat_result = _postprocess_mat_results
+                postprocess_mat_result = convert_mat_to_suffix
                 kwargs_postprocessing = {
                     'variable_names': self.sim_api.result_names,
                     'suffix_files': self.suffix_files,

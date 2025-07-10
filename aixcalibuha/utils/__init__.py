@@ -10,7 +10,7 @@ from ebcpy import TimeSeriesData
 import pandas as pd
 
 
-def _postprocess_mat_results(mat_result_file, variable_names, suffix_files, parquet_engine='pyarrow', compression='snappy'):
+def convert_mat_to_suffix(mat_result_file, variable_names, suffix_files, parquet_engine='pyarrow', compression='snappy'):
     """
     Postprocess the mat result files.
 
@@ -41,7 +41,7 @@ def _postprocess_mat_results(mat_result_file, variable_names, suffix_files, parq
     return df_path
 
 
-def _empty_postprocessing(mat_result, **_kwargs):
+def empty_postprocessing(mat_result, **_kwargs):
     return mat_result
 
 

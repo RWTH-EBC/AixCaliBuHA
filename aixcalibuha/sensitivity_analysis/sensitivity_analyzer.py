@@ -15,7 +15,7 @@ from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
 from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
-from aixcalibuha.utils import validate_cal_class_input, _postprocess_mat_results, _empty_postprocessing
+from aixcalibuha.utils import validate_cal_class_input, convert_mat_to_suffix, empty_postprocessing
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
 
 
@@ -268,10 +268,10 @@ class SenAnalyzer(abc.ABC):
             samples_df.to_csv(self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv'))
             self.logger.info(f'Saving simulation files in: {sim_dir}')
             if self.suffix_files == "mat":
-                postprocess_mat_result = _empty_postprocessing
+                postprocess_mat_result = empty_postprocessing
                 kwargs_postprocessing = {}
             else:
-                postprocess_mat_result = _postprocess_mat_results
+                postprocess_mat_result = convert_mat_to_suffix
                 kwargs_postprocessing = {
                     'variable_names': self.sim_api.result_names,
                     'suffix_files': self.suffix_files,
