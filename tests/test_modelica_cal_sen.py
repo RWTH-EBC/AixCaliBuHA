@@ -79,8 +79,13 @@ class TestModelicaCalibrator(unittest.TestCase):
             show_plot=False,
             max_itercount=5)
         # Test run for scipy and L-BFGS-B
-        calibrator.calibrate(framework="scipy_differential_evolution",
+        result = calibrator.calibrate(framework="scipy_differential_evolution",
                              method="best1bin")
+        calibrator.validate(
+            validation_class=self.calibration_classes[0],
+            calibration_result=result,
+            verbose=True
+        )
 
     def test_mutliple_class_calibration(self):
         """Function for testing of class calibration.FixStartContModelicaCal."""

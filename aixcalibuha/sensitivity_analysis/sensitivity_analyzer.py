@@ -13,8 +13,9 @@ import pandas as pd
 from ebcpy.utils import setup_logger
 from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
+from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
-from aixcalibuha import utils
+from aixcalibuha.utils import validate_cal_class_input, convert_mat_to_suffix, empty_postprocessing
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
 
 
@@ -110,7 +111,8 @@ class SenAnalyzer(abc.ABC):
         Default False. If true, all simulation files for each iteration will be saved!
     :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
-        Options are 'csv', 'hdf', 'parquet'.
+        Options are 'csv' and 'parquet' to save only the goals.
+        If you want to keep the original 'mat' file specify 'mat' here (not recommended due to high disk size usage).
     :keyword str parquet_engine:
         The engine to use for the data format parquet.
         Supported options can be extracted
@@ -151,6 +153,9 @@ class SenAnalyzer(abc.ABC):
 
         if isinstance(self.working_directory, str):
             self.working_directory = Path(self.working_directory)
+        if not self.working_directory.exists():
+            self.working_directory.mkdir(parents=True, exist_ok=True)
+
         if isinstance(self.savepath_sim, str):
             self.savepath_sim = Path(self.savepath_sim)
 
@@ -262,13 +267,24 @@ class SenAnalyzer(abc.ABC):
             os.makedirs(sim_dir, exist_ok=True)
             samples_df.to_csv(self.savepath_sim.joinpath(f'samples_{cal_class.name}.csv'))
             self.logger.info(f'Saving simulation files in: {sim_dir}')
+            if self.suffix_files == "mat":
+                postprocess_mat_result = empty_postprocessing
+                kwargs_postprocessing = {}
+            else:
+                postprocess_mat_result = convert_mat_to_suffix
+                kwargs_postprocessing = {
+                    'variable_names': self.sim_api.result_names,
+                    'suffix_files': self.suffix_files,
+                    'parquet_engine': self.parquet_engine
+                }
+            if self.sim_api.__class__.__name__ == "DymolaAPI":
+                cal_class.input_kwargs["postprocess_mat_result"] = postprocess_mat_result
+                cal_class.input_kwargs["kwargs_postprocessing"] = kwargs_postprocessing
             _filepaths = self.sim_api.simulate(
                 parameters=parameters,
                 return_option="savepath",
                 savepath=sim_dir,
                 result_file_name=result_file_names,
-                result_file_suffix=self.suffix_files,
-                parquet_engine=self.parquet_engine,
                 fail_on_error=self.fail_on_error,
                 inputs=cal_class.inputs,
                 **cal_class.input_kwargs
@@ -441,7 +457,7 @@ class SenAnalyzer(abc.ABC):
         plot_result = kwargs.pop('plot_result', True)
         load_sim_files = kwargs.pop('load_sim_files', False)
         # Check correct input
-        calibration_classes = utils.validate_cal_class_input(calibration_classes)
+        calibration_classes = validate_cal_class_input(calibration_classes)
         # Merge the classes for avoiding possible intersection of tuner-parameters
         if merge_multiple_classes:
             calibration_classes = data_types.merge_calibration_classes(calibration_classes)

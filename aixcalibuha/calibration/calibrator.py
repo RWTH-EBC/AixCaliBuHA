@@ -14,7 +14,8 @@ import numpy as np
 import pandas as pd
 from ebcpy import data_types, Optimizer
 from ebcpy.simulationapi import SimulationAPI
-from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached
+from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached, convert_mat_to_suffix, \
+    empty_postprocessing
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -41,6 +42,15 @@ class Calibrator(Optimizer):
         in the img folder of the project.
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
+    :keword suffix_files:
+        Default 'csv'. Specifies the data format to store the simulation files in.
+        Options are 'csv' and 'parquet' to save only the goals.
+        If you want to keep the original 'mat' file specify 'mat' here (not recommended due to high disk size usage).
+    :keyword str parquet_engine:
+        The engine to use for the data format parquet.
+        Supported options can be extracted
+        from the ebcpy.TimeSeriesData.save() function.
+        Default is 'pyarrow'.
     :keyword boolean verbose_logging:
         Default is True. If False, the standard Logger without
         Visualization in Form of plots is used.
@@ -107,6 +117,8 @@ class Calibrator(Optimizer):
         # the keyword is not passed.
         self.verbose_logging = kwargs.pop("verbose_logging", True)
         self.save_files = kwargs.pop("save_files", False)
+        self.suffix_files = kwargs.pop("suffix_files", "csv")
+        self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
         self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
@@ -244,8 +256,21 @@ class Calibrator(Optimizer):
         try:
             # Generate the folder name for the calibration
             if self.save_files:
+                if self.suffix_files == "mat":
+                    postprocess_mat_result = empty_postprocessing
+                    kwargs_postprocessing = {}
+                else:
+                    postprocess_mat_result = convert_mat_to_suffix
+                    kwargs_postprocessing = {
+                        'variable_names': self.sim_api.result_names,
+                        'suffix_files': self.suffix_files,
+                        'parquet_engine': self.parquet_engine
+                    }
                 savepath_files = os.path.join(self.sim_api.working_directory,
                                               f"simulation_{self._counter}")
+                if self.sim_api.__class__.__name__ == "DymolaAPI":
+                    self.calibration_class.input_kwargs["postprocess_mat_result"] = postprocess_mat_result
+                    self.calibration_class.input_kwargs["kwargs_postprocessing"] = kwargs_postprocessing
                 _filepath = self.sim_api.simulate(
                     parameters=parameters,
                     return_option="savepath",
@@ -306,8 +331,21 @@ class Calibrator(Optimizer):
 
         # Simulate
         if self.save_files:
+            if self.suffix_files == "mat":
+                postprocess_mat_result = empty_postprocessing
+                kwargs_postprocessing = {}
+            else:
+                postprocess_mat_result = convert_mat_to_suffix
+                kwargs_postprocessing = {
+                    'variable_names': self.sim_api.result_names,
+                    'suffix_files': self.suffix_files,
+                    'parquet_engine': self.parquet_engine
+                }
             result_file_names = [f"simulation_{self._counter + idx}" for idx in
                                  range(len(parameter_list))]
+            if self.sim_api.__class__.__name__ == "DymolaAPI":
+                self.calibration_class.input_kwargs["postprocess_mat_result"] = postprocess_mat_result
+                self.calibration_class.input_kwargs["kwargs_postprocessing"] = kwargs_postprocessing
             _filepaths = self.sim_api.simulate(
                 parameters=parameter_list,
                 return_option="savepath",
