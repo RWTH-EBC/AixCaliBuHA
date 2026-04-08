@@ -114,8 +114,8 @@ class TestDataTypes(unittest.TestCase):
         names = ["test_%s" % i for i in range(dim)]
         initial_values = np.random.rand(dim) * 10  # Values between 0 and 10.
         # Values between -100 and 110
-        bounds = [(float(np.random.rand(1))*-100,
-                   float(np.random.rand(1))*100 + 10) for i in range(dim)]
+        bounds = [(np.random.rand() * -100,
+                   np.random.rand() * 100 + 10) for i in range(dim)]
         # Check for false input
         with self.assertRaises(ValueError):
             wrong_bounds = [(0, 100),

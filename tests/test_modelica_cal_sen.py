@@ -73,7 +73,7 @@ class TestModelicaCalibrator(unittest.TestCase):
     def test_modelica_calibrator(self):
         """Function for testing of class calibration.Calibrator."""
         calibrator = Calibrator(
-            working_directory=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             sim_api=self.sim_api,
             calibration_class=self.calibration_classes[0],
             show_plot=False,
@@ -150,7 +150,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = MorrisAnalyzer(
             sim_api=self.sim_api,
             num_samples=2,
-            cd=self.sim_api.cd.__str__()
+            working_directory=self.sim_api.working_directory.__str__()
         )
         sen_result, classes = sen_ana.run(self.calibration_classes,
                                           plot_result=False)
@@ -171,7 +171,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = MorrisAnalyzer(
             sim_api=self.sim_api,
             num_samples=2,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             save_files=True,
         )
         false_calc_classes = self.calibration_classes.copy()
@@ -214,7 +214,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = SobolAnalyzer(
             sim_api=self.sim_api,
             num_samples=1,
-            cd=self.sim_api.cd
+            working_directory=self.sim_api.working_directory
         )
         sen_result, classes = sen_ana.run(self.calibration_classes,
                                           plot_result=False)
@@ -227,7 +227,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = FASTAnalyzer(
             sim_api=self.sim_api,
             num_samples=8,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             M=1
         )
         sen_result, classes = sen_ana.run(self.calibration_classes[0],
@@ -241,7 +241,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = PAWNAnalyzer(
             sim_api=self.sim_api,
             num_samples=2,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             sampler="morris"
         )
         sen_result, classes = sen_ana.run(self.calibration_classes[0],
@@ -250,7 +250,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = PAWNAnalyzer(
             sim_api=self.sim_api,
             num_samples=1,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             sampler="sobol"
         )
         sen_result, classes = sen_ana.run(self.calibration_classes[0],
@@ -259,7 +259,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = PAWNAnalyzer(
             sim_api=self.sim_api,
             num_samples=8,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             M=1,
             sampler="fast"
         )
@@ -361,7 +361,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = SobolAnalyzer(
             sim_api=self.sim_api,
             num_samples=1,
-            cd=self.sim_api.cd
+            working_directory=self.sim_api.working_directory
         )
         sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],
                                                 plot_result=True)
@@ -371,7 +371,7 @@ class TestSenAnalyzer(unittest.TestCase):
         sen_ana = MorrisAnalyzer(
             sim_api=self.sim_api,
             num_samples=2,
-            cd=self.sim_api.cd,
+            working_directory=self.sim_api.working_directory,
             save_files=True
         )
         sen_result = sen_ana.run_time_dependent(cal_class=self.calibration_classes[0],

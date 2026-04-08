@@ -10,9 +10,9 @@ long_description = readme_path.read_text()
 INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
-    'pandas>=1.3.5',
+    'pandas>=1.3.5,<3.0',
     'SALib>=1.4.6',
-    'ebcpy>=0.5.5',
+    'ebcpy[full]==0.5.5',
     'toml>=0.10.2'
 ]
 
