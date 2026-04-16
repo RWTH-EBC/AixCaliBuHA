@@ -69,10 +69,10 @@ class Calibrator(Optimizer):
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
         the simulation fails. See also: ``ret_val_on_error``
-    :keyword float,np.NAN ret_val_on_error:
-        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
+    :keyword float,np.nan ret_val_on_error:
+        Default is np.nan. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
-        options are np.NaN, np.inf or some other high numbers. be aware that this
+        options are np.nan, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword dict fixed_parameters:
         Default is an empty dict. This dict may be used to add certain parameters
@@ -121,7 +121,7 @@ class Calibrator(Optimizer):
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
-        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
+        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.nan)
         self.fixed_parameters = kwargs.pop("fixed_parameters", {})
         self.apply_penalty = kwargs.pop("apply_penalty", True)
         self.penalty_factor = kwargs.pop("penalty_factor", 0)

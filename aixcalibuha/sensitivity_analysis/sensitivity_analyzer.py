@@ -102,10 +102,10 @@ class SenAnalyzer(abc.ABC):
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
         the simulation fails. See also: ``ret_val_on_error``
-    :keyword float,np.NAN ret_val_on_error:
-        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
+    :keyword float,np.nan ret_val_on_error:
+        Default is np.nan. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
-        options are np.NaN, np.inf or some other high numbers. be aware that this
+        options are np.nan, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword boolean save_files:
         Default False. If true, all simulation files for each iteration will be saved!
@@ -139,7 +139,7 @@ class SenAnalyzer(abc.ABC):
         self.save_files = kwargs.pop("save_files", False)
         self.suffix_files = kwargs.pop('suffix_files', 'csv')
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
-        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
+        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.nan)
         self.working_directory = kwargs.pop("working_directory", os.getcwd())
 
         if "cd" in kwargs:

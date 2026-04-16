@@ -20,7 +20,7 @@ kwargs_calibrator = {"timedelta": 0,
                      "create_tsd_plot": True,
                      "save_tsd_plot": True,
                      "fail_on_error": False,
-                     "ret_val_on_error": np.NAN}
+                     "ret_val_on_error": np.nan}
 
 # Specify kwargs for multiple-class-calibration
 kwargs_multiple_classes = {"merge_multiple_classes": True,
