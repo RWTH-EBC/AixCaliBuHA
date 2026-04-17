@@ -43,7 +43,8 @@ class TestDataTypes(unittest.TestCase):
             self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
             key="examples")
         sim_target_data.to_datetime_index()
-        sim_target_data.clean_and_space_equally(desired_freq="10ms")
+        sim_target_data.clean_and_space_equally(desired_freq="10ms", inplace=True)
+        sim_target_data = sim_target_data.clean_and_space_equally(desired_freq="10ms", inplace=False)
         sim_target_data.to_float_index()
         meas_target_data = data_types.TimeSeriesData(
             self.example_dir.joinpath("PumpAndValve.hdf"),
@@ -66,7 +67,7 @@ class TestDataTypes(unittest.TestCase):
         # Check the eval_difference function:
         self.assertIsInstance(goals.eval_difference(), float)
         # Try to alter the sim_target_data object with something wrong
-        with self.assertRaises(IndexError):
+        with self.assertRaises(TypeError):
             goals.set_sim_target_data([])
         # Play around with wrong weightings:
         with self.assertRaises(IndexError):

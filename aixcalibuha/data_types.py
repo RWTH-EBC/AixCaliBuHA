@@ -245,14 +245,23 @@ class Goals:
             Object with simulation target data. This data should be
             the output of a simulation, hence "sim"-target-data.
         """
+        if not isinstance(sim_target_data, pd.DataFrame):
+            raise TypeError(
+                f"Given sim_target_data is of type {type(sim_target_data).__name__} "
+                "but a pd.DataFrame is required."
+            )
         # Start with the base
         self._tsd = self._tsd_ref.copy()
         # Check index type
-        if not isinstance(sim_target_data.index, type(self._tsd.index)):
+        meas_is_datetime = isinstance(self._tsd.index, pd.DatetimeIndex)
+        sim_is_datetime = isinstance(sim_target_data.index, pd.DatetimeIndex)
+        if meas_is_datetime != sim_is_datetime:
             raise IndexError(
                 f"Given sim_target_data is using {type(sim_target_data.index).__name__}"
-                f" as an index, but the reference results (measured-data) was declared"
-                f" using the {type(self._tsd_ref.index).__name__}. Convert your"
+                f" (dtype={sim_target_data.index.dtype}) as an index, but the reference"
+                f" results (measured-data) was declared using"
+                f" {type(self._tsd_ref.index).__name__}"
+                f" (dtype={self._tsd_ref.index.dtype}). Convert your"
                 f" measured-data index to solve this error."
             )
         # Three critical cases may occur:
