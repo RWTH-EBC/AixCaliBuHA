@@ -350,7 +350,7 @@ class Goals:
         :returns:
             float: Mean frequency of the index
         """
-        mean, std = self._tsd_ref.frequency
+        mean, std = self._tsd_ref.tsd.frequency
         if std >= 1e-8:
             logger.critical("The index of your measurement data is not "
                             "equally sampled. The standard deviation is %s."

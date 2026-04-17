@@ -92,7 +92,7 @@ Check the frequency of the data:
 
 ```python
 print("Simulation had index-frequency of %s with "
-      "standard deviation of %s" % tsd.frequency)
+      "standard deviation of %s" % tsd.tsd.frequency)
 ```
 
 Let's look at the data we've created:

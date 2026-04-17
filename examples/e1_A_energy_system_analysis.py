@@ -99,7 +99,7 @@ def main(
     # Let's check the frequency of the data to see if our 1 s sampling rate
     # was correctly applied:
     print("Simulation had index-frequency of %s with "
-          "standard deviation of %s" % tsd.frequency)
+          "standard deviation of %s" % tsd.tsd.frequency)
 
     # Due to state events (see Modelica help for more info on that),
     # our data is not equally sampled.
@@ -114,7 +114,7 @@ def main(
     # Apply the function
     tsd.clean_and_space_equally(desired_freq="10s")
     print("Simulation now has index-frequency of %s with "
-          "standard deviation of %s" % tsd.frequency)
+          "standard deviation of %s" % tsd.tsd.frequency)
 
     # Let's check if the sampling changed our measured data and
     # plot all relevant variable to analyze our system:

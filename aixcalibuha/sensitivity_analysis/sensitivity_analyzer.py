@@ -13,7 +13,6 @@ import pandas as pd
 from ebcpy.utils import setup_logger
 from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
-from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha.utils import validate_cal_class_input, convert_mat_to_suffix, empty_postprocessing
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
@@ -48,7 +47,7 @@ def _restruct_verbose(list_output_verbose):
 
 def _concat_all_sims(sim_results_list):
     """Helper function that concat all results in a list to one DataFrame."""
-    sim_results_list = [r.to_df() for r in sim_results_list]
+    sim_results_list = [r for r in sim_results_list]
     sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)),
                                  axis='columns')
     sim_results_list = sim_results_list.swaplevel(axis=1).sort_index(axis=1)
@@ -302,7 +301,7 @@ class SenAnalyzer(abc.ABC):
         return results, samples
 
     def _check_index(self, tsd: data_types.TimeSeriesData, sim_num=None):
-        freq = tsd.frequency
+        freq = tsd.tsd.frequency
         if sim_num is None:
             sim_num = tsd.filepath.name
         if freq[0] != self.sim_api.sim_setup.output_interval:
@@ -312,7 +311,7 @@ class SenAnalyzer(abc.ABC):
             tsd.to_datetime_index()
             tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval * 1000)}ms')
             tsd.to_float_index()
-            freq = tsd.frequency
+            freq = tsd.tsd.frequency
         if freq[1] > 0.0:
             self.logger.info(f'The standard deviation of the frequency from {sim_num} is to high '
                              f'and will be rounded to the accuracy of the output interval')
@@ -756,7 +755,7 @@ class SenAnalyzer(abc.ABC):
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list,
                                                                  time_index)
             else:
-                variables = results[0].get_variable_names()
+                variables = results[0].tsd.get_variable_names()
                 time_index = results[0].index.to_numpy()
                 total_result = _concat_all_sims(results)
                 sen_time_dependent_list = []
@@ -815,7 +814,7 @@ class SenAnalyzer(abc.ABC):
         """
         sim1 = _load_single_file(_filepaths[0])
         time_index = sim1.index.to_numpy()
-        variables = sim1.get_variable_names()
+        variables = sim1.tsd.get_variable_names()
         sen_time_dependent_list = []
         if n_steps == 'all':
             list_tsteps = [time_index]

@@ -64,7 +64,7 @@ def main(
     # ## Data analysis
     # Check the frequency of the data:
     print("Simulation had index-frequency of %s with "
-          "standard deviation of %s" % tsd.frequency)
+          "standard deviation of %s" % tsd.tsd.frequency)
     # Let's look at the data we've created:
     fig, ax = plt.subplots(1, 1, sharex=True)
     ax.plot(tsd['heatCapacitor.T'] - 273.15, label="Capacity")
