@@ -3,7 +3,7 @@
 from pathlib import Path
 import unittest
 import numpy as np
-from ebcpy import data_types
+from ebcpy import load_time_series_data
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -39,21 +39,20 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(
+        sim_target_data = load_time_series_data(
             self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
             key="examples")
-        sim_target_data.to_datetime_index()
-        sim_target_data.clean_and_space_equally(desired_freq="10ms", inplace=True)
-        sim_target_data = sim_target_data.clean_and_space_equally(desired_freq="10ms", inplace=False)
-        sim_target_data.to_float_index()
-        meas_target_data = data_types.TimeSeriesData(
+        sim_target_data.tsd.to_datetime_index()
+        sim_target_data = sim_target_data.tsd.clean_and_space_equally(desired_freq="10ms", inplace=False)
+        sim_target_data.tsd.to_float_index()
+        meas_target_data = load_time_series_data(
             self.example_dir.joinpath("PumpAndValve.hdf"),
             key="examples")
 
         # Setup three variables for different format of setup
         var_names = {"T": ["TCapacity", "heatCapacitor.T"],
                      "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
-        meas_target_data.to_float_index()
+        meas_target_data.tsd.to_float_index()
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
                       variable_names=var_names,

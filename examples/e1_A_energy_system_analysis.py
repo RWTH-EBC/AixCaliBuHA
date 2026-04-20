@@ -2,14 +2,14 @@
 # Goals of this part of the examples:
 # 1. Learn how to analyze the model of your energy system
 # 2. Improve your `SimulationAPI` knowledge
-# 3. Improve your skill-set on `TimeSeriesData`
+# 3. Improve your skill-set on ebcpy's `TimeSeriesAccessor` for `pd.DataFrame`
 # 4. Generate some measured data to later use in a calibration
 
 # Start by importing all relevant packages
 from pathlib import Path
 import matplotlib.pyplot as plt
 # Imports from ebcpy
-from ebcpy import DymolaAPI, TimeSeriesData
+from ebcpy import DymolaAPI, load_time_series_data
 
 
 def main(
@@ -93,7 +93,7 @@ def main(
     # This input is important for heat pumps, as efficiency mainly depends
     # on source temperatures, and the model is of an air source heat pump.
     # We thus also extract this input for our data analysis.
-    tsd = TimeSeriesData(file_path)
+    tsd = load_time_series_data(file_path)
     tsd = tsd[["Pel", "TAir", "TDryBulSource.y"]]
 
     # Let's check the frequency of the data to see if our 1 s sampling rate
@@ -105,14 +105,14 @@ def main(
     # our data is not equally sampled.
     # To later match the simulation data with a fixed output interval (parameter output_interval),
     # we have to process the data further.
-    # To do this, we have the function 'clean_and_space_equally' in ebcpy's TimeSeriesData.
+    # To do this, we have the function 'clean_and_space_equally' in ebcpy's TimeSeriesAccessor.
     # It only works on datetime indexes, hence we convert the data first:
     # Note: Real measured data would already contain DateTimeIndex anyways.
-    tsd.to_datetime_index()
+    tsd.tsd.to_datetime_index()
     # Save a copy to check if our resampling induces data loss:
     tsd_reference = tsd.copy()
     # Apply the function
-    tsd.clean_and_space_equally(desired_freq="10s")
+    tsd.tsd.clean_and_space_equally(desired_freq="10s")
     print("Simulation now has index-frequency of %s with "
           "standard deviation of %s" % tsd.tsd.frequency)
 
@@ -158,8 +158,8 @@ def main(
     # In order to use this data in the other examples for the calibration, we have to save it.
     tsd_inputs = tsd[["TDryBulSource.y"]]
     tsd_measurements = tsd[["Pel", "TAir"]]
-    tsd_inputs.save(examples_dir.joinpath("data", "measured_input_data.hdf"), key="example")
-    tsd_measurements.save(examples_dir.joinpath("data", "measured_target_data.hdf"), key="example")
+    tsd_inputs.tsd.save(examples_dir.joinpath("data", "measured_input_data.hdf"), key="example")
+    tsd_measurements.tsd.save(examples_dir.joinpath("data", "measured_target_data.hdf"), key="example")
     print("Saved data under", examples_dir.joinpath("data"))
 
 

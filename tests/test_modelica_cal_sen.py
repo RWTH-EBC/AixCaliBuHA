@@ -11,7 +11,7 @@ import shutil
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from ebcpy import FMU_API, TimeSeriesData
+from ebcpy import FMU_API, load_time_series_data
 from aixcalibuha import MorrisAnalyzer, SobolAnalyzer, FASTAnalyzer, PAWNAnalyzer, \
     MultipleClassCalibrator, Calibrator, CalibrationClass, TunerParas, Goals, plotting
 
@@ -23,10 +23,10 @@ def _set_up():
 
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
-    meas_target_data = TimeSeriesData(
+    meas_target_data = load_time_series_data(
         data_dir.joinpath("PumpAndValve.hdf"), key="examples"
     )
-    meas_target_data.to_float_index()
+    meas_target_data.tsd.to_float_index()
 
     # Setup three variables for different format of setup
     variable_names = {

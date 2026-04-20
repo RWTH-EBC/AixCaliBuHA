@@ -12,7 +12,7 @@ INSTALL_REQUIRES = [
     'matplotlib>=3.3.4',
     'pandas>=1.3.5,<3.0',
     'SALib>=1.4.6',
-    'ebcpy[full]>=0.7.0',
+    'ebcpy[full]>=0.7.1',
     'toml>=0.10.2'
 ]
 

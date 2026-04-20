@@ -8,7 +8,6 @@ from typing import Union, Callable, List
 from copy import deepcopy
 import pandas as pd
 import numpy as np
-from ebcpy import TimeSeriesData
 from ebcpy.utils.statistics_analyzer import StatisticsAnalyzer
 from ebcpy.preprocessing import convert_datetime_index_to_float_index
 
@@ -22,7 +21,7 @@ class Goals:
     Class for one or multiple goals. Used to evaluate the
     difference between current simulation and measured data
 
-    :param (ebcpy.data_types.TimeSeriesData, pd.DataFrame) meas_target_data:
+    :param pd.DataFrame meas_target_data:
         The dataset of the measurement. It acts as a point of reference
         for the simulation output. If the dimensions of the given DataFrame and later
         added simulation-data are not equal, an error is raised.
@@ -66,16 +65,16 @@ class Goals:
     sim_tag_str = "sim"
 
     def __init__(self,
-                 meas_target_data: Union[TimeSeriesData, pd.DataFrame],
+                 meas_target_data: pd.DataFrame,
                  variable_names: dict,
                  statistical_measure: Union[str, List[str]],
                  weightings: list = None):
         """Initialize class-objects and check correct input."""
 
         # Open the meas target data:
-        if not isinstance(meas_target_data, (TimeSeriesData, pd.DataFrame)):
+        if not isinstance(meas_target_data, pd.DataFrame):
             raise TypeError(f"Given meas_target_data is of type {type(meas_target_data).__name__} "
-                            "but TimeSeriesData is required.")
+                            "but pd.DataFrame is required.")
 
         if not isinstance(variable_names, dict):
             raise TypeError(f"Given variable_names is of type {type(variable_names).__name__} "
@@ -98,26 +97,30 @@ class Goals:
                 meas_info = meas_sim_info[0]
                 self._sim_var_matcher[var_name] = meas_sim_info[1]
             else:
-                raise TypeError(f"Variable {var_name} of variable_names has a value"
+                raise TypeError(f"Variable {var_name} of variable_names has a value "
                                 "neither being a dict, list or tuple.")
-            # Now get the info to extract the values out of the given tsd
-            # Convert string with into a list of tuples containing the relevant tag.
-            # If mulitple tags exist, and the default tag (self.meas_tag_str)
-            # is not present, an error is raised.
+            # Now get the info to extract the values out of the given DataFrame.
+            # If the column selection returns a Series, there is no MultiIndex —
+            # wrap the variable into the internal (variable, tag) MultiIndex.
+            # If it returns a DataFrame, the input already has a MultiIndex.
             if isinstance(meas_info, str):
-                if isinstance(meas_target_data[meas_info], pd.Series):
-                    raise TypeError("Given meas_target_data contains columns without a tag."
-                                    "Please only pass MultiIndex-DataFrame objects.")
-                tags = meas_target_data[meas_info].columns
-                _rename_cols_dict[meas_info] = var_name
-                if len(tags) != 1 and self.meas_tag_str not in tags:
-                    raise TypeError("Not able to automatically select variables and tags. "
-                                    f"Variable {meas_info} has mutliple tags, none of which "
-                                    f"is specified as {self.meas_tag_str}.")
-                if self.meas_tag_str in tags:
-                    _columns.append((meas_info, self.meas_tag_str))
+                selected = meas_target_data[meas_info]
+                if isinstance(selected, pd.Series):
+                    # Single-level columns: use the variable directly
+                    _rename_cols_dict[meas_info] = var_name
+                    _columns.append(meas_info)
                 else:
-                    _columns.append((meas_info, tags[0]))
+                    # MultiIndex columns: select by tag
+                    tags = selected.columns
+                    _rename_cols_dict[meas_info] = var_name
+                    if len(tags) != 1 and self.meas_tag_str not in tags:
+                        raise TypeError("Not able to automatically select variables and tags. "
+                                        f"Variable {meas_info} has multiple tags, none of which "
+                                        f"is specified as {self.meas_tag_str}.")
+                    if self.meas_tag_str in tags:
+                        _columns.append((meas_info, self.meas_tag_str))
+                    else:
+                        _columns.append((meas_info, tags[0]))
             elif isinstance(meas_info, tuple):
                 _rename_cols_dict[meas_info[0]] = var_name
                 _columns.append(meas_info)
@@ -125,16 +128,28 @@ class Goals:
                 raise TypeError(f"Measurement Info on variable {var_name} is "
                                 "neither of type string or tuple.")
 
-        # Take the subset of the given tsd based on var_names and tags.
-        self._tsd = meas_target_data[_columns].copy()
+        # Build internal MultiIndex DataFrame with (variable, meas) columns
+        _is_multiindex = isinstance(meas_target_data.columns, pd.MultiIndex)
 
-        # Rename all variables to the given var_name (key of self.variable_names)
-        self._tsd = self._tsd.rename(columns=_rename_cols_dict, level=0)
-
-        # Rename all tags to the default measurement name for consistency.
-        tags = dict(zip(self._tsd.columns.levels[1],
-                        [self.meas_tag_str for _ in range(len(_columns))]))
-        self._tsd = self._tsd.rename(columns=tags, level=1)
+        if _is_multiindex:
+            # Take the subset of the given DataFrame based on var_names and tags.
+            self._tsd = meas_target_data[_columns].copy()
+            # Rename all variables to the given var_name (key of self.variable_names)
+            self._tsd = self._tsd.rename(columns=_rename_cols_dict, level=0)
+            # Rename all tags to the default measurement name for consistency.
+            tags = dict(zip(self._tsd.columns.levels[1],
+                            [self.meas_tag_str for _ in range(len(_columns))]))
+            self._tsd = self._tsd.rename(columns=tags, level=1)
+        else:
+            # Single-level columns: build MultiIndex internally
+            subset = meas_target_data[_columns].copy()
+            subset = subset.rename(columns=_rename_cols_dict)
+            # Create MultiIndex with (variable_name, "meas") structure
+            multi_cols = pd.MultiIndex.from_tuples(
+                [(col, self.meas_tag_str) for col in subset.columns],
+                names=["Variables", "Tags"]
+            )
+            self._tsd = pd.DataFrame(subset.values, index=subset.index, columns=multi_cols)
 
         # Save the tsd to a tsd_ref object
         # Used to never lose the original dataframe.
@@ -145,7 +160,7 @@ class Goals:
         self.statistical_measure = statistical_measure
 
         # Set the weightings, if not specified.
-        self._num_goals = len(_columns)
+        self._num_goals = len(self.variable_names)
         if weightings is None:
             self.weightings = np.array([1 / self._num_goals
                                         for i in range(self._num_goals)])
@@ -170,7 +185,7 @@ class Goals:
         return self._stat_meas
 
     @statistical_measure.setter
-    def statistical_measure(self, 
+    def statistical_measure(self,
                             statistical_measure: Union[str, Callable, List[Union[str, Callable]]]):
         """
         Set the new statistical measure. The value must be
@@ -181,23 +196,22 @@ class Goals:
             if callable(statistical_measure):
                 return statistical_measure.__name__
             return statistical_measure
-        
+
         self._stat_meas = None
         if not isinstance(statistical_measure, list):
             statistical_measure = [statistical_measure] * len(self.variable_names)
             self._stat_meas = _get_stat_meas(statistical_measure[0])
-            
+
         if len(statistical_measure) != len(self.variable_names):
             raise ValueError("The number of statistical measures does not match the number of goals.")
-            
+
         if self._stat_meas is None:
             self._stat_meas = '_'.join([_get_stat_meas(i) for i in statistical_measure])
-        
+
         self._stat_analyzer = {}
         for n, goal_name in enumerate(self.variable_names.keys()):
             self._stat_analyzer[goal_name] = StatisticsAnalyzer(method=statistical_measure[n])
 
-            
     def eval_difference(self, verbose=False, penaltyfactor=1):
         """
         Evaluate the difference of the measurement and simulated data based on the
@@ -209,10 +223,10 @@ class Goals:
             This can be useful to better understand which goals is performing
             well in an optimization and which goals needs further is not performing well.
         :param float penaltyfactor:
-            Muliplty result with this factor to account for
-            penatlies of some sort.
+            Multiply result with this factor to account for
+            penalties of some sort.
         :return: float total_difference
-            weighted ouput for all goals.
+            weighted output for all goals.
         """
         total_difference = 0
         _verbose_calculation = {}
@@ -241,7 +255,7 @@ class Goals:
         self._sim_target_data based on the given dataframe
         sim_target_data.
 
-        :param TimeSeriesData sim_target_data:
+        :param pd.DataFrame sim_target_data:
             Object with simulation target data. This data should be
             the output of a simulation, hence "sim"-target-data.
         """
@@ -353,9 +367,9 @@ class Goals:
         mean, std = self._tsd_ref.tsd.frequency
         if std >= 1e-8:
             logger.critical("The index of your measurement data is not "
-                            "equally sampled. The standard deviation is %s."
-                            "The may lead to errors when mapping measurements to simulation "
-                            "results.", mean.std())
+                            "equally sampled. The standard deviation is %s. "
+                            "This may lead to errors when mapping measurements to simulation "
+                            "results.", std)
         return mean
 
 
@@ -405,7 +419,7 @@ class TunerParas:
         # Check if all names are unique:
         if len(names) != len(set(names)):
             raise ValueError("Given names contain duplicates. "
-                             "This will yield errors in later stages"
+                             "This will yield errors in later stages "
                              "such as calibration of sensitivity analysis.")
         try:
             # Calculate the sum, as this will fail if the elements are not float or int.
@@ -559,9 +573,8 @@ class CalibrationClass:
         The given intervals may overlap. Furthermore the intervals do not need
         to be in an ascending order or be limited to
         the start_time and end_time parameters.
-    :keyword (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:
-        TimeSeriesData or DataFrame that holds
-        input data for the simulation to run.
+    :keyword pd.DataFrame inputs:
+        DataFrame that holds input data for the simulation to run.
         The time-index should be float index and match the overall
         ranges set by start- and stop-time.
     :keyword dict input_kwargs:
@@ -679,20 +692,18 @@ class CalibrationClass:
         self._relevant_intervals = relevant_intervals
 
     @property
-    def inputs(self) -> Union[TimeSeriesData, pd.DataFrame]:
+    def inputs(self) -> pd.DataFrame:
         """Get the inputs for this calibration class"""
         return self._inputs
 
     @inputs.setter
-    def inputs(self, inputs: Union[TimeSeriesData, pd.DataFrame]):
+    def inputs(self, inputs: pd.DataFrame):
         """Set the inputs for this calibration class"""
-        # Check correct index:
-        if not isinstance(inputs, (TimeSeriesData, pd.DataFrame)):
-            raise TypeError(f"Inputs need to be either TimeSeriesData "
-                            f"or pd.DataFrame, but you passed {type(inputs)}")
+        if not isinstance(inputs, pd.DataFrame):
+            raise TypeError(f"Inputs need to be a pd.DataFrame, "
+                            f"but you passed {type(inputs)}")
         if isinstance(inputs.index, pd.DatetimeIndex):
             inputs = convert_datetime_index_to_float_index(inputs)
-
         self._inputs = inputs
 
 

@@ -10,7 +10,7 @@
 # Start by importing all relevant packages
 from pathlib import Path
 # Imports from ebcpy
-from ebcpy import TimeSeriesData
+from ebcpy import load_time_series_data
 # Imports from AixCaliBUhA
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
@@ -71,7 +71,7 @@ def main(
     # As the examples should work, and the cal_class example uses the other examples,
     # we will test it here:
     data_dir = Path(examples_dir).joinpath("data")
-    meas_target_data = TimeSeriesData(data_dir.joinpath("PumpAndValve.hdf"),
+    meas_target_data = load_time_series_data(data_dir.joinpath("PumpAndValve.hdf"),
                                       key="examples")
     # Setup three variables for different format of setup
     variable_names = {
@@ -84,7 +84,7 @@ def main(
     # To match the measured data to simulated data,
     # the index has to match with the simulation output
     # Thus, convert it:
-    meas_target_data.to_float_index()
+    meas_target_data.tsd.to_float_index()
     # Lastly, setup the goals object. Note that the statistical_measure
     # is parameter of the python version of this example. It's a metric to
     # compare two set's of time series data. Which one to choose is up to
@@ -98,7 +98,7 @@ def main(
     )
     # Let's check if our evaluation is possible by creating some
     # dummy sim_target_data with the same index:
-    sim_target_data = TimeSeriesData({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
+    sim_target_data = load_time_series_data({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
                                      index=meas_target_data.index)
 
     print("Goals data before setting simulation data:\n", goals.get_goals_data())
@@ -110,7 +110,7 @@ def main(
     # understand the error messages of this framework a little bit better.
     # Example:
     new_index = [0.0, 5.0, 10.0]
-    sim_target_data = TimeSeriesData({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
+    sim_target_data = load_time_series_data({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
                                      index=new_index)
     try:
         goals.set_sim_target_data(sim_target_data)
@@ -120,7 +120,7 @@ def main(
         print(err)
     new_index = meas_target_data.index.values.copy()
     new_index[-10] += 0.05  # Change some value
-    sim_target_data = TimeSeriesData({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
+    sim_target_data = load_time_series_data({"pipe.T": 298.15, "heatCapacitor.T": 303.15},
                                      index=new_index)
     try:
         goals.set_sim_target_data(sim_target_data)
