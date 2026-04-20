@@ -121,8 +121,7 @@ class TestDataTypes(unittest.TestCase):
                             statistical_measure="RMSE")
         self.assertEqual(str(plain_goals._tsd[("BoolVar", "meas")].dtype), "boolean")
         self.assertEqual(str(plain_goals._tsd[("IntVar", "meas")].dtype), "Int64")
-         
-         
+
     def test_tuner_paras(self):
         """Test the class TunerParas"""
         dim = np.random.randint(1, 100)
