@@ -265,7 +265,8 @@ class Calibrator(Optimizer):
                     postprocess_mat_result = convert_mat_to_suffix
                     kwargs_postprocessing = {
                         'variable_names': self.sim_api.result_names,
-                        'suffix_files': self.suffix_files
+                        'suffix_files': self.suffix_files,
+                        'parquet_engine': self.parquet_engine
                     }
                 savepath_files = os.path.join(self.sim_api.working_directory,
                                               f"simulation_{self._counter}")
