@@ -225,7 +225,8 @@
                 <span class="p">[(</span><span class="n">col</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">subset</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Variables&quot;</span><span class="p">,</span> <span class="s2">&quot;Tags&quot;</span><span class="p">]</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">subset</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">subset</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">multi_cols</span><span class="p">)</span>
+            <span class="n">subset</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">multi_cols</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">subset</span>
 
         <span class="c1"># Save the tsd to a tsd_ref object</span>
         <span class="c1"># Used to never lose the original dataframe.</span>
