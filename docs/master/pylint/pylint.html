@@ -28,9 +28,9 @@
 
         
         <h2>Score</h2>
-        7.51 / 10
+        7.50 / 10
             
-            (previous score: 7.51 / 10)
+            (previous score: 7.50 / 10)
             
         
 
@@ -103,7 +103,27 @@
     return resulting_setting
 
 
-def main():</pre></td>
+def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
+    &#34;&#34;&#34;
+    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
+    package for the given model inside the simulation api.
+
+    :param str model_name:
+        Name of the model you want to calibrate.
+        If the model is a standalone model without a &#34;package.mo&#34; file,
+        you have to pass the path the model. Else the path is extracted
+        from the packages-list (see below)
+    :param os.path.normpath,str savepath:
+        Path to store the generated package
+    :param list packages:
+        List with filepath to the &#34;package.mo&#34; file of each package required
+        to simulate the given model_name.
+    :keyword str mocate_version
+        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
+    :keyword str msl_version
+        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
+    :return:
+    &#34;&#34;&#34;</pre></td>
             </tr>
             
             <tr>
@@ -116,16 +136,16 @@ def main():</pre></td>
                 <td><pre>Similar lines in 2 files
 ==aixcalibuha.calibration.calibrator:[258:268]
 ==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[269:279]
-            if self.suffix_files == &#34;mat&#34;:
-                postprocess_mat_result = empty_postprocessing
-                kwargs_postprocessing = {}
-            else:
-                postprocess_mat_result = convert_mat_to_suffix
-                kwargs_postprocessing = {
-                    &#39;variable_names&#39;: self.sim_api.result_names,
-                    &#39;suffix_files&#39;: self.suffix_files,
-                    &#39;parquet_engine&#39;: self.parquet_engine
-                }</pre></td>
+                if self.suffix_files == &#34;mat&#34;:
+                    postprocess_mat_result = empty_postprocessing
+                    kwargs_postprocessing = {}
+                else:
+                    postprocess_mat_result = convert_mat_to_suffix
+                    kwargs_postprocessing = {
+                        &#39;variable_names&#39;: self.sim_api.result_names,
+                        &#39;suffix_files&#39;: self.suffix_files,
+                        &#39;parquet_engine&#39;: self.parquet_engine
+                    }</pre></td>
             </tr>
             
             <tr>
@@ -176,7 +196,7 @@ def main():</pre></td>
         weightings=[0.7, 0.3]
     )
     # Let&#39;s check if our evaluation is possible by creating some
-    # dummy sim_target_data with the same index:</pre></td>
+    # dummy `sim_target_data` with the same index:</pre></td>
             </tr>
             
             <tr>
@@ -238,7 +258,26 @@ if __name__ == &#39;__main__&#39;:
     except Exception as err:
         print(&#34;I knew this error was going to happen. Do you understand &#34;
               &#34;why this happens based on the following message?&#34;)
-        print(err)</pre></td>
+        print(err)
+    # ## Calibration Classes
+    # We now are going to wrap everything up into a single object called
+    # `CalibrationClass`.
+    # Each class has a `name`, a `start_time`, `stop_time` and
+    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
+    # The latter three can be set for all
+    # classes if a distinction is not required.
+    # ### Why do we use a `CalibrationClass`?
+    # Because this class contains all information necessary
+    # to perform both sensitivity analysis and calibration automatically.
+    # ### Can there be multiple classes?
+    # Yes! Because we expect different tuner parameters
+    # to influence the outputs based on the state of the system,
+    # e.g. &#39;On&#39; and &#39;Off&#39; more or less. To reduce the complexity of the
+    # optimization problem, separating tuner parameters into time intervals
+    # can be handy. For example heat losses to the ambient may be most
+    # sensitive if the device is just turned off, while efficiency is more
+    # sensitive during runtime.
+    # Let&#39;s also define some different tuner parameters for the last stationary class.</pre></td>
             </tr>
             
             <tr>
@@ -257,26 +296,7 @@ if __name__ == &#39;__main__&#39;:
     except Exception as err:
         print(&#34;I knew this error was going to happen. Do you understand &#34;
               &#34;why this happens based on the following message?&#34;)
-        print(err)
-
-    # ## Calibration Classes
-    # We now are going to wrap everything up into a single object called
-    # `CalibrationClass`.
-    # Each class has a `name`, a `start_time`, `stop_time` and
-    # `goals`, `tuner_paras` (tuner parameters) and `inputs`.
-    # The latter three can be set for all
-    # classes if a distinction is not required.
-    # ### Why do we use a `CalibrationClass`?
-    # Because this class contains all information necessary
-    # to perform both sensitivity analysis and calibration automatically.
-    # ### Can there be multiple classes?
-    # Yes! Because we expect different tuner parameters
-    # to influence the outputs based on the state of the system,
-    # e.g. &#39;On&#39; and &#39;Off&#39; more or less. To reduce the complexity of the
-    # optimization problem, separating tuner parameters into time intervals
-    # can be handy. For example heat losses to the ambient may be most
-    # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime.</pre></td>
+        print(err)</pre></td>
             </tr>
             
             <tr>
@@ -309,12 +329,12 @@ if __name__ == &#39;__main__&#39;:
                 <td><pre>Similar lines in 2 files
 ==aixcalibuha.utils.configuration:[15:21]
 ==examples.e4_calibration_example:[65:71]
-    kwargs_calibrator = {&#34;timedelta&#34;: 0,
-                         &#34;save_files&#34;: False,
-                         &#34;verbose_logging&#34;: True,
-                         &#34;show_plot&#34;: True,
-                         &#34;create_tsd_plot&#34;: True,
-                         &#34;save_tsd_plot&#34;: True,</pre></td>
+kwargs_calibrator = {&#34;timedelta&#34;: 0,
+                     &#34;save_files&#34;: False,
+                     &#34;verbose_logging&#34;: True,
+                     &#34;show_plot&#34;: True,
+                     &#34;create_tsd_plot&#34;: True,
+                     &#34;save_tsd_plot&#34;: True,</pre></td>
             </tr>
             
             <tr>
@@ -328,7 +348,6 @@ if __name__ == &#39;__main__&#39;:
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
                                      index=meas_target_data.index)
-
     print(&#34;Goals data before setting simulation data:\n&#34;, goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
     print(&#34;Goals data after setting simulation data:\n&#34;, goals.get_goals_data())
@@ -399,7 +418,7 @@ if __name__ == &#39;__main__&#39;:
 from pathlib import Path
 # Imports from ebcpy
 from ebcpy import TimeSeriesData
-# Imports from AixCaliBUhA
+# Imports from aixcalibuha
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
 from aixcalibuha.data_types import merge_calibration_classes
@@ -424,12 +443,15 @@ def main(
         If False, all CalibrationClasses will have the
         same name
     &#34;&#34;&#34;
+
     # ## Tuner Parameters
     # Tuner parameters are the optimization variables we will be
     # changing to match the simulated onto the measured output.
     #
-    # As described in the first example (e1_B_energy_system_analysis),
-    # we&#39;ve changed two parameters in the model.
+    # As described in the first example (e1_A_energy_system_analysis),
+    # we&#39;ve changed four parameters in the model. To show the usefulness
+    # of sensitivity analysis prior to calibration, we will add a fifth without
+    # any influence, the heating curve declination of the heat pump.
     # To define tuner parameters, you have to specify
     # - the name of the parameter
     # - an initial guess
@@ -438,17 +460,9 @@ def main(
     # We&#39;ve chosen to make it a requirement to prevent blindly accepting
     # calibration results. If the result is very far away from your initial guess
     # and you though you understand the model, maybe the parameter is just not
-    # sensitive or influenced by another parameter.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
+    # sensitive or influenced by another parameter.
+    # How to load the data is up to you. To make the structure clear,
+    # we use a 3 element tuple in this example:</pre></td>
             </tr>
             
             <tr>
@@ -478,6 +492,26 @@ def main(
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
                 <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
             </tr>
             
@@ -488,7 +522,7 @@ def main(
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
             </tr>
             
             <tr>
@@ -498,17 +532,7 @@ def main(
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
             </tr>
             
         </table>
@@ -532,7 +556,7 @@ def main(
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/calibration/calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-02-41.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/calibration/calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-29-17.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -726,7 +750,7 @@ def main(
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/multi_class_calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-02-41.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/multi_class_calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-29-17.txt&#39;.</pre></td>
             </tr>
             
         </table>
@@ -750,7 +774,7 @@ def main(
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/data_types.py: Fatal error while checking &#39;aixcalibuha/data_types.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-02-40.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/data_types.py: Fatal error while checking &#39;aixcalibuha/data_types.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-29-16.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -1150,7 +1174,7 @@ def main(
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking &#39;aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-02-40.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking &#39;aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-29-17.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -1278,7 +1302,7 @@ def main(
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/utils/__init__.py: Fatal error while checking &#39;aixcalibuha/utils/__init__.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-02-40.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/utils/__init__.py: Fatal error while checking &#39;aixcalibuha/utils/__init__.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-13-29-17.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -3585,6 +3609,26 @@ def main(
                 <td><pre>Instance of &#39;PurePath&#39; has no &#39;read_text&#39; member</pre></td>
             </tr>
             
+            <tr>
+                <td>19</td>
+                <td>5</td>
+                <td>warning</td>
+                <td><code>unspecified-encoding</code></td>
+                <td>W1514</td>
+                <td></td>
+                <td><pre>Using open without explicitly specifying an encoding</pre></td>
+            </tr>
+            
+            <tr>
+                <td>22</td>
+                <td>0</td>
+                <td>convention</td>
+                <td><code>line-too-long</code></td>
+                <td>C0301</td>
+                <td></td>
+                <td><pre>Line too long (109/100)</pre></td>
+            </tr>
+            
         </table>
         
         <h3>Module <code>tests.test_data_types</code> (<code>tests/test_data_types.py</code>)</h3>
@@ -3778,12 +3822,12 @@ def main(
             
             <tr>
                 <td>warning</td>
-                <td>54</td>
+                <td>55</td>
             </tr>
             
             <tr>
                 <td>convention</td>
-                <td>89</td>
+                <td>90</td>
             </tr>
             
             <tr>
@@ -3817,6 +3861,11 @@ def main(
             </tr>
             
             <tr>
+                <td>line-too-long</td>
+                <td>26</td>
+            </tr>
+            
+            <tr>
                 <td>import-error</td>
                 <td>47</td>
             </tr>
@@ -3827,6 +3876,11 @@ def main(
             </tr>
             
             <tr>
+                <td>unspecified-encoding</td>
+                <td>16</td>
+            </tr>
+            
+            <tr>
                 <td>wrong-import-order</td>
                 <td>2</td>
             </tr>
@@ -3834,11 +3888,6 @@ def main(
             <tr>
                 <td>trailing-whitespace</td>
                 <td>19</td>
-            </tr>
-            
-            <tr>
-                <td>line-too-long</td>
-                <td>25</td>
             </tr>
             
             <tr>
@@ -3879,11 +3928,6 @@ def main(
             <tr>
                 <td>too-many-locals</td>
                 <td>12</td>
-            </tr>
-            
-            <tr>
-                <td>unspecified-encoding</td>
-                <td>15</td>
             </tr>
             
             <tr>
@@ -4038,7 +4082,7 @@ def main(
             
             <tr>
                 <td>setup</td>
-                <td>3</td>
+                <td>5</td>
             </tr>
             
             <tr>
@@ -4193,7 +4237,7 @@ def main(
             
             <tr>
                 <td>setup.py</td>
-                <td>3</td>
+                <td>5</td>
             </tr>
             
             <tr>
