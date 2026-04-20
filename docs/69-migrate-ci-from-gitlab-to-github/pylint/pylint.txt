@@ -86,7 +86,7 @@ tests/test_modelica_cal_sen.py:13:0: E0401: Unable to import 'pandas' (import-er
 tests/test_modelica_cal_sen.py:14:0: E0401: Unable to import 'ebcpy' (import-error)
 tests/test_modelica_cal_sen.py:153:15: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 tests/test_modelica_cal_sen.py:11:0: W0611: Unused matplotlib.pyplot imported as plt (unused-import)
-************* Module bin.guided_setup
+************* Module guided_setup
 bin/guided_setup.py:314:0: C0301: Line too long (102/100) (line-too-long)
 bin/guided_setup.py:374:0: C0301: Line too long (103/100) (line-too-long)
 bin/guided_setup.py:404:0: C0301: Line too long (104/100) (line-too-long)
@@ -119,7 +119,7 @@ bin/guided_setup.py:369:28: W1309: Using an f-string that does not have any inte
 bin/guided_setup.py:371:33: W0212: Access to a protected member _make_modelica_normpath of a client class (protected-access)
 bin/guided_setup.py:226:0: R0912: Too many branches (19/12) (too-many-branches)
 bin/guided_setup.py:226:0: R0915: Too many statements (108/50) (too-many-statements)
-************* Module bin.run_modelica_calibration
+************* Module run_modelica_calibration
 bin/run_modelica_calibration.py:12:0: E0401: Unable to import 'ebcpy.utils' (import-error)
 bin/run_modelica_calibration.py:13:0: E0401: Unable to import 'ebcpy' (import-error)
 bin/run_modelica_calibration.py:34:12: R1720: Unnecessary "else" after "raise", remove the "else" and de-indent the code inside it (no-else-raise)
@@ -207,7 +207,7 @@ aixcalibuha/data_types.py:191:0: C0301: Line too long (102/100) (line-too-long)
 aixcalibuha/data_types.py:192:0: C0303: Trailing whitespace (trailing-whitespace)
 aixcalibuha/data_types.py:195:0: C0303: Trailing whitespace (trailing-whitespace)
 aixcalibuha/data_types.py:200:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:1:0: F0002: aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-25-28.txt'. (astroid-error)
+aixcalibuha/data_types.py:1:0: F0002: aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-38-12.txt'. (astroid-error)
 ************* Module aixcalibuha.utils.configuration
 aixcalibuha/utils/configuration.py:41:0: C0301: Line too long (110/100) (line-too-long)
 aixcalibuha/utils/configuration.py:42:0: C0301: Line too long (116/100) (line-too-long)
@@ -248,11 +248,11 @@ aixcalibuha/utils/visualizer.py:640:4: R0914: Too many local variables (16/15) (
 ************* Module aixcalibuha.utils.__init__
 aixcalibuha/utils/__init__.py:13:0: C0301: Line too long (121/100) (line-too-long)
 aixcalibuha/utils/__init__.py:72:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/utils/__init__.py:1:0: F0002: aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-25-28.txt'. (astroid-error)
+aixcalibuha/utils/__init__.py:1:0: F0002: aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-38-13.txt'. (astroid-error)
 ************* Module aixcalibuha.sensitivity_analysis.sensitivity_analyzer
 aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:115:0: C0301: Line too long (117/100) (line-too-long)
 aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:542:0: C0301: Line too long (104/100) (line-too-long)
-aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:1:0: F0002: aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-25-28.txt'. (astroid-error)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:1:0: F0002: aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-38-13.txt'. (astroid-error)
 ************* Module aixcalibuha.sensitivity_analysis.plotting
 aixcalibuha/sensitivity_analysis/plotting.py:5:0: E0401: Unable to import 'pandas' (import-error)
 aixcalibuha/sensitivity_analysis/plotting.py:6:0: E0401: Unable to import 'numpy' (import-error)
@@ -291,7 +291,7 @@ aixcalibuha/sensitivity_analysis/morris.py:5:0: E0401: Unable to import 'numpy' 
 aixcalibuha/sensitivity_analysis/morris.py:6:0: E0401: Unable to import 'SALib.sample' (import-error)
 aixcalibuha/sensitivity_analysis/morris.py:7:0: E0401: Unable to import 'SALib.analyze' (import-error)
 ************* Module aixcalibuha.calibration.multi_class_calibrator
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: F0002: aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-25-29.txt'. (astroid-error)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: F0002: aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-38-13.txt'. (astroid-error)
 ************* Module aixcalibuha.calibration.calibrator
 aixcalibuha/calibration/calibrator.py:17:0: C0301: Line too long (104/100) (line-too-long)
 aixcalibuha/calibration/calibrator.py:48:0: C0301: Line too long (117/100) (line-too-long)
@@ -308,7 +308,7 @@ aixcalibuha/calibration/calibrator.py:347:0: C0301: Line too long (102/100) (lin
 aixcalibuha/calibration/calibrator.py:387:0: C0303: Trailing whitespace (trailing-whitespace)
 aixcalibuha/calibration/calibrator.py:441:0: C0303: Trailing whitespace (trailing-whitespace)
 aixcalibuha/calibration/calibrator.py:509:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:1:0: F0002: aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-25-29.txt'. (astroid-error)
+aixcalibuha/calibration/calibrator.py:1:0: F0002: aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-12-38-14.txt'. (astroid-error)
 aixcalibuha/calibration/calibrator.py:6:0: C0412: Imports from package os are not grouped (ungrouped-imports)
 aixcalibuha/calibration/calibrator.py:8:0: C0412: Imports from package pathlib are not grouped (ungrouped-imports)
 ************* Module aixcalibuha.calibration.__init__
@@ -335,8 +335,8 @@ kwargs_scipy_min = {"tol": None,
                     "hessp": None}
  (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
-==bin.guided_setup:[64:102]
-==bin.run_modelica_calibration:[26:44]
+==guided_setup:[64:102]
+==run_modelica_calibration:[26:44]
     __supported_argv = ["--config"]
     # Path to the script is irrelevant
     resulting_setting = {}
@@ -354,40 +354,20 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
     return resulting_setting
 
 
-def _automatically_generate_mocate(model_name, savepath, packages=None, **kwargs):
-    """
-    Function to generate a MOdelica CAlibration TEmplates (MoCaTe)
-    package for the given model inside the simulation api.
-
-    :param str model_name:
-        Name of the model you want to calibrate.
-        If the model is a standalone model without a "package.mo" file,
-        you have to pass the path the model. Else the path is extracted
-        from the packages-list (see below)
-    :param os.path.normpath,str savepath:
-        Path to store the generated package
-    :param list packages:
-        List with filepath to the "package.mo" file of each package required
-        to simulate the given model_name.
-    :keyword str mocate_version
-        Version number of used Modelica Calibration Templates Library. Default is 0.0.4
-    :keyword str msl_version
-        Version number of used Modelica Calibration Templates Library. Default is 3.2.3
-    :return:
-    """ (duplicate-code)
+def main(): (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==aixcalibuha.calibration.calibrator:[258:268]
 ==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[269:279]
-                if self.suffix_files == "mat":
-                    postprocess_mat_result = empty_postprocessing
-                    kwargs_postprocessing = {}
-                else:
-                    postprocess_mat_result = convert_mat_to_suffix
-                    kwargs_postprocessing = {
-                        'variable_names': self.sim_api.result_names,
-                        'suffix_files': self.suffix_files,
-                        'parquet_engine': self.parquet_engine
-                    } (duplicate-code)
+            if self.suffix_files == "mat":
+                postprocess_mat_result = empty_postprocessing
+                kwargs_postprocessing = {}
+            else:
+                postprocess_mat_result = convert_mat_to_suffix
+                kwargs_postprocessing = {
+                    'variable_names': self.sim_api.result_names,
+                    'suffix_files': self.suffix_files,
+                    'parquet_engine': self.parquet_engine
+                } (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[122:131]
 ==examples.e2_B_optimization_problem_definition:[113:122]
@@ -455,7 +435,18 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
     except Exception as err:
         print("I knew this error was going to happen. Do you understand "
               "why this happens based on the following message?")
+        print(err) (duplicate-code)
+aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
+==examples.e2_A_optimization_problem_definition:[132:158]
+==examples.e2_B_optimization_problem_definition:[113:120]
+                                     index=new_index)
+    try:
+        goals.set_sim_target_data(sim_target_data)
+    except Exception as err:
+        print("I knew this error was going to happen. Do you understand "
+              "why this happens based on the following message?")
         print(err)
+
     # ## Calibration Classes
     # We now are going to wrap everything up into a single object called
     # `CalibrationClass`.
@@ -473,18 +464,7 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
     # optimization problem, separating tuner parameters into time intervals
     # can be handy. For example heat losses to the ambient may be most
     # sensitive if the device is just turned off, while efficiency is more
-    # sensitive during runtime.
-    # Let's also define some different tuner parameters for the last stationary class. (duplicate-code)
-aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
-==examples.e2_A_optimization_problem_definition:[132:158]
-==examples.e2_B_optimization_problem_definition:[113:120]
-                                     index=new_index)
-    try:
-        goals.set_sim_target_data(sim_target_data)
-    except Exception as err:
-        print("I knew this error was going to happen. Do you understand "
-              "why this happens based on the following message?")
-        print(err) (duplicate-code)
+    # sensitive during runtime. (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_1_verbose_sensitivity_analysis_example:[462:470]
 ==examples.e3_sensitivity_analysis_example:[78:86]
@@ -499,12 +479,12 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==aixcalibuha.utils.configuration:[15:21]
 ==examples.e4_calibration_example:[65:71]
-kwargs_calibrator = {"timedelta": 0,
-                     "save_files": False,
-                     "verbose_logging": True,
-                     "show_plot": True,
-                     "create_tsd_plot": True,
-                     "save_tsd_plot": True, (duplicate-code)
+    kwargs_calibrator = {"timedelta": 0,
+                         "save_files": False,
+                         "verbose_logging": True,
+                         "show_plot": True,
+                         "create_tsd_plot": True,
+                         "save_tsd_plot": True, (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[111:120]
 ==examples.e2_B_optimization_problem_definition:[101:111]
@@ -527,15 +507,13 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
     print("Initial values", tuner_paras.get_initial_values())
     # Scaling (will be done internally)
     print("Scaled initial values:\n", tuner_paras.scale(tuner_paras.get_initial_values()))
+
     # ## Goals
     # The evaluation of your goals (or mathematically speaking 'objective function')
     # depends on the difference of measured to simulated data.
     # Thus, you need to specify both measured and simulated data.
     #
-    # Start by loading the measured data generated in 1_B_energy_system_analysis.py:
-    #
-    # As the examples should work, and the cal_class example uses the other examples,
-    # we will test it here:
+    # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
     data_dir = Path(examples_dir).joinpath("data") (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==examples.e3_1_verbose_sensitivity_analysis_example:[185:206]
@@ -543,10 +521,24 @@ aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
     print("Result of the sensitivity analysis")
     print('First and total order results of sobol method')
     print(result[0].to_string())
+    # The second result of the sobol method is for second order sensitive measures.
+    # These describe the interaction between two parameters,
+    # so this dataframe has a fourth index level "Interaction".
+    # In this level, the tuner-parameters are listed again.
     print('Second order results of sobol method')
     print(result[1].to_string())
+    # For a better understanding of the results we will now plot them.
 
-    # remove input file (duplicate-code)
+    # ## Plotting Sensitivity results
+    # We start with the result which were calculated with the small sample size.
+    # Let's plot the first and total order results. These results
+    # are specific for each single parameter
+    # For each calibration class, a figure is created
+    # which shows for each goal the first order sensitivity `S1`
+    # and the total order sensitivity `ST` combined. For the small
+    # sample size the results have large confidence
+    # intervals, which show that these results are inaccurate as we
+    # noted earlier due to the small sample size. (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
 ==examples.e2_A_optimization_problem_definition:[10:58]
 ==examples.e2_B_optimization_problem_definition:[10:53]
@@ -598,12 +590,12 @@ def main(
     # sensitive or influenced by another parameter.
     # How to load the data is up to you. To make the structure clear,
     # we use a 3 element tuple in this example: (duplicate-code)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
 
 -----------------------------------
