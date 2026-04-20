@@ -24,3 +24,4 @@ jobs:
       USE_DYMOLA: false
       CONVERT_EXAMPLES: true
       PYPI_RELEASE: true
+      PYTHON_PACKAGE_NAME: "aixcalibuha"
