@@ -10,7 +10,7 @@ from typing import List
 from collections import Counter
 import numpy as np
 import pandas as pd
-from ebcpy.data_types import load_time_series_data
+from ebcpy import load_time_series_data
 from ebcpy.utils import setup_logger
 from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
