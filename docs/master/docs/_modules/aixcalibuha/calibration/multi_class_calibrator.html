@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en">
 <head>
@@ -8,15 +10,11 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+      <script src="../../../_static/doctools.js"></script>
+      <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             AixCaliBuHa
           </a>
-              <div class="version">
-                1.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -84,14 +79,17 @@
 <span class="sd">calibrating multiple calibration classes at once.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha.calibration</span> <span class="kn">import</span> <span class="n">Calibrator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.simulationapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationAPI</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibrator</span>
 
 
-<div class="viewcode-block" id="MultipleClassCalibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator">[docs]</a><span class="k">class</span> <span class="nc">MultipleClassCalibrator</span><span class="p">(</span><span class="n">Calibrator</span><span class="p">):</span>
+<div class="viewcode-block" id="MultipleClassCalibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MultipleClassCalibrator</span><span class="p">(</span><span class="n">Calibrator</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for calibration of multiple calibration classes.</span>
 <span class="sd">    When passing multiple classes of the same name, all names</span>
@@ -131,9 +129,9 @@
     <span class="n">fix_start_time</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">merge_multiple_classes</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">cd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                 <span class="n">sim_api</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">working_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                 <span class="n">sim_api</span><span class="p">:</span> <span class="n">SimulationAPI</span><span class="p">,</span>
                  <span class="n">calibration_classes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CalibrationClass</span><span class="p">],</span>
                  <span class="n">start_time_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;fixstart&#39;</span><span class="p">,</span>
                  <span class="n">calibration_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span>
@@ -166,13 +164,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calibration_strategy</span> <span class="o">=</span> <span class="n">calibration_strategy</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="c1"># Instantiate parent-class</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">working_directory</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="n">calibration_classes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Merge the multiple calibration_classes</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_multiple_classes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">merge_calibration_classes</span><span class="p">(</span><span class="n">calibration_classes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="MultipleClassCalibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="MultipleClassCalibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.calibrate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the calibration process.</span>
 
@@ -195,15 +193,15 @@
 
         <span class="c1"># Iterate over the different existing classes</span>
         <span class="k">for</span> <span class="n">cal_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_classes</span><span class="p">:</span>
-            <span class="c1">#%% Working-Directory:</span>
+            <span class="c1"># %% Working-Directory:</span>
             <span class="c1"># Alter the working directory for saving the simulations-results</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2">_&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_cd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">working_directory_of_class</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
+                                                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_&quot;</span>
+                                                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2">_&quot;</span>
+                                                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cal_class</span><span class="o">.</span><span class="n">stop_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_working_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">working_directory_of_class</span><span class="p">)</span>
 
-            <span class="c1">#%% Calibration-Setup</span>
+            <span class="c1"># %% Calibration-Setup</span>
             <span class="c1"># Reset counter for new calibration</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="c1"># Retrieve already calibrated parameters (i.e. calibrated in the previous classes)</span>
@@ -241,11 +239,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">))]</span>
 
-            <span class="c1">#%% Execution</span>
+            <span class="c1"># %% Execution</span>
             <span class="c1"># Run the single ModelicaCalibration</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">calibrate</span><span class="p">(</span><span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="c1">#%% Post-processing</span>
+            <span class="c1"># %% Post-processing</span>
             <span class="c1"># Append result to list for future perturbation based on older results.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cal_history</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;res&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
                                       <span class="s2">&quot;cal_class&quot;</span><span class="p">:</span> <span class="n">cal_class</span><span class="p">})</span>
@@ -264,7 +262,7 @@
 
         <span class="k">return</span> <span class="n">parameter_values</span></div>
 
-    <span class="k">def</span> <span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to be calculate the start_time based on the used</span>
 <span class="sd">        start-time-method (timedelta or fix-start).</span>
@@ -281,7 +279,7 @@
             <span class="c1"># start_time (start_time should not be lower then zero)</span>
             <span class="k">if</span> <span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># pylint: disable=import-outside-toplevel</span>
-                <span class="kn">import</span> <span class="nn">warnings</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                     <span class="s1">&#39;Simulation start time current calibration class </span><span class="se">\n</span><span class="s1">&#39;</span>
                     <span class="s1">&#39; falls below 0, because of the chosen timedelta. &#39;</span>
@@ -294,7 +292,7 @@
             <span class="c1"># With fixed start, the _ref_time parameter is always returned</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_start_time</span>
 
-<div class="viewcode-block" id="MultipleClassCalibrator.check_intersection_of_tuner_parameters"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">check_intersection_of_tuner_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultipleClassCalibrator.check_intersection_of_tuner_parameters"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.multi_class_calibrator.MultipleClassCalibrator.check_intersection_of_tuner_parameters">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">check_intersection_of_tuner_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks intersections between tuner parameters.</span>
 
@@ -342,7 +340,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;The tuner parameters used for evaluation &quot;</span>
                             <span class="s2">&quot;are averaged as follows:</span><span class="se">\n</span><span class="s2"> &quot;</span>
                             <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; ,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tuner</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-                            <span class="k">for</span> <span class="n">tuner</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">average_tuner_parameter</span><span class="o">.</span><span class="n">items</span><span class="p">()])))</span>
+                                                   <span class="k">for</span> <span class="n">tuner</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span>
+                                                   <span class="n">average_tuner_parameter</span><span class="o">.</span><span class="n">items</span><span class="p">()])))</span>
 
             <span class="c1"># Create result-dictionary</span>
             <span class="n">res_tuner</span> <span class="o">=</span> <span class="n">average_tuner_parameter</span>

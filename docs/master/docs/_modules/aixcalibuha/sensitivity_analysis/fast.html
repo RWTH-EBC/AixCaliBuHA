@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en">
 <head>
@@ -8,15 +10,11 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+      <script src="../../../_static/doctools.js"></script>
+      <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             AixCaliBuHa
           </a>
-              <div class="version">
-                1.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -83,14 +78,14 @@
 <span class="sd">Adds the FASTAnalyzer to the available</span>
 <span class="sd">classes of sensitivity analysis.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">SALib.sample</span> <span class="kn">import</span> <span class="n">fast_sampler</span> <span class="k">as</span> <span class="n">fast</span>
-<span class="kn">from</span> <span class="nn">SALib.analyze</span> <span class="kn">import</span> <span class="n">fast</span> <span class="k">as</span> <span class="n">analyze_fast</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha.sensitivity_analysis</span> <span class="kn">import</span> <span class="n">SenAnalyzer</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">SALib.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">fast_sampler</span> <span class="k">as</span> <span class="n">fast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">SALib.analyze</span><span class="w"> </span><span class="kn">import</span> <span class="n">fast</span> <span class="k">as</span> <span class="n">analyze_fast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.sensitivity_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SenAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationClass</span>
 
 
-<div class="viewcode-block" id="FASTAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">FASTAnalyzer</span><span class="p">(</span><span class="n">SenAnalyzer</span><span class="p">):</span>
+<div class="viewcode-block" id="FASTAnalyzer"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FASTAnalyzer</span><span class="p">(</span><span class="n">SenAnalyzer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FAST method from SALib</span>
 <span class="sd">    https://salib.readthedocs.io/en/latest/api.html#fast-fourier-amplitude-sensitivity-test</span>
@@ -105,7 +100,7 @@
 <span class="sd">        Used for the fast-method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_api</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">sim_api</span><span class="o">=</span><span class="n">sim_api</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -114,11 +109,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">analysis_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analysis_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The analysis variables of the FAST method&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;ST&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="FASTAnalyzer.analysis_function"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_function">[docs]</a>    <span class="k">def</span> <span class="nf">analysis_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="FASTAnalyzer.analysis_function"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.analysis_function">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">analysis_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use the SALib.analyze.fast method to analyze the simulation results.</span>
 
@@ -135,13 +130,13 @@
         <span class="k">return</span> <span class="n">analyze_fast</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
                                     <span class="n">M</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FASTAnalyzer.create_sampler_demand"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.create_sampler_demand">[docs]</a>    <span class="k">def</span> <span class="nf">create_sampler_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FASTAnalyzer.create_sampler_demand"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.create_sampler_demand">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_sampler_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to create the sampler parameters for the fast method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="FASTAnalyzer.generate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.generate_samples">[docs]</a>    <span class="k">def</span> <span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FASTAnalyzer.generate_samples"><a class="viewcode-back" href="../../../code/aixcalibuha.sensitivity_analysis.html#aixcalibuha.sensitivity_analysis.fast.FASTAnalyzer.generate_samples">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the sampler for fast and return the results.</span>
 
@@ -154,7 +149,7 @@
                            <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span><span class="p">,</span>
                            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_sampler_demand</span><span class="p">())</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_res_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cal_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">analysis_variable</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the result object to a dict with the key</span>
 <span class="sd">        being the variable name and the value being the result</span>

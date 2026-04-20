@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en">
 <head>
@@ -8,15 +10,11 @@
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+      <script src="../../_static/doctools.js"></script>
+      <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../index.html" class="icon icon-home">
             AixCaliBuHa
           </a>
-              <div class="version">
-                1.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -83,11 +78,50 @@
 <span class="sd">Package containing utility functions used in different packages.</span>
 <span class="sd">Contains a statistics analyzer and a visualizer.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeriesData</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="validate_cal_class_input"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.validate_cal_class_input">[docs]</a><span class="k">def</span> <span class="nf">validate_cal_class_input</span><span class="p">(</span>
+<div class="viewcode-block" id="convert_mat_to_suffix"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.convert_mat_to_suffix">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">convert_mat_to_suffix</span><span class="p">(</span><span class="n">mat_result_file</span><span class="p">,</span> <span class="n">variable_names</span><span class="p">,</span> <span class="n">suffix_files</span><span class="p">,</span> <span class="n">parquet_engine</span><span class="o">=</span><span class="s1">&#39;pyarrow&#39;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;snappy&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Postprocess the mat result files.</span>
+
+<span class="sd">    :param str mat_result_file: The path to the MATLAB result file.</span>
+<span class="sd">    :param List[str] variable_names: The names of the variables to extract.</span>
+<span class="sd">    :param str suffix_files: The suffix for the output files.</span>
+<span class="sd">    :param str parquet_engine: The engine to use for saving parquet files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">mat_result_file</span><span class="p">,</span> <span class="n">variable_names</span><span class="o">=</span><span class="n">variable_names</span><span class="p">)</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+    <span class="n">df_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">mat_result_file</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix_files</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">suffix_files</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">df_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">suffix_files</span> <span class="o">==</span> <span class="s2">&quot;parquet&quot;</span><span class="p">:</span>
+        <span class="n">df_for_disk</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_for_disk</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df_for_disk</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">SparseDtype</span><span class="p">):</span>
+                <span class="n">df_for_disk</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_for_disk</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span>
+            <span class="n">df_path</span><span class="p">,</span>
+            <span class="n">engine</span><span class="o">=</span><span class="n">parquet_engine</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file suffix: </span><span class="si">{</span><span class="n">suffix_files</span><span class="si">}</span><span class="s2">. &quot;</span>
+                         <span class="s2">&quot;Supported suffixes are &#39;csv&#39; and &#39;parquet&#39;.&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">mat_result_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df_path</span></div>
+
+
+<div class="viewcode-block" id="empty_postprocessing"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.empty_postprocessing">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">empty_postprocessing</span><span class="p">(</span><span class="n">mat_result</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mat_result</span></div>
+
+
+<div class="viewcode-block" id="validate_cal_class_input"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.validate_cal_class_input">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">validate_cal_class_input</span><span class="p">(</span>
         <span class="n">calibration_classes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CalibrationClass</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CalibrationClass</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if given list contains only CalibrationClass objects or is one</span>
@@ -105,11 +139,17 @@
     <span class="k">return</span> <span class="n">calibration_classes</span></div>
 
 
-<div class="viewcode-block" id="MaxIterationsReached"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.MaxIterationsReached">[docs]</a><span class="k">class</span> <span class="nc">MaxIterationsReached</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="MaxIterationsReached"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.MaxIterationsReached">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MaxIterationsReached</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised for when the calibration</span>
 <span class="sd">    ends because the maximum number of</span>
 <span class="sd">    allowed iterations is reached.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+    
+<div class="viewcode-block" id="MaxTimeReached"><a class="viewcode-back" href="../../code/aixcalibuha.utils.html#aixcalibuha.utils.MaxTimeReached">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">MaxTimeReached</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised for when the calibration</span>
+<span class="sd">    ends because the maximum calibration time is reached.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 </pre></div>
 

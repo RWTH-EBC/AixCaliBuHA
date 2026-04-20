@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en">
 <head>
@@ -8,15 +10,11 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+      <script src="../../../_static/doctools.js"></script>
+      <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -33,9 +31,6 @@
           <a href="../../../index.html" class="icon icon-home">
             AixCaliBuHa
           </a>
-              <div class="version">
-                1.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -84,26 +79,28 @@
 <span class="sd">a dynamic model, e.g. a modelica model.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">ebcpy</span> <span class="kn">import</span> <span class="n">data_types</span><span class="p">,</span> <span class="n">Optimizer</span>
-<span class="kn">from</span> <span class="nn">ebcpy.simulationapi</span> <span class="kn">import</span> <span class="n">SimulationAPI</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha.utils</span> <span class="kn">import</span> <span class="n">visualizer</span><span class="p">,</span> <span class="n">MaxIterationsReached</span>
-<span class="kn">from</span> <span class="nn">aixcalibuha</span> <span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">Goals</span><span class="p">,</span> <span class="n">TunerParas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">data_types</span><span class="p">,</span> <span class="n">Optimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.simulationapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualizer</span><span class="p">,</span> <span class="n">MaxIterationsReached</span><span class="p">,</span> <span class="n">MaxTimeReached</span><span class="p">,</span> <span class="n">convert_mat_to_suffix</span><span class="p">,</span> \
+    <span class="n">empty_postprocessing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">Goals</span><span class="p">,</span> <span class="n">TunerParas</span>
 
 
-<div class="viewcode-block" id="Calibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator">[docs]</a><span class="k">class</span> <span class="nc">Calibrator</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Calibrator</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class can Calibrator be used for single</span>
 <span class="sd">    time-intervals of calibration.</span>
 
-<span class="sd">    :param str,os.path.normpath cd:</span>
+<span class="sd">    :param str,Path working_directory:</span>
 <span class="sd">        Working directory</span>
 <span class="sd">    :param ebcpy.simulationapi.SimulationAPI sim_api:</span>
 <span class="sd">        Simulation-API for running the models</span>
@@ -121,6 +118,15 @@
 <span class="sd">        in the img folder of the project.</span>
 <span class="sd">    :keyword boolean save_files:</span>
 <span class="sd">        If true, all simulation files for each iteration will be saved!</span>
+<span class="sd">    :keword suffix_files:</span>
+<span class="sd">        Default &#39;csv&#39;. Specifies the data format to store the simulation files in.</span>
+<span class="sd">        Options are &#39;csv&#39; and &#39;parquet&#39; to save only the goals.</span>
+<span class="sd">        If you want to keep the original &#39;mat&#39; file specify &#39;mat&#39; here (not recommended due to high disk size usage).</span>
+<span class="sd">    :keyword str parquet_engine:</span>
+<span class="sd">        The engine to use for the data format parquet.</span>
+<span class="sd">        Supported options can be extracted</span>
+<span class="sd">        from the ebcpy.TimeSeriesData.save() function.</span>
+<span class="sd">        Default is &#39;pyarrow&#39;.</span>
 <span class="sd">    :keyword boolean verbose_logging:</span>
 <span class="sd">        Default is True. If False, the standard Logger without</span>
 <span class="sd">        Visualization in Form of plots is used.</span>
@@ -164,6 +170,9 @@
 <span class="sd">        Maximum number of iterations of calibration.</span>
 <span class="sd">        This may be useful to explicitly limit the calibration</span>
 <span class="sd">        time.</span>
+<span class="sd">    :keyword int max_time&quot;:</span>
+<span class="sd">        Deault is Infinity.</span>
+<span class="sd">        Maximum time in seconds, after which the calibration is stopped. Useful to explicitly limit the calibration time.</span>
 <span class="sd">    :keyword str plot_file_type:</span>
 <span class="sd">        File ending of created plots.</span>
 <span class="sd">        Any supported option in matplotlib, e.g. svg, png, pdf ...</span>
@@ -171,8 +180,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">cd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">working_directory</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
                  <span class="n">sim_api</span><span class="p">:</span> <span class="n">SimulationAPI</span><span class="p">,</span>
                  <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -184,6 +193,8 @@
         <span class="c1"># the keyword is not passed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;verbose_logging&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_files&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;suffix_files&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parquet_engine&#39;</span><span class="p">,</span> <span class="s1">&#39;pyarrow&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fail_on_error&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
@@ -194,6 +205,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">perform_square_deviation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;square_deviation&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;result_path&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_itercount&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_current_best_iterate</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;save_current_best_iterate&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">at_calibration</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Boolean to indicate if validating or calibrating</span>
         <span class="c1"># Extract kwargs for the visualizer</span>
         <span class="n">visualizer_kwargs</span> <span class="o">=</span> <span class="p">{</span>
@@ -214,7 +227,7 @@
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">keyword_value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> but should be type bool&quot;</span><span class="p">)</span>
 
         <span class="c1"># %% Initialize all public parameters</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">working_directory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Set sim_api</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span> <span class="o">=</span> <span class="n">sim_api</span>
 
@@ -239,7 +252,7 @@
         <span class="c1"># De-register the logger setup in the optimization class:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">CalibrationVisualizer</span><span class="p">(</span>
-                <span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">working_directory</span><span class="o">=</span><span class="n">working_directory</span><span class="p">,</span>
                 <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                 <span class="n">calibration_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
                 <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
@@ -247,21 +260,36 @@
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">visualizer</span><span class="o">.</span><span class="n">CalibrationLogger</span><span class="p">(</span>
-                <span class="n">cd</span><span class="o">=</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">working_directory</span><span class="o">=</span><span class="n">working_directory</span><span class="p">,</span>
                 <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                 <span class="n">calibration_class</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
                 <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span> <span class="o">=</span> <span class="n">cd</span>  <span class="c1"># Single class does not need an extra folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">working_directory_of_class</span> <span class="o">=</span> <span class="n">working_directory</span>  <span class="c1"># Single class does not need an extra folder</span>
 
         <span class="c1"># Set the output interval according the the given Goals</span>
         <span class="n">mean_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">get_meas_frequency</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Setting output_interval of simulation according &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;to measurement target data frequency: </span><span class="si">{</span><span class="n">mean_freq</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">=</span> <span class="n">mean_freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_for_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MaxIterationsReached</span><span class="p">(</span>
+                <span class="s2">&quot;Terminating calibration as the maximum number &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of iterations </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="si">}</span><span class="s2"> has been reached.&quot;</span>
+            <span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MaxTimeReached</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Terminating calibration as the maximum time of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="si">}</span><span class="s2"> s has been &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;reached&quot;</span>
+            <span class="p">)</span>
+        
 
-<div class="viewcode-block" id="Calibrator.obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.obj">[docs]</a>    <span class="k">def</span> <span class="nf">obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator.obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.obj">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xk</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Default objective function.</span>
 <span class="sd">        The usual function will be implemented here:</span>
@@ -276,9 +304,15 @@
 <span class="sd">            Array with normalized values for the minimizer</span>
 <span class="sd">        :param int work_id:</span>
 <span class="sd">            id for worker in Multiprocessing</span>
+<span class="sd">        :param bool verbose:</span>
+<span class="sd">            If True, returns the objective value and the unweighted objective dict (for validation).</span>
+<span class="sd">            If False, returns only the objective value (for optimization).</span>
 <span class="sd">        :return:</span>
-<span class="sd">            Objective value based on the used quality measurement</span>
-<span class="sd">        :rtype: float</span>
+<span class="sd">            If verbose == False (default)</span>
+<span class="sd">                Objective value based on the used quality measurement</span>
+<span class="sd">            If verbose == True</span>
+<span class="sd">                Objective value and unweighted objective dict as a tuple</span>
+<span class="sd">        :rtype: float or tuple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Info: This function is called by the optimization framework (scipy, dlib, etc.)</span>
         <span class="c1"># Initialize class objects</span>
@@ -298,8 +332,21 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Generate the folder name for the calibration</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
-                <span class="n">savepath_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span> <span class="o">==</span> <span class="s2">&quot;mat&quot;</span><span class="p">:</span>
+                    <span class="n">postprocess_mat_result</span> <span class="o">=</span> <span class="n">empty_postprocessing</span>
+                    <span class="n">kwargs_postprocessing</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">postprocess_mat_result</span> <span class="o">=</span> <span class="n">convert_mat_to_suffix</span>
+                    <span class="n">kwargs_postprocessing</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;variable_names&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span><span class="p">,</span>
+                        <span class="s1">&#39;suffix_files&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="p">,</span>
+                        <span class="s1">&#39;parquet_engine&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span>
+                    <span class="p">}</span>
+                <span class="n">savepath_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
                                               <span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;DymolaAPI&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">[</span><span class="s2">&quot;postprocess_mat_result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">postprocess_mat_result</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">[</span><span class="s2">&quot;kwargs_postprocessing&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_postprocessing</span>
                 <span class="n">_filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                     <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
                     <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
@@ -330,10 +377,14 @@
             <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="p">,</span>
             <span class="n">results</span><span class="o">=</span><span class="n">sim_target_data</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_termination</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span>
+        
+        <span class="k">return</span> <span class="n">total_res</span></div>
 
-        <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span></div>
-
-<div class="viewcode-block" id="Calibrator.mp_obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.mp_obj">[docs]</a>    <span class="k">def</span> <span class="nf">mp_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator.mp_obj"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.mp_obj">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">mp_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="c1"># Initialize list for results</span>
         <span class="n">num_evals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">total_res_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">num_evals</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -356,12 +407,25 @@
 
         <span class="c1"># Simulate</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span> <span class="o">==</span> <span class="s2">&quot;mat&quot;</span><span class="p">:</span>
+                <span class="n">postprocess_mat_result</span> <span class="o">=</span> <span class="n">empty_postprocessing</span>
+                <span class="n">kwargs_postprocessing</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">postprocess_mat_result</span> <span class="o">=</span> <span class="n">convert_mat_to_suffix</span>
+                <span class="n">kwargs_postprocessing</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;variable_names&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span><span class="p">,</span>
+                    <span class="s1">&#39;suffix_files&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="p">,</span>
+                    <span class="s1">&#39;parquet_engine&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span>
+                <span class="p">}</span>
             <span class="n">result_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span>
                                  <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameter_list</span><span class="p">))]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;DymolaAPI&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">[</span><span class="s2">&quot;postprocess_mat_result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">postprocess_mat_result</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span><span class="p">[</span><span class="s2">&quot;kwargs_postprocessing&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_postprocessing</span>
             <span class="n">_filepaths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameter_list</span><span class="p">,</span>
                 <span class="n">return_option</span><span class="o">=</span><span class="s2">&quot;savepath&quot;</span><span class="p">,</span>
-                <span class="n">savepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">cd</span><span class="p">,</span>
+                <span class="n">savepath</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
                 <span class="n">result_file_name</span><span class="o">=</span><span class="n">result_file_names</span><span class="p">,</span>
                 <span class="n">fail_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span><span class="p">,</span>
                 <span class="n">inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
@@ -395,10 +459,11 @@
             <span class="p">)</span>
             <span class="c1"># Add single objective to objective list of total Population</span>
             <span class="n">total_res_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_res</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_termination</span><span class="p">()</span>
+        
         <span class="k">return</span> <span class="n">total_res_list</span></div>
 
-    <span class="k">def</span> <span class="nf">_kpi_and_logging_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="p">,</span> <span class="n">counter</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_kpi_and_logging_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xk_descaled</span><span class="p">,</span> <span class="n">counter</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to calculate everything needed in the obj or mp_obj</span>
 <span class="sd">        function after the simulation finished.</span>
@@ -447,16 +512,19 @@
                 <span class="c1"># Changed to false in this script after calling function &quot;save_calibration_results&quot;</span>
                 <span class="s2">&quot;Penaltyfactor&quot;</span><span class="p">:</span> <span class="n">penalty</span>
             <span class="p">}</span>
-
-        <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">MaxIterationsReached</span><span class="p">(</span>
-                <span class="s2">&quot;Terminating calibration as the maximum number &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;of iterations </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_itercount</span><span class="si">}</span><span class="s2"> has been reached.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_current_best_iterate</span><span class="p">:</span>
+                <span class="n">parameter_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_dict_from_current_best_iterate</span><span class="p">()</span>
+                
+                <span class="n">temp_save</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">parameter_values</span><span class="p">,</span>
+                    <span class="s2">&quot;objective&quot;</span><span class="p">:</span> <span class="n">total_res</span>
+                <span class="p">}</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">working_directory</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;best_iterate.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">temp_save</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">total_res</span><span class="p">,</span> <span class="n">unweighted_objective</span>
 
-<div class="viewcode-block" id="Calibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.calibrate">[docs]</a>    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="Calibrator.calibrate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.calibrate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">calibrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framework</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the calibration process of the calibration classes, visualize and save the results.</span>
 
@@ -475,7 +543,7 @@
 
         <span class="c1"># Setup the visualizer for plotting and logging:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
-                                        <span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">,</span>
+                                        <span class="n">working_directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">working_directory_of_class</span><span class="p">,</span>
                                         <span class="n">for_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_initial_names</span><span class="p">()</span>
 
@@ -489,7 +557,7 @@
                 <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
                 <span class="n">n_cpu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">n_cpu</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">MaxIterationsReached</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">MaxIterationsReached</span><span class="p">,</span> <span class="n">MaxTimeReached</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
         <span class="n">t_cal_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">t_cal</span> <span class="o">=</span> <span class="n">t_cal_stop</span> <span class="o">-</span> <span class="n">t_cal_start</span>
@@ -510,20 +578,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;better_current_result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Save calibrated parameter values in JSON</span>
-        <span class="n">parameter_values</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-            <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">p_name</span><span class="p">]</span>
+        <span class="n">parameter_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_dict_from_current_best_iterate</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">parameter_values</span><span class="o">=</span><span class="n">parameter_values</span><span class="p">,</span>
                           <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">parameter_values</span></div>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_parameter_dict_from_current_best_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the parameter dictionary from the current best iterate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parameter_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">parameter_values</span><span class="p">[</span><span class="n">p_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">[</span><span class="s1">&#39;Parameters&#39;</span><span class="p">][</span><span class="n">p_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">parameter_values</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalibrationClass</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalibrationClass</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current calibration class&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cal_class</span>
 
     <span class="nd">@calibration_class</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calibration_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current calibration class&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">set_sim_setup</span><span class="p">(</span>
             <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_start_time_method</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">start_time</span><span class="p">),</span>
@@ -532,36 +607,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cal_class</span> <span class="o">=</span> <span class="n">calibration_class</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerParas</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TunerParas</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current tuner parameters of the calibration class&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span>
 
     <span class="nd">@tuner_paras</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner_paras</span><span class="p">:</span> <span class="n">TunerParas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tuner_paras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuner_paras</span><span class="p">:</span> <span class="n">TunerParas</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current tuner parameters of the calibration class&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">tuner_paras</span> <span class="o">=</span> <span class="n">tuner_paras</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Goals</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Goals</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current goals of the calibration class&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span>
 
     <span class="nd">@goals</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goals</span><span class="p">:</span> <span class="n">Goals</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">goals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goals</span><span class="p">:</span> <span class="n">Goals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current goals of the calibration class&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">goals</span> <span class="o">=</span> <span class="n">goals</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the currently fixed parameters during calibration&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_pars</span>
 
     <span class="nd">@fixed_parameters</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fixed_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fixed_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fixed_parameters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the currently fixed parameters during calibration&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_pars</span> <span class="o">=</span> <span class="n">fixed_parameters</span>
 
-<div class="viewcode-block" id="Calibrator.save_results"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.save_results">[docs]</a>    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator.save_results"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.save_results">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the given dict into a file with path</span>
 <span class="sd">        self.result_path and name filename.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -570,7 +645,7 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">s_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">parameter_values</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Calibrator.validate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">calibration_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator.validate"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.validate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_class</span><span class="p">:</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">calibration_result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate the given calibration class based on the given</span>
 <span class="sd">        values for tuner_parameters.</span>
@@ -602,7 +677,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">calibrate_new_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="p">,</span>
-                                        <span class="n">cd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cd_of_class</span><span class="p">,</span>
+                                        <span class="n">working_directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">working_directory_of_class</span><span class="p">,</span>
                                         <span class="n">for_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Use the results parameter vector to simulate again.</span>
@@ -610,7 +685,7 @@
         <span class="c1"># Scale the tuner parameters</span>
         <span class="n">xk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tuner_paras</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">tuner_values</span><span class="p">)</span>
         <span class="c1"># Evaluate objective</span>
-        <span class="n">obj</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">xk</span><span class="o">=</span><span class="n">xk</span><span class="p">)</span>
+        <span class="n">obj</span><span class="p">,</span> <span class="n">unweighted_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">xk</span><span class="o">=</span><span class="n">xk</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">validation_callback_func</span><span class="p">(</span>
             <span class="n">obj</span><span class="o">=</span><span class="n">obj</span>
         <span class="p">)</span>
@@ -635,13 +710,13 @@
             <span class="k">return</span> <span class="n">obj_verbos</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-    <span class="k">def</span> <span class="nf">_handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Also save the plots if an error occurs.</span>
 <span class="sd">        See ebcpy.optimization.Optimizer._handle_error for more info.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># This error is our own, we handle it in the calibrate() function</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">MaxIterationsReached</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="p">(</span><span class="n">MaxIterationsReached</span><span class="p">,</span> <span class="n">MaxTimeReached</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">save_calibration_result</span><span class="p">(</span><span class="n">best_iterate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_best_iterate</span><span class="p">,</span>
                                             <span class="n">model_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
@@ -649,7 +724,7 @@
                                             <span class="n">itercount</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_handle_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Calibrator.get_penalty"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.get_penalty">[docs]</a>    <span class="k">def</span> <span class="nf">get_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_tuners</span><span class="p">,</span> <span class="n">current_tuners_scaled</span><span class="p">):</span>
+<div class="viewcode-block" id="Calibrator.get_penalty"><a class="viewcode-back" href="../../../code/aixcalibuha.calibration.html#aixcalibuha.calibration.calibrator.Calibrator.get_penalty">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_tuners</span><span class="p">,</span> <span class="n">current_tuners_scaled</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get penalty factor for evaluation of current objective. The penaltyfactor</span>
 <span class="sd">        considers deviations of the tuner parameters in the objective function.</span>
@@ -694,7 +769,7 @@
 
         <span class="k">return</span> <span class="n">penalty</span></div>
 
-    <span class="k">def</span> <span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_start_time_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to be calculate the start_time based on the used</span>
 <span class="sd">        timedelta method.</span>
