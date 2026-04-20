@@ -5,7 +5,7 @@ import os
 import collections
 import toml
 import numpy as np
-from ebcpy import data_types
+from ebcpy import load_time_series_data
 from aixcalibuha import Goals, CalibrationClass, TunerParas
 
 tsd_config = {"data": "TODO: Specify the path to the target values measured",
@@ -115,7 +115,7 @@ def get_goals_from_config(config):
         Loaded Goals object
     """
     config_mtd = config["meas_target_data"]
-    mtd = data_types.TimeSeriesData(**config_mtd)
+    mtd = load_time_series_data(**config_mtd)
     return Goals(meas_target_data=mtd,
                  variable_names=config["variable_names"],
                  statistical_measure=config["statistical_measure"],
