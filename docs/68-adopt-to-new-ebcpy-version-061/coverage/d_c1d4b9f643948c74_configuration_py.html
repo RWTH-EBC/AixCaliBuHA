@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_c1d4b9f643948c74_visualizer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.4">coverage.py v7.4.4</a>,
-            created at 2026-04-20 14:21 +0000
+            created at 2026-04-20 15:06 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -87,7 +87,7 @@
     <p class="run"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">import</span> <span class="nam">collections</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">import</span> <span class="nam">toml</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t"><span class="key">import</span> <span class="nam">numpy</span> <span class="key">as</span> <span class="nam">np</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t"><span class="key">from</span> <span class="nam">ebcpy</span> <span class="key">import</span> <span class="nam">data_types</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t"><span class="key">from</span> <span class="nam">ebcpy</span> <span class="key">import</span> <span class="nam">load_time_series_data</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t"><span class="key">from</span> <span class="nam">aixcalibuha</span> <span class="key">import</span> <span class="nam">Goals</span><span class="op">,</span> <span class="nam">CalibrationClass</span><span class="op">,</span> <span class="nam">TunerParas</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t11" href="#t11">11</a></span><span class="t"><span class="nam">tsd_config</span> <span class="op">=</span> <span class="op">{</span><span class="str">"data"</span><span class="op">:</span> <span class="str">"TODO: Specify the path to the target values measured"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -197,7 +197,7 @@
     <p class="pln"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t"><span class="str">        Loaded Goals object</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">    <span class="nam">config_mtd</span> <span class="op">=</span> <span class="nam">config</span><span class="op">[</span><span class="str">"meas_target_data"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">    <span class="nam">mtd</span> <span class="op">=</span> <span class="nam">data_types</span><span class="op">.</span><span class="nam">TimeSeriesData</span><span class="op">(</span><span class="op">**</span><span class="nam">config_mtd</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">    <span class="nam">mtd</span> <span class="op">=</span> <span class="nam">load_time_series_data</span><span class="op">(</span><span class="op">**</span><span class="nam">config_mtd</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">    <span class="key">return</span> <span class="nam">Goals</span><span class="op">(</span><span class="nam">meas_target_data</span><span class="op">=</span><span class="nam">mtd</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">                 <span class="nam">variable_names</span><span class="op">=</span><span class="nam">config</span><span class="op">[</span><span class="str">"variable_names"</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">                 <span class="nam">statistical_measure</span><span class="op">=</span><span class="nam">config</span><span class="op">[</span><span class="str">"statistical_measure"</span><span class="op">]</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -304,7 +304,7 @@
             <a id="nextFileLink" class="nav" href="d_c1d4b9f643948c74_visualizer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.4.4">coverage.py v7.4.4</a>,
-            created at 2026-04-20 14:21 +0000
+            created at 2026-04-20 15:06 +0000
         </p>
     </div>
 </footer>
