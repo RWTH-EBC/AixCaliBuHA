@@ -77,3 +77,4 @@
   - Encode parquet compression in `suffix_files` (e.g. `'parquet.snappy'`)
   - Add defensive handling of old HDF files with MultiIndex columns
   - Requires ebcpy >= 0.7.1
+  - Remove support for Python<=3.9
