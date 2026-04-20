@@ -74,6 +74,7 @@ specific time intervals within the overall global range.
 For the specific states of the models with distinct time intervals, we adopt the
 calibration classes from the second example and tailor them for the verbose
 sensitivity analysis. Alternatively, custom classes could be created directly
+at this stage. Given that we do not require the second return value of the
 function (`validation_class`), we opt to ignore it by using the variable
 assignment `_` and omit any associated text output of the second example.
 
@@ -136,7 +137,7 @@ sen_analyzer = SobolAnalyzer(
     sim_api=sim_api,
     num_samples=8,
     calc_second_order=True,
-    cd=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
+    working_directory=examples_dir.joinpath('testzone', f'verbose_sen_{example}'),
     save_files=True,
     savepath_sim=examples_dir.joinpath('testzone', f'verbose_sen_{example}', 'files'),
     suffix_files='csv'
@@ -193,7 +194,9 @@ calibration, which is currently not implemented in `AixCaliBuHA`.
 The main results of the sensitivity analysis are the sensitivity
 measures stored in "SobolAnalyzer_results.csv"
 and "SobolAnalyzer_results_second_order.csv".
+These are also returned from the `run()` function as a tuple of two
 dataframes. This is specific to the sobol method, all other
+methods only return one dataframe, which is similar to the first return value
 of the sobol method with possibly other analysis variables.
 Let´s take a look at these results.
 
