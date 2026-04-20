@@ -63,10 +63,17 @@
 
 - **v1.0.1**
   - refactor cd to working_directory #57
--  **v1.1.0**
+- **v1.1.0**
   - Add option to save best current result #61
   - Add the option to use different kpis for different calibration targets #63
   - Adopt to new ebcpy version 0.5.4 #66
   - Update saving of simulation files for DymolaAPI
   - Ensure that statistical measures for calibration are always the absolute values
-
+- **v1.2.0**
+  - Migrate from `TimeSeriesData` to `pd.DataFrame` with `.tsd` accessor throughout
+  - `Goals` now accepts plain single-level DataFrames and builds MultiIndex internally
+  - Fix `set_sim_target_data` for plain DataFrames (Series return, index type check)
+  - Fix `convert_mat_to_suffix` writing sparse instead of densified data to parquet
+  - Encode parquet compression in `suffix_files` (e.g. `'parquet.snappy'`)
+  - Add defensive handling of old HDF files with MultiIndex columns
+  - Requires ebcpy >= 0.7.1

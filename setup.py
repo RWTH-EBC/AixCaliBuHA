@@ -16,7 +16,7 @@ INSTALL_REQUIRES = [
     'toml>=0.10.2'
 ]
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 setuptools.setup(
     name='aixcalibuha',
@@ -42,7 +42,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11'
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12'
     ],
     keywords=[
         'calibration', 'building', 'energy',
