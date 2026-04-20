@@ -38,17 +38,17 @@ Arguments of this example:
 """
 examples_dir = "TODO: Add a valid input according to the docstring above"
 aixlib_mo = "TODO: Add a valid input according to the docstring above"
-cd = None
+working_directory = None
 with_plot = True
 ```
 
 General settings
 
 ```python
-if cd is None:
-    cd = Path(examples_dir).joinpath("results")
+if working_directory is None:
+    working_directory = Path(examples_dir).joinpath("results")
 else:
-    cd = Path(cd)
+    working_directory = Path(working_directory)
 examples_dir = Path(examples_dir)
 aixcalibuha_mo = examples_dir.joinpath("model", "AixCaliBuHAExamples.mo")
 ```
@@ -69,7 +69,7 @@ Start by setting up the Dymola-API. For more info, see the examples in ebcpy.
 ```python
 dym_api = DymolaAPI(
     model_name="AixCaliBuHAExamples.HeatPumpSystemCalibration",
-    cd=cd,
+    working_directory=working_directory,
     packages=[
         aixlib_mo,
         aixcalibuha_mo
@@ -96,6 +96,7 @@ dym_api.set_sim_setup({
     "output_interval": 10
 })
 file_path = dym_api.simulate(
+    return_option="savepath"
 )
 ```
 

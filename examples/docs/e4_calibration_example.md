@@ -152,7 +152,7 @@ Select between single or multiple class calibration
 ```python
 if isinstance(cal_classes, CalibrationClass):
     modelica_calibrator = Calibrator(
-        cd=sim_api.working_directory,
+        working_directory=sim_api.working_directory,
         sim_api=sim_api,
         calibration_class=cal_classes,
         **kwargs_calibrator)
@@ -160,7 +160,7 @@ else:
     kwargs_calibrator.update(kwargs_multiple_classes)
     # Setup the class
     modelica_calibrator = MultipleClassCalibrator(
-        cd=sim_api.working_directory,
+        working_directory=sim_api.working_directory,
         sim_api=sim_api,
         calibration_classes=cal_classes,
         start_time_method="fixstart",

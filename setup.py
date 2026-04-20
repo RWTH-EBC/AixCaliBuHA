@@ -16,18 +16,21 @@ INSTALL_REQUIRES = [
     'toml>=0.10.2'
 ]
 
-__version__ = "1.2.0"
+with open(Path(__file__).parent.joinpath("aixcalibuha", "__init__.py"), "r") as file:
+    for line in file.readlines():
+        if line.startswith("__version__"):
+            VERSION = line.replace("__version__", "").split("=")[1].strip().replace("'", "").replace('"', '')
 
 setuptools.setup(
     name='aixcalibuha',
-    version=__version__,
+    version=VERSION,
     description='Framework used for sensitivity-analysis'
                 'and calibration for models of HVAC '
                 'components.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/RWTH-EBC/AixCaliBuHA',
-    download_url=f'https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/{__version__}.tar.gz',
+    download_url=f'https://github.com/RWTH-EBC/AixCaliBuHA/archive/refs/tags/{VERSION}.tar.gz',
     license='MIT',
     author='RWTH Aachen University, E.ON Energy Research Center, Institute '
            'of Energy Efficient Buildings and Indoor Climate',

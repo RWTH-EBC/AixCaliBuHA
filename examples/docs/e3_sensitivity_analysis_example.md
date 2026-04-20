@@ -47,14 +47,13 @@ Let's thus first load the necessary simulation api:
 
 ```python
 from examples import setup_fmu, setup_calibration_classes
-
 sim_api = setup_fmu(examples_dir=examples_dir, example=example, n_cpu=n_cpu)
 
 sen_analyzer = SobolAnalyzer(
-    sim_api=sim_api,
-    num_samples=10,
-    cd=sim_api.working_directory
-)
+        sim_api=sim_api,
+        num_samples=10,
+        working_directory=sim_api.working_directory
+    )
 ```
 
 Now perform the analysis for the one of the given calibration classes.
