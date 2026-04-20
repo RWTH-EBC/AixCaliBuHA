@@ -38,7 +38,7 @@ At the end the option to save a reproduction archive is shown.
 
 :param [Path, str] examples_dir:
     Path to the examples folder of AixCaliBuHA
-    e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
+    e.g. "LOCAL_PATH_TO\\AixCaliBuHA\\examples"
 :param str example:
     Which example to run, "A" or "B"
 :param int n_cpu:

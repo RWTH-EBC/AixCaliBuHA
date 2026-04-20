@@ -10,10 +10,10 @@ from typing import List
 from collections import Counter
 import numpy as np
 import pandas as pd
+from ebcpy import load_time_series_data
 from ebcpy.utils import setup_logger
 from ebcpy.utils.reproduction import CopyFile
 from ebcpy.simulationapi import SimulationAPI
-from ebcpy.data_types import TimeSeriesData
 from aixcalibuha import CalibrationClass, data_types
 from aixcalibuha.utils import validate_cal_class_input, convert_mat_to_suffix, empty_postprocessing
 from aixcalibuha.sensitivity_analysis.plotting import plot_single, plot_time_dependent
@@ -23,8 +23,7 @@ def _load_single_file(_filepath, parquet_engine='pyarrow'):
     """Helper function"""
     if _filepath is None:
         return None
-    return data_types.TimeSeriesData(_filepath, default_tag='sim', key='simulation',
-                                     engine=parquet_engine)
+    return load_time_series_data(_filepath, key='simulation', engine=parquet_engine)
 
 
 def _load_files(_filepaths, parquet_engine='pyarrow'):
@@ -48,7 +47,7 @@ def _restruct_verbose(list_output_verbose):
 
 def _concat_all_sims(sim_results_list):
     """Helper function that concat all results in a list to one DataFrame."""
-    sim_results_list = [r.to_df() for r in sim_results_list]
+    sim_results_list = [r for r in sim_results_list]
     sim_results_list = pd.concat(sim_results_list, keys=range(len(sim_results_list)),
                                  axis='columns')
     sim_results_list = sim_results_list.swaplevel(axis=1).sort_index(axis=1)
@@ -102,21 +101,23 @@ class SenAnalyzer(abc.ABC):
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
         the simulation fails. See also: ``ret_val_on_error``
-    :keyword float,np.NAN ret_val_on_error:
-        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
+    :keyword float,np.nan ret_val_on_error:
+        Default is np.nan. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
-        options are np.NaN, np.inf or some other high numbers. be aware that this
+        options are np.nan, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword boolean save_files:
         Default False. If true, all simulation files for each iteration will be saved!
     :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
-        Options are 'csv' and 'parquet' to save only the goals.
-        If you want to keep the original 'mat' file specify 'mat' here (not recommended due to high disk size usage).
+        Options are 'csv', 'parquet', or 'parquet.COMPRESSION' (e.g. 'parquet.snappy',
+        'parquet.gzip') to save only the goals.
+        If you want to keep the original 'mat' file specify 'mat' here
+        (not recommended due to high disk size usage).
     :keyword str parquet_engine:
         The engine to use for the data format parquet.
         Supported options can be extracted
-        from the ebcpy.TimeSeriesData.save() function.
+        from the ebcpy DataFrame accessor ``df.tsd.save()`` function.
         Default is 'pyarrow'.
     :keyword str,Path savepath_sim:
         Default is working_directory. Own directory for the time series data sets of all simulations
@@ -139,7 +140,7 @@ class SenAnalyzer(abc.ABC):
         self.save_files = kwargs.pop("save_files", False)
         self.suffix_files = kwargs.pop('suffix_files', 'csv')
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
-        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
+        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.nan)
         self.working_directory = kwargs.pop("working_directory", os.getcwd())
 
         if "cd" in kwargs:
@@ -301,18 +302,20 @@ class SenAnalyzer(abc.ABC):
         self.logger.info('Finished %s simulations', len(samples))
         return results, samples
 
-    def _check_index(self, tsd: data_types.TimeSeriesData, sim_num=None):
-        freq = tsd.frequency
+    def _check_index(self, tsd: pd.DataFrame, sim_num=None):
+        freq = tsd.tsd.frequency
         if sim_num is None:
-            sim_num = tsd.filepath.name
+            sim_num = getattr(tsd.tsd, 'filepath', None)
+            sim_num = sim_num.name if sim_num is not None else 'unknown'
         if freq[0] != self.sim_api.sim_setup.output_interval:
             self.logger.info(
                 f'The mean value of the frequency from {sim_num} does not match output '
                 'interval index will be cleaned and spaced equally')
-            tsd.to_datetime_index()
-            tsd.clean_and_space_equally(f'{str(self.sim_api.sim_setup.output_interval * 1000)}ms')
-            tsd.to_float_index()
-            freq = tsd.frequency
+            tsd.tsd.to_datetime_index()
+            desired_freq = f'{str(self.sim_api.sim_setup.output_interval * 1000)}ms'
+            tsd = tsd.tsd.clean_and_space_equally(desired_freq, inplace=False)
+            tsd.tsd.to_float_index()
+            freq = tsd.tsd.frequency
         if freq[1] > 0.0:
             self.logger.info(f'The standard deviation of the frequency from {sim_num} is to high '
                              f'and will be rounded to the accuracy of the output interval')
@@ -756,7 +759,7 @@ class SenAnalyzer(abc.ABC):
                 sen_time_dependent_df = _restruct_time_dependent(sen_time_dependent_list,
                                                                  time_index)
             else:
-                variables = results[0].get_variable_names()
+                variables = results[0].tsd.get_variable_names()
                 time_index = results[0].index.to_numpy()
                 total_result = _concat_all_sims(results)
                 sen_time_dependent_list = []
@@ -815,7 +818,7 @@ class SenAnalyzer(abc.ABC):
         """
         sim1 = _load_single_file(_filepaths[0])
         time_index = sim1.index.to_numpy()
-        variables = sim1.get_variable_names()
+        variables = sim1.tsd.get_variable_names()
         sen_time_dependent_list = []
         if n_steps == 'all':
             list_tsteps = [time_index]

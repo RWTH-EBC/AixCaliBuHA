@@ -3,7 +3,8 @@
 from pathlib import Path
 import unittest
 import numpy as np
-from ebcpy import data_types
+import pandas as pd
+from ebcpy import load_time_series_data
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
 
@@ -39,20 +40,20 @@ class TestDataTypes(unittest.TestCase):
     def test_goals(self):
         """Test the class Goals"""
         # Define some data.
-        sim_target_data = data_types.TimeSeriesData(
+        sim_target_data = load_time_series_data(
             self.example_dir.joinpath("PumpAndValveSimulation.hdf"),
             key="examples")
-        sim_target_data.to_datetime_index()
-        sim_target_data.clean_and_space_equally(desired_freq="10ms")
-        sim_target_data.to_float_index()
-        meas_target_data = data_types.TimeSeriesData(
+        sim_target_data.tsd.to_datetime_index()
+        sim_target_data = sim_target_data.tsd.clean_and_space_equally(desired_freq="10ms", inplace=False)
+        sim_target_data.tsd.to_float_index()
+        meas_target_data = load_time_series_data(
             self.example_dir.joinpath("PumpAndValve.hdf"),
             key="examples")
 
         # Setup three variables for different format of setup
         var_names = {"T": ["TCapacity", "heatCapacitor.T"],
                      "TPipe": {"meas": "TPipe", "sim": "pipe.T"}}
-        meas_target_data.to_float_index()
+        meas_target_data.tsd.to_float_index()
         # Check setup the goals class:
         goals = Goals(meas_target_data=meas_target_data,
                       variable_names=var_names,
@@ -66,7 +67,7 @@ class TestDataTypes(unittest.TestCase):
         # Check the eval_difference function:
         self.assertIsInstance(goals.eval_difference(), float)
         # Try to alter the sim_target_data object with something wrong
-        with self.assertRaises(IndexError):
+        with self.assertRaises(TypeError):
             goals.set_sim_target_data([])
         # Play around with wrong weightings:
         with self.assertRaises(IndexError):
@@ -106,16 +107,29 @@ class TestDataTypes(unittest.TestCase):
             goals = Goals(meas_target_data=meas_target_data,
                         variable_names=var_names,
                         statistical_measure=["RMSE", "MAE", "MSE"])
-        
-        
+
+        plain_meas_target_data = pd.DataFrame(
+            data={
+                "meas_bool": pd.Series([True, False, True], dtype="boolean"),
+                "meas_int": pd.Series([1, 2, 3], dtype="Int64")
+            },
+            index=pd.Index([0.0, 1.0, 2.0], dtype=float)
+        )
+        plain_var_names = {"BoolVar": ["meas_bool", "sim_bool"], "IntVar": ["meas_int", "sim_int"]}
+        plain_goals = Goals(meas_target_data=plain_meas_target_data,
+                            variable_names=plain_var_names,
+                            statistical_measure="RMSE")
+        self.assertEqual(str(plain_goals._tsd[("BoolVar", "meas")].dtype), "boolean")
+        self.assertEqual(str(plain_goals._tsd[("IntVar", "meas")].dtype), "Int64")
+
     def test_tuner_paras(self):
         """Test the class TunerParas"""
         dim = np.random.randint(1, 100)
         names = ["test_%s" % i for i in range(dim)]
         initial_values = np.random.rand(dim) * 10  # Values between 0 and 10.
         # Values between -100 and 110
-        bounds = [(float(np.random.rand(1))*-100,
-                   float(np.random.rand(1))*100 + 10) for i in range(dim)]
+        bounds = [(np.random.rand() * -100,
+                   np.random.rand() * 100 + 10) for i in range(dim)]
         # Check for false input
         with self.assertRaises(ValueError):
             wrong_bounds = [(0, 100),

@@ -2,7 +2,7 @@
 # Goals of this part of the examples:
 # 1. Learn how to analyze the model of your energy system
 # 2. Improve your `SimulationAPI` knowledge
-# 3. Improve your skill-set on `TimeSeriesData`
+# 3. Improve your skill-set on ebcpy's `TimeSeriesAccessor` for `pd.DataFrame`
 # 4. Generate some measured data to later use in a calibration
 #
 # Start by importing all relevant packages
@@ -64,7 +64,7 @@ def main(
     # ## Data analysis
     # Check the frequency of the data:
     print("Simulation had index-frequency of %s with "
-          "standard deviation of %s" % tsd.frequency)
+          "standard deviation of %s" % tsd.tsd.frequency)
     # Let's look at the data we've created:
     fig, ax = plt.subplots(1, 1, sharex=True)
     ax.plot(tsd['heatCapacitor.T'] - 273.15, label="Capacity")
@@ -99,8 +99,8 @@ def main(
     # Also, as data is typically generated using datetime stamps and different naming,
     # let's change some names and time index to ensure a realistic scenario:
     tsd = tsd.rename(columns={"pipe.T": "TPipe", "heatCapacitor.T": "TCapacity"})
-    tsd.to_datetime_index()
-    tsd.save(Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
+    tsd.tsd.to_datetime_index()
+    tsd.tsd.save(Path(examples_dir).joinpath("data", "PumpAndValve.hdf"), key="examples")
     print("Saved data under", Path(examples_dir).joinpath("data"))
 
 
