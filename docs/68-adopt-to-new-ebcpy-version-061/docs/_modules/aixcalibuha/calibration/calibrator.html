@@ -341,7 +341,8 @@
                     <span class="n">postprocess_mat_result</span> <span class="o">=</span> <span class="n">convert_mat_to_suffix</span>
                     <span class="n">kwargs_postprocessing</span> <span class="o">=</span> <span class="p">{</span>
                         <span class="s1">&#39;variable_names&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">result_names</span><span class="p">,</span>
-                        <span class="s1">&#39;suffix_files&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span>
+                        <span class="s1">&#39;suffix_files&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span><span class="p">,</span>
+                        <span class="s1">&#39;parquet_engine&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span>
                     <span class="p">}</span>
                 <span class="n">savepath_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">working_directory</span><span class="p">,</span>
                                               <span class="sa">f</span><span class="s2">&quot;simulation_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_counter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
