@@ -1,0 +1,26 @@
+aixcalibuha/__init__.py:5:25: F401 [*] `.data_types.CalibrationClass` imported but unused
+aixcalibuha/__init__.py:5:43: F401 [*] `.data_types.TunerParas` imported but unused
+aixcalibuha/__init__.py:5:55: F401 [*] `.data_types.Goals` imported but unused
+aixcalibuha/__init__.py:6:26: F401 [*] `.calibration.Calibrator` imported but unused
+aixcalibuha/__init__.py:6:38: F401 [*] `.calibration.MultipleClassCalibrator` imported but unused
+aixcalibuha/__init__.py:7:35: F401 [*] `.sensitivity_analysis.SobolAnalyzer` imported but unused
+aixcalibuha/__init__.py:7:50: F401 [*] `.sensitivity_analysis.MorrisAnalyzer` imported but unused
+aixcalibuha/__init__.py:7:66: F401 [*] `.sensitivity_analysis.FASTAnalyzer` imported but unused
+aixcalibuha/__init__.py:7:80: F401 [*] `.sensitivity_analysis.PAWNAnalyzer` imported but unused
+aixcalibuha/__init__.py:8:5: F401 [*] `.sensitivity_analysis.plotting` imported but unused
+aixcalibuha/calibration/__init__.py:6:25: F401 [*] `.calibrator.Calibrator` imported but unused
+aixcalibuha/calibration/__init__.py:7:37: F401 [*] `.multi_class_calibrator.MultipleClassCalibrator` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:6:46: F401 [*] `aixcalibuha.sensitivity_analysis.plotting` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:7:35: F401 [*] `.sensitivity_analyzer.SenAnalyzer` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:8:20: F401 [*] `.sobol.SobolAnalyzer` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:9:21: F401 [*] `.morris.MorrisAnalyzer` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:10:19: F401 [*] `.fast.FASTAnalyzer` imported but unused
+aixcalibuha/sensitivity_analysis/__init__.py:11:19: F401 [*] `.pawn.PAWNAnalyzer` imported but unused
+bin/guided_setup.py:369:29: F541 [*] f-string without any placeholders
+examples/e3_sensitivity_analysis_example.py:41:26: F811 Redefinition of unused `setup_fmu` from line 76
+examples/e3_sensitivity_analysis_example.py:41:37: F811 Redefinition of unused `setup_calibration_classes` from line 76
+examples/e3_sensitivity_analysis_example.py:76:26: F401 [*] `examples.setup_fmu` imported but unused
+examples/e3_sensitivity_analysis_example.py:76:37: F401 [*] `examples.setup_calibration_classes` imported but unused
+tests/test_modelica_cal_sen.py:11:29: F401 [*] `matplotlib.pyplot` imported but unused
+Found 24 errors.
+[*] 22 fixable with the `--fix` option.
