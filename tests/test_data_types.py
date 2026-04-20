@@ -3,6 +3,7 @@
 from pathlib import Path
 import unittest
 import numpy as np
+import pandas as pd
 from ebcpy import load_time_series_data
 from aixcalibuha import CalibrationClass, Goals, TunerParas
 
@@ -106,8 +107,22 @@ class TestDataTypes(unittest.TestCase):
             goals = Goals(meas_target_data=meas_target_data,
                         variable_names=var_names,
                         statistical_measure=["RMSE", "MAE", "MSE"])
-        
-        
+
+        plain_meas_target_data = pd.DataFrame(
+            data={
+                "meas_bool": pd.Series([True, False, True], dtype="boolean"),
+                "meas_int": pd.Series([1, 2, 3], dtype="Int64")
+            },
+            index=pd.Index([0.0, 1.0, 2.0], dtype=float)
+        )
+        plain_var_names = {"BoolVar": ["meas_bool", "sim_bool"], "IntVar": ["meas_int", "sim_int"]}
+        plain_goals = Goals(meas_target_data=plain_meas_target_data,
+                            variable_names=plain_var_names,
+                            statistical_measure="RMSE")
+        self.assertEqual(str(plain_goals._tsd[("BoolVar", "meas")].dtype), "boolean")
+        self.assertEqual(str(plain_goals._tsd[("IntVar", "meas")].dtype), "Int64")
+         
+         
     def test_tuner_paras(self):
         """Test the class TunerParas"""
         dim = np.random.randint(1, 100)

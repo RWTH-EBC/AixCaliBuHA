@@ -149,7 +149,8 @@ class Goals:
                 [(col, self.meas_tag_str) for col in subset.columns],
                 names=["Variables", "Tags"]
             )
-            self._tsd = pd.DataFrame(subset.values, index=subset.index, columns=multi_cols)
+            subset.columns = multi_cols
+            self._tsd = subset
 
         # Save the tsd to a tsd_ref object
         # Used to never lose the original dataframe.
