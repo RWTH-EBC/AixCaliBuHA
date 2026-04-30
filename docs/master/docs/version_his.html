@@ -175,6 +175,18 @@
 <li><p>Ensure that statistical measures for calibration are always the absolute values</p></li>
 </ul>
 </li>
+<li><p><strong>v1.2.0</strong></p>
+<ul>
+<li><p>Migrate from <code class="docutils literal notranslate"><span class="pre">TimeSeriesData</span></code> to <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with <code class="docutils literal notranslate"><span class="pre">.tsd</span></code> accessor throughout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Goals</span></code> now accepts plain single-level DataFrames and builds MultiIndex internally</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">set_sim_target_data</span></code> for plain DataFrames (Series return, index type check)</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">convert_mat_to_suffix</span></code> writing sparse instead of densified data to parquet</p></li>
+<li><p>Encode parquet compression in <code class="docutils literal notranslate"><span class="pre">suffix_files</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">'parquet.snappy'</span></code>)</p></li>
+<li><p>Add defensive handling of old HDF files with MultiIndex columns</p></li>
+<li><p>Requires ebcpy &gt;= 0.7.1</p></li>
+<li><p>Remove support for Python&lt;=3.9</p></li>
+</ul>
+</li>
 </ul>
 </section>
 

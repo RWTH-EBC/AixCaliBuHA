@@ -84,7 +84,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeriesData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.utils.statistics_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticsAnalyzer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_datetime_index_to_float_index</span>
 
@@ -98,7 +97,7 @@
 <span class="sd">    Class for one or multiple goals. Used to evaluate the</span>
 <span class="sd">    difference between current simulation and measured data</span>
 
-<span class="sd">    :param (ebcpy.data_types.TimeSeriesData, pd.DataFrame) meas_target_data:</span>
+<span class="sd">    :param pd.DataFrame meas_target_data:</span>
 <span class="sd">        The dataset of the measurement. It acts as a point of reference</span>
 <span class="sd">        for the simulation output. If the dimensions of the given DataFrame and later</span>
 <span class="sd">        added simulation-data are not equal, an error is raised.</span>
@@ -142,16 +141,16 @@
     <span class="n">sim_tag_str</span> <span class="o">=</span> <span class="s2">&quot;sim&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">meas_target_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                 <span class="n">meas_target_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                  <span class="n">variable_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                  <span class="n">statistical_measure</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
                  <span class="n">weightings</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class-objects and check correct input.&quot;&quot;&quot;</span>
 
         <span class="c1"># Open the meas target data:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given meas_target_data is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
-                            <span class="s2">&quot;but TimeSeriesData is required.&quot;</span><span class="p">)</span>
+                            <span class="s2">&quot;but pd.DataFrame is required.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable_names</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given variable_names is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">variable_names</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
@@ -174,26 +173,30 @@
                 <span class="n">meas_info</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">meas_sim_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> of variable_names has a value&quot;</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> of variable_names has a value &quot;</span>
                                 <span class="s2">&quot;neither being a dict, list or tuple.&quot;</span><span class="p">)</span>
-            <span class="c1"># Now get the info to extract the values out of the given tsd</span>
-            <span class="c1"># Convert string with into a list of tuples containing the relevant tag.</span>
-            <span class="c1"># If mulitple tags exist, and the default tag (self.meas_tag_str)</span>
-            <span class="c1"># is not present, an error is raised.</span>
+            <span class="c1"># Now get the info to extract the values out of the given DataFrame.</span>
+            <span class="c1"># If the column selection returns a Series, there is no MultiIndex —</span>
+            <span class="c1"># wrap the variable into the internal (variable, tag) MultiIndex.</span>
+            <span class="c1"># If it returns a DataFrame, the input already has a MultiIndex.</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_info</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="p">[</span><span class="n">meas_info</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Given meas_target_data contains columns without a tag.&quot;</span>
-                                    <span class="s2">&quot;Please only pass MultiIndex-DataFrame objects.&quot;</span><span class="p">)</span>
-                <span class="n">tags</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span>
-                <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not able to automatically select variables and tags. &quot;</span>
-                                    <span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">meas_info</span><span class="si">}</span><span class="s2"> has mutliple tags, none of which &quot;</span>
-                                    <span class="sa">f</span><span class="s2">&quot;is specified as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-                    <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">))</span>
+                <span class="n">selected</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                    <span class="c1"># Single-level columns: use the variable directly</span>
+                    <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
+                    <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meas_info</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                    <span class="c1"># MultiIndex columns: select by tag</span>
+                    <span class="n">tags</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">columns</span>
+                    <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_name</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not able to automatically select variables and tags. &quot;</span>
+                                        <span class="sa">f</span><span class="s2">&quot;Variable </span><span class="si">{</span><span class="n">meas_info</span><span class="si">}</span><span class="s2"> has multiple tags, none of which &quot;</span>
+                                        <span class="sa">f</span><span class="s2">&quot;is specified as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                        <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">meas_info</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_info</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                 <span class="n">_rename_cols_dict</span><span class="p">[</span><span class="n">meas_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">var_name</span>
                 <span class="n">_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meas_info</span><span class="p">)</span>
@@ -201,16 +204,29 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Measurement Info on variable </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> is &quot;</span>
                                 <span class="s2">&quot;neither of type string or tuple.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Take the subset of the given tsd based on var_names and tags.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Build internal MultiIndex DataFrame with (variable, meas) columns</span>
+        <span class="n">_is_multiindex</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meas_target_data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">)</span>
 
-        <span class="c1"># Rename all variables to the given var_name (key of self.variable_names)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">_rename_cols_dict</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># Rename all tags to the default measurement name for consistency.</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">))]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_is_multiindex</span><span class="p">:</span>
+            <span class="c1"># Take the subset of the given DataFrame based on var_names and tags.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Rename all variables to the given var_name (key of self.variable_names)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">_rename_cols_dict</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Rename all tags to the default measurement name for consistency.</span>
+            <span class="n">tags</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">))]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Single-level columns: build MultiIndex internally</span>
+            <span class="n">subset</span> <span class="o">=</span> <span class="n">meas_target_data</span><span class="p">[</span><span class="n">_columns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">subset</span> <span class="o">=</span> <span class="n">subset</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">_rename_cols_dict</span><span class="p">)</span>
+            <span class="c1"># Create MultiIndex with (variable_name, &quot;meas&quot;) structure</span>
+            <span class="n">multi_cols</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">col</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meas_tag_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">subset</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
+                <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Variables&quot;</span><span class="p">,</span> <span class="s2">&quot;Tags&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">subset</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">multi_cols</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="n">subset</span>
 
         <span class="c1"># Save the tsd to a tsd_ref object</span>
         <span class="c1"># Used to never lose the original dataframe.</span>
@@ -221,7 +237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">statistical_measure</span> <span class="o">=</span> <span class="n">statistical_measure</span>
 
         <span class="c1"># Set the weightings, if not specified.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">weightings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">weightings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span>
                                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_goals</span><span class="p">)])</span>
@@ -246,7 +262,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span>
 
     <span class="nd">@statistical_measure</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">statistical_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                             <span class="n">statistical_measure</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the new statistical measure. The value must be</span>
@@ -257,23 +273,22 @@
             <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">statistical_measure</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">statistical_measure</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">return</span> <span class="n">statistical_measure</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">statistical_measure</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">statistical_measure</span> <span class="o">=</span> <span class="p">[</span><span class="n">statistical_measure</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="o">=</span> <span class="n">_get_stat_meas</span><span class="p">(</span><span class="n">statistical_measure</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">statistical_measure</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of statistical measures does not match the number of goals.&quot;</span><span class="p">)</span>
-            
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stat_meas</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_get_stat_meas</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">statistical_measure</span><span class="p">])</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_stat_analyzer</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stat_analyzer</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">StatisticsAnalyzer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">statistical_measure</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
 
-            
 <div class="viewcode-block" id="Goals.eval_difference"><a class="viewcode-back" href="../../code/aixcalibuha.html#aixcalibuha.data_types.Goals.eval_difference">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">eval_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">penaltyfactor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate the difference of the measurement and simulated data based on the</span>
@@ -285,10 +300,10 @@
 <span class="sd">            This can be useful to better understand which goals is performing</span>
 <span class="sd">            well in an optimization and which goals needs further is not performing well.</span>
 <span class="sd">        :param float penaltyfactor:</span>
-<span class="sd">            Muliplty result with this factor to account for</span>
-<span class="sd">            penatlies of some sort.</span>
+<span class="sd">            Multiply result with this factor to account for</span>
+<span class="sd">            penalties of some sort.</span>
 <span class="sd">        :return: float total_difference</span>
-<span class="sd">            weighted ouput for all goals.</span>
+<span class="sd">            weighted output for all goals.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">total_difference</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">_verbose_calculation</span> <span class="o">=</span> <span class="p">{}</span>
@@ -317,18 +332,27 @@
 <span class="sd">        self._sim_target_data based on the given dataframe</span>
 <span class="sd">        sim_target_data.</span>
 
-<span class="sd">        :param TimeSeriesData sim_target_data:</span>
+<span class="sd">        :param pd.DataFrame sim_target_data:</span>
 <span class="sd">            Object with simulation target data. This data should be</span>
 <span class="sd">            the output of a simulation, hence &quot;sim&quot;-target-data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_target_data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Given sim_target_data is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sim_target_data</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;but a pd.DataFrame is required.&quot;</span>
+            <span class="p">)</span>
         <span class="c1"># Start with the base</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Check index type</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
+        <span class="n">meas_is_datetime</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">)</span>
+        <span class="n">sim_is_datetime</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">meas_is_datetime</span> <span class="o">!=</span> <span class="n">sim_is_datetime</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Given sim_target_data is using </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; as an index, but the reference results (measured-data) was declared&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; using the </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. Convert your&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; (dtype=</span><span class="si">{</span><span class="n">sim_target_data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">) as an index, but the reference&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; results (measured-data) was declared using&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; (dtype=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">). Convert your&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; measured-data index to solve this error.&quot;</span>
             <span class="p">)</span>
         <span class="c1"># Three critical cases may occur:</span>
@@ -362,10 +386,12 @@
         <span class="c1"># Resize simulation data to match to meas data</span>
         <span class="k">for</span> <span class="n">goal_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">_tsd_sim</span> <span class="o">=</span> <span class="n">sim_target_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_tsd_sim</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given sim_target_data contains multiple tags for variable &quot;</span>
-                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span><span class="si">}</span><span class="s2">. &quot;</span>
-                                 <span class="s2">&quot;Can&#39;t select one automatically.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_tsd_sim</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_tsd_sim</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given sim_target_data contains multiple tags for variable &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim_var_matcher</span><span class="p">[</span><span class="n">goal_name</span><span class="p">]</span><span class="si">}</span><span class="s2">. &quot;</span>
+                                     <span class="s2">&quot;Can&#39;t select one automatically.&quot;</span><span class="p">)</span>
+                <span class="n">_tsd_sim</span> <span class="o">=</span> <span class="n">_tsd_sim</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sta</span><span class="p">:</span><span class="n">sto</span><span class="p">,</span> <span class="p">(</span><span class="n">goal_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_tag_str</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_tsd_sim</span><span class="o">.</span><span class="n">values</span>
         <span class="c1"># Sort the index for better visualisation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
@@ -415,12 +441,12 @@
 <span class="sd">        :returns:</span>
 <span class="sd">            float: Mean frequency of the index</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">frequency</span>
+        <span class="n">mean</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tsd_ref</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
         <span class="k">if</span> <span class="n">std</span> <span class="o">&gt;=</span> <span class="mf">1e-8</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;The index of your measurement data is not &quot;</span>
-                            <span class="s2">&quot;equally sampled. The standard deviation is </span><span class="si">%s</span><span class="s2">.&quot;</span>
-                            <span class="s2">&quot;The may lead to errors when mapping measurements to simulation &quot;</span>
-                            <span class="s2">&quot;results.&quot;</span><span class="p">,</span> <span class="n">mean</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+                            <span class="s2">&quot;equally sampled. The standard deviation is </span><span class="si">%s</span><span class="s2">. &quot;</span>
+                            <span class="s2">&quot;This may lead to errors when mapping measurements to simulation &quot;</span>
+                            <span class="s2">&quot;results.&quot;</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mean</span></div></div>
 
 
@@ -470,7 +496,7 @@
         <span class="c1"># Check if all names are unique:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Given names contain duplicates. &quot;</span>
-                             <span class="s2">&quot;This will yield errors in later stages&quot;</span>
+                             <span class="s2">&quot;This will yield errors in later stages &quot;</span>
                              <span class="s2">&quot;such as calibration of sensitivity analysis.&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Calculate the sum, as this will fail if the elements are not float or int.</span>
@@ -624,9 +650,8 @@
 <span class="sd">        The given intervals may overlap. Furthermore the intervals do not need</span>
 <span class="sd">        to be in an ascending order or be limited to</span>
 <span class="sd">        the start_time and end_time parameters.</span>
-<span class="sd">    :keyword (pd.DataFrame, ebcpy.data_types.TimeSeriesData) inputs:</span>
-<span class="sd">        TimeSeriesData or DataFrame that holds</span>
-<span class="sd">        input data for the simulation to run.</span>
+<span class="sd">    :keyword pd.DataFrame inputs:</span>
+<span class="sd">        DataFrame that holds input data for the simulation to run.</span>
 <span class="sd">        The time-index should be float index and match the overall</span>
 <span class="sd">        ranges set by start- and stop-time.</span>
 <span class="sd">    :keyword dict input_kwargs:</span>
@@ -744,20 +769,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_relevant_intervals</span> <span class="o">=</span> <span class="n">relevant_intervals</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the inputs for this calibration class&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span>
 
     <span class="nd">@inputs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the inputs for this calibration class&quot;&quot;&quot;</span>
-        <span class="c1"># Check correct index:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inputs need to be either TimeSeriesData &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;or pd.DataFrame, but you passed </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inputs need to be a pd.DataFrame, &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;but you passed </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">):</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">convert_datetime_index_to_float_index</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="n">inputs</span></div>
 
 

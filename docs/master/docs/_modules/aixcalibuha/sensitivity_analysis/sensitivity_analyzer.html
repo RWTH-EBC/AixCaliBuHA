@@ -86,10 +86,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_time_series_data</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.utils.reproduction</span><span class="w"> </span><span class="kn">import</span> <span class="n">CopyFile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.simulationapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationAPI</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.data_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeriesData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibrationClass</span><span class="p">,</span> <span class="n">data_types</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_cal_class_input</span><span class="p">,</span> <span class="n">convert_mat_to_suffix</span><span class="p">,</span> <span class="n">empty_postprocessing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.sensitivity_analysis.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_single</span><span class="p">,</span> <span class="n">plot_time_dependent</span>
@@ -99,8 +99,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">default_tag</span><span class="o">=</span><span class="s1">&#39;sim&#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
-                                     <span class="n">engine</span><span class="o">=</span><span class="n">parquet_engine</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">load_time_series_data</span><span class="p">(</span><span class="n">_filepath</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="n">parquet_engine</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_files</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">,</span> <span class="n">parquet_engine</span><span class="o">=</span><span class="s1">&#39;pyarrow&#39;</span><span class="p">):</span>
@@ -124,7 +123,7 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_concat_all_sims</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function that concat all results in a list to one DataFrame.&quot;&quot;&quot;</span>
-    <span class="n">sim_results_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sim_results_list</span><span class="p">]</span>
+    <span class="n">sim_results_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sim_results_list</span><span class="p">]</span>
     <span class="n">sim_results_list</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sim_results_list</span><span class="p">)),</span>
                                  <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
     <span class="n">sim_results_list</span> <span class="o">=</span> <span class="n">sim_results_list</span><span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -178,21 +177,23 @@
 <span class="sd">    :keyword boolean fail_on_error:</span>
 <span class="sd">        Default is False. If True, the calibration will stop with an error if</span>
 <span class="sd">        the simulation fails. See also: ``ret_val_on_error``</span>
-<span class="sd">    :keyword float,np.NAN ret_val_on_error:</span>
-<span class="sd">        Default is np.NAN. If ``fail_on_error`` is false, you can specify here</span>
+<span class="sd">    :keyword float,np.nan ret_val_on_error:</span>
+<span class="sd">        Default is np.nan. If ``fail_on_error`` is false, you can specify here</span>
 <span class="sd">        which value to return in the case of a failed simulation. Possible</span>
-<span class="sd">        options are np.NaN, np.inf or some other high numbers. be aware that this</span>
+<span class="sd">        options are np.nan, np.inf or some other high numbers. be aware that this</span>
 <span class="sd">        max influence the solver.</span>
 <span class="sd">    :keyword boolean save_files:</span>
 <span class="sd">        Default False. If true, all simulation files for each iteration will be saved!</span>
 <span class="sd">    :keyword str suffix_files:</span>
 <span class="sd">        Default &#39;csv&#39;. Specifies the data format to store the simulation files in.</span>
-<span class="sd">        Options are &#39;csv&#39; and &#39;parquet&#39; to save only the goals.</span>
-<span class="sd">        If you want to keep the original &#39;mat&#39; file specify &#39;mat&#39; here (not recommended due to high disk size usage).</span>
+<span class="sd">        Options are &#39;csv&#39;, &#39;parquet&#39;, or &#39;parquet.COMPRESSION&#39; (e.g. &#39;parquet.snappy&#39;,</span>
+<span class="sd">        &#39;parquet.gzip&#39;) to save only the goals.</span>
+<span class="sd">        If you want to keep the original &#39;mat&#39; file specify &#39;mat&#39; here</span>
+<span class="sd">        (not recommended due to high disk size usage).</span>
 <span class="sd">    :keyword str parquet_engine:</span>
 <span class="sd">        The engine to use for the data format parquet.</span>
 <span class="sd">        Supported options can be extracted</span>
-<span class="sd">        from the ebcpy.TimeSeriesData.save() function.</span>
+<span class="sd">        from the ebcpy DataFrame accessor ``df.tsd.save()`` function.</span>
 <span class="sd">        Default is &#39;pyarrow&#39;.</span>
 <span class="sd">    :keyword str,Path savepath_sim:</span>
 <span class="sd">        Default is working_directory. Own directory for the time series data sets of all simulations</span>
@@ -215,7 +216,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_files&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suffix_files</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;suffix_files&#39;</span><span class="p">,</span> <span class="s1">&#39;csv&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parquet_engine&#39;</span><span class="p">,</span> <span class="s1">&#39;pyarrow&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">working_directory</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;working_directory&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="s2">&quot;cd&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -377,18 +378,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished </span><span class="si">%s</span><span class="s1"> simulations&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">samples</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_check_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsd</span><span class="p">:</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">,</span> <span class="n">sim_num</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsd</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">sim_num</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
         <span class="k">if</span> <span class="n">sim_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sim_num</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">sim_num</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="p">,</span> <span class="s1">&#39;filepath&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">sim_num</span> <span class="o">=</span> <span class="n">sim_num</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">sim_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;unknown&#39;</span>
         <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;The mean value of the frequency from </span><span class="si">{</span><span class="n">sim_num</span><span class="si">}</span><span class="s1"> does not match output &#39;</span>
                 <span class="s1">&#39;interval index will be cleaned and spaced equally&#39;</span><span class="p">)</span>
-            <span class="n">tsd</span><span class="o">.</span><span class="n">to_datetime_index</span><span class="p">()</span>
-            <span class="n">tsd</span><span class="o">.</span><span class="n">clean_and_space_equally</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">ms&#39;</span><span class="p">)</span>
-            <span class="n">tsd</span><span class="o">.</span><span class="n">to_float_index</span><span class="p">()</span>
-            <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">to_datetime_index</span><span class="p">()</span>
+            <span class="n">desired_freq</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">sim_setup</span><span class="o">.</span><span class="n">output_interval</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">ms&#39;</span>
+            <span class="n">tsd</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">clean_and_space_equally</span><span class="p">(</span><span class="n">desired_freq</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">to_float_index</span><span class="p">()</span>
+            <span class="n">freq</span> <span class="o">=</span> <span class="n">tsd</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">frequency</span>
         <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The standard deviation of the frequency from </span><span class="si">{</span><span class="n">sim_num</span><span class="si">}</span><span class="s1"> is to high &#39;</span>
                              <span class="sa">f</span><span class="s1">&#39;and will be rounded to the accuracy of the output interval&#39;</span><span class="p">)</span>
@@ -832,7 +835,7 @@
                 <span class="n">sen_time_dependent_df</span> <span class="o">=</span> <span class="n">_restruct_time_dependent</span><span class="p">(</span><span class="n">sen_time_dependent_list</span><span class="p">,</span>
                                                                  <span class="n">time_index</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
                 <span class="n">time_index</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
                 <span class="n">total_result</span> <span class="o">=</span> <span class="n">_concat_all_sims</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
                 <span class="n">sen_time_dependent_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -891,7 +894,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sim1</span> <span class="o">=</span> <span class="n">_load_single_file</span><span class="p">(</span><span class="n">_filepaths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">time_index</span> <span class="o">=</span> <span class="n">sim1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-        <span class="n">variables</span> <span class="o">=</span> <span class="n">sim1</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="n">sim1</span><span class="o">.</span><span class="n">tsd</span><span class="o">.</span><span class="n">get_variable_names</span><span class="p">()</span>
         <span class="n">sen_time_dependent_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">n_steps</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
             <span class="n">list_tsteps</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_index</span><span class="p">]</span>

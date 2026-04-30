@@ -114,14 +114,15 @@ ends because the maximum calibration time is reached.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="aixcalibuha.utils.convert_mat_to_suffix">
-<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.</span></span><span class="sig-name descname"><span class="pre">convert_mat_to_suffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_result_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parquet_engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pyarrow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snappy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils.html#convert_mat_to_suffix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.convert_mat_to_suffix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.</span></span><span class="sig-name descname"><span class="pre">convert_mat_to_suffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat_result_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parquet_engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pyarrow'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils.html#convert_mat_to_suffix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.convert_mat_to_suffix" title="Permalink to this definition"></a></dt>
 <dd><p>Postprocess the mat result files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mat_result_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The path to the MATLAB result file.</p></li>
 <li><p><strong>variable_names</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – The names of the variables to extract.</p></li>
-<li><p><strong>suffix_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The suffix for the output files.</p></li>
+<li><p><strong>suffix_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file format for the output files.
+Options: ‘csv’, ‘parquet’, ‘parquet.snappy’, ‘parquet.gzip’, etc.</p></li>
 <li><p><strong>parquet_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The engine to use for saving parquet files.</p></li>
 </ul>
 </dd>
@@ -143,8 +144,96 @@ and return a list in both cases. Else raise an error</p>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="aixcalibuha-utils-configuration-module">
-<h2>aixcalibuha.utils.configuration module<a class="headerlink" href="#aixcalibuha-utils-configuration-module" title="Permalink to this heading"></a></h2>
+<section id="module-aixcalibuha.utils.configuration">
+<span id="aixcalibuha-utils-configuration-module"></span><h2>aixcalibuha.utils.configuration module<a class="headerlink" href="#module-aixcalibuha.utils.configuration" title="Permalink to this heading"></a></h2>
+<p>Module to with configs and functions to read configs for objects in this repository.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.utils.configuration.get_calibration_classes_from_config">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.configuration.</span></span><span class="sig-name descname"><span class="pre">get_calibration_classes_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils/configuration.html#get_calibration_classes_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.configuration.get_calibration_classes_from_config" title="Permalink to this definition"></a></dt>
+<dd><p>Read the data for a CalibrationClass object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – List of dicts with configs holding the following cols for
+- names
+- start_time
+- stop_time
+- Optional: goals, tuner_paras, relevant_intervals</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TunerParas tuner_paras
+Loaded Goals object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.utils.configuration.get_goals_from_config">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.configuration.</span></span><span class="sig-name descname"><span class="pre">get_goals_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils/configuration.html#get_goals_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.configuration.get_goals_from_config" title="Permalink to this definition"></a></dt>
+<dd><p>Read the data for a Goals object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Config holding the following cols for
+- meas_target_data
+- variable_names
+- Optional: weightings</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Goals goals
+Loaded Goals object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.utils.configuration.get_tuner_paras_from_config">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.configuration.</span></span><span class="sig-name descname"><span class="pre">get_tuner_paras_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils/configuration.html#get_tuner_paras_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.configuration.get_tuner_paras_from_config" title="Permalink to this definition"></a></dt>
+<dd><p>Read the data for a TunerParas object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Config holding the following cols for
+- names
+- initial_values
+- bounds</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TunerParas tuner_paras
+Loaded Goals object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.utils.configuration.read_config">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.configuration.</span></span><span class="sig-name descname"><span class="pre">read_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils/configuration.html#read_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.configuration.read_config" title="Permalink to this definition"></a></dt>
+<dd><p>Read the given file and return the toml-config</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>,</em><em>Path</em>) – Filepath with the config.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict config:
+Loaded config</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="aixcalibuha.utils.configuration.write_config">
+<span class="sig-prename descclassname"><span class="pre">aixcalibuha.utils.configuration.</span></span><span class="sig-name descname"><span class="pre">write_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/utils/configuration.html#write_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.utils.configuration.write_config" title="Permalink to this definition"></a></dt>
+<dd><p>Write the given config to the filepath.
+If the file already exists, the data is recursively
+updated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>,</em><em>Path</em>) – Filepath with the config.</p>
+</dd>
+<dt class="field-even">Param<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict config:
+Config to be saved</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-aixcalibuha.utils.visualizer">
 <span id="aixcalibuha-utils-visualizer-module"></span><h2>aixcalibuha.utils.visualizer module<a class="headerlink" href="#module-aixcalibuha.utils.visualizer" title="Permalink to this heading"></a></h2>

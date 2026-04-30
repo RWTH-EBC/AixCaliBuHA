@@ -28,9 +28,9 @@
 
         
         <h2>Score</h2>
-        7.37 / 10
+        7.53 / 10
             
-            (previous score: 7.38 / 10)
+            (previous score: 7.52 / 10)
             
         
 
@@ -56,8 +56,8 @@
                 <td>R0801</td>
                 <td></td>
                 <td><pre>Similar lines in 2 files
-==aixcalibuha.calibration.calibrator:[258:268]
-==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[269:279]
+==aixcalibuha.calibration.calibrator:[260:270]
+==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[270:280]
             if self.suffix_files == &#34;mat&#34;:
                 postprocess_mat_result = empty_postprocessing
                 kwargs_postprocessing = {}
@@ -87,17 +87,7 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.fast)</pre></td>
             </tr>
             
             <tr>
@@ -117,36 +107,6 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>refactor</td>
-                <td><code>cyclic-import</code></td>
-                <td>R0401</td>
-                <td></td>
                 <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.morris)</pre></td>
             </tr>
             
@@ -157,7 +117,17 @@
                 <td><code>cyclic-import</code></td>
                 <td>R0401</td>
                 <td></td>
-                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
+                <td><pre>Cyclic import (aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.pawn)</pre></td>
+            </tr>
+            
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>refactor</td>
+                <td><code>cyclic-import</code></td>
+                <td>R0401</td>
+                <td></td>
+                <td><pre>Cyclic import (aixcalibuha -&gt; aixcalibuha.sensitivity_analysis -&gt; aixcalibuha.sensitivity_analysis.sobol -&gt; aixcalibuha.sensitivity_analysis.plotting -&gt; aixcalibuha.utils.visualizer)</pre></td>
             </tr>
             
         </table>
@@ -181,7 +151,7 @@
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/calibration/calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/calibration/calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-55.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -215,17 +185,7 @@
             </tr>
             
             <tr>
-                <td>48</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (117/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>99</td>
+                <td>101</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -235,7 +195,7 @@
             </tr>
             
             <tr>
-                <td>193</td>
+                <td>195</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -245,7 +205,7 @@
             </tr>
             
             <tr>
-                <td>201</td>
+                <td>203</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -255,7 +215,7 @@
             </tr>
             
             <tr>
-                <td>208</td>
+                <td>210</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -265,7 +225,7 @@
             </tr>
             
             <tr>
-                <td>214</td>
+                <td>216</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -275,7 +235,7 @@
             </tr>
             
             <tr>
-                <td>272</td>
+                <td>274</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -285,7 +245,7 @@
             </tr>
             
             <tr>
-                <td>273</td>
+                <td>275</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -295,7 +255,7 @@
             </tr>
             
             <tr>
-                <td>305</td>
+                <td>307</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -305,7 +265,7 @@
             </tr>
             
             <tr>
-                <td>308</td>
+                <td>310</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -315,7 +275,7 @@
             </tr>
             
             <tr>
-                <td>347</td>
+                <td>349</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -325,7 +285,7 @@
             </tr>
             
             <tr>
-                <td>387</td>
+                <td>389</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -335,7 +295,7 @@
             </tr>
             
             <tr>
-                <td>441</td>
+                <td>443</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -345,7 +305,7 @@
             </tr>
             
             <tr>
-                <td>509</td>
+                <td>511</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>trailing-whitespace</code></td>
@@ -375,7 +335,7 @@
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/multi_class_calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking &#39;aixcalibuha/calibration/multi_class_calibrator.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-55.txt&#39;.</pre></td>
             </tr>
             
         </table>
@@ -399,77 +359,17 @@
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/data_types.py: Fatal error while checking &#39;aixcalibuha/data_types.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-54.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/data_types.py: Fatal error while checking &#39;aixcalibuha/data_types.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-53.txt&#39;.</pre></td>
             </tr>
             
             <tr>
-                <td>173</td>
-                <td>33</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
-            </tr>
-            
-            <tr>
-                <td>184</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
-            </tr>
-            
-            <tr>
-                <td>189</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
-            </tr>
-            
-            <tr>
-                <td>191</td>
+                <td>207</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
                 <td>C0301</td>
                 <td></td>
                 <td><pre>Line too long (102/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>192</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
-            </tr>
-            
-            <tr>
-                <td>195</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
-            </tr>
-            
-            <tr>
-                <td>200</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
             </tr>
             
         </table>
@@ -799,7 +699,7 @@
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking &#39;aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt&#39;.</pre></td>
+                <td><pre>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking &#39;aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-54.txt&#39;.</pre></td>
             </tr>
             
             <tr>
@@ -813,17 +713,7 @@
             </tr>
             
             <tr>
-                <td>115</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (117/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>542</td>
+                <td>545</td>
                 <td>0</td>
                 <td>convention</td>
                 <td><code>line-too-long</code></td>
@@ -927,27 +817,7 @@
                 <td><code>astroid-error</code></td>
                 <td>F0002</td>
                 <td></td>
-                <td><pre>aixcalibuha/utils/__init__.py: Fatal error while checking &#39;aixcalibuha/utils/__init__.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-54.txt&#39;.</pre></td>
-            </tr>
-            
-            <tr>
-                <td>13</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>line-too-long</code></td>
-                <td>C0301</td>
-                <td></td>
-                <td><pre>Line too long (121/100)</pre></td>
-            </tr>
-            
-            <tr>
-                <td>72</td>
-                <td>0</td>
-                <td>convention</td>
-                <td><code>trailing-whitespace</code></td>
-                <td>C0303</td>
-                <td></td>
-                <td><pre>Trailing whitespace</pre></td>
+                <td><pre>aixcalibuha/utils/__init__.py: Fatal error while checking &#39;aixcalibuha/utils/__init__.py&#39;. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in &#39;/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-54.txt&#39;.</pre></td>
             </tr>
             
         </table>
@@ -2032,7 +1902,7 @@
             
             <tr>
                 <td>refactor</td>
-                <td>81</td>
+                <td>78</td>
             </tr>
             
             <tr>
@@ -2042,7 +1912,7 @@
             
             <tr>
                 <td>convention</td>
-                <td>50</td>
+                <td>40</td>
             </tr>
             
             <tr>
@@ -2076,13 +1946,8 @@
             </tr>
             
             <tr>
-                <td>trailing-whitespace</td>
-                <td>15</td>
-            </tr>
-            
-            <tr>
                 <td>line-too-long</td>
-                <td>17</td>
+                <td>14</td>
             </tr>
             
             <tr>
@@ -2161,13 +2026,18 @@
             </tr>
             
             <tr>
+                <td>trailing-whitespace</td>
+                <td>8</td>
+            </tr>
+            
+            <tr>
                 <td>duplicate-code</td>
                 <td>1</td>
             </tr>
             
             <tr>
                 <td>cyclic-import</td>
-                <td>9</td>
+                <td>6</td>
             </tr>
             
         </table>
@@ -2187,7 +2057,7 @@
             
             <tr>
                 <td>aixcalibuha.data_types</td>
-                <td>8</td>
+                <td>2</td>
             </tr>
             
             <tr>
@@ -2202,12 +2072,12 @@
             
             <tr>
                 <td>aixcalibuha.utils.__init__</td>
-                <td>3</td>
+                <td>1</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha.sensitivity_analysis.sensitivity_analyzer</td>
-                <td>4</td>
+                <td>3</td>
             </tr>
             
             <tr>
@@ -2242,12 +2112,12 @@
             
             <tr>
                 <td>aixcalibuha.calibration.calibrator</td>
-                <td>18</td>
+                <td>17</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha.calibration.__init__</td>
-                <td>10</td>
+                <td>7</td>
             </tr>
             
         </table>
@@ -2267,7 +2137,7 @@
             
             <tr>
                 <td>aixcalibuha/data_types.py</td>
-                <td>8</td>
+                <td>2</td>
             </tr>
             
             <tr>
@@ -2282,12 +2152,12 @@
             
             <tr>
                 <td>aixcalibuha/utils/__init__.py</td>
-                <td>3</td>
+                <td>1</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py</td>
-                <td>4</td>
+                <td>3</td>
             </tr>
             
             <tr>
@@ -2322,12 +2192,12 @@
             
             <tr>
                 <td>aixcalibuha/calibration/calibrator.py</td>
-                <td>18</td>
+                <td>17</td>
             </tr>
             
             <tr>
                 <td>aixcalibuha/calibration/__init__.py</td>
-                <td>10</td>
+                <td>7</td>
             </tr>
             
         </table>

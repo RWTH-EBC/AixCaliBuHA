@@ -67,14 +67,8 @@ pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pyli
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'locally-enabled' (unknown-option-value)
 pylintrc:1:0: W0012: Unknown option value for '--disable', expected a valid pylint message and got 'eq-without-hash' (unknown-option-value)
 ************* Module aixcalibuha.data_types
-aixcalibuha/data_types.py:173:33: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:184:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:189:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:191:0: C0301: Line too long (102/100) (line-too-long)
-aixcalibuha/data_types.py:192:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:195:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:200:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/data_types.py:1:0: F0002: aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-50.txt'. (astroid-error)
+aixcalibuha/data_types.py:207:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/data_types.py:1:0: F0002: aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-49.txt'. (astroid-error)
 ************* Module aixcalibuha.utils.configuration
 aixcalibuha/utils/configuration.py:41:0: C0301: Line too long (110/100) (line-too-long)
 aixcalibuha/utils/configuration.py:42:0: C0301: Line too long (116/100) (line-too-long)
@@ -113,13 +107,10 @@ aixcalibuha/utils/visualizer.py:522:46: C0209: Formatting a regular string which
 aixcalibuha/utils/visualizer.py:536:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
 aixcalibuha/utils/visualizer.py:640:4: R0914: Too many local variables (16/15) (too-many-locals)
 ************* Module aixcalibuha.utils.__init__
-aixcalibuha/utils/__init__.py:13:0: C0301: Line too long (121/100) (line-too-long)
-aixcalibuha/utils/__init__.py:72:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/utils/__init__.py:1:0: F0002: aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-50.txt'. (astroid-error)
+aixcalibuha/utils/__init__.py:1:0: F0002: aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-50.txt'. (astroid-error)
 ************* Module aixcalibuha.sensitivity_analysis.sensitivity_analyzer
-aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:115:0: C0301: Line too long (117/100) (line-too-long)
-aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:542:0: C0301: Line too long (104/100) (line-too-long)
-aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:1:0: F0002: aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-51.txt'. (astroid-error)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:545:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py:1:0: F0002: aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-50.txt'. (astroid-error)
 ************* Module aixcalibuha.sensitivity_analysis.plotting
 aixcalibuha/sensitivity_analysis/plotting.py:5:0: E0401: Unable to import 'pandas' (import-error)
 aixcalibuha/sensitivity_analysis/plotting.py:6:0: E0401: Unable to import 'numpy' (import-error)
@@ -158,49 +149,47 @@ aixcalibuha/sensitivity_analysis/morris.py:5:0: E0401: Unable to import 'numpy' 
 aixcalibuha/sensitivity_analysis/morris.py:6:0: E0401: Unable to import 'SALib.sample' (import-error)
 aixcalibuha/sensitivity_analysis/morris.py:7:0: E0401: Unable to import 'SALib.analyze' (import-error)
 ************* Module aixcalibuha.calibration.multi_class_calibrator
-aixcalibuha/calibration/multi_class_calibrator.py:1:0: F0002: aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-51.txt'. (astroid-error)
+aixcalibuha/calibration/multi_class_calibrator.py:1:0: F0002: aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-51.txt'. (astroid-error)
 ************* Module aixcalibuha.calibration.calibrator
 aixcalibuha/calibration/calibrator.py:17:0: C0301: Line too long (104/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:48:0: C0301: Line too long (117/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:99:0: C0301: Line too long (121/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:193:0: C0301: Line too long (105/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:201:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:208:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:214:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:272:0: C0301: Line too long (106/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:273:0: C0301: Line too long (104/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:305:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:308:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:347:0: C0301: Line too long (102/100) (line-too-long)
-aixcalibuha/calibration/calibrator.py:387:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:441:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:509:0: C0303: Trailing whitespace (trailing-whitespace)
-aixcalibuha/calibration/calibrator.py:1:0: F0002: aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-51.txt'. (astroid-error)
+aixcalibuha/calibration/calibrator.py:101:0: C0301: Line too long (121/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:195:0: C0301: Line too long (105/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:203:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:210:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:216:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:274:0: C0301: Line too long (106/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:275:0: C0301: Line too long (104/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:307:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:310:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:349:0: C0301: Line too long (102/100) (line-too-long)
+aixcalibuha/calibration/calibrator.py:389:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:443:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:511:0: C0303: Trailing whitespace (trailing-whitespace)
+aixcalibuha/calibration/calibrator.py:1:0: F0002: aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-51.txt'. (astroid-error)
 aixcalibuha/calibration/calibrator.py:6:0: C0412: Imports from package os are not grouped (ungrouped-imports)
 aixcalibuha/calibration/calibrator.py:8:0: C0412: Imports from package pathlib are not grouped (ungrouped-imports)
 ************* Module aixcalibuha.calibration.__init__
 aixcalibuha/calibration/__init__.py:1:0: R0801: Similar lines in 2 files
-==aixcalibuha.calibration.calibrator:[258:268]
-==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[269:279]
-                if self.suffix_files == "mat":
-                    postprocess_mat_result = empty_postprocessing
-                    kwargs_postprocessing = {}
-                else:
-                    postprocess_mat_result = convert_mat_to_suffix
-                    kwargs_postprocessing = {
-                        'variable_names': self.sim_api.result_names,
-                        'suffix_files': self.suffix_files,
-                        'parquet_engine': self.parquet_engine
-                    } (duplicate-code)
+==aixcalibuha.calibration.calibrator:[260:270]
+==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[270:280]
+            if self.suffix_files == "mat":
+                postprocess_mat_result = empty_postprocessing
+                kwargs_postprocessing = {}
+            else:
+                postprocess_mat_result = convert_mat_to_suffix
+                kwargs_postprocessing = {
+                    'variable_names': self.sim_api.result_names,
+                    'suffix_files': self.suffix_files,
+                    'parquet_engine': self.parquet_engine
+                } (duplicate-code)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
+aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
 aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris) (cyclic-import)
-aixcalibuha/calibration/__init__.py:1:0: R0401: Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 7.38/10
+Your code has been rated at 7.52/10
 

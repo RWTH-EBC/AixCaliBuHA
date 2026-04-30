@@ -741,78 +741,12 @@
             "type": "convention",
             "module": "aixcalibuha.data_types",
             "obj": "",
-            "line": 173,
-            "column": 33,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 184,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 189,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 191,
+            "line": 207,
             "column": 0,
             "path": "aixcalibuha/data_types.py",
             "symbol": "line-too-long",
             "message": "Line too long (102/100)",
             "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 192,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 195,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.data_types",
-            "obj": "",
-            "line": 200,
-            "column": 0,
-            "path": "aixcalibuha/data_types.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
         },
         {
             "type": "fatal",
@@ -822,7 +756,7 @@
             "column": 0,
             "path": "aixcalibuha/data_types.py",
             "symbol": "astroid-error",
-            "message": "aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-54.txt'.",
+            "message": "aixcalibuha/data_types.py: Fatal error while checking 'aixcalibuha/data_types.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-53.txt'.",
             "message-id": "F0002"
         },
         {
@@ -1211,28 +1145,6 @@
             "message-id": "R0914"
         },
         {
-            "type": "convention",
-            "module": "aixcalibuha.utils.__init__",
-            "obj": "",
-            "line": 13,
-            "column": 0,
-            "path": "aixcalibuha/utils/__init__.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (121/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.utils.__init__",
-            "obj": "",
-            "line": 72,
-            "column": 0,
-            "path": "aixcalibuha/utils/__init__.py",
-            "symbol": "trailing-whitespace",
-            "message": "Trailing whitespace",
-            "message-id": "C0303"
-        },
-        {
             "type": "fatal",
             "module": "aixcalibuha.utils.__init__",
             "obj": "",
@@ -1240,25 +1152,14 @@
             "column": 0,
             "path": "aixcalibuha/utils/__init__.py",
             "symbol": "astroid-error",
-            "message": "aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-54.txt'.",
+            "message": "aixcalibuha/utils/__init__.py: Fatal error while checking 'aixcalibuha/utils/__init__.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-54.txt'.",
             "message-id": "F0002"
         },
         {
             "type": "convention",
             "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
             "obj": "",
-            "line": 115,
-            "column": 0,
-            "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (117/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.sensitivity_analysis.sensitivity_analyzer",
-            "obj": "",
-            "line": 542,
+            "line": 545,
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "line-too-long",
@@ -1273,7 +1174,7 @@
             "column": 0,
             "path": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py",
             "symbol": "astroid-error",
-            "message": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt'.",
+            "message": "aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py: Fatal error while checking 'aixcalibuha/sensitivity_analysis/sensitivity_analyzer.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-54.txt'.",
             "message-id": "F0002"
         },
         {
@@ -1636,7 +1537,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/multi_class_calibrator.py",
             "symbol": "astroid-error",
-            "message": "aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt'.",
+            "message": "aixcalibuha/calibration/multi_class_calibrator.py: Fatal error while checking 'aixcalibuha/calibration/multi_class_calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-55.txt'.",
             "message-id": "F0002"
         },
         {
@@ -1654,18 +1555,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 48,
-            "column": 0,
-            "path": "aixcalibuha/calibration/calibrator.py",
-            "symbol": "line-too-long",
-            "message": "Line too long (117/100)",
-            "message-id": "C0301"
-        },
-        {
-            "type": "convention",
-            "module": "aixcalibuha.calibration.calibrator",
-            "obj": "",
-            "line": 99,
+            "line": 101,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "line-too-long",
@@ -1676,7 +1566,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 193,
+            "line": 195,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "line-too-long",
@@ -1687,7 +1577,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 201,
+            "line": 203,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1698,7 +1588,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 208,
+            "line": 210,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1709,7 +1599,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 214,
+            "line": 216,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1720,7 +1610,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 272,
+            "line": 274,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "line-too-long",
@@ -1731,7 +1621,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 273,
+            "line": 275,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "line-too-long",
@@ -1742,7 +1632,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 305,
+            "line": 307,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1753,7 +1643,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 308,
+            "line": 310,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1764,7 +1654,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 347,
+            "line": 349,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "line-too-long",
@@ -1775,7 +1665,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 387,
+            "line": 389,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1786,7 +1676,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 441,
+            "line": 443,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1797,7 +1687,7 @@
             "type": "convention",
             "module": "aixcalibuha.calibration.calibrator",
             "obj": "",
-            "line": 509,
+            "line": 511,
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "trailing-whitespace",
@@ -1812,7 +1702,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/calibrator.py",
             "symbol": "astroid-error",
-            "message": "aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-20-14-05-55.txt'.",
+            "message": "aixcalibuha/calibration/calibrator.py: Fatal error while checking 'aixcalibuha/calibration/calibrator.py'. Please open an issue in our bug tracker so we address this. There is a pre-filled template that you can use in '/home/runner/.cache/pylint/pylint-crash-2026-04-30-14-21-55.txt'.",
             "message-id": "F0002"
         },
         {
@@ -1845,7 +1735,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/__init__.py",
             "symbol": "duplicate-code",
-            "message": "Similar lines in 2 files\n==aixcalibuha.calibration.calibrator:[258:268]\n==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[269:279]\n            if self.suffix_files == \"mat\":\n                postprocess_mat_result = empty_postprocessing\n                kwargs_postprocessing = {}\n            else:\n                postprocess_mat_result = convert_mat_to_suffix\n                kwargs_postprocessing = {\n                    'variable_names': self.sim_api.result_names,\n                    'suffix_files': self.suffix_files,\n                    'parquet_engine': self.parquet_engine\n                }",
+            "message": "Similar lines in 2 files\n==aixcalibuha.calibration.calibrator:[260:270]\n==aixcalibuha.sensitivity_analysis.sensitivity_analyzer:[270:280]\n            if self.suffix_files == \"mat\":\n                postprocess_mat_result = empty_postprocessing\n                kwargs_postprocessing = {}\n            else:\n                postprocess_mat_result = convert_mat_to_suffix\n                kwargs_postprocessing = {\n                    'variable_names': self.sim_api.result_names,\n                    'suffix_files': self.suffix_files,\n                    'parquet_engine': self.parquet_engine\n                }",
             "message-id": "R0801"
         },
         {
@@ -1867,18 +1757,7 @@
             "column": 0,
             "path": "aixcalibuha/calibration/__init__.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.__init__",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/__init__.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol)",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.fast)",
             "message-id": "R0401"
         },
         {
@@ -1900,39 +1779,6 @@
             "column": 0,
             "path": "aixcalibuha/calibration/__init__.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.__init__",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/__init__.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.__init__",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/__init__.py",
-            "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
-            "message-id": "R0401"
-        },
-        {
-            "type": "refactor",
-            "module": "aixcalibuha.calibration.__init__",
-            "obj": "",
-            "line": 1,
-            "column": 0,
-            "path": "aixcalibuha/calibration/__init__.py",
-            "symbol": "cyclic-import",
             "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.morris)",
             "message-id": "R0401"
         },
@@ -1944,7 +1790,18 @@
             "column": 0,
             "path": "aixcalibuha/calibration/__init__.py",
             "symbol": "cyclic-import",
-            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
+            "message": "Cyclic import (aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.pawn)",
+            "message-id": "R0401"
+        },
+        {
+            "type": "refactor",
+            "module": "aixcalibuha.calibration.__init__",
+            "obj": "",
+            "line": 1,
+            "column": 0,
+            "path": "aixcalibuha/calibration/__init__.py",
+            "symbol": "cyclic-import",
+            "message": "Cyclic import (aixcalibuha -> aixcalibuha.sensitivity_analysis -> aixcalibuha.sensitivity_analysis.sobol -> aixcalibuha.sensitivity_analysis.plotting -> aixcalibuha.utils.visualizer)",
             "message-id": "R0401"
         }
     ],
@@ -1975,7 +1832,7 @@
                 "warning": 0
             },
             "aixcalibuha.data_types": {
-                "convention": 7,
+                "convention": 1,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2002,7 +1859,7 @@
                 "warning": 5
             },
             "aixcalibuha.utils.__init__": {
-                "convention": 2,
+                "convention": 0,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2011,7 +1868,7 @@
                 "warning": 0
             },
             "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
-                "convention": 2,
+                "convention": 1,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2083,7 +1940,7 @@
                 "warning": 0
             },
             "aixcalibuha.calibration.calibrator": {
-                "convention": 15,
+                "convention": 14,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2096,14 +1953,13 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 10,
+                "refactor": 7,
                 "statement": 2,
                 "warning": 0
             }
         },
         "by_msg": {
-            "trailing-whitespace": 15,
-            "line-too-long": 17,
+            "line-too-long": 14,
             "astroid-error": 5,
             "import-error": 26,
             "unspecified-encoding": 3,
@@ -2119,8 +1975,9 @@
             "ungrouped-imports": 3,
             "invalid-name": 3,
             "inconsistent-return-statements": 1,
+            "trailing-whitespace": 8,
             "duplicate-code": 1,
-            "cyclic-import": 9
+            "cyclic-import": 6
         },
         "code_type_count": {
             "code": 0,
@@ -2137,24 +1994,24 @@
                 "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "aixcalibuha.sensitivity_analysis.plotting": [
                 "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis"
+                "aixcalibuha.sensitivity_analysis",
+                "aixcalibuha"
             ],
             "aixcalibuha": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.utils.visualizer"
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "aixcalibuha.utils.visualizer": [
                 "aixcalibuha.sensitivity_analysis.plotting"
@@ -2197,16 +2054,16 @@
             "method": 1,
             "module": 0
         },
-        "convention": 50,
+        "convention": 40,
         "error": 26,
         "fatal": 5,
         "info": 0,
-        "refactor": 21,
+        "refactor": 18,
         "statement": 795,
         "warning": 8,
         "global_note": 0,
         "nb_duplicated_lines": 10,
-        "percent_duplicated_lines": 0.2113718030014796
+        "percent_duplicated_lines": 0.2105706464518846
     },
     "previous": {
         "bad_names": {
@@ -2235,7 +2092,7 @@
                 "warning": 0
             },
             "aixcalibuha.data_types": {
-                "convention": 7,
+                "convention": 1,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2262,7 +2119,7 @@
                 "warning": 5
             },
             "aixcalibuha.utils.__init__": {
-                "convention": 2,
+                "convention": 0,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2271,7 +2128,7 @@
                 "warning": 0
             },
             "aixcalibuha.sensitivity_analysis.sensitivity_analyzer": {
-                "convention": 2,
+                "convention": 1,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2343,7 +2200,7 @@
                 "warning": 0
             },
             "aixcalibuha.calibration.calibrator": {
-                "convention": 15,
+                "convention": 14,
                 "error": 0,
                 "fatal": 1,
                 "info": 0,
@@ -2356,14 +2213,13 @@
                 "error": 0,
                 "fatal": 0,
                 "info": 0,
-                "refactor": 9,
+                "refactor": 8,
                 "statement": 2,
                 "warning": 0
             }
         },
         "by_msg": {
-            "trailing-whitespace": 15,
-            "line-too-long": 17,
+            "line-too-long": 14,
             "astroid-error": 5,
             "import-error": 26,
             "unspecified-encoding": 3,
@@ -2379,8 +2235,9 @@
             "ungrouped-imports": 3,
             "invalid-name": 3,
             "inconsistent-return-statements": 1,
+            "trailing-whitespace": 8,
             "duplicate-code": 1,
-            "cyclic-import": 8
+            "cyclic-import": 7
         },
         "code_type_count": {
             "code": 0,
@@ -2397,24 +2254,24 @@
                 "aixcalibuha"
             ],
             "aixcalibuha.sensitivity_analysis": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha",
+                "aixcalibuha.sensitivity_analysis.sobol",
                 "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "aixcalibuha.sensitivity_analysis.plotting": [
                 "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha",
-                "aixcalibuha.sensitivity_analysis"
+                "aixcalibuha.sensitivity_analysis",
+                "aixcalibuha"
             ],
             "aixcalibuha": [
-                "aixcalibuha.sensitivity_analysis.sobol",
-                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.sensitivity_analysis.fast",
+                "aixcalibuha.sensitivity_analysis.morris",
                 "aixcalibuha.utils.configuration",
-                "aixcalibuha.sensitivity_analysis.pawn",
-                "aixcalibuha.utils.visualizer"
+                "aixcalibuha.sensitivity_analysis.sobol",
+                "aixcalibuha.utils.visualizer",
+                "aixcalibuha.sensitivity_analysis.pawn"
             ],
             "aixcalibuha.utils.visualizer": [
                 "aixcalibuha.sensitivity_analysis.plotting"
@@ -2457,15 +2314,15 @@
             "method": 1,
             "module": 0
         },
-        "convention": 50,
+        "convention": 40,
         "error": 26,
         "fatal": 5,
         "info": 0,
-        "refactor": 20,
+        "refactor": 19,
         "statement": 795,
         "warning": 8,
-        "global_note": 7.383647798742139,
+        "global_note": 7.522012578616352,
         "nb_duplicated_lines": 10,
-        "percent_duplicated_lines": 0.2113718030014796
+        "percent_duplicated_lines": 0.2105706464518846
     }
 }

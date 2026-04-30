@@ -123,9 +123,14 @@ The given float (default is 0) is subtracted from the start_time
 of your calibration_class. You can find a visualisation of said timedelta
 in the img folder of the project.</p></li>
 <li><p><strong>save_files</strong> (<em>boolean</em>) – If true, all simulation files for each iteration will be saved!</p></li>
+<li><p><strong>suffix_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Default ‘csv’. Specifies the data format to store the simulation files in.
+Options are ‘csv’, ‘parquet’, or ‘parquet.COMPRESSION’ (e.g. ‘parquet.snappy’,
+‘parquet.gzip’) to save only the goals.
+If you want to keep the original ‘mat’ file specify ‘mat’ here
+(not recommended due to high disk size usage).</p></li>
 <li><p><strong>parquet_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The engine to use for the data format parquet.
 Supported options can be extracted
-from the ebcpy.TimeSeriesData.save() function.
+from the ebcpy DataFrame accessor <code class="docutils literal notranslate"><span class="pre">df.tsd.save()</span></code> function.
 Default is ‘pyarrow’.</p></li>
 <li><p><strong>verbose_logging</strong> (<em>boolean</em>) – Default is True. If False, the standard Logger without
 Visualization in Form of plots is used.
@@ -140,9 +145,9 @@ also not stored, even if you set the save_tsd_plot keyword-argument to true.</p>
 time-series is saved. This may make the process much slower</p></li>
 <li><p><strong>fail_on_error</strong> (<em>boolean</em>) – Default is False. If True, the calibration will stop with an error if
 the simulation fails. See also: <code class="docutils literal notranslate"><span class="pre">ret_val_on_error</span></code></p></li>
-<li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>,</em><em>np.NAN</em>) – Default is np.NAN. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
+<li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>,</em><em>np.nan</em>) – Default is np.nan. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
 which value to return in the case of a failed simulation. Possible
-options are np.NaN, np.inf or some other high numbers. be aware that this
+options are np.nan, np.inf or some other high numbers. be aware that this
 max influence the solver.</p></li>
 <li><p><strong>fixed_parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – Default is an empty dict. This dict may be used to add certain parameters
 to the simulation which are not tuned / variable during calibration.
@@ -164,11 +169,6 @@ Maximum time in seconds, after which the calibration is stopped. Useful to expli
 Any supported option in matplotlib, e.g. svg, png, pdf …
 Default is png</p></li>
 </ul>
-</dd>
-<dt class="field-even">Keword suffix_files<span class="colon">:</span></dt>
-<dd class="field-even"><p>Default ‘csv’. Specifies the data format to store the simulation files in.
-Options are ‘csv’ and ‘parquet’ to save only the goals.
-If you want to keep the original ‘mat’ file specify ‘mat’ here (not recommended due to high disk size usage).</p>
 </dd>
 </dl>
 <dl class="py method">

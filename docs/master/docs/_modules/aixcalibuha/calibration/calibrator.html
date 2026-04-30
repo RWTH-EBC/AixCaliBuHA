@@ -88,7 +88,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">data_types</span><span class="p">,</span> <span class="n">Optimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_time_series_data</span><span class="p">,</span> <span class="n">Optimizer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ebcpy.simulationapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationAPI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">aixcalibuha.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualizer</span><span class="p">,</span> <span class="n">MaxIterationsReached</span><span class="p">,</span> <span class="n">MaxTimeReached</span><span class="p">,</span> <span class="n">convert_mat_to_suffix</span><span class="p">,</span> \
     <span class="n">empty_postprocessing</span>
@@ -118,14 +118,16 @@
 <span class="sd">        in the img folder of the project.</span>
 <span class="sd">    :keyword boolean save_files:</span>
 <span class="sd">        If true, all simulation files for each iteration will be saved!</span>
-<span class="sd">    :keword suffix_files:</span>
+<span class="sd">    :keyword str suffix_files:</span>
 <span class="sd">        Default &#39;csv&#39;. Specifies the data format to store the simulation files in.</span>
-<span class="sd">        Options are &#39;csv&#39; and &#39;parquet&#39; to save only the goals.</span>
-<span class="sd">        If you want to keep the original &#39;mat&#39; file specify &#39;mat&#39; here (not recommended due to high disk size usage).</span>
+<span class="sd">        Options are &#39;csv&#39;, &#39;parquet&#39;, or &#39;parquet.COMPRESSION&#39; (e.g. &#39;parquet.snappy&#39;,</span>
+<span class="sd">        &#39;parquet.gzip&#39;) to save only the goals.</span>
+<span class="sd">        If you want to keep the original &#39;mat&#39; file specify &#39;mat&#39; here</span>
+<span class="sd">        (not recommended due to high disk size usage).</span>
 <span class="sd">    :keyword str parquet_engine:</span>
 <span class="sd">        The engine to use for the data format parquet.</span>
 <span class="sd">        Supported options can be extracted</span>
-<span class="sd">        from the ebcpy.TimeSeriesData.save() function.</span>
+<span class="sd">        from the ebcpy DataFrame accessor ``df.tsd.save()`` function.</span>
 <span class="sd">        Default is &#39;pyarrow&#39;.</span>
 <span class="sd">    :keyword boolean verbose_logging:</span>
 <span class="sd">        Default is True. If False, the standard Logger without</span>
@@ -145,10 +147,10 @@
 <span class="sd">    :keyword boolean fail_on_error:</span>
 <span class="sd">        Default is False. If True, the calibration will stop with an error if</span>
 <span class="sd">        the simulation fails. See also: ``ret_val_on_error``</span>
-<span class="sd">    :keyword float,np.NAN ret_val_on_error:</span>
-<span class="sd">        Default is np.NAN. If ``fail_on_error`` is false, you can specify here</span>
+<span class="sd">    :keyword float,np.nan ret_val_on_error:</span>
+<span class="sd">        Default is np.nan. If ``fail_on_error`` is false, you can specify here</span>
 <span class="sd">        which value to return in the case of a failed simulation. Possible</span>
-<span class="sd">        options are np.NaN, np.inf or some other high numbers. be aware that this</span>
+<span class="sd">        options are np.nan, np.inf or some other high numbers. be aware that this</span>
 <span class="sd">        max influence the solver.</span>
 <span class="sd">    :keyword dict fixed_parameters:</span>
 <span class="sd">        Default is an empty dict. This dict may be used to add certain parameters</span>
@@ -197,7 +199,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parquet_engine</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parquet_engine&#39;</span><span class="p">,</span> <span class="s1">&#39;pyarrow&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timedelta&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fail_on_error&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NAN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ret_val_on_error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ret_val_on_error&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fixed_parameters&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apply_penalty</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;apply_penalty&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">penalty_factor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;penalty_factor&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -355,7 +357,7 @@
                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">calibration_class</span><span class="o">.</span><span class="n">input_kwargs</span>
                 <span class="p">)</span>
                 <span class="c1"># %% Load results and write to goals object</span>
-                <span class="n">sim_target_data</span> <span class="o">=</span> <span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">)</span>
+                <span class="n">sim_target_data</span> <span class="o">=</span> <span class="n">load_time_series_data</span><span class="p">(</span><span class="n">_filepath</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sim_target_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                     <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
@@ -437,7 +439,7 @@
                 <span class="k">if</span> <span class="n">_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_types</span><span class="o">.</span><span class="n">TimeSeriesData</span><span class="p">(</span><span class="n">_filepath</span><span class="p">))</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">load_time_series_data</span><span class="p">(</span><span class="n">_filepath</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim_api</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameter_list</span><span class="p">,</span>

@@ -217,7 +217,14 @@ other simulation software.</p>
 <li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.empty_postprocessing"><code class="docutils literal notranslate"><span class="pre">empty_postprocessing()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.validate_cal_class_input"><code class="docutils literal notranslate"><span class="pre">validate_cal_class_input()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha-utils-configuration-module">aixcalibuha.utils.configuration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#module-aixcalibuha.utils.configuration">aixcalibuha.utils.configuration module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_calibration_classes_from_config"><code class="docutils literal notranslate"><span class="pre">get_calibration_classes_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_goals_from_config"><code class="docutils literal notranslate"><span class="pre">get_goals_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.get_tuner_paras_from_config"><code class="docutils literal notranslate"><span class="pre">get_tuner_paras_from_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.read_config"><code class="docutils literal notranslate"><span class="pre">read_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.configuration.write_config"><code class="docutils literal notranslate"><span class="pre">write_config()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="aixcalibuha.utils.html#module-aixcalibuha.utils.visualizer">aixcalibuha.utils.visualizer module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="aixcalibuha.utils.html#aixcalibuha.utils.visualizer.CalibrationLogger.calibrate_new_class"><code class="docutils literal notranslate"><span class="pre">CalibrationLogger.calibrate_new_class()</span></code></a></li>
@@ -286,8 +293,7 @@ will only evaluate the data between 0-100, 150-200 and 500-600.
 The given intervals may overlap. Furthermore the intervals do not need
 to be in an ascending order or be limited to
 the start_time and end_time parameters.</p></li>
-<li><p><strong>inputs</strong> (<em>(</em><em>pd.DataFrame</em><em>, </em><em>ebcpy.data_types.TimeSeriesData</em><em>)</em>) – TimeSeriesData or DataFrame that holds
-input data for the simulation to run.
+<li><p><strong>inputs</strong> (<em>pd.DataFrame</em>) – DataFrame that holds input data for the simulation to run.
 The time-index should be float index and match the overall
 ranges set by start- and stop-time.</p></li>
 <li><p><strong>input_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – If inputs are provided, additional input keyword-args passed to the
@@ -305,7 +311,7 @@ Using DymolaAPI, you have to specify ‘table_name’ and ‘file_name’</p></l
 
 <dl class="py property">
 <dt class="sig sig-object py" id="aixcalibuha.data_types.CalibrationClass.inputs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TimeSeriesData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.inputs" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#aixcalibuha.data_types.CalibrationClass.inputs" title="Permalink to this definition"></a></dt>
 <dd><p>Get the inputs for this calibration class</p>
 </dd></dl>
 
@@ -343,14 +349,14 @@ Using DymolaAPI, you have to specify ‘table_name’ and ‘file_name’</p></l
 
 <dl class="py class">
 <dt class="sig sig-object py" id="aixcalibuha.data_types.Goals">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">Goals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meas_target_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TimeSeriesData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistical_measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weightings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">aixcalibuha.data_types.</span></span><span class="sig-name descname"><span class="pre">Goals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meas_target_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistical_measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weightings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/aixcalibuha/data_types.html#Goals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#aixcalibuha.data_types.Goals" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Class for one or multiple goals. Used to evaluate the
 difference between current simulation and measured data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>meas_target_data</strong> (<em>(</em><em>ebcpy.data_types.TimeSeriesData</em><em>, </em><em>pd.DataFrame</em><em>)</em>) – The dataset of the measurement. It acts as a point of reference
+<li><p><strong>meas_target_data</strong> (<em>pd.DataFrame</em>) – The dataset of the measurement. It acts as a point of reference
 for the simulation output. If the dimensions of the given DataFrame and later
 added simulation-data are not equal, an error is raised.
 Has to hold all variables listed under the MEASUREMENT_NAME variable in the
@@ -399,13 +405,13 @@ chosen statistical_measure.</p>
 corresponding weightings is returned together with the total difference.
 This can be useful to better understand which goals is performing
 well in an optimization and which goals needs further is not performing well.</p></li>
-<li><p><strong>penaltyfactor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Muliplty result with this factor to account for
-penatlies of some sort.</p></li>
+<li><p><strong>penaltyfactor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Multiply result with this factor to account for
+penalties of some sort.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>float total_difference
-weighted ouput for all goals.</p>
+weighted output for all goals.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,7 +481,7 @@ self._sim_target_data based on the given dataframe
 sim_target_data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sim_target_data</strong> (<em>TimeSeriesData</em>) – Object with simulation target data. This data should be
+<dd class="field-odd"><p><strong>sim_target_data</strong> (<em>pd.DataFrame</em>) – Object with simulation target data. This data should be
 the output of a simulation, hence “sim”-target-data.</p>
 </dd>
 </dl>

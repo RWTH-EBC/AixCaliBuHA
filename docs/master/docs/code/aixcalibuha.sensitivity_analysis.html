@@ -538,17 +538,19 @@ method in the SALib for more information.</p></li>
 Logger and results will be stored here.</p></li>
 <li><p><strong>fail_on_error</strong> (<em>boolean</em>) – Default is False. If True, the calibration will stop with an error if
 the simulation fails. See also: <code class="docutils literal notranslate"><span class="pre">ret_val_on_error</span></code></p></li>
-<li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>,</em><em>np.NAN</em>) – Default is np.NAN. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
+<li><p><strong>ret_val_on_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>,</em><em>np.nan</em>) – Default is np.nan. If <code class="docutils literal notranslate"><span class="pre">fail_on_error</span></code> is false, you can specify here
 which value to return in the case of a failed simulation. Possible
-options are np.NaN, np.inf or some other high numbers. be aware that this
+options are np.nan, np.inf or some other high numbers. be aware that this
 max influence the solver.</p></li>
 <li><p><strong>save_files</strong> (<em>boolean</em>) – Default False. If true, all simulation files for each iteration will be saved!</p></li>
 <li><p><strong>suffix_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Default ‘csv’. Specifies the data format to store the simulation files in.
-Options are ‘csv’ and ‘parquet’ to save only the goals.
-If you want to keep the original ‘mat’ file specify ‘mat’ here (not recommended due to high disk size usage).</p></li>
+Options are ‘csv’, ‘parquet’, or ‘parquet.COMPRESSION’ (e.g. ‘parquet.snappy’,
+‘parquet.gzip’) to save only the goals.
+If you want to keep the original ‘mat’ file specify ‘mat’ here
+(not recommended due to high disk size usage).</p></li>
 <li><p><strong>parquet_engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The engine to use for the data format parquet.
 Supported options can be extracted
-from the ebcpy.TimeSeriesData.save() function.
+from the ebcpy DataFrame accessor <code class="docutils literal notranslate"><span class="pre">df.tsd.save()</span></code> function.
 Default is ‘pyarrow’.</p></li>
 <li><p><strong>savepath_sim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>,</em><em>Path</em>) – Default is working_directory. Own directory for the time series data sets of all simulations
 during the sensitivity analysis. The own dir can be necessary for large data sets,
