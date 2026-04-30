@@ -37,7 +37,7 @@ def run_sensitivity_analysis(
 
     :param [Path, str] examples_dir:
         Path to the examples folder of AixCaliBuHA
-        e.g. r"LOCAL_PATH_TO\AixCaliBuHA\examples"
+        e.g. "LOCAL_PATH_TO\\AixCaliBuHA\\examples"
     :param str example:
         Which example to run, "A" or "B"
     :param int n_cpu:

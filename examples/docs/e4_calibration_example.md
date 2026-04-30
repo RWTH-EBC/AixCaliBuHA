@@ -82,7 +82,7 @@ kwargs_calibrator = {"timedelta": 0,
                      "show_plot_pause_time": 1e-3,
                      "plot_file_type": "png",
                      "fail_on_error": False,
-                     "ret_val_on_error": np.NAN,
+                     "ret_val_on_error": np.nan,
                      # For this example, let's keep the runtime low
                      "max_itercount": 100
                      }

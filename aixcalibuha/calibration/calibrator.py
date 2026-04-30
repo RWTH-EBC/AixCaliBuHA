@@ -12,7 +12,7 @@ from typing import Dict, Union
 from copy import copy
 import numpy as np
 import pandas as pd
-from ebcpy import data_types, Optimizer
+from ebcpy import load_time_series_data, Optimizer
 from ebcpy.simulationapi import SimulationAPI
 from aixcalibuha.utils import visualizer, MaxIterationsReached, MaxTimeReached, convert_mat_to_suffix, \
     empty_postprocessing
@@ -42,14 +42,16 @@ class Calibrator(Optimizer):
         in the img folder of the project.
     :keyword boolean save_files:
         If true, all simulation files for each iteration will be saved!
-    :keword suffix_files:
+    :keyword str suffix_files:
         Default 'csv'. Specifies the data format to store the simulation files in.
-        Options are 'csv' and 'parquet' to save only the goals.
-        If you want to keep the original 'mat' file specify 'mat' here (not recommended due to high disk size usage).
+        Options are 'csv', 'parquet', or 'parquet.COMPRESSION' (e.g. 'parquet.snappy',
+        'parquet.gzip') to save only the goals.
+        If you want to keep the original 'mat' file specify 'mat' here
+        (not recommended due to high disk size usage).
     :keyword str parquet_engine:
         The engine to use for the data format parquet.
         Supported options can be extracted
-        from the ebcpy.TimeSeriesData.save() function.
+        from the ebcpy DataFrame accessor ``df.tsd.save()`` function.
         Default is 'pyarrow'.
     :keyword boolean verbose_logging:
         Default is True. If False, the standard Logger without
@@ -69,10 +71,10 @@ class Calibrator(Optimizer):
     :keyword boolean fail_on_error:
         Default is False. If True, the calibration will stop with an error if
         the simulation fails. See also: ``ret_val_on_error``
-    :keyword float,np.NAN ret_val_on_error:
-        Default is np.NAN. If ``fail_on_error`` is false, you can specify here
+    :keyword float,np.nan ret_val_on_error:
+        Default is np.nan. If ``fail_on_error`` is false, you can specify here
         which value to return in the case of a failed simulation. Possible
-        options are np.NaN, np.inf or some other high numbers. be aware that this
+        options are np.nan, np.inf or some other high numbers. be aware that this
         max influence the solver.
     :keyword dict fixed_parameters:
         Default is an empty dict. This dict may be used to add certain parameters
@@ -121,7 +123,7 @@ class Calibrator(Optimizer):
         self.parquet_engine = kwargs.pop('parquet_engine', 'pyarrow')
         self.timedelta = kwargs.pop("timedelta", 0)
         self.fail_on_error = kwargs.pop("fail_on_error", False)
-        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.NAN)
+        self.ret_val_on_error = kwargs.pop("ret_val_on_error", np.nan)
         self.fixed_parameters = kwargs.pop("fixed_parameters", {})
         self.apply_penalty = kwargs.pop("apply_penalty", True)
         self.penalty_factor = kwargs.pop("penalty_factor", 0)
@@ -279,7 +281,7 @@ class Calibrator(Optimizer):
                     **self.calibration_class.input_kwargs
                 )
                 # %% Load results and write to goals object
-                sim_target_data = data_types.TimeSeriesData(_filepath)
+                sim_target_data = load_time_series_data(_filepath)
             else:
                 sim_target_data = self.sim_api.simulate(
                     parameters=parameters,
@@ -361,7 +363,7 @@ class Calibrator(Optimizer):
                 if _filepath is None:
                     results.append(None)
                 else:
-                    results.append(data_types.TimeSeriesData(_filepath))
+                    results.append(load_time_series_data(_filepath))
         else:
             results = self.sim_api.simulate(
                 parameters=parameter_list,

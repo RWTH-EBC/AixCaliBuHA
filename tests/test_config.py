@@ -10,7 +10,7 @@ class TestConfiguration(unittest.TestCase):
     """Test-class for the data_types module of ebcpy."""
 
     def test_import(self):
-        """Test the correct impotz"""
+        """Test the correct import"""
         self.assertIsInstance(configuration.default_config, dict)
 
     def test_funcs(self):

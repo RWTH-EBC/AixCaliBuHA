@@ -10,7 +10,7 @@
 # Start by importing all relevant packages
 from pathlib import Path
 # Imports from ebcpy
-from ebcpy import TimeSeriesData
+from ebcpy import load_time_series_data
 # Imports from aixcalibuha
 from aixcalibuha import TunerParas, Goals, \
     CalibrationClass
@@ -82,7 +82,7 @@ def main(
     #
     # Start by loading the measured data generated in 1_A_energy_system_analysis.py:
     data_dir = Path(examples_dir).joinpath("data")
-    meas_target_data = TimeSeriesData(data_dir.joinpath("measured_target_data.hdf"), key="example")
+    meas_target_data = load_time_series_data(data_dir.joinpath("measured_target_data.hdf"), key="example")
     # Map the measured keys to the names inside your simulation
     variable_names = {
         # Name of goal: Name of measured variable, Name of simulated variable
@@ -94,7 +94,7 @@ def main(
     # To match the measured data to simulated data,
     # the index has to match with the simulation output
     # Thus, convert it:
-    meas_target_data.to_float_index()
+    meas_target_data.tsd.to_float_index()
     # Lastly, setup the goals object. Note that the statistical_measure
     # is parameter of the python version of this example. It's a metric to
     # compare two set's of time series data. Which one to choose is up to
@@ -108,7 +108,7 @@ def main(
     )
     # Let's check if our evaluation is possible by creating some
     # dummy `sim_target_data` with the same index:
-    sim_target_data = TimeSeriesData({"vol.T": 293.15, "Pel": 0},
+    sim_target_data = load_time_series_data({"vol.T": 293.15, "Pel": 0},
                                      index=meas_target_data.index)
     print("Goals data before setting simulation data:\n", goals.get_goals_data())
     goals.set_sim_target_data(sim_target_data)
@@ -119,7 +119,7 @@ def main(
     # understand the error messages of this framework a little bit better.
     # Example:
     new_index = [0.0, 600.0, 1200.0, 1800.0, 2400.0, 3000.0, 3600.0]
-    sim_target_data = TimeSeriesData({"vol.T": 293.15, "Pel": 0},
+    sim_target_data = load_time_series_data({"vol.T": 293.15, "Pel": 0},
                                      index=new_index)
     try:
         goals.set_sim_target_data(sim_target_data)
@@ -129,7 +129,7 @@ def main(
         print(err)
     new_index = meas_target_data.index.values.copy()
     new_index[-10] += 0.05  # Change some value
-    sim_target_data = TimeSeriesData({"vol.T": 293.15, "Pel": 0},
+    sim_target_data = load_time_series_data({"vol.T": 293.15, "Pel": 0},
                                      index=new_index)
     try:
         goals.set_sim_target_data(sim_target_data)
@@ -185,7 +185,7 @@ def main(
     ]
     # Set the latter three for all classes.
     # First load the inputs of the calibration:
-    meas_inputs_data = TimeSeriesData(data_dir.joinpath("measured_input_data.hdf"), key="example")
+    meas_inputs_data = load_time_series_data(data_dir.joinpath("measured_input_data.hdf"), key="example")
     # Rename according to simulation input:
     meas_inputs_data = meas_inputs_data.rename(columns={"TDryBulSource.y": "TDryBul"})
     for cal_class in calibration_classes:

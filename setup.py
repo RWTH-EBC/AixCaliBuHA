@@ -10,9 +10,9 @@ long_description = readme_path.read_text()
 INSTALL_REQUIRES = [
     'numpy>=1.19.5',
     'matplotlib>=3.3.4',
-    'pandas>=1.3.5',
+    'pandas>=1.3.5,<3.0',
     'SALib>=1.4.6',
-    'ebcpy>=0.5.5',
+    'ebcpy[full]>=0.7.1',
     'toml>=0.10.2'
 ]
 
@@ -42,11 +42,12 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering',
         'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11'
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13'
     ],
+    python_requires='>=3.10',
     keywords=[
         'calibration', 'building', 'energy',
         'black-box optimization', 'sensitivity_analysis'
